@@ -25,8 +25,9 @@ function Measurement(amount, unit, type){
 	this.amount=amount;
 	this.type=type;
 	this.setAmount=function(amount,unit){
-		if(unit!=-1&&this.unit!=-1&&this.type!=-1)
+		if(unit!=-1&&this.unit!=-1&&this.type!=-1){
 			this.amount = amount*convMult[this.type][unit][this.unit];
+		}
 	}
 	this.convertTo=function(newUnit){
 		return this.amount*convMult[this.type][this.unit][newUnit];
@@ -39,11 +40,11 @@ function Measurement(amount, unit, type){
 		var str = "";
 		if(this.unit!=-1&&this.type!=-1)
 		if(!(this.unit==FT_IN&&this.type==LENGTH)){
-			var a = amount+"";//format to X.XX
+			var a = parseFloat(this.amount).toFixed(2);
 			str = a+" "+unitNames[this.type][this.unit];
 		}else{
-			if(Math.floor(amount)!=0){
-				str+=Math.floor(amount);
+			if(Math.floor(this.amount)!=0){
+				str+=Math.floor(this.amount);
 				str+="\' ";				
 			}
 			var inches = Math.round((this.amount-Math.floor(this.amount))*12);
@@ -97,7 +98,7 @@ function createMeasurement(str){
 	function isDigit(str){
 		return !isNaN(parseInt(str));
 	}
-	if(str.length()<2)return null;//at least a number and letter
+	if(str.length<2)return null;//at least a number and letter
 
 	var numStart = 0;
 	var numStarted = false;

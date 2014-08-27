@@ -8,7 +8,6 @@ function TileView(canvas){
 	this.scrollX;
 	this.scrollY;
 	this.scale;
-	this.scaleAnnotation;
 
 	this.draw;
 	var firstDraw;

@@ -1,17 +1,43 @@
 function Annotation(type, tileView){
 	this.id=createUUID();
 	this.type=type;
+	this.tileView=tileView;
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
 	this.color="rgba(255,0,0,"+alpha+")";
-	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;
+	
+	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;	
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
+	
 	this.points=new Array();
+	
+	this.measurement;
+
 	this.drawMe = function(x,y,context){
 		context.strokeStyle=this.color;
 		context.lineWidth=this.lineWidth;
 		drawFunctions[type].call(this,x,y,context);
 	}
+	this.updateMeasure;
+	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
+	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
+	if(type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)this.updateMeasure=updateMeasurePoly;
+	this.getLength = function(){
+		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
+	}
+}
+function updateMeasureLength(){
+	if(this.tileView.annotationManager.scaleAnnotation!=null){
+		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
+		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
+		this.measurement.setAmount(m.amount*(this.getLength()/l), m.unit);
+	}
+}
+function updateMeasureRect(tileView){
+
+}
+function updateMeasurePoly(tileView){
+
 }
 function drawArc(x1,y1,x2,y2,start,angle,context){
 	context.save();
@@ -160,18 +186,38 @@ function drawArrow(x,y,context){
 }
 function drawScale(x,y,context){
 	if(this.points.length==2){
-		context.save();
-		var measureSpace = 0.2;
-		var baseEndLength = 8;
 		var x1 = this.points[0].x+x;
 		var y1 = this.points[0].y+y;
 		var x2 = this.points[1].x+x;
 		var y2 = this.points[1].y+y;
-		
+
+		context.save();
+
+		var baseEndLength = 8;
+		var measureSpace;
+		if(this.measurement!=null){
+			var myLength = this.getLength();
+			var textSize = 22*this.lineWidth;
+			var text = this.measurement.toString();
+			context.font = textSize+"px Verdana";
+			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
+				textSize-=4*this.lineWidth;
+				context.font = textSize+"px Verdana";
+			}
+			measureSpace = context.measureText(text).width/myLength;
+		} else {
+			measureSpace = 0;
+		}
+
+		//text space
 		var bx1=x1+(x2-x1)*(0.5-measureSpace/1.5);
 		var by1=y1+(y2-y1)*(0.5-measureSpace/1.5);
 		var bx2=x1+(x2-x1)*(0.5+measureSpace/1.5);
 		var by2=y1+(y2-y1)*(0.5+measureSpace/1.5);
+
+		//ends
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((y2-y1),(x2-x1));
 
 		context.beginPath();
 
@@ -182,10 +228,6 @@ function drawScale(x,y,context){
 		//second half
 		context.moveTo(bx2, by2);
 		context.lineTo(x2, y2);
-
-		//ends
-		var endLength = baseEndLength*this.lineWidth;
-		var theta = Math.atan2((y2-y1),(x2-x1));
 		
 		//end 1
 		var angle1 = (Math.PI/8)*3;
@@ -211,20 +253,60 @@ function drawScale(x,y,context){
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta-angle2)*endLength), y2+(Math.sin(theta-angle2)*endLength));
 
+		//draw text
+		if(this.measurement!=null){
+			var cx = (x2+x1)/2;
+			var cy = (y2+y1)/2;
+
+			context.save();
+
+			context.translate(cx,cy);
+			context.rotate(theta);
+			if(x1>x2){
+				context.rotate(Math.PI);
+			}
+			context.fillStyle = this.color;
+			context.textAlign = "center";
+			
+			context.fillText(this.measurement.toString(),0,textSize/3);
+
+			context.restore();
+		}
+
 		context.restore();
 		context.stroke();
 	}
 }
 function drawMeasure(x,y,context){
 	if(this.points.length==2){
-		context.save();
-		var measureSpace = 0.2;
-		var baseEndLength = 8;
 		var x1 = this.points[0].x+x;
 		var y1 = this.points[0].y+y;
 		var x2 = this.points[1].x+x;
 		var y2 = this.points[1].y+y;
+
+		context.save();
+
+		var baseEndLength = 8;
+		var measureSpace;
+
+		var baseEndLength = 8;
+		var measureSpace;
+		if(this.measurement!=null){
+			console.log(this.measurement);
+			var myLength = this.getLength();
+			var textSize = 22*this.lineWidth;
+			var text = this.measurement.toString();
+			context.font = textSize+"px Verdana";
+			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
+				textSize-=4*this.lineWidth;
+				context.font = textSize+"px Verdana";
+			}
+			measureSpace = context.measureText(text).width/myLength;
+		} else {
+			measureSpace = 0;
+		}
 		
+		//text space
 		var bx1=x1+(x2-x1)*(0.5-measureSpace/1.5);
 		var by1=y1+(y2-y1)*(0.5-measureSpace/1.5);
 		var bx2=x1+(x2-x1)*(0.5+measureSpace/1.5);
@@ -255,6 +337,26 @@ function drawMeasure(x,y,context){
 		context.lineTo(x2+(Math.cos(theta+Math.PI/2)*endLength), y2+(Math.sin(theta+Math.PI/2)*endLength));
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta-Math.PI/2)*endLength), y2+(Math.sin(theta-Math.PI/2)*endLength));	
+
+		//draw text
+		if(this.measurement!=null){
+			var cx = (x2+x1)/2;
+			var cy = (y2+y1)/2;
+
+			context.save();
+
+			context.translate(cx,cy);
+			context.rotate(theta);
+			if(x1>x2){
+				context.rotate(Math.PI);
+			}
+			context.fillStyle = this.color;
+			context.textAlign = "center";
+			
+			context.fillText(this.measurement.toString(),0,textSize/3);
+
+			context.restore();
+		}
 
 		context.restore();
 		context.stroke();

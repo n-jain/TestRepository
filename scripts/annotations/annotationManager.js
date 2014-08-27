@@ -1,14 +1,20 @@
 function AnnotationManager(tileView){
 	var annotations = new Array();
 	var currentAnnotation;
+	this.scaleAnnotation;
+
 	this.onmousedown = function(x,y){
 		//create new annotation
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
 			var annType = toolToAnnotation(tileView.getTool());
-			if(tileView.scaleAnnotation!=null)annType=MEASURE_ANNOTATION;
+			if(this.scaleAnnotation!=null)annType=MEASURE_ANNOTATION;
 			var ann = new Annotation(annType, tileView);
 			ann.points[0] = new Point(x,y);
 			currentAnnotation = ann;
+
+			if(currentAnnotation.type==MEASURE_ANNOTATION){
+				currentAnnotation.measurement = new Measurement(0,this.scaleAnnotation.measurement.unit,LENGTH);
+			}
 		}
 		//add point to existing polygon annotation
 		if(tileView.getTool()==POLYGON_TOOL){
@@ -28,6 +34,9 @@ function AnnotationManager(tileView){
 			} else if(currentAnnotation.type!=POLYGON_ANNOTATION){
 				currentAnnotation.points[1] = new Point(x,y);
 			}
+			if(currentAnnotation.type==MEASURE_ANNOTATION){
+				currentAnnotation.updateMeasure();
+			}
 		}
 	}
 	this.drawAllAnnotations = function(x,y,context){
@@ -39,13 +48,32 @@ function AnnotationManager(tileView){
 		}
 	}
 	this.finishAnnotation = function(){
-		if(currentAnnotation!=null)
+		if(currentAnnotation!=null){
 			if(currentAnnotation.points.length>1){
-				annotations[annotations.length] = currentAnnotation;
+				var del = false;
 				if(currentAnnotation.type==SCALE_ANNOTATION){
-					tileView.scaleAnnotation=currentAnnotation;
-				}				
+					var measureString;
+					var cancel=false;
+					var measurement;
+					while(!cancel&&measurement==null){
+						measureString=window.prompt("Enter Scale with Units\n(5\' 2\", 3m, etc.)");
+						if(measureString==null){
+							cancel=true;
+							del=true;
+						} else {
+							measurement=createMeasurement(measureString);
+							currentAnnotation.measurement=measurement;
+						}
+					}
+					if(!del)this.scaleAnnotation=currentAnnotation;
+				}
+				if(!del)annotations[annotations.length] = currentAnnotation;
 			}
+		}
 		currentAnnotation=null;
+	}
+	this.clearAnnotations = function(){
+		annotations = new Array();
+		this.scaleAnnotation=null;
 	}
 }
