@@ -3,6 +3,8 @@ function Annotation(type, tileView){
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
 	this.color="rgba(255,0,0,"+alpha+")";
 	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;
+	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
+	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
 	console.log(this.lineWidth);
 	this.points=new Array();
 	this.drawMe = function(x,y,context){
