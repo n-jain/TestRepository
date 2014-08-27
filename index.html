@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="cssreset-min.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<title>Tile Display</title>
+	</head>
+	<body bgcolor="#DDDDDD">
+		<canvas id="canvas1" width="1920" height="1080">Canvas is not supported</canvas>
+		
+		<div id="res_menu">
+			<button type="button" onclick="setTileRes(0);">1000</button>
+			<button type="button" onclick="setTileRes(1);">0500</button>
+			<button type="button" onclick="setTileRes(2);">0250</button>
+			<button type="button" onclick="setTileRes(3);">0125</button>
+			<button type="button" onclick="setTileRes(4);">0063</button>
+		</div>
+
+		<div id="tool_menu">
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_lasso.png" name="Lasso" onclick="setTool(LASSO_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_square.png" name="Square" onclick="setTool(SQUARE_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_x.png" name="X" onclick="setTool(X_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_circle.png" name="Circle" onclick="setTool(CIRCLE_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_cloud.png" name="Cloud" onclick="setTool(CLOUD_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_polygon.png" name="Polygon" onclick="setTool(POLYGON_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_text.png" name="Text" onclick="setTool(TEXT_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_line.png" name="Line" onclick="setTool(LINE_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_arrow.png" name="Arrow" onclick="setTool(ARROW_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_pen.png" name="Pen" onclick="setTool(PEN_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_highlighter.png" name="Highlighter" onclick="setTool(HIGHLIGHTER_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_ruler.png" name="Scale" onclick="setTool(SCALE_TOOL);"><br/>
+			<input type="image" class="tool_button" src="toolbar_images/toolbar_mail.png" name="Screenshot" onclick="setTool(MAIL_TOOL);"><br/>
+		</div>
+
+		<script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.13.min.js"></script>
+		<script type="text/javascript" src="libs/jszip.js"></script>
+		<script type="text/javascript" src="libs/jszip-utils.js"></script>
+
+		<script type="text/javascript" src="scripts/constants.js"></script>
+		<script type="text/javascript" src="scripts/network/networkConnection.js"></script>
+
+		<script type="text/javascript" src="scripts/annotations/point.js"></script>
+		<script type="text/javascript" src="scripts/annotations/annotation.js"></script>
+		<script type="text/javascript" src="scripts/annotations/annotationManager.js"></script>
+
+		<script type="text/javascript" src="scripts/tileView/tile.js"></script>
+		<script type="text/javascript" src="scripts/tileView/tileLoader.js"></script>
+		<script type="text/javascript" src="scripts/controls/keyboardControls.js"></script>
+		<script type="text/javascript" src="scripts/controls/mouseControls.js"></script>
+		<script type="text/javascript" src="scripts/tileView/tileView.js"></script>
+		<script type="text/javascript" src="scripts/main.js"></script>
+	</body>
+</html>
