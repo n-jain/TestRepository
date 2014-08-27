@@ -1,4 +1,4 @@
-var NO_TOOL=-1;
+var NO_TOOL=-1; 
 var LASSO_TOOL=0;
 var SQUARE_TOOL=1;
 var X_TOOL=2;
@@ -25,6 +25,7 @@ var ARROW_ANNOTATION=8;
 var PEN_ANNOTATION=9;
 var HIGHLIGHTER_ANNOTATION=10;
 var SCALE_ANNOTATION=11;
+var MEASURE_ANNOTATION=12;
 
 function toolToAnnotation(tool){
 	switch(tool){
@@ -56,3 +57,32 @@ function toolToAnnotation(tool){
 
 var LINE_WIDTH = 2;
 var LINE_WIDTH_HIGHLIGHTER = 23;
+
+//MEASUREMENT
+//LENGTH
+var IN=0;
+var FT=1;
+var FT_IN=2;
+var YD=3;
+var MI=4;
+var CM=5;
+var M=6;
+var KM=7;
+	
+//AREA
+var IN2=0;
+var FT2=1;
+var YD2=2;
+var AC=3;
+var MI2=4;
+var CM2=5;
+var M2=6;
+var HA=7;
+var KM2=8;
+
+//TYPES
+var LENGTH = 0;
+var AREA = 1;
+
+var unitNames = [["IN","FT","FT IN","YD","MI","CM","M","KM"],
+				["IN2","FT2","YD2","AC","MI2","CM2","M2","HA","KM2"]];

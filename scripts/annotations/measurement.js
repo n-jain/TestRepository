@@ -1,31 +1,3 @@
-//LENGTH
-var IN=0;
-var FT=1;
-var FT_IN=2;
-var YD=3;
-var MI=4;
-var CM=5;
-var M=6;
-var KM=7;
-	
-//AREA
-var IN2=0;
-var FT2=1;
-var YD2=2;
-var AC=3;
-var MI2=4;
-var CM2=5;
-var M2=6;
-var HA=7;
-var KM2=8;
-
-//TYPES
-var LENGTH = 0;
-var AREA = 1;
-
-var unitNames = [["IN","FT","FT IN","YD","MI","CM","M","KM"],
-				["IN2","FT2","YD2","AC","MI2","CM2","M2","HA","KM2"]];
-
 function Measurement(amount, unit, type){
 	var convMult = [[
 		//LENGTH UNIT CONVERSIONS
