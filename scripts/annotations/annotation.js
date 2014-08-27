@@ -5,7 +5,6 @@ function Annotation(type, tileView){
 	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
-	console.log(this.lineWidth);
 	this.points=new Array();
 	this.drawMe = function(x,y,context){
 		context.strokeStyle=this.color;
@@ -159,7 +158,61 @@ function drawArrow(x,y,context){
 	}
 }
 function drawScale(x,y,context){
+	if(this.points.length==2){
+		context.save();
+		var measureSpace = 0.2;
+		var baseEndLength = 8;
+		var x1 = this.points[0].x+x;
+		var y1 = this.points[0].y+y;
+		var x2 = this.points[1].x+x;
+		var y2 = this.points[1].y+y;
+		
+		var bx1=x1+(x2-x1)*(0.5-measureSpace/1.5);
+		var by1=y1+(y2-y1)*(0.5-measureSpace/1.5);
+		var bx2=x1+(x2-x1)*(0.5+measureSpace/1.5);
+		var by2=y1+(y2-y1)*(0.5+measureSpace/1.5);
 
+		context.beginPath();
+
+		//first half
+		context.moveTo(x1, y1);
+		context.lineTo(bx1, by1);
+		
+		//second half
+		context.moveTo(bx2, by2);
+		context.lineTo(x2, y2);
+
+		//ends
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((y2-y1),(x2-x1));
+		
+		//end 1
+		var angle1 = (Math.PI/8)*3;
+		var angle2 = (Math.PI/8)*5;
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta+angle1)*endLength), y1+(Math.sin(theta+angle1)*endLength));
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta-angle1)*endLength), y1+(Math.sin(theta-angle1)*endLength));
+
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta+angle2)*endLength), y1+(Math.sin(theta+angle2)*endLength));
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta-angle2)*endLength), y1+(Math.sin(theta-angle2)*endLength));
+
+		//end 2
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta+angle1)*endLength), y2+(Math.sin(theta+angle1)*endLength));
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta-angle1)*endLength), y2+(Math.sin(theta-angle1)*endLength));			
+
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta+angle2)*endLength), y2+(Math.sin(theta+angle2)*endLength));
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta-angle2)*endLength), y2+(Math.sin(theta-angle2)*endLength));
+
+		context.restore();
+		context.stroke();
+	}
 }
 var drawFunctions = new Array();
 drawFunctions[SQUARE_ANNOTATION]=drawRectangle;
