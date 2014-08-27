@@ -1,4 +1,5 @@
 function Annotation(type, tileView){
+	this.id=createUUID();
 	this.type=type;
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
 	this.color="rgba(255,0,0,"+alpha+")";
@@ -214,6 +215,51 @@ function drawScale(x,y,context){
 		context.stroke();
 	}
 }
+function drawMeasure(x,y,context){
+	if(this.points.length==2){
+		context.save();
+		var measureSpace = 0.2;
+		var baseEndLength = 8;
+		var x1 = this.points[0].x+x;
+		var y1 = this.points[0].y+y;
+		var x2 = this.points[1].x+x;
+		var y2 = this.points[1].y+y;
+		
+		var bx1=x1+(x2-x1)*(0.5-measureSpace/1.5);
+		var by1=y1+(y2-y1)*(0.5-measureSpace/1.5);
+		var bx2=x1+(x2-x1)*(0.5+measureSpace/1.5);
+		var by2=y1+(y2-y1)*(0.5+measureSpace/1.5);
+
+		context.beginPath();
+
+		//first half
+		context.moveTo(x1, y1);
+		context.lineTo(bx1, by1);
+		
+		//second half
+		context.moveTo(bx2, by2);
+		context.lineTo(x2, y2);
+
+		//ends
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((y2-y1),(x2-x1));
+
+		//end 1
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta+Math.PI/2)*endLength), y1+(Math.sin(theta+Math.PI/2)*endLength));
+		context.moveTo(x1,y1);
+		context.lineTo(x1+(Math.cos(theta-Math.PI/2)*endLength), y1+(Math.sin(theta-Math.PI/2)*endLength));
+		
+		//end 2
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta+Math.PI/2)*endLength), y2+(Math.sin(theta+Math.PI/2)*endLength));
+		context.moveTo(x2,y2);
+		context.lineTo(x2+(Math.cos(theta-Math.PI/2)*endLength), y2+(Math.sin(theta-Math.PI/2)*endLength));	
+
+		context.restore();
+		context.stroke();
+	}
+}
 var drawFunctions = new Array();
 drawFunctions[SQUARE_ANNOTATION]=drawRectangle;
 drawFunctions[X_ANNOTATION]=drawX;
@@ -226,3 +272,10 @@ drawFunctions[ARROW_ANNOTATION]=drawArrow;
 drawFunctions[PEN_ANNOTATION]=drawPoints;
 drawFunctions[HIGHLIGHTER_ANNOTATION]=drawPoints;
 drawFunctions[SCALE_ANNOTATION]=drawScale;
+drawFunctions[MEASURE_ANNOTATION]=drawMeasure;
+function createUUID() {
+    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
