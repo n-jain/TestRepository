@@ -4,9 +4,10 @@ function AnnotationManager(tileView){
 	this.onmousedown = function(x,y){
 		//create new annotation
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
-			var ann = new Annotation(toolToAnnotation(tileView.getTool()), tileView);
+			var annType = toolToAnnotation(tileView.getTool());
+			if(tileView.scaleAnnotation!=null)annType=MEASURE_ANNOTATION;
+			var ann = new Annotation(annType, tileView);
 			ann.points[0] = new Point(x,y);
-			annotations[annotations.length] = ann;
 			currentAnnotation = ann;
 		}
 		//add point to existing polygon annotation
@@ -16,7 +17,7 @@ function AnnotationManager(tileView){
 	}
 	this.onmouseup = function(x,y){
 		if(tileView.getTool()!=POLYGON_TOOL){
-			currentAnnotation=null;
+			this.finishAnnotation();
 			if(tileView.getTool()!=PEN_TOOL&&tileView.getTool()!=HIGHLIGHTER_TOOL)tileView.setTool(NO_TOOL);
 		}
 	}
@@ -33,8 +34,18 @@ function AnnotationManager(tileView){
 		for(var i=0; i<annotations.length; i++){
 			annotations[i].drawMe(x,y,context);
 		}
+		if(currentAnnotation!=null){
+			currentAnnotation.drawMe(x,y,context);
+		}
 	}
 	this.finishAnnotation = function(){
+		if(currentAnnotation!=null)
+			if(currentAnnotation.points.length>1){
+				annotations[annotations.length] = currentAnnotation;
+				if(currentAnnotation.type==SCALE_ANNOTATION){
+					tileView.scaleAnnotation=currentAnnotation;
+				}				
+			}
 		currentAnnotation=null;
 	}
 }
