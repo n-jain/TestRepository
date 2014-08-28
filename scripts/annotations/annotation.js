@@ -1,14 +1,20 @@
 var handleImage = new Image();
 handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
-	var boundDist=35;
-
+	var boundDist=0;
+	var rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
+					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 	this.id=createUUID();
 	this.type=type;
 	this.tileView=tileView;
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
-	this.color="rgba(255,0,0,"+alpha+")";
-	
+	this.color=new Color(1,0,0,alpha);
+	this.fill=true;
+	if(type==LASSO_ANNOTATION){
+		this.color=new Color(0,0.2,1,1);
+		this.fill=true;
+	}
+
 	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;	
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
@@ -17,6 +23,10 @@ function Annotation(type, tileView){
 	this.measurement;
 	this.updateMeasure;
 	this.bounds;
+
+	this.selected=false;
+	this.showHandles=false;
+	this.selectIndex=0;
 
 	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
 	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
@@ -40,9 +50,22 @@ function Annotation(type, tileView){
 		}
 	}
 	this.drawMe = function(context){
-		context.strokeStyle=this.color;
+		context.strokeStyle=this.color.toStyle();
 		context.lineWidth=this.lineWidth;
+		context.fillStyle=this.color.transparent().toStyle();
 		drawFunctions[type].call(this,context);
+		if(this.selected){
+			this.drawSelected(context);
+		}
+	}
+	this.drawSelected = function(context){
+		if(rectType||!this.showHandles)this.drawBoundsRect(context);
+		if(this.showHandles){
+			if(rectType)
+				this.drawHandlesRect(context);
+			else
+				this.drawHandlesPoint(context);
+		}
 	}
 	this.drawBoundsRect = function(context){
 		context.strokeStyle="#0022FF"
@@ -60,7 +83,8 @@ function Annotation(type, tileView){
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 			var point = this.points[i];
-			context.drawImage(handleImage,point.x,point.y,40,40);
+			var size = 35/tileView.scale;
+			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
 	}
 	this.getPoint = function(id,handle){
@@ -93,13 +117,23 @@ function updateMeasureRect(tileView){
 function updateMeasurePoly(tileView){
 
 }
-function drawArc(x1,y1,x2,y2,start,angle,context){
-	context.save();
-	context.beginPath();
+function drawArc(x1,y1,x2,y2,start,angle,context,fill){
 	var centerX = (x1+x2)/2;
 	var centerY = (y1+y2)/2;
 	var width = x1-x2;
 	var height = y1-y2;
+
+	if(fill){
+		context.save();
+		context.beginPath();
+		context.scale(width/2, height/2);
+		context.arc(2*centerX/width,2*centerY/height,1,start+angle,start,false);
+		context.restore();
+		context.fill();		
+	}
+
+	context.save();
+	context.beginPath();
 	context.scale(width/2, height/2);
 	context.arc(2*centerX/width,2*centerY/height,1,start+angle,start,false);
 	context.restore();
@@ -107,6 +141,7 @@ function drawArc(x1,y1,x2,y2,start,angle,context){
 }
 function drawRectangle(context){
 	if(this.points.length==2){
+		if(this.fill)context.fillRect(this.points[0].x, this.points[0].y, this.points[1].x-this.points[0].x, this.points[1].y-this.points[0].y);
 		context.strokeRect(this.points[0].x, this.points[0].y, this.points[1].x-this.points[0].x, this.points[1].y-this.points[0].y);
 	}
 }
@@ -129,14 +164,14 @@ function drawX(context){
 }
 function drawCircle(context){
 	if(this.points.length==2){
- 		drawArc(this.points[0].x,this.points[0].y,this.points[1].x,this.points[1].y,0,2*Math.PI,context);
+ 		drawArc(this.points[0].x,this.points[0].y,this.points[1].x,this.points[1].y,0,2*Math.PI,context,this.fill);
 	}
 }
 function drawCloud(context){
 	if(this.points.length==2){
 		context.save();
 
-		var arcSize = 15;
+		var arcSize = 15*this.lineWidth;
 		var gx = this.points[0].x>this.points[1].x?this.points[0].x:this.points[1].x;
 		var gy = this.points[0].y>this.points[1].y?this.points[0].y:this.points[1].y;
 		var lx = this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x;
@@ -144,37 +179,38 @@ function drawCloud(context){
 
 		var currentX=gx;
 		var currentY=gy;
-		var wc = Math.floor((gx-lx)/(arcSize*this.lineWidth));
-		var hc = Math.floor((gy-ly)/(arcSize*this.lineWidth));
+		var wc = Math.floor((gx-lx)/(arcSize));
+		var hc = Math.floor((gy-ly)/(arcSize));
 		if(wc<1)wc=1;
 		if(hc<1)hc=1;
-		arcSizeW = (arcSize*this.lineWidth)+((gx-lx-((arcSize*this.lineWidth)*wc))/wc);
-		arcSizeH = (arcSize*this.lineWidth)+((gy-ly-((arcSize*this.lineWidth)*hc))/hc);
+		arcSizeW = (arcSize)+((gx-lx-((arcSize)*(wc+1)))/wc);
+		arcSizeH = (arcSize)+((gy-ly-((arcSize)*(hc+1)))/hc);
 		//draw bottom
-		currentX-=arcSizeW;
+		currentX-=arcSizeW*1.5;
+		currentY-=arcSizeH;
 		for(var i=0; i<wc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 0, Math.PI,context);
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 0, Math.PI,context,this.fill);
 			currentX-=arcSizeW;
 		}
 		currentX+=arcSizeW/2;
 		currentY-=arcSizeH/2;
 		//draw left
 		for(var i=0; i<hc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI/2, Math.PI,context);
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI/2, Math.PI,context,this.fill);
 			currentY-=arcSizeH;
 		}
 		currentX+=arcSizeW/2;
 		currentY+=arcSizeH/2;
 		//draw top
 		for(var i=0; i<wc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI, Math.PI,context);
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI, Math.PI,context,this.fill);
 			currentX+=arcSizeW;
 		}
 		currentY+=arcSizeH/2;
 		currentX-=arcSizeW/2;
 		//draw right
 		for(var i=0; i<hc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 1.5*Math.PI, Math.PI,context);
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 1.5*Math.PI, Math.PI,context,this.fill);
 			currentY+=arcSizeH;
 		}
 		context.restore();
@@ -417,6 +453,7 @@ function drawMeasure(context){
 	}
 }
 var drawFunctions = new Array();
+drawFunctions[LASSO_ANNOTATION]=drawPoints;
 drawFunctions[SQUARE_ANNOTATION]=drawRectangle;
 drawFunctions[X_ANNOTATION]=drawX;
 drawFunctions[CIRCLE_ANNOTATION]=drawCircle;
@@ -434,4 +471,18 @@ function createUUID() {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
     });
+}
+function Color(red,green,blue,alpha){
+	this.red=red;
+	this.green=green;
+	this.blue=blue;
+	this.alpha=alpha;
+	this.toStyle=function(){
+		var style = "rgba("+Math.floor(this.red*255)+","+Math.floor(this.green*255)+","+Math.floor(this.blue*255)+","+(this.alpha)+")";
+		console.log(style);
+		return style;
+	}
+	this.transparent = function(){
+		return new Color(this.red,this.green,this.blue,this.alpha*0.3);
+	}
 }

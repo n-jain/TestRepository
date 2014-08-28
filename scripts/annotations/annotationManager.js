@@ -1,5 +1,6 @@
 function AnnotationManager(tileView){
 	var annotations = new Array();
+	var selectedAnnotations = new Array();
 	var currentAnnotation;
 	this.scaleAnnotation;
 
@@ -29,7 +30,7 @@ function AnnotationManager(tileView){
 	}
 	this.onmousemove = function(x,y){
 		if(currentAnnotation!=null){
-			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION){
+			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 				currentAnnotation.points[currentAnnotation.points.length] = new Point(x,y);
 			} else if(currentAnnotation.type!=POLYGON_ANNOTATION){
 				currentAnnotation.points[1] = new Point(x,y);
@@ -37,6 +38,74 @@ function AnnotationManager(tileView){
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
 			}
+		}
+	}
+	this.onclick = function(x,y){
+		var lastSelectedId="";
+		if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
+		//get which annotations are touched
+		var touchedAnnotations = new Array(); 
+		for(var i=0;i<annotations.length; i++){
+			var bounds = annotations[i].bounds;
+			if(bounds.width()*tileView.scale<30)
+				bounds=bounds.inset(-(20/tileView.scale),0);
+			if(bounds.height()*tileView.scale<30)
+				bounds=bounds.inset(0,-(20/tileView.scale));			
+			if(bounds.contains(x,y))  {
+				touchedAnnotations[touchedAnnotations.length]=annotations[i];
+			}
+		}
+		//get which are selected already
+		var selected = new Array();
+		var anySelected = false;
+		for(var i=0; i<touchedAnnotations.length; i++){
+			selected[i] = touchedAnnotations[i].selected;
+			if(selected[i])anySelected=true;
+		}
+		//decide what to do
+		if(touchedAnnotations.length==0){
+			for(var i=0; i<annotations.length; i++){
+				annotations.selectIndex=0;
+			}
+			if(selectedAnnotations.length!=0){
+				this.deselectAllAnnotations();				
+			}
+		} else {
+			for(var i=0; i<touchedAnnotations.length; i++){
+				if(!anySelected){
+					var ann = touchedAnnotations[i];
+					if(ann.selectIndex<=0){
+						this.selectSingleAnnotation(touchedAnnotations[i]);
+						ann.selectIndex = touchedAnnotations.length;
+						break;
+					}
+				}
+				if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
+					this.deselectAllAnnotations();
+				}
+			}
+			for(var i=0;i<touchedAnnotations.length; i++){
+				if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
+			}
+		}
+	}
+	this.selectSingleAnnotation = function(annotation){
+		this.deselectAllAnnotations();
+		this.selectAnnotation(annotation);
+		selectedAnnotations[selectedAnnotations.length]=annotation;
+		annotation.selected=true;
+		annotation.showHandles=true;
+	}
+	this.selectAnnotation = function(annotation){
+		selectedAnnotations[selectedAnnotations.length]=annotation;
+		annotation.selected=true;
+		annotation.showHandles=true;
+	}
+	this.deselectAllAnnotations = function(){
+		selectedAnnotations=new Array();
+		for(var i=0;i<annotations.length; i++){
+			annotations[i].selected=false;
+			annotations[i].showHandles=false;
 		}
 	}
 	this.drawAllAnnotations = function(context){
@@ -49,7 +118,7 @@ function AnnotationManager(tileView){
 	}
 	this.finishAnnotation = function(){
 		if(currentAnnotation!=null){
-			if(currentAnnotation.points.length>1){
+			if(currentAnnotation.points.length>1&&currentAnnotation.type!=LASSO_ANNOTATION){
 				var del = false;
 				if(currentAnnotation.type==SCALE_ANNOTATION){
 					var measureString;
@@ -79,4 +148,7 @@ function AnnotationManager(tileView){
 		annotations = new Array();
 		this.scaleAnnotation=null;
 	}
+}
+function removeFromArray(array, element){
+	array.splice(array.indexOf(element),1);
 }

@@ -23,6 +23,7 @@ var RULER_TOOL=11;
 var MAIL_TOOL=12;
 
 var NO_ANNOTATION=-1;
+var LASSO_ANNOTATION=0;
 var SQUARE_ANNOTATION=1;
 var X_ANNOTATION=2;
 var CIRCLE_ANNOTATION=3;
@@ -38,6 +39,8 @@ var MEASURE_ANNOTATION=12;
 
 function toolToAnnotation(tool){
 	switch(tool){
+		case LASSO_TOOL:
+			return LASSO_ANNOTATION;
 		case SQUARE_TOOL:
 			return SQUARE_ANNOTATION;
 		case X_TOOL:

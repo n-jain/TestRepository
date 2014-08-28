@@ -33,4 +33,10 @@ function Rect(left,top,right,bottom){
 	this.clone = function(){
 		return new Rect(this.left,this.top,this.right,this.bottom);
 	}
+	this.containsPoint = function (point){
+		return contains(point.x,point.y);
+	}
+	this.contains = function(x,y){
+		return Math.abs(x-this.centerX())<this.width()/2&&Math.abs(y-this.centerY())<this.height()/2;
+	}
 }
