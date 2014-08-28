@@ -7,7 +7,7 @@ function AnnotationManager(tileView){
 		//create new annotation
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
 			var annType = toolToAnnotation(tileView.getTool());
-			if(this.scaleAnnotation!=null)annType=MEASURE_ANNOTATION;
+			if(this.scaleAnnotation!=null&&tileView.getTool()==RULER_TOOL)annType=MEASURE_ANNOTATION;
 			var ann = new Annotation(annType, tileView);
 			ann.points[0] = new Point(x,y);
 			currentAnnotation = ann;

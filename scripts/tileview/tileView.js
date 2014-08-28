@@ -59,4 +59,8 @@ function TileView(canvas){
 	this.getTool = function(){
 		return tool;
 	}
+
+	this.optionChosen = function(option){
+		console.log(option);
+	}
 }

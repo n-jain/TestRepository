@@ -20,6 +20,7 @@ window.onload = function() {
 
     //on screen controls
     var toolMenu = new ToolMenu();
+    var optionsMenu = new OptionsMenu();
 
     httpGet("Users/Me");
 }
@@ -28,6 +29,9 @@ function setTileRes(id){
 }
 function setTool(id){
     tileView.setTool(id);
+}
+function optionChosen(id){
+    tileView.optionChosen(id);
 }
 function mainLoop(){
     tileView.mainLoop();
