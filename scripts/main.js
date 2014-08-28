@@ -18,6 +18,9 @@ window.onload = function() {
     window.addEventListener("mousewheel",tileView.mouseControls.onmousewheel,true);
     window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);
 
+    //on screen controls
+    var toolMenu = new ToolMenu();
+
     httpGet("Users/Me");
 }
 function setTileRes(id){

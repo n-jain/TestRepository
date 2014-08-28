@@ -1,4 +1,4 @@
-var NO_TOOL=-1; 
+var NO_TOOL=-1;
 var LASSO_TOOL=0;
 var SQUARE_TOOL=1;
 var X_TOOL=2;
@@ -10,7 +10,7 @@ var LINE_TOOL=7;
 var ARROW_TOOL=8;
 var PEN_TOOL=9;
 var HIGHLIGHTER_TOOL=10;
-var SCALE_TOOL=11;
+var RULER_TOOL=11;
 var MAIL_TOOL=12;
 
 var NO_ANNOTATION=-1;
@@ -49,7 +49,7 @@ function toolToAnnotation(tool){
 			return PEN_ANNOTATION;
 		case HIGHLIGHTER_TOOL:
 			return HIGHLIGHTER_ANNOTATION;
-		case SCALE_TOOL:
+		case RULER_TOOL:
 			return SCALE_ANNOTATION;
 	}
 	return NO_ANNOTATION;
