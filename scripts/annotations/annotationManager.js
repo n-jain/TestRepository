@@ -39,12 +39,12 @@ function AnnotationManager(tileView){
 			}
 		}
 	}
-	this.drawAllAnnotations = function(x,y,context){
+	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){
-			annotations[i].drawMe(x,y,context);
+			annotations[i].drawMe(context);
 		}
 		if(currentAnnotation!=null){
-			currentAnnotation.drawMe(x,y,context);
+			currentAnnotation.drawMe(context);
 		}
 	}
 	this.finishAnnotation = function(){
@@ -67,7 +67,10 @@ function AnnotationManager(tileView){
 					}
 					if(!del)this.scaleAnnotation=currentAnnotation;
 				}
-				if(!del)annotations[annotations.length] = currentAnnotation;
+				if(!del){
+					currentAnnotation.calcBounds();
+					annotations[annotations.length] = currentAnnotation;
+				}
 			}
 		}
 		currentAnnotation=null;

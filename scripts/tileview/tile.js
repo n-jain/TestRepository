@@ -15,8 +15,8 @@ function Tile(zipObject,tileLoader){
 		tileLoader.loaded++;
 		tileLoader.calcSize();
 	}
-	this.drawMe = function(x,y,context){
-    	context.drawImage(this.image, this.x+x, this.y+y, this.image.width*1000/this.zoomLevel, this.image.height*1000/this.zoomLevel);
+	this.drawMe = function(context){
+    	context.drawImage(this.image, this.x, this.y, this.image.width*1000/this.zoomLevel, this.image.height*1000/this.zoomLevel);
 	}
 	this.getRight = function(){
 		return this.x+this.image.width;

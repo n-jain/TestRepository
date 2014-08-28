@@ -7,12 +7,12 @@ function TileLoader(){
 	this.preview.src = "sheet/preview.png";
 
 	//Drawing tiles
-	this.drawAllTiles = function(scrollX, scrollY, context){
-		context.drawImage(this.preview, scrollX, scrollY, this.width, this.height);
+	this.drawAllTiles = function(context){
+		context.drawImage(this.preview, 0, 0, this.width, this.height);
 		if(this.tiles!=null){
 			for(var i=0; i<this.tiles.length; i++){
 				if(this.zoomLevel==this.tiles[i].zoomLevel){
-					this.tiles[i].drawMe(scrollX,scrollY,context);
+					this.tiles[i].drawMe(context);
 				}
 			}
 		}

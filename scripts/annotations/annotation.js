@@ -1,4 +1,8 @@
+var handleImage = new Image();
+handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
+	var boundDist=35;
+
 	this.id=createUUID();
 	this.type=type;
 	this.tileView=tileView;
@@ -9,21 +13,71 @@ function Annotation(type, tileView){
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
 	
-	this.points=new Array();
-	
+	this.points=new Array();	
 	this.measurement;
-
-	this.drawMe = function(x,y,context){
-		context.strokeStyle=this.color;
-		context.lineWidth=this.lineWidth;
-		drawFunctions[type].call(this,x,y,context);
-	}
 	this.updateMeasure;
+	this.bounds;
+
 	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
 	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
 	if(type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)this.updateMeasure=updateMeasurePoly;
 	this.getLength = function(){
 		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
+	}
+	this.calcBounds = function(){
+		this.bounds = new Rect(0,0,0,0);
+		this.bounds.left = this.points[0].x;
+		this.bounds.top = this.points[0].y;
+		this.bounds.right = this.points[0].x;
+		this.bounds.bottom = this.points[0].y;
+		for(var i=1; i<this.points.length; i++){
+			var x=this.points[i].x;
+			var y=this.points[i].y;
+			if(x<this.bounds.left)this.bounds.left=x;
+			if(x>this.bounds.right)this.bounds.right=x;
+			if(y<this.bounds.top)this.bounds.top=y;
+			if(y>this.bounds.bottom)this.bounds.bottom=y;
+		}
+	}
+	this.drawMe = function(context){
+		context.strokeStyle=this.color;
+		context.lineWidth=this.lineWidth;
+		drawFunctions[type].call(this,context);
+	}
+	this.drawBoundsRect = function(context){
+		context.strokeStyle="#0022FF"
+		context.lineWidth=2/tileView.scale;
+		var bounds = this.bounds.inset(-boundDist);
+		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
+	}
+	this.drawHandlesRect = function(context){
+		for(var i=0; i<8; i++){
+			var point = this.getPoint(i,true);
+			var size = 35/tileView.scale;
+			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
+		}
+	}
+	this.drawHandlesPoint = function(context){
+		for(var i=0; i<this.points.length; i++){
+			var point = this.points[i];
+			context.drawImage(handleImage,point.x,point.y,40,40);
+		}
+	}
+	this.getPoint = function(id,handle){
+		var rect = this.bounds.clone();
+		if(handle)rect=rect.inset(-boundDist);
+		var loc = new Point();
+		switch(id){//0 is top left, increases clockwise
+			case 0:loc.x=rect.left;loc.y=rect.top;break;
+			case 1:loc.x=rect.centerX();loc.y=rect.top;break;
+			case 2:loc.x=rect.right;loc.y=rect.top;break;
+			case 3:loc.x=rect.right;loc.y=rect.centerY();break;
+			case 4:loc.x=rect.right;loc.y=rect.bottom;break;
+			case 5:loc.x=rect.centerX();loc.y=rect.bottom;break;
+			case 6:loc.x=rect.left;loc.y=rect.bottom;break;
+			case 7:loc.x=rect.left;loc.y=rect.centerY();break;
+		}
+		return loc;
 	}
 }
 function updateMeasureLength(){
@@ -51,18 +105,18 @@ function drawArc(x1,y1,x2,y2,start,angle,context){
 	context.restore();
 	context.stroke();
 }
-function drawRectangle(x,y,context){
+function drawRectangle(context){
 	if(this.points.length==2){
-		context.strokeRect(this.points[0].x+x, this.points[0].y+y, this.points[1].x-this.points[0].x, this.points[1].y-this.points[0].y);
+		context.strokeRect(this.points[0].x, this.points[0].y, this.points[1].x-this.points[0].x, this.points[1].y-this.points[0].y);
 	}
 }
-function drawX(x,y,context){
+function drawX(context){
 	if(this.points.length==2){
 		context.save();
-		var x1 = this.points[0].x+x;
-		var y1 = this.points[0].y+y;
-		var x2 = this.points[1].x+x;
-		var y2 = this.points[1].y+y;
+		var x1 = this.points[0].x;
+		var y1 = this.points[0].y;
+		var x2 = this.points[1].x;
+		var y2 = this.points[1].y;
 		context.beginPath();
 		context.moveTo(x1,y1);
 		context.lineTo(x2,y2);
@@ -73,20 +127,20 @@ function drawX(x,y,context){
 		context.stroke();
 	}
 }
-function drawCircle(x,y,context){
+function drawCircle(context){
 	if(this.points.length==2){
- 		drawArc(this.points[0].x+x,this.points[0].y+y,this.points[1].x+x,this.points[1].y+y,0,2*Math.PI,context);
+ 		drawArc(this.points[0].x,this.points[0].y,this.points[1].x,this.points[1].y,0,2*Math.PI,context);
 	}
 }
-function drawCloud(x,y,context){
+function drawCloud(context){
 	if(this.points.length==2){
 		context.save();
 
 		var arcSize = 15;
-		var gx = this.points[0].x>this.points[1].x?this.points[0].x+x:this.points[1].x+x;
-		var gy = this.points[0].y>this.points[1].y?this.points[0].y+y:this.points[1].y+y;
-		var lx = this.points[0].x<this.points[1].x?this.points[0].x+x:this.points[1].x+x;
-		var ly = this.points[0].y<this.points[1].y?this.points[0].y+y:this.points[1].y+y;
+		var gx = this.points[0].x>this.points[1].x?this.points[0].x:this.points[1].x;
+		var gy = this.points[0].y>this.points[1].y?this.points[0].y:this.points[1].y;
+		var lx = this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x;
+		var ly = this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y;
 
 		var currentX=gx;
 		var currentY=gy;
@@ -127,28 +181,28 @@ function drawCloud(x,y,context){
 		context.stroke();
 	}
 }
-function drawPoints(x,y,context){
+function drawPoints(context){
 	if(this.points.length>1){
 		context.save();
 		context.beginPath();
-		context.moveTo(this.points[0].x+x,this.points[0].y+y);
+		context.moveTo(this.points[0].x,this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
-			context.lineTo(this.points[i].x+x,this.points[i].y+y);
+			context.lineTo(this.points[i].x,this.points[i].y);
 		}
 		context.restore();
 		context.stroke();
 	}
 }
-function drawText(x,y,context){
+function drawText(context){
 
 }
-function drawLine(x,y,context){
+function drawLine(context){
 	if(this.points.length==2){
 		context.save();
-		var x1 = this.points[0].x+x;
-		var y1 = this.points[0].y+y;
-		var x2 = this.points[1].x+x;
-		var y2 = this.points[1].y+y;
+		var x1 = this.points[0].x;
+		var y1 = this.points[0].y;
+		var x2 = this.points[1].x;
+		var y2 = this.points[1].y;
 		context.beginPath();
 		context.moveTo(x1,y1);
 		context.lineTo(x2,y2);
@@ -157,13 +211,13 @@ function drawLine(x,y,context){
 		context.stroke();
 	}
 }
-function drawArrow(x,y,context){
+function drawArrow(context){
 	if(this.points.length==2){
 		context.save();
-		var x1 = this.points[0].x+x;
-		var y1 = this.points[0].y+y;
-		var x2 = this.points[1].x+x;
-		var y2 = this.points[1].y+y;
+		var x1 = this.points[0].x;
+		var y1 = this.points[0].y;
+		var x2 = this.points[1].x;
+		var y2 = this.points[1].y;
 		context.beginPath();
 		
 		context.moveTo(x1,y1);
@@ -184,12 +238,12 @@ function drawArrow(x,y,context){
 		context.stroke();
 	}
 }
-function drawScale(x,y,context){
+function drawScale(context){
 	if(this.points.length==2){
-		var x1 = this.points[0].x+x;
-		var y1 = this.points[0].y+y;
-		var x2 = this.points[1].x+x;
-		var y2 = this.points[1].y+y;
+		var x1 = this.points[0].x;
+		var y1 = this.points[0].y;
+		var x2 = this.points[1].x;
+		var y2 = this.points[1].y;
 
 		context.save();
 
@@ -277,12 +331,12 @@ function drawScale(x,y,context){
 		context.stroke();
 	}
 }
-function drawMeasure(x,y,context){
+function drawMeasure(context){
 	if(this.points.length==2){
-		var x1 = this.points[0].x+x;
-		var y1 = this.points[0].y+y;
-		var x2 = this.points[1].x+x;
-		var y2 = this.points[1].y+y;
+		var x1 = this.points[0].x;
+		var y1 = this.points[0].y;
+		var x2 = this.points[1].x;
+		var y2 = this.points[1].y;
 
 		context.save();
 

@@ -37,10 +37,12 @@ function TileView(canvas){
 		canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
 		context.clearRect(0,0,canvas.width,canvas.height);
+		context.save();
 		context.scale(this.scale,this.scale);
-		this.tileLoader.drawAllTiles(this.scrollX, this.scrollY, context);
-		this.annotationManager.drawAllAnnotations(this.scrollX, this.scrollY, context);
-		context.scale(1/this.scale,1/this.scale);
+		context.translate(this.scrollX, this.scrollY);
+		this.tileLoader.drawAllTiles(context);
+		this.annotationManager.drawAllAnnotations(context);
+		context.restore();
 	}
 
 	this.mainLoop = function(){

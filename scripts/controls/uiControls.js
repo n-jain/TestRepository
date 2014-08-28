@@ -8,7 +8,7 @@ function ToolMenu(){
 		var button = document.createElement("input");
 		button.type = "image";
 		button.className = "tool_button";
-		button.src = "toolbar_images/toolbar_"+names[i].toLowerCase()+".png";
+		button.src = "images/toolbar/toolbar_"+names[i].toLowerCase()+".png";
 		button.name = names[i];
 		button.onclick = function(){
 			setTool(window[this.name.toUpperCase()+"_TOOL"]);
@@ -29,7 +29,7 @@ function OptionsMenu(){
 		var button = document.createElement("input");
 		button.type = "image";
 		button.className = "tool_button";
-		button.src = "optionsmenu_images/annotation_toolbar_"+names[i].toLowerCase()+".png";
+		button.src = "images/optionsmenu/annotation_toolbar_"+names[i].toLowerCase()+".png";
 		button.name = names[i];
 		button.onclick = function(){
 			optionChosen(window[this.name.toUpperCase()+"_OPTION"]);
