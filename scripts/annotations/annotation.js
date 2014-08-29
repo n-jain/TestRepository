@@ -9,7 +9,7 @@ function Annotation(type, tileView){
 	this.tileView=tileView;
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
 	this.color=new Color(1,0,0,alpha);
-	this.fill=true;
+	this.fill=false;
 	if(type==LASSO_ANNOTATION){
 		this.color=new Color(0,0.2,1,1);
 		this.fill=true;
@@ -123,20 +123,12 @@ function drawArc(x1,y1,x2,y2,start,angle,context,fill){
 	var width = x1-x2;
 	var height = y1-y2;
 
-	if(fill){
-		context.save();
-		context.beginPath();
-		context.scale(width/2, height/2);
-		context.arc(2*centerX/width,2*centerY/height,1,start+angle,start,false);
-		context.restore();
-		context.fill();		
-	}
-
 	context.save();
 	context.beginPath();
 	context.scale(width/2, height/2);
 	context.arc(2*centerX/width,2*centerY/height,1,start+angle,start,false);
 	context.restore();
+	if(fill)context.fill();
 	context.stroke();
 }
 function drawRectangle(context){
@@ -172,46 +164,50 @@ function drawCloud(context){
 		context.save();
 
 		var arcSize = 15*this.lineWidth;
-		var gx = this.points[0].x>this.points[1].x?this.points[0].x:this.points[1].x;
-		var gy = this.points[0].y>this.points[1].y?this.points[0].y:this.points[1].y;
-		var lx = this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x;
-		var ly = this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y;
+		var gx = (this.points[0].x>this.points[1].x?this.points[0].x:this.points[1].x);
+		var gy = (this.points[0].y>this.points[1].y?this.points[0].y:this.points[1].y);
+		var lx = (this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x);
+		var ly = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
 
-		var currentX=gx;
-		var currentY=gy;
-		var wc = Math.floor((gx-lx)/(arcSize));
-		var hc = Math.floor((gy-ly)/(arcSize));
+		var wc = Math.floor((gx-lx-this.lineWidth)/(arcSize));
+		var hc = Math.floor((gy-ly-this.lineWidth)/(arcSize));
 		if(wc<1)wc=1;
 		if(hc<1)hc=1;
-		arcSizeW = (arcSize)+((gx-lx-((arcSize)*(wc+1)))/wc);
-		arcSizeH = (arcSize)+((gy-ly-((arcSize)*(hc+1)))/hc);
-		//draw bottom
-		currentX-=arcSizeW*1.5;
-		currentY-=arcSizeH;
-		for(var i=0; i<wc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 0, Math.PI,context,this.fill);
-			currentX-=arcSizeW;
-		}
-		currentX+=arcSizeW/2;
-		currentY-=arcSizeH/2;
-		//draw left
-		for(var i=0; i<hc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI/2, Math.PI,context,this.fill);
-			currentY-=arcSizeH;
-		}
-		currentX+=arcSizeW/2;
-		currentY+=arcSizeH/2;
+		arcSizeW = arcSize+(gx-lx-this.lineWidth-arcSize*wc)/wc;
+		arcSizeH = arcSize+(gy-ly-this.lineWidth-arcSize*hc)/hc;
+
 		//draw top
-		for(var i=0; i<wc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, Math.PI, Math.PI,context,this.fill);
+		var currentX=lx+this.lineWidth/2+arcSizeW/2;
+		var currentY=ly+this.lineWidth/2;
+		for(var i=0; i<wc-1; i++){
+			drawArc(currentX+arcSizeW,currentY+arcSizeH,currentX,currentY,0, Math.PI,context,this.fill);
 			currentX+=arcSizeW;
 		}
-		currentY+=arcSizeH/2;
-		currentX-=arcSizeW/2;
-		//draw right
-		for(var i=0; i<hc; i++){
-			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 1.5*Math.PI, Math.PI,context,this.fill);
+		//draw bottom
+		currentX = lx+this.lineWidth/2+arcSizeW/2;
+		currentY = gy-arcSizeH-this.lineWidth/2;
+		for(var i=0; i<wc-1; i++){
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 0, Math.PI,context,this.fill);
+			currentX+=arcSizeW;
+		}
+		//draw left
+		currentX=lx+this.lineWidth/2;
+		currentY=ly+this.lineWidth/2+arcSizeH/2;
+		for(var i=0; i<hc-1; i++){
+			drawArc(currentX+arcSizeW,currentY+arcSizeH,currentX,currentY,1.5*Math.PI, Math.PI,context,this.fill);
 			currentY+=arcSizeH;
+		}
+		//draw left
+		currentX=gx-arcSizeW-this.lineWidth/2;
+		currentY=ly+this.lineWidth/2+arcSizeH/2;
+		for(var i=0; i<hc-1; i++){
+			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH,1.5*Math.PI, Math.PI,context,this.fill);
+			currentY+=arcSizeH;
+		}
+		//draw fill
+		if(this.fill){
+			var inRect = this.bounds.inset(this.lineWidth/2+arcSizeW/2, this.lineWidth/2+arcSizeH/2);
+			context.fillRect(inRect.left, inRect.top, inRect.width(), inRect.height());
 		}
 		context.restore();
 		context.stroke();
@@ -220,13 +216,15 @@ function drawCloud(context){
 function drawPoints(context){
 	if(this.points.length>1){
 		context.save();
+		
 		context.beginPath();
 		context.moveTo(this.points[0].x,this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
 			context.lineTo(this.points[i].x,this.points[i].y);
 		}
-		context.restore();
+		if(this.fill&&this.type!=HIGHLIGHTER_ANNOTATION)context.fill();
 		context.stroke();
+		context.restore();
 	}
 }
 function drawText(context){
