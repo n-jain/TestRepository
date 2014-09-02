@@ -154,6 +154,12 @@ function AnnotationManager(tileView){
 			selectedAnnotations[0].showHandles=true;
 		}
 	}
+	this.deleteSelectedAnnotations = function(){
+		for(var i=0; i<selectedAnnotations.length; i++){
+			removeFromArray(annotations, selectedAnnotations[i]);
+		}
+		selectedAnnotations = new Array();
+	}
 	var pointInLasso = function(point){
 		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
 		//find all intersections. count how many have an x value greater/less than. if both numbers are even, it is outside (ray goes through and comes out)

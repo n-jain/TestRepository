@@ -63,6 +63,10 @@ function TileView(canvas){
 	}
 
 	this.optionChosen = function(option){
-		console.log(option);
+		switch(option){
+			case DELETE_OPTION:
+				this.annotationManager.deleteSelectedAnnotations();
+				break;
+		}
 	}
 }
