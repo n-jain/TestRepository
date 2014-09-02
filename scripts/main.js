@@ -1,6 +1,7 @@
 var tileView;
 var toolMenu;
 var optionsMenu;
+var colorMenu;
 
 window.onload = function() {
 	//make canvas
@@ -8,7 +9,8 @@ window.onload = function() {
     //make on screen controls
     toolMenu = new ToolMenu();
     optionsMenu = new OptionsMenu();
-	//make tileView
+	colorMenu = new ColorMenu();
+    //make tileView
 	tileView = new TileView(canvas,toolMenu,optionsMenu);
     tileView.create();
 
@@ -34,6 +36,13 @@ function setTool(id){
 }
 function optionChosen(id){
     tileView.optionChosen(id);
+}
+function setColor(colorName){
+    var csv = colorName.slice(5,colorName.length-1);
+    var vals = csv.split(",");
+    var color = new Color(parseFloat(vals[0])/255,parseFloat(vals[1])/255,parseFloat(vals[2])/255,parseFloat(vals[3]));
+    tileView.color = color;
+    optionsMenu.setColor(color);
 }
 function mainLoop(){
     tileView.mainLoop();

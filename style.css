@@ -39,3 +39,19 @@ canvas {
 	top: 10px;
 	right: 10px;
 }
+#color_menu {
+	background: #FFFFFF;
+	opacity: 0.9;
+	border-radius: 15px;
+	position:fixed;
+	bottom: 10px;
+	right: 10px;
+	padding: 5px;
+}
+.color_button {
+	height: 45px;
+	width: 45px;
+	border-radius: 50%;
+	float:left;
+	margin: 2.5px;
+}

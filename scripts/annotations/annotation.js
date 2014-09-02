@@ -20,8 +20,10 @@ function Annotation(type, tileView){
 	this.id=createUUID();
 	this.type=type;
 	this.tileView=tileView;
-	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
-	this.color=tileView.color;
+	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
+	this.color=tileView.color.clone();
+	this.color.alpha=alpha;
+	console.log(this.color.toStyle());
 	this.fill=false;
 	this.areaMeasured=false;
 
@@ -506,5 +508,8 @@ function Color(red,green,blue,alpha){
 	}
 	this.transparent = function(){
 		return new Color(this.red,this.green,this.blue,this.alpha*0.3);
+	}
+	this.clone=function(){
+		return new Color(this.red, this.green, this.blue, this.alpha);
 	}
 }

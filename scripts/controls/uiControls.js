@@ -47,7 +47,7 @@ function OptionsMenu(){
 	var setButtonSelected = function(index,bool){
 
 	}
-	var setColor = function(color){
+	this.setColor = function(color){
 
 	}
 	this.setSelectedAnnotations = function(selectedAnnotations,tileView){
@@ -69,7 +69,7 @@ function OptionsMenu(){
 		}
 		if(selectedAnnotations.length==1){
 			var type = selectedAnnotations[0].type;
-			setColor(selectedAnnotations[0].color);
+			this.setColor(selectedAnnotations[0].color);
 			if(type==TEXT_ANNOTATION)
 				addButton(4);
 			if(type==MEASURE_ANNOTATION)
@@ -80,7 +80,7 @@ function OptionsMenu(){
 				addButton(3);
 			}
 		} else {
-			setColor(tileView.color);
+			this.setColor(tileView.color);
 		}
 		if(selectedAnnotations.length>0){
 			var canFill = false;
@@ -106,4 +106,28 @@ function OptionsMenu(){
 			addButton(6);
 	}
 	document.getElementsByTagName("body")[0].appendChild(optionsMenu);
+}
+function ColorMenu(){
+	var colors = [	new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),
+					new Color(1,1,0,1),new Color(1,0.647,0,1),new Color(1,0,1,1),
+					new Color(0.333,0.102,0.545,1),new Color(0,0,0,1),new Color(0.8,0.8,0.8,1)
+				 ];
+	var colorMenu = document.createElement("div");
+	colorMenu.id = "color_menu";
+
+	for(var i=0; i<colors.length; i++){
+		var button = document.createElement("div");
+		button.className = "color_button";
+		button.style.background = colors[i].toStyle();
+		button.name = colors[i].toStyle();
+		button.onclick = function(){
+			setColor(this.name);
+		};
+		colorMenu.appendChild(button);
+		if(i%3==2){
+			var br  = document.createElement("br");
+			colorMenu.appendChild(br);			
+		}
+	}
+	document.getElementsByTagName("body")[0].appendChild(colorMenu);
 }
