@@ -61,11 +61,13 @@ function TileView(canvas){
 	this.getTool = function(){
 		return tool;
 	}
-
 	this.optionChosen = function(option){
 		switch(option){
 			case DELETE_OPTION:
 				this.annotationManager.deleteSelectedAnnotations();
+				break;
+			case FILL_OPTION:
+				this.annotationManager.fillSelectedAnnotations();
 				break;
 		}
 	}
