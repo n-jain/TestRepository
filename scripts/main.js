@@ -1,9 +1,15 @@
 var tileView;
+var toolMenu;
+var optionsMenu;
+
 window.onload = function() {
 	//make canvas
 	var canvas = document.getElementById('canvas1');
+    //make on screen controls
+    toolMenu = new ToolMenu();
+    optionsMenu = new OptionsMenu();
 	//make tileView
-	tileView = new TileView(canvas);
+	tileView = new TileView(canvas,toolMenu,optionsMenu);
     tileView.create();
 
 	//create loop
@@ -17,10 +23,6 @@ window.onload = function() {
     canvas.onmousemove = tileView.mouseControls.onmousemove;
     window.addEventListener("mousewheel",tileView.mouseControls.onmousewheel,true);
     window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);
-
-    //on screen controls
-    var toolMenu = new ToolMenu();
-    var optionsMenu = new OptionsMenu();
 
     httpGet("Users/Me");
 }

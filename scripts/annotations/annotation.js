@@ -21,8 +21,10 @@ function Annotation(type, tileView){
 	this.type=type;
 	this.tileView=tileView;
 	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
-	this.color=new Color(1,0,0,alpha);
+	this.color=tileView.color;
 	this.fill=false;
+	this.areaMeasured=false;
+
 	this.offset_x=0;
 	this.offset_y=0;
 	if(type==LASSO_ANNOTATION){

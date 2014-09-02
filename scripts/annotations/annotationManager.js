@@ -42,6 +42,9 @@ function AnnotationManager(tileView){
 		}
 	}
 	this.onmouseup = function(x,y){
+		for(var i=0; i<selectedAnnotations.length; i++){
+			selectedAnnotations[i].applyOffset();
+		}
 		this.captureMouse = false;
 		if(tileView.getTool()!=POLYGON_TOOL){
 			this.finishAnnotation();
@@ -50,9 +53,6 @@ function AnnotationManager(tileView){
 		if(lasso!=null){
 			this.selectAllInLasso();
 			lasso=null;
-		}
-		for(var i=0; i<selectedAnnotations.length; i++){
-			selectedAnnotations[i].applyOffset();
 		}
 	}
 	this.onmousemove = function(x,y){
@@ -124,17 +124,16 @@ function AnnotationManager(tileView){
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		this.selectAnnotation(annotation);
-		selectedAnnotations[selectedAnnotations.length]=annotation;
-		annotation.selected=true;
-		annotation.showHandles=true;
 	}
 	this.selectAnnotation = function(annotation){
 		selectedAnnotations[selectedAnnotations.length]=annotation;
 		annotation.selected=true;
 		annotation.showHandles=true;
+		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
 		selectedAnnotations=new Array();
+		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 		for(var i=0;i<annotations.length; i++){
 			annotations[i].selected=false;
 			annotations[i].showHandles=false;
@@ -153,12 +152,14 @@ function AnnotationManager(tileView){
 		if(selectedAnnotations.length==1){
 			selectedAnnotations[0].showHandles=true;
 		}
+		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deleteSelectedAnnotations = function(){
 		for(var i=0; i<selectedAnnotations.length; i++){
 			removeFromArray(annotations, selectedAnnotations[i]);
 		}
 		selectedAnnotations = new Array();
+		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;

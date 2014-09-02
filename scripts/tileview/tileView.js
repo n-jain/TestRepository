@@ -1,5 +1,8 @@
-function TileView(canvas){
+function TileView(canvas,toolMenu,optionsMenu){
 	var context;
+	
+	this.toolMenu=toolMenu;
+	this.optionsMenu=optionsMenu;
 	this.tileLoader;
 	this.annotationManager;
 	this.keyboardControls;
@@ -10,8 +13,10 @@ function TileView(canvas){
 	this.scale;
 
 	this.draw;
-	var firstDraw;
+	this.color;
 	var tool;
+
+	var firstDraw;
 
 	this.create = function(){
 		context=canvas.getContext('2d');
@@ -30,6 +35,7 @@ function TileView(canvas){
 
 		this.draw=false;
 		this.firstDraw=false;
+		this.color=new Color(1,0,0,1);
 		tool=NO_TOOL;
 	}
 
@@ -56,6 +62,7 @@ function TileView(canvas){
 	this.setTool = function(newTool){
 		tool=newTool;
 		this.annotationManager.finishAnnotation();
+		this.annotationManager.deselectAllAnnotations();
 	}
 
 	this.getTool = function(){
