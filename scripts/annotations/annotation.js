@@ -1,24 +1,10 @@
 var handleImage = new Image();
 handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
-	var boundDist=0;
+	var boundDist=15;
 	var rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
-	this.id=createUUID();
-	this.type=type;
-	this.tileView=tileView;
-	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
-	this.color=new Color(1,0,0,alpha);
-	this.fill=false;
-	if(type==LASSO_ANNOTATION){
-		this.color=new Color(0,0.2,1,1);
-		this.fill=true;
-	}
 
-	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;	
-	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
-	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
-	
 	this.points=new Array();	
 	this.measurement;
 	this.updateMeasure;
@@ -28,9 +14,30 @@ function Annotation(type, tileView){
 	this.showHandles=false;
 	this.selectIndex=0;
 
+	this.x_handle;
+	this.y_handle;
+
+	this.id=createUUID();
+	this.type=type;
+	this.tileView=tileView;
+	var alpha=type==HIGHLIGHTER_ANNOTATION?"0.6":"1";
+	this.color=new Color(1,0,0,alpha);
+	this.fill=false;
+	this.offset_x=0;
+	this.offset_y=0;
+	if(type==LASSO_ANNOTATION){
+		this.color=new Color(0,0.2,1,1);
+		this.fill=true;
+	}
+
+	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;	
+	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
+	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
+	
 	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
 	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
 	if(type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)this.updateMeasure=updateMeasurePoly;
+	
 	this.getLength = function(){
 		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
 	}
@@ -53,10 +60,13 @@ function Annotation(type, tileView){
 		context.strokeStyle=this.color.toStyle();
 		context.lineWidth=this.lineWidth;
 		context.fillStyle=this.color.transparent().toStyle();
+		context.save();
+		context.translate(this.offset_x, this.offset_y);
 		drawFunctions[type].call(this,context);
 		if(this.selected){
 			this.drawSelected(context);
 		}
+		context.restore();
 	}
 	this.drawSelected = function(context){
 		if(rectType||!this.showHandles)this.drawBoundsRect(context);
@@ -102,6 +112,19 @@ function Annotation(type, tileView){
 			case 7:loc.x=rect.left;loc.y=rect.centerY();break;
 		}
 		return loc;
+	}
+	this.offsetTo = function(x,y){
+		this.offset_x=x-this.x_handle-this.bounds.centerX();
+		this.offset_y=y-this.y_handle-this.bounds.centerY();
+	}
+	this.applyOffset = function(){
+		for(var i=0; i<this.points.length; i++){
+			this.points[i].x+=this.offset_x;
+			this.points[i].y+=this.offset_y;
+		}
+		this.calcBounds();
+		this.offset_x=0;
+		this.offset_y=0;
 	}
 }
 function updateMeasureLength(){
@@ -477,7 +500,6 @@ function Color(red,green,blue,alpha){
 	this.alpha=alpha;
 	this.toStyle=function(){
 		var style = "rgba("+Math.floor(this.red*255)+","+Math.floor(this.green*255)+","+Math.floor(this.blue*255)+","+(this.alpha)+")";
-		console.log(style);
 		return style;
 	}
 	this.transparent = function(){

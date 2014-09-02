@@ -34,11 +34,12 @@ function MouseControls(tileView){
 		tileview_start_y=tileView.scrollY;
 		clickStartTime = getTime();
 
-		if(tileView.getTool()==NO_TOOL){
-			dragging=true;
-		}
 		//Event things
 		tileView.annotationManager.onmousedown(x,y);
+
+		if(!tileView.annotationManager.captureMouse){
+			dragging=true;
+		}
 	}
 	this.onmouseup = function(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
