@@ -36,12 +36,15 @@ function setTool(id){
 }
 function optionChosen(id){
     tileView.optionChosen(id);
+    if(id==COLOR_OPTION){
+        colorMenu.show();
+    }
 }
 function setColor(colorName){
     var csv = colorName.slice(5,colorName.length-1);
     var vals = csv.split(",");
     var color = new Color(parseFloat(vals[0])/255,parseFloat(vals[1])/255,parseFloat(vals[2])/255,parseFloat(vals[3]));
-    tileView.color = color;
+    tileView.setColor(color);
     optionsMenu.setColor(color);
 }
 function mainLoop(){

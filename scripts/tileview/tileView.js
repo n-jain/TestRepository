@@ -59,6 +59,11 @@ function TileView(canvas,toolMenu,optionsMenu){
 		}
 	}
 
+	this.setColor = function(color){
+		this.color=color;
+		//if there are selected annotations, set their color instead
+	}
+
 	this.setTool = function(newTool){
 		tool=newTool;
 		this.annotationManager.finishAnnotation();

@@ -129,5 +129,10 @@ function ColorMenu(){
 			colorMenu.appendChild(br);			
 		}
 	}
-	document.getElementsByTagName("body")[0].appendChild(colorMenu);
+	this.show = function(){
+		document.getElementsByTagName("body")[0].appendChild(colorMenu);
+	}
+	this.hide = function(){
+		document.getElementsByTagName("body")[0].appendChild(colorMenu);
+	}
 }

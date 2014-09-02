@@ -51,6 +51,8 @@ canvas {
 .color_button {
 	height: 45px;
 	width: 45px;
+	top: 10px;
+	right: 10px;
 	border-radius: 50%;
 	float:left;
 	margin: 2.5px;
