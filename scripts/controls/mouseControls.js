@@ -22,6 +22,7 @@ function MouseControls(tileView){
 		tileView.scrollY+=ny-y;
 	}
 	this.onmousedown = function(e){
+		tileView.colorMenu.hide();
 		var x = e.clientX/tileView.scale-tileView.scrollX;
 		var y = e.clientY/tileView.scale-tileView.scrollY;
 		var window_x = e.clientX;

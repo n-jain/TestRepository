@@ -1,8 +1,10 @@
-function TileView(canvas,toolMenu,optionsMenu){
+function TileView(canvas,toolMenu,optionsMenu,colorMenu){
 	var context;
 	
 	this.toolMenu=toolMenu;
 	this.optionsMenu=optionsMenu;
+	this.colorMenu=colorMenu;
+
 	this.tileLoader;
 	this.annotationManager;
 	this.keyboardControls;
@@ -60,8 +62,7 @@ function TileView(canvas,toolMenu,optionsMenu){
 	}
 
 	this.setColor = function(color){
-		this.color=color;
-		//if there are selected annotations, set their color instead
+		if(!this.annotationManager.colorSelectedAnnotations(color))this.color=color;
 	}
 
 	this.setTool = function(newTool){
@@ -81,6 +82,10 @@ function TileView(canvas,toolMenu,optionsMenu){
 			case FILL_OPTION:
 				this.annotationManager.fillSelectedAnnotations();
 				break;
+			case AREA_OPTION:
+				this.annotationManager.areaSelectedAnnotation();
+				break;
 		}
+		this.annotationManager.updateOptionsMenu();
 	}
 }

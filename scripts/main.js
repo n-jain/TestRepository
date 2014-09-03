@@ -11,7 +11,7 @@ window.onload = function() {
     optionsMenu = new OptionsMenu();
 	colorMenu = new ColorMenu();
     //make tileView
-	tileView = new TileView(canvas,toolMenu,optionsMenu);
+	tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu);
     tileView.create();
 
 	//create loop
@@ -46,6 +46,7 @@ function setColor(colorName){
     var color = new Color(parseFloat(vals[0])/255,parseFloat(vals[1])/255,parseFloat(vals[2])/255,parseFloat(vals[3]));
     tileView.setColor(color);
     optionsMenu.setColor(color);
+    colorMenu.hide();
 }
 function mainLoop(){
     tileView.mainLoop();

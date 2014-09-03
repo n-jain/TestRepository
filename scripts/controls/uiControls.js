@@ -74,7 +74,7 @@ function OptionsMenu(){
 				addButton(4);
 			if(type==MEASURE_ANNOTATION)
 				addButton(2);
-			if(type==SQUARE_ANNOTATION||type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)if(tileView.scaleAnnotation!=null){
+			if((type==SQUARE_ANNOTATION||type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)&&tileView.annotationManager.scaleAnnotation!=null){
 				if(selectedAnnotations[0].areaMeasured)addButton(2);
 				setButtonSelected(3,selectedAnnotations[0].areaMeasured);
 				addButton(3);
@@ -133,6 +133,7 @@ function ColorMenu(){
 		document.getElementsByTagName("body")[0].appendChild(colorMenu);
 	}
 	this.hide = function(){
-		document.getElementsByTagName("body")[0].appendChild(colorMenu);
+		if(document.getElementById(colorMenu.id)!=null)
+			document.getElementsByTagName("body")[0].removeChild(colorMenu);
 	}
 }

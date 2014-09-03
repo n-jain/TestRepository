@@ -23,7 +23,6 @@ function Annotation(type, tileView){
 	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
 	this.color=tileView.color.clone();
 	this.color.alpha=alpha;
-	console.log(this.color.toStyle());
 	this.fill=false;
 	this.areaMeasured=false;
 
@@ -70,6 +69,9 @@ function Annotation(type, tileView){
 		if(this.selected){
 			this.drawSelected(context);
 		}
+		if(this.areaMeasured){
+			this.drawArea(context);
+		}
 		context.restore();
 	}
 	this.drawSelected = function(context){
@@ -100,6 +102,25 @@ function Annotation(type, tileView){
 			var size = 35/tileView.scale;
 			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
+	}
+	this.drawArea = function(context){
+		var textSize=32*this.lineWidth;
+		var text = this.measurement.toString();
+
+		context.font = textSize+"px Verdana";
+
+		while(context.measureText(text).width>this.bounds.width()&&textSize>8*this.lineWidth){
+			textSize-=8*this.lineWidth;
+			context.font = textSize+"px Verdana";
+		}
+		if(textSize<8*this.lineWidth)textSize=8*this.lineWidth;
+
+		context.save();
+		context.translate(this.bounds.centerX(), this.bounds.centerY());
+		context.fillStyle = this.color;
+		context.textAlign = "center";
+		context.fillText(this.measurement.toString(),0,textSize/3);
+		context.restore();
 	}
 	this.getPoint = function(id,handle){
 		var rect = this.bounds.clone();
@@ -139,10 +160,25 @@ function updateMeasureLength(){
 	}
 }
 function updateMeasureRect(tileView){
-
+	if(this.tileView.annotationManager.scaleAnnotation!=null){
+		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
+		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
+		var w = Math.abs(this.points[0].x-this.points[1].x);
+		var h = Math.abs(this.points[0].y-this.points[1].y);
+		this.measurement.setAmount(m.amount*m.amount*w*h/(l*l), toArea(m.unit));
+	}
 }
 function updateMeasurePoly(tileView){
-
+	if(this.tileView.annotationManager.scaleAnnotation!=null){
+		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
+		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
+		var a = 0;
+		for(var i=0; i<this.points.length; i++){
+			a+=this.points[i].x*this.points[(i+1)%this.points.length].y;
+			a-=this.points[(i+1)%this.points.length].x*this.points[i].y;
+		}
+		this.measurement.setAmount(m.amount*m.amount*a/(l*l), toArea(m.unit));
+	}
 }
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){
 	var centerX = (x1+x2)/2;

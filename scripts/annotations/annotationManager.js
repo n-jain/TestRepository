@@ -157,6 +157,7 @@ function AnnotationManager(tileView){
 	this.deleteSelectedAnnotations = function(){
 		for(var i=0; i<selectedAnnotations.length; i++){
 			removeFromArray(annotations, selectedAnnotations[i]);
+			if(selectedAnnotations[i].type==SCALE_ANNOTATION)this.scaleAnnotation=null;
 		}
 		selectedAnnotations = new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -172,6 +173,21 @@ function AnnotationManager(tileView){
 			ret = selectedAnnotations[i].fill;
 		}
 		return ret;
+	}
+	this.colorSelectedAnnotations = function(color){
+		var ret = false;
+		for(var i=0; i<selectedAnnotations.length; i++){
+			selectedAnnotations[i].color=color;
+			ret=true;
+		}
+		return ret;
+	}
+	this.areaSelectedAnnotation = function(){
+		selectedAnnotations[0].areaMeasured=!selectedAnnotations[0].areaMeasured;
+		if(selectedAnnotations[0].areaMeasured){
+			selectedAnnotations[0].measurement = new Measurement(0,toArea(this.scaleAnnotation.measurement.unit),AREA);
+			selectedAnnotations[0].updateMeasure();
+		}
 	}
 	var pointInLasso = function(point){
 		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
@@ -242,7 +258,9 @@ function AnnotationManager(tileView){
 		annotations = new Array();
 		this.scaleAnnotation=null;
 	}
-
+	this.updateOptionsMenu = function(){
+		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+	}
 }
 function removeFromArray(array, element){
 	array.splice(array.indexOf(element),1);
