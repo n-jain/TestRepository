@@ -2,6 +2,7 @@ var tileView;
 var toolMenu;
 var optionsMenu;
 var colorMenu;
+var textEditor;
 
 window.onload = function() {
 	//make canvas
@@ -10,8 +11,9 @@ window.onload = function() {
     toolMenu = new ToolMenu();
     optionsMenu = new OptionsMenu();
 	colorMenu = new ColorMenu();
+    textEditor = new TextEditor();
     //make tileView
-	tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu);
+	tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor);
     tileView.create();
 
 	//create loop

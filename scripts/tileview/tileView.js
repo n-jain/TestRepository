@@ -1,9 +1,10 @@
-function TileView(canvas,toolMenu,optionsMenu,colorMenu){
+function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 	var context;
 	
 	this.toolMenu=toolMenu;
 	this.optionsMenu=optionsMenu;
 	this.colorMenu=colorMenu;
+	this.textEditor=textEditor;
 
 	this.tileLoader;
 	this.annotationManager;

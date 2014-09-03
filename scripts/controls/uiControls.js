@@ -45,10 +45,10 @@ function OptionsMenu(){
 		if(button!=null)optionsMenu.removeChild(button);
 	}
 	var setButtonSelected = function(index,bool){
-
+		//make button brighter
 	}
 	this.setColor = function(color){
-
+		//set color overlay
 	}
 	this.setSelectedAnnotations = function(selectedAnnotations,tileView){
 		var userIsAdmin = true;
@@ -132,6 +132,38 @@ function ColorMenu(){
 			document.getElementsByTagName("body")[0].removeChild(colorMenu);
 	}
 }
-function TextMenu(){
+function TextEditor(){
+	var textSizes = [32,64,128,256,512];
+	var textEditor = document.createElement("div");
+	textEditor.id = "text_editor";
+	
+	var textSizeMenu = document.createElement("div");
+	textSizeMenu.id = "text_size_menu";
+	for(var i=0; i<textSizes.length; i++){
+		var button = document.createElement("input");
+		button.type = "image";
+		button.className = "text_size_button";
+		button.src = "images/optionsmenu/annotation_toolbar_text.png";
+		button.name = textSizes[i];
+		textSizeMenu.appendChild(button);
+	}
+	textEditor.appendChild(textSizeMenu);
+	
+	var textBox = document.createElement("textarea");
+	textBox.id = "text_editor_input";
+	textEditor.appendChild(textBox);
 
+	this.show = function(x,y){
+		textEditor.style.left=x+"px";
+		textEditor.style.top=y+"px";
+		document.getElementsByTagName("body")[0].appendChild(textEditor);
+	}
+	this.hide = function(){
+		if(document.getElementById(textEditor.id)!=null)
+			document.getElementsByTagName("body")[0].removeChild(textEditor);
+	}
+	this.setLoc = function(x,y){
+		textEditor.style.left=x+"px";
+		textEditor.style.top=y+"px";
+	}
 }
