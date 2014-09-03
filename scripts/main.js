@@ -53,6 +53,10 @@ function setColor(colorName){
 function textUpdate(text){
     tileView.annotationManager.textUpdate(text);
 }
+function setTextSize(textSize){
+    tileView.annotationManager.setTextSize(textSize);
+    tileView.textSize=textSize;
+}
 function mainLoop(){
     tileView.mainLoop();
 }

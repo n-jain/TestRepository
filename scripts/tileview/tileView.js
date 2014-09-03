@@ -17,6 +17,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 
 	this.draw;
 	this.color;
+	this.textSize=128;
 	var tool;
 
 	var firstDraw;

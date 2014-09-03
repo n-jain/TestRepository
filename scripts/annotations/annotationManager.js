@@ -128,6 +128,11 @@ function AnnotationManager(tileView){
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
 	}
+	this.setTextSize = function(textSize){
+		if(selectedAnnotations.length==1)
+			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
+				selectedAnnotations[0].textSize=textSize;
+	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		this.selectAnnotation(annotation);
@@ -138,6 +143,7 @@ function AnnotationManager(tileView){
 			var y = (corner.y+tileView.scrollY)*tileView.scale;
 			tileView.textEditor.setText(annotation.text);
 			tileView.textEditor.show(x,y);
+			annotation.added=true;
 		}
 	}
 	this.selectAnnotation = function(annotation){
@@ -147,14 +153,21 @@ function AnnotationManager(tileView){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
+		var toKill = new Array();
 		selectedAnnotations=new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 		for(var i=0;i<annotations.length; i++){
 			annotations[i].selected=false;
 			annotations[i].showHandles=false;
+			if(annotations[i].type==TEXT_ANNOTATION&&annotations[i].text==""&&annotations[i].added){
+				toKill[toKill.length]=annotations[i];
+			}
 		}
 		this.captureKeyboard=false;
 		tileView.textEditor.hide();
+		for(var i=0; i<toKill.length; i++){
+			removeFromArray(annotations,toKill[i]);
+		}
 	}
 	this.selectAllInLasso = function(){
 		this.deselectAllAnnotations();
@@ -269,8 +282,11 @@ function AnnotationManager(tileView){
 				if(!del){
 					currentAnnotation.calcBounds();
 					annotations[annotations.length] = currentAnnotation;
-					currentAnnotation.added=true;
+					if(currentAnnotation.type!=TEXT_ANNOTATION)currentAnnotation.added=true;
 				}
+			}
+			if(currentAnnotation.type==TEXT_ANNOTATION){
+				this.selectSingleAnnotation(currentAnnotation);
 			}
 		}
 		currentAnnotation=null;

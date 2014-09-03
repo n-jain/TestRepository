@@ -19,7 +19,7 @@ function Annotation(type, tileView){
 	this.areaMeasured=false;
 
 	this.text="";
-	this.textSize=32;
+	this.textSize=tileView.textSize;
 
 	this.tileView=tileView;
 	this.offset_x=0;
@@ -302,41 +302,43 @@ function drawPoints(context){
 	}
 }
 function drawText(context){
-	context.save();
-	var x = (this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x);
-	var y = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
-	var w = Math.abs(this.points[0].x-this.points[1].x);
-	var h = Math.abs(this.points[0].y-this.points[1].y);
-	context.font = this.textSize+"px Verdana";
-	context.fillStyle = this.color.toStyle();
-	context.translate(x,y);
+	if(this.points.length>1){
+		context.save();
+		var x = (this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x);
+		var y = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
+		var w = Math.abs(this.points[0].x-this.points[1].x);
+		var h = Math.abs(this.points[0].y-this.points[1].y);
+		context.font = this.textSize+"px Verdana";
+		context.fillStyle = this.color.toStyle();
+		context.translate(x,y);
 
-	context.beginPath();
-	context.rect(0,0,w,h);
-	context.clip();
+		context.beginPath();
+		context.rect(0,0,w,h);
+		context.clip();
 
-	var currentY=this.textSize;
-	var lines = this.text.split("\n");
-	for(var i=0; i<lines.length; i++){
-		var lines2 = new Array();
-		lines2[0] = "";
-		var currentLine = 0;
-		var words = lines[i].split(" ");
-		for(var j=0; j<words.length; j++){
-			var temp = lines2[currentLine] + words[j] + " ";
-			if(context.measureText(temp).width<=w||lines2[currentLine]==""){
-				lines2[currentLine] = temp;
-			}else{
-				lines2[lines2.length] = words[j]+" ";
-				currentLine++;
+		var currentY=this.textSize;
+		var lines = this.text.split("\n");
+		for(var i=0; i<lines.length; i++){
+			var lines2 = new Array();
+			lines2[0] = "";
+			var currentLine = 0;
+			var words = lines[i].split(" ");
+			for(var j=0; j<words.length; j++){
+				var temp = lines2[currentLine] + words[j] + " ";
+				if(context.measureText(temp).width<=w||lines2[currentLine]==""){
+					lines2[currentLine] = temp;
+				}else{
+					lines2[lines2.length] = words[j]+" ";
+					currentLine++;
+				}
+			}
+			for(var j=0; j<lines2.length; j++){
+				context.fillText(lines2[j], 0, currentY);
+				currentY+=this.textSize;
 			}
 		}
-		for(var j=0; j<lines2.length; j++){
-			context.fillText(lines2[j], 0, currentY);
-			currentY+=this.textSize;
-		}
+		context.restore();
 	}
-	context.restore();
 }
 function drawLine(context){
 	if(this.points.length==2){

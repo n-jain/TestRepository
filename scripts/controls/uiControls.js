@@ -145,6 +145,9 @@ function TextEditor(){
 		button.className = "text_size_button";
 		button.src = "images/optionsmenu/annotation_toolbar_text.png";
 		button.name = textSizes[i];
+		button.onclick = function(){
+			setTextSize(parseInt(this.name));
+		};
 		textSizeMenu.appendChild(button);
 	}
 	textEditor.appendChild(textSizeMenu);
