@@ -50,6 +50,9 @@ function setColor(colorName){
     optionsMenu.setColor(color);
     colorMenu.hide();
 }
+function textUpdate(text){
+    tileView.annotationManager.textUpdate(text);
+}
 function mainLoop(){
     tileView.mainLoop();
 }

@@ -151,6 +151,12 @@ function TextEditor(){
 	
 	var textBox = document.createElement("textarea");
 	textBox.id = "text_editor_input";
+	textBox.onchange = function(){
+		textUpdate(textBox.value);
+	}
+	textBox.onkeyup = function(){
+		textUpdate(textBox.value);
+	}
 	textEditor.appendChild(textBox);
 
 	this.show = function(x,y){
@@ -165,5 +171,8 @@ function TextEditor(){
 	this.setLoc = function(x,y){
 		textEditor.style.left=x+"px";
 		textEditor.style.top=y+"px";
+	}
+	this.setText = function(text){
+		textBox.value = text;
 	}
 }

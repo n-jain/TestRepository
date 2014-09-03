@@ -40,9 +40,6 @@ function KeyboardControls(tileView){
 			case 69://E
 				zoomOut=true;
 				break;
-			case 8://backspace
-				tileView.annotationManager.clearAnnotations();
-				break;
 		}
 	}
 	this.onKeyUp = function(event){

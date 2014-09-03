@@ -69,6 +69,7 @@ function AnnotationManager(tileView){
 		}
 		if(this.captureMouse&&currentAnnotation==null){
 			for(var i=0; i<selectedAnnotations.length; i++){
+				//move text box if it is present
 				selectedAnnotations[i].offsetTo(x,y);
 			}
 		}
@@ -122,10 +123,22 @@ function AnnotationManager(tileView){
 			}
 		}
 	}
+	this.textUpdate = function(text){
+		if(selectedAnnotations.length==1)
+			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
+				selectedAnnotations[0].text=text;
+	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		this.selectAnnotation(annotation);
-		if(annotation.type==TEXT_ANNOTATION)this.captureKeyboard=true
+		if(annotation.type==TEXT_ANNOTATION){
+			this.captureKeyboard=true
+			var corner = annotation.getPoint(2,true);
+			var x = (corner.x+tileView.scrollX)*tileView.scale;
+			var y = (corner.y+tileView.scrollY)*tileView.scale;
+			tileView.textEditor.setText(annotation.text);
+			tileView.textEditor.show(x,y);
+		}
 	}
 	this.selectAnnotation = function(annotation){
 		selectedAnnotations[selectedAnnotations.length]=annotation;
@@ -141,6 +154,7 @@ function AnnotationManager(tileView){
 			annotations[i].showHandles=false;
 		}
 		this.captureKeyboard=false;
+		tileView.textEditor.hide();
 	}
 	this.selectAllInLasso = function(){
 		this.deselectAllAnnotations();
@@ -164,6 +178,8 @@ function AnnotationManager(tileView){
 		}
 		selectedAnnotations = new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		this.captureKeyboard=false;
+		tileView.textEditor.hide();
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;

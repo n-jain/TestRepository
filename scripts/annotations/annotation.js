@@ -18,7 +18,7 @@ function Annotation(type, tileView){
 	this.fill=false;
 	this.areaMeasured=false;
 
-	this.text="Test Text";
+	this.text="";
 	this.textSize=32;
 
 	this.tileView=tileView;
