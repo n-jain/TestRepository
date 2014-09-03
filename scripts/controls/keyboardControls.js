@@ -9,13 +9,15 @@ function KeyboardControls(tileView){
 	var scrollSpeed=16;
 
 	this.handleControls = function(){
-		if(scrollLeft)tileView.scrollX+=scrollSpeed/tileView.scale;
-		if(scrollRight)tileView.scrollX-=scrollSpeed/tileView.scale;
-		if(scrollUp)tileView.scrollY+=scrollSpeed/tileView.scale;
-		if(scrollDown)tileView.scrollY-=scrollSpeed/tileView.scale;
-		if(zoomIn)tileView.scale*=1.09;
-		if(zoomOut)tileView.scale/=1.09;
-		tileView.draw = (zoomIn||zoomOut||scrollLeft||scrollRight||scrollUp||scrollDown);
+		if(!tileView.annotationManager.captureKeyboard){
+			if(scrollLeft)tileView.scrollX+=scrollSpeed/tileView.scale;
+			if(scrollRight)tileView.scrollX-=scrollSpeed/tileView.scale;
+			if(scrollUp)tileView.scrollY+=scrollSpeed/tileView.scale;
+			if(scrollDown)tileView.scrollY-=scrollSpeed/tileView.scale;
+			if(zoomIn)tileView.scale*=1.09;
+			if(zoomOut)tileView.scale/=1.09;
+			tileView.draw = (zoomIn||zoomOut||scrollLeft||scrollRight||scrollUp||scrollDown);
+		}
 	}
 
 	this.onKeyDown = function(event){

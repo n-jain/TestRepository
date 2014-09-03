@@ -68,7 +68,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu){
 	this.setTool = function(newTool){
 		tool=newTool;
 		this.annotationManager.finishAnnotation();
-		this.annotationManager.deselectAllAnnotations();
+		this.annotationManager.updateOptionsMenu();
 	}
 
 	this.getTool = function(){

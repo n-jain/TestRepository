@@ -4,6 +4,7 @@ function AnnotationManager(tileView){
 	var currentAnnotation;
 	var lasso;
 	this.captureMouse=false;
+	this.captureKeyboard=false;
 	this.scaleAnnotation;
 
 	this.onmousedown = function(x,y){
@@ -66,7 +67,7 @@ function AnnotationManager(tileView){
 				currentAnnotation.updateMeasure();
 			}
 		}
-		if(this.captureMouse){
+		if(this.captureMouse&&currentAnnotation==null){
 			for(var i=0; i<selectedAnnotations.length; i++){
 				selectedAnnotations[i].offsetTo(x,y);
 			}
@@ -124,6 +125,7 @@ function AnnotationManager(tileView){
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		this.selectAnnotation(annotation);
+		if(annotation.type==TEXT_ANNOTATION)this.captureKeyboard=true
 	}
 	this.selectAnnotation = function(annotation){
 		selectedAnnotations[selectedAnnotations.length]=annotation;
@@ -138,6 +140,7 @@ function AnnotationManager(tileView){
 			annotations[i].selected=false;
 			annotations[i].showHandles=false;
 		}
+		this.captureKeyboard=false;
 	}
 	this.selectAllInLasso = function(){
 		this.deselectAllAnnotations();
@@ -228,6 +231,7 @@ function AnnotationManager(tileView){
 	}
 	this.finishAnnotation = function(){
 		if(currentAnnotation!=null){
+			this.deselectAllAnnotations();
 			if(currentAnnotation.points.length>1&&currentAnnotation.type!=LASSO_ANNOTATION){
 				var del = false;
 				if(currentAnnotation.type==SCALE_ANNOTATION){
@@ -249,6 +253,7 @@ function AnnotationManager(tileView){
 				if(!del){
 					currentAnnotation.calcBounds();
 					annotations[annotations.length] = currentAnnotation;
+					currentAnnotation.added=true;
 				}
 			}
 		}

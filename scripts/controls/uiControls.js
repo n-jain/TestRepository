@@ -20,7 +20,7 @@ function ToolMenu(){
 	document.getElementsByTagName("body")[0].appendChild(toolMenu);
 }
 function OptionsMenu(){
-	var names = ["Master","Fill","Ruler","Area","Text","Color","Delete"];
+	var names = ["Master","Fill","Ruler","Area","Color","Delete"];
 
 	var optionsMenu = document.createElement("div");
 	optionsMenu.id = "options_menu";
@@ -64,14 +64,9 @@ function OptionsMenu(){
 				setButtonSelected(0,master);
 			}
 		}
-		if(tileView.getTool()==TEXT_TOOL&&selectedAnnotations.length==0){
-			addButton(4);
-		}
 		if(selectedAnnotations.length==1){
 			var type = selectedAnnotations[0].type;
 			this.setColor(selectedAnnotations[0].color);
-			if(type==TEXT_ANNOTATION)
-				addButton(4);
 			if(type==MEASURE_ANNOTATION)
 				addButton(2);
 			if((type==SQUARE_ANNOTATION||type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)&&tileView.annotationManager.scaleAnnotation!=null){
@@ -101,9 +96,9 @@ function OptionsMenu(){
 			}
 		}
 		if(tileView.getTool()!=LASSO_TOOL&&(tileView.getTool()!=NO_TOOL||selectedAnnotations.length>0))
-			addButton(5);
+			addButton(4);
 		if(selectedAnnotations.length>0)
-			addButton(6);
+			addButton(5);
 	}
 	document.getElementsByTagName("body")[0].appendChild(optionsMenu);
 }
@@ -136,4 +131,7 @@ function ColorMenu(){
 		if(document.getElementById(colorMenu.id)!=null)
 			document.getElementsByTagName("body")[0].removeChild(colorMenu);
 	}
+}
+function TextMenu(){
+
 }

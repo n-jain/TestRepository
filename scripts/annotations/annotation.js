@@ -5,29 +5,35 @@ function Annotation(type, tileView){
 	var rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 
+	this.id=createUUID();
+	this.type=type;
 	this.points=new Array();	
-	this.measurement;
-	this.updateMeasure;
-	this.bounds;
 
 	this.selected=false;
 	this.showHandles=false;
 	this.selectIndex=0;
+	this.added=false;
 
-	this.x_handle;
-	this.y_handle;
-
-	this.id=createUUID();
-	this.type=type;
-	this.tileView=tileView;
-	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
 	this.color=tileView.color.clone();
-	this.color.alpha=alpha;
 	this.fill=false;
 	this.areaMeasured=false;
 
+	this.text="Test Text";
+	this.textSize=32;
+
+	this.tileView=tileView;
 	this.offset_x=0;
 	this.offset_y=0;
+	this.x_handle;
+	this.y_handle;
+
+	this.measurement;
+	this.updateMeasure;
+	this.bounds;
+
+	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
+	this.color.alpha=alpha;
+	
 	if(type==LASSO_ANNOTATION){
 		this.color=new Color(0,0.2,1,1);
 		this.fill=true;
@@ -66,6 +72,11 @@ function Annotation(type, tileView){
 		context.save();
 		context.translate(this.offset_x, this.offset_y);
 		drawFunctions[type].call(this,context);
+		if(this.type==TEXT_ANNOTATION&&(this.selected||!this.added)){
+			context.strokeStyle="#000000";
+			context.lineWidth=2/tileView.scale;
+			drawRectangle.call(this,context);
+		}
 		if(this.selected){
 			this.drawSelected(context);
 		}
@@ -291,7 +302,41 @@ function drawPoints(context){
 	}
 }
 function drawText(context){
+	context.save();
+	var x = (this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x);
+	var y = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
+	var w = Math.abs(this.points[0].x-this.points[1].x);
+	var h = Math.abs(this.points[0].y-this.points[1].y);
+	context.font = this.textSize+"px Verdana";
+	context.fillStyle = this.color.toStyle();
+	context.translate(x,y);
 
+	context.beginPath();
+	context.rect(0,0,w,h);
+	context.clip();
+
+	var currentY=this.textSize;
+	var lines = this.text.split("\n");
+	for(var i=0; i<lines.length; i++){
+		var lines2 = new Array();
+		lines2[0] = "";
+		var currentLine = 0;
+		var words = lines[i].split(" ");
+		for(var j=0; j<words.length; j++){
+			var temp = lines2[currentLine] + words[j] + " ";
+			if(context.measureText(temp).width<=w||lines2[currentLine]==""){
+				lines2[currentLine] = temp;
+			}else{
+				lines2[lines2.length] = words[j]+" ";
+				currentLine++;
+			}
+		}
+		for(var j=0; j<lines2.length; j++){
+			context.fillText(lines2[j], 0, currentY);
+			currentY+=this.textSize;
+		}
+	}
+	context.restore();
 }
 function drawLine(context){
 	if(this.points.length==2){
