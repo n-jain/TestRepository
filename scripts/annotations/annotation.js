@@ -114,7 +114,7 @@ function Annotation(type, tileView){
 		for(var i=0; i<this.points.length; i++){
 			var point = this.points[i];
 			var size = 35/tileView.scale;
-			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
+			context.drawImage(Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
 	}
 	this.drawArea = function(context){

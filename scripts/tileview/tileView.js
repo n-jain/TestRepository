@@ -32,7 +32,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.scrollX=0;
 	    this.scrollY=0;
 	    this.scale=1;
-		this.tileLoader = new TileLoader(slicePath,previewPath);
+		this.tileLoader = new TileLoader(slicePath,previewPath,this);
 		this.keyboardControls = new KeyboardControls(this);
 		this.mouseControls = new MouseControls(this);
 		this.annotationManager = new AnnotationManager(this);
@@ -53,6 +53,15 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.tileLoader.drawAllTiles(context);
 		this.annotationManager.drawAllAnnotations(context);
 		context.restore();
+	}
+
+	this.fitToScreen = function(){
+		var canvasDim = this.tileLoader.width/canvas.width>this.tileLoader.height/canvas.height?canvas.width:canvas.height;
+		var sheetDim = this.tileLoader.width/canvas.width>this.tileLoader.height/canvas.height?this.tileLoader.width:this.tileLoader.height;
+		this.scale = 0.9*canvasDim/sheetDim;
+		this.scrollX = (canvas.width-(this.tileLoader.width*this.scale))/(2*this.scale);
+		this.scrollY = (canvas.height-(this.tileLoader.height*this.scale))/(2*this.scale);
+		this.updateRes();
 	}
 
 	this.mainLoop = function(){
@@ -95,9 +104,9 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 	}
 	this.updateRes = function(){
 		this.tileLoader.setTileRes(5);
-		if(this.scale>0.063)this.tileLoader.setTileRes(4);
-		if(this.scale>0.125)this.tileLoader.setTileRes(3);
-		if(this.scale>0.25)this.tileLoader.setTileRes(2);
-		if(this.scale>0.5)this.tileLoader.setTileRes(1);
+		if(this.scale>0.038)this.tileLoader.setTileRes(4);
+		if(this.scale>0.075)this.tileLoader.setTileRes(3);
+		if(this.scale>0.15)this.tileLoader.setTileRes(2);
+		if(this.scale>0.3)this.tileLoader.setTileRes(1);
 	}
 }

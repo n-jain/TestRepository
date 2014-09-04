@@ -1,4 +1,4 @@
-function TileLoader(slicePath, previewPath){
+function TileLoader(slicePath, previewPath, tileView){
 	this.levelAvailable = new Array();
 	this.loaded=0;
 	this.zoomLevel=1000;
@@ -55,6 +55,8 @@ function TileLoader(slicePath, previewPath){
 					}
 				}
 			}
+			//set zoom level
+			tileView.fitToScreen();
 		}
 	}
 	this.setTileRes = function(id){

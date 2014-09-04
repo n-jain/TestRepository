@@ -100,7 +100,7 @@ function OptionsMenu(){
 		if(selectedAnnotations.length>0)
 			addButton(5);
 	}
-	document.getElementsByTagName("body")[0].appendChild(optionsMenu);
+	document.getElementById("top_right").appendChild(optionsMenu);
 }
 function ColorMenu(){
 	var colors = [	new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),
@@ -125,11 +125,11 @@ function ColorMenu(){
 		}
 	}
 	this.show = function(){
-		document.getElementsByTagName("body")[0].appendChild(colorMenu);
+		document.getElementById("top_right").appendChild(colorMenu);
 	}
 	this.hide = function(){
 		if(document.getElementById(colorMenu.id)!=null)
-			document.getElementsByTagName("body")[0].removeChild(colorMenu);
+			document.getElementById("top_right").removeChild(colorMenu);
 	}
 }
 function TextEditor(){
