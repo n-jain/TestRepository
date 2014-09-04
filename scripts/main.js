@@ -7,7 +7,9 @@ angular.module("bluvueSheet").directive("bvSheet", [
         return {
             scope: {
                 sheet: "=",
-                userId: "="
+                userId: "=",
+                saveAnnotation: "=",
+                deleteAnnotation: "="
             },
             restrict: "E",
             replace: true,
