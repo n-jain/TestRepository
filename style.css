@@ -40,6 +40,8 @@ canvas {
 	opacity: 0.9;
 	border-radius: 15px;
 	padding: 5px;
+	position: fixed;
+	right:10px;
 }
 .color_button {
 	height: 45px;
