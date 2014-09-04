@@ -1,3 +1,45 @@
+angular.module("bluvueSheet", []);
+
+angular.module("bluvueSheet").directive("bvSheet", [
+    function sheetDirective() {
+        'use strict';
+
+        return {
+            scope: {
+                sheet: "=",
+                userId: "="
+            },
+            restrict: "E",
+            replace: true,
+            transclude: false,
+            templateUrl: "sheet.html",
+            link: function bvSheetLink(scope) {
+                // sheet object
+                /* {
+                 * id: 'guid',
+                 * projectId: 'guid',
+                 * slicesUrl: '',
+                 * previewUrl: '',
+                 * annotations: []
+                 * }
+                 */
+
+                // annotation object
+                /*
+                 * {
+                 * id: 'guid',
+                 * userId: 'guid',
+                 * data: 'json string'
+                 * type: int
+                 * }
+                 */
+
+                loadSheet(scope.sheet.slicesUrl, scope.sheet.previewUrl, scope.sheet.sheetId, scope.sheet.projectId, scope.userId);
+            }
+        }
+    }
+]);
+
 var tileView;
 var toolMenu;
 var optionsMenu;
@@ -8,9 +50,6 @@ var userId;
 var projectId;
 var sheetId;
 
-window.onload = function() {
-    loadSheet("sheet/slices.zip","sheet/preview.png","sheet1","project1","user1");
-}
 function loadSheet(slicePath,previewPath,sheet,project,user){
     sheetId=sheet;
     projectId=project;
