@@ -36,7 +36,7 @@ angular.module("bluvueSheet").directive("bvSheet", [
                  * }
                  */
 
-                loadSheet(scope.sheet);
+                loadSheet(scope.sheet,scope);
             }
         }
     }
@@ -52,7 +52,7 @@ var userId;
 var projectId;
 var sheetId;
 
-function loadSheet(sheet){
+function loadSheet(sheet,scope){
     sheetId=sheet.sheetId;
     projectId=sheet.projectId;
     userId=sheet.userId;
@@ -64,7 +64,7 @@ function loadSheet(sheet){
     
     var canvas = document.getElementById('canvas1');
     //make tileView
-    tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor);
+    tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope);
     tileView.create(sheet);
 
     //create loop

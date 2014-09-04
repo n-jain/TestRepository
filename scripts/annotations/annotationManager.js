@@ -1,4 +1,4 @@
-function AnnotationManager(tileView){
+function AnnotationManager(tileView, scope){
 	var annotations = new Array();
 	var selectedAnnotations = new Array();
 	var currentAnnotation;
@@ -175,7 +175,6 @@ function AnnotationManager(tileView){
 	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
-		console.log("normal");
 		this.selectAnnotation(annotation);
 		if(annotation.type==TEXT_ANNOTATION){
 			this.captureKeyboard=true
@@ -194,7 +193,6 @@ function AnnotationManager(tileView){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
-		console.log("deselected");
 		var toKill = new Array();
 		selectedAnnotations=new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -227,9 +225,29 @@ function AnnotationManager(tileView){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deleteSelectedAnnotations = function(){
+		var tempSelected = selectedAnnotations;
+		var reAdded = false;
+		function deleteFailed(){
+			if(!reAdded){
+				for(var i=0; i<tempSelected.length; i++){
+					var annotation=tempSelected[i];
+					annotations[annotations.length] = annotation;
+					if(annotation.type==SCALE_ANNOTATION)this.scaleAnnotation=annotation;
+				}
+				reAdded=true;
+			}
+		}
 		for(var i=0; i<selectedAnnotations.length; i++){
-			removeFromArray(annotations, selectedAnnotations[i]);
-			if(selectedAnnotations[i].type==SCALE_ANNOTATION)this.scaleAnnotation=null;
+			var annotation = selectedAnnotations[i];
+			removeFromArray(annotations, annotation);
+			if(annotation.type==SCALE_ANNOTATION)this.scaleAnnotation=null;
+			scope.deleteAnnotation(selectedAnnotations[i].id).then(function(){
+				//succeeded, do nothing
+			}).catch(function(error){
+				deleteFailed();
+			}).finally(function(){
+				//nothing else is needed
+			});
 		}
 		selectedAnnotations = new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -365,6 +383,10 @@ function AnnotationManager(tileView){
 			}
 		}
 		annotations[annotations.length] = annotation;
+	}
+	this.syncAnnotations = function(){
+		//saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
+		//delete annotation just needs the annotation id
 	}
 }
 function removeFromArray(array, element){

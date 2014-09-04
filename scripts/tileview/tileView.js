@@ -1,4 +1,4 @@
-function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
+function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
 	var context;
 	
 	this.toolMenu=toolMenu;
@@ -35,7 +35,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.tileLoader = new TileLoader(sheet.slicesUrl,sheet.previewUrl,this);
 		this.keyboardControls = new KeyboardControls(this);
 		this.mouseControls = new MouseControls(this);
-		this.annotationManager = new AnnotationManager(this);
+		this.annotationManager = new AnnotationManager(this,scope);
 
 		this.draw=false;
 		this.firstDraw=false;

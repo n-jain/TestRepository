@@ -48,11 +48,11 @@ data:"{\"id\":\"4cf1e61966284edb88cb9a5058715f13\",\"areaVisible\":0,\"colorRed\
                     
                 }, 1000);
 
-                return deferred.promise();
+                return deferred.promise;
             }
 
             $scope.deleteAnnotation = function(annotationId) {
-                var throwSaveError = false;
+                var throwSaveError = true;
                 var deferred = $q.defer();
 
                 setTimeout(function () {
@@ -63,8 +63,7 @@ data:"{\"id\":\"4cf1e61966284edb88cb9a5058715f13\",\"areaVisible\":0,\"colorRed\
                     }
 
                 }, 1000);
-
-                return deferred.promise();
+                return deferred.promise;
             }
         }
     ]);
