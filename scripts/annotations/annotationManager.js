@@ -4,6 +4,7 @@ function AnnotationManager(tileView){
 	var currentAnnotation;
 	var lasso;
 	var touchedHandle=-1;
+	var cancelClick=false;
 	this.captureMouse=false;
 	this.captureKeyboard=false;
 	this.scaleAnnotation;
@@ -47,7 +48,6 @@ function AnnotationManager(tileView){
 					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
 				}
 			}
-
 			if(touchedHandle!=-1)this.captureMouse=true;
 		}
 		if(selectIndex!=-1&&touchedHandle==-1){
@@ -88,7 +88,7 @@ function AnnotationManager(tileView){
 				for(var i=0; i<selectedAnnotations.length; i++){
 					//move text box if it is present
 					selectedAnnotations[i].offsetTo(x,y);
-				}				
+				}
 			} else {
 				var annotation = selectedAnnotations[0];
 				if(annotation.rectType){
@@ -98,63 +98,66 @@ function AnnotationManager(tileView){
 					annotation.updateMeasure();
 				}
 			}
+			cancelClick=true;
 		}
 	}
 	this.onclick = function(x,y){
-		var lastSelectedId="";
-		if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
-		//get which annotations are touched
-		var touchedAnnotations = new Array(); 
-		for(var i=0;i<annotations.length; i++){
-			var bounds = annotations[i].bounds;
-			if(bounds.width()*tileView.scale<30)
-				bounds=bounds.inset(-(20/tileView.scale),0);
-			if(bounds.height()*tileView.scale<30)
-				bounds=bounds.inset(0,-(20/tileView.scale));			
-			if(bounds.contains(x,y))  {
-				touchedAnnotations[touchedAnnotations.length]=annotations[i];
+		if(!cancelClick){
+			var lastSelectedId="";
+			if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
+			//get which annotations are touched
+			var touchedAnnotations = new Array(); 
+			for(var i=0;i<annotations.length; i++){
+				var bounds = annotations[i].bounds;
+				if(bounds.width()*tileView.scale<30)
+					bounds=bounds.inset(-(20/tileView.scale),0);
+				if(bounds.height()*tileView.scale<30)
+					bounds=bounds.inset(0,-(20/tileView.scale));			
+				if(bounds.contains(x,y))  {
+					touchedAnnotations[touchedAnnotations.length]=annotations[i];
+				}
 			}
-		}
-		//get which are selected already
-		var selected = new Array();
-		var anySelected = false;
-		for(var i=0; i<touchedAnnotations.length; i++){
-			selected[i] = touchedAnnotations[i].selected;
-			if(selected[i])anySelected=true;
-		}
-		//decide what to do
-		if(touchedAnnotations.length==0){
-			for(var i=0; i<annotations.length; i++){
-				annotations.selectIndex=0;
-			}
-			if(selectedAnnotations.length!=0){
-				this.deselectAllAnnotations();				
-			}
-		} else {
+			//get which are selected already
+			var selected = new Array();
+			var anySelected = false;
 			for(var i=0; i<touchedAnnotations.length; i++){
-				if(!anySelected){
-					var ann = touchedAnnotations[i];
-					if(ann.selectIndex<=0){
-						this.selectSingleAnnotation(touchedAnnotations[i]);
-						ann.selectIndex = touchedAnnotations.length;
-						break;
+				selected[i] = touchedAnnotations[i].selected;
+				if(selected[i])anySelected=true;
+			}
+			//decide what to do
+			if(touchedAnnotations.length==0){
+				for(var i=0; i<annotations.length; i++){
+					annotations.selectIndex=0;
+				}
+				if(selectedAnnotations.length!=0){
+					this.deselectAllAnnotations();				
+				}
+			} else {
+				for(var i=0; i<touchedAnnotations.length; i++){
+					if(!anySelected){
+						var ann = touchedAnnotations[i];
+						if(ann.selectIndex<=0){
+							this.selectSingleAnnotation(touchedAnnotations[i]);
+							ann.selectIndex = touchedAnnotations.length;
+							break;
+						}
+					}
+					if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
+						this.deselectAllAnnotations();
 					}
 				}
-				if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
-					this.deselectAllAnnotations();
+				for(var i=0;i<touchedAnnotations.length; i++){
+					if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
 				}
 			}
-			for(var i=0;i<touchedAnnotations.length; i++){
-				if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
-			}
 		}
+		cancelClick=false;
 	}
 	this.ondblclick = function(x,y){
-		console.log(x,y);
 		if(tileView.getTool()==POLYGON_TOOL){
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
-				if(dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
+				if(Point.dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
 					currentAnnotation.closed=true;
 				tileView.setTool(NO_TOOL);
 			}
@@ -172,6 +175,7 @@ function AnnotationManager(tileView){
 	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
+		console.log("normal");
 		this.selectAnnotation(annotation);
 		if(annotation.type==TEXT_ANNOTATION){
 			this.captureKeyboard=true
@@ -190,6 +194,7 @@ function AnnotationManager(tileView){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
+		console.log("deselected");
 		var toKill = new Array();
 		selectedAnnotations=new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -336,6 +341,7 @@ function AnnotationManager(tileView){
 			if(currentAnnotation.type==TEXT_ANNOTATION){
 				this.selectSingleAnnotation(currentAnnotation);
 			}
+			cancelClick=true;
 		}
 		currentAnnotation=null;
 	}
@@ -348,7 +354,7 @@ function AnnotationManager(tileView){
 	}
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
-		return dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
+		return Point.dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
 	}
 	this.loadAnnotation = function(jsonString){
 		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);

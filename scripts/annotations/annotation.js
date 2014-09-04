@@ -1,5 +1,3 @@
-var handleImage = new Image();
-handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
 	this.rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
@@ -109,14 +107,14 @@ function Annotation(type, tileView){
 		for(var i=0; i<8; i++){
 			var point = this.getPoint(i,true);
 			var size = 35/tileView.scale;
-			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
+			context.drawImage(Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
 	}
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 			var point = this.points[i];
 			var size = 35/tileView.scale;
-			context.drawImage(handleImage,point.x-size/2,point.y-size/2,size,size);
+			context.drawImage(Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
 	}
 	this.drawArea = function(context){
@@ -197,6 +195,8 @@ function Annotation(type, tileView){
 		this.updateMeasure();
 	}
 }
+Annotation.handleImage = new Image();
+Annotation.handleImage.src="images/ui/handle1.png";
 function updateMeasureLength(){
 	if(this.tileView.annotationManager.scaleAnnotation!=null){
 		var m = this.tileView.annotationManager.scaleAnnotation.measurement;

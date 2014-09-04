@@ -17,6 +17,8 @@ function MouseControls(tileView){
 		//centers zoom around mouse
 		tileView.scrollX+=nx-x;
 		tileView.scrollY+=ny-y;
+
+		tileView.updateRes();
 	}
 	this.onmousedown = function(e){
 		tileView.colorMenu.hide();

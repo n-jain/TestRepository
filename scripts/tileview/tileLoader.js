@@ -1,4 +1,5 @@
-function TileLoader(slicePath, previewPath){
+function TileLoader(slicePath, previewPath, tileView){
+	this.levelAvailable = new Array();
 	this.loaded=0;
 	this.zoomLevel=1000;
 	this.tileSize = 512;
@@ -54,25 +55,29 @@ function TileLoader(slicePath, previewPath){
 					}
 				}
 			}
+			//set zoom level
+			tileView.fitToScreen();
 		}
 	}
 	this.setTileRes = function(id){
-		switch(id){
-			case 0:
-				this.zoomLevel=1000;
-				break;
-			case 1:
-				this.zoomLevel=500;
-				break;
-			case 2:
-				this.zoomLevel=250;
-				break;
-			case 3:
-				this.zoomLevel=125;
-				break;
-			case 4:
-				this.zoomLevel=63;
-				break;
-	    }
+		if(this.levelAvailable[id]){
+			switch(id){
+				case 0:
+					this.zoomLevel=1000;
+					break;
+				case 1:
+					this.zoomLevel=500;
+					break;
+				case 2:
+					this.zoomLevel=250;
+					break;
+				case 3:
+					this.zoomLevel=125;
+					break;
+				case 4:
+					this.zoomLevel=63;
+					break;
+		    }
+		}
 	}
 }
