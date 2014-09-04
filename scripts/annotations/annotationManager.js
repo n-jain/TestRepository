@@ -149,6 +149,17 @@ function AnnotationManager(tileView){
 			}
 		}
 	}
+	this.ondblclick = function(x,y){
+		console.log(x,y);
+		if(tileView.getTool()==POLYGON_TOOL){
+			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
+				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
+				if(dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
+					currentAnnotation.closed=true;
+				tileView.setTool(NO_TOOL);
+			}
+		}
+	}
 	this.textUpdate = function(text){
 		if(selectedAnnotations.length==1)
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
@@ -339,8 +350,15 @@ function AnnotationManager(tileView){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
 		return dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
 	}
-	this.printJSON = function(){
-		alert(JSON.stringify(new AnnotationJSON(selectedAnnotations[0])));
+	this.loadAnnotation = function(jsonString){
+		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);
+		if(annotation.type==SCALE_ANNOTATION){
+			this.scaleAnnotation=annotation;
+			for(var i=0; i<annotations.length; i++){
+				annotations[i].updateMeasure();
+			}
+		}
+		annotations[annotations.length] = annotation;
 	}
 }
 function removeFromArray(array, element){

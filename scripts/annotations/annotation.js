@@ -6,6 +6,9 @@ function Annotation(type, tileView){
 
 	this.id=createUUID();
 	this.userId=userId;
+	this.projectId=projectId;
+	this.sheetId=sheetId;
+
 	this.type=type;
 	this.points=new Array();	
 
@@ -30,7 +33,7 @@ function Annotation(type, tileView){
 	this.y_handle;
 
 	this.measurement;
-	this.updateMeasure;
+	this.updateMeasure = function(){};
 	this.bounds;
 
 	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
@@ -99,7 +102,7 @@ function Annotation(type, tileView){
 	this.drawBoundsRect = function(context){
 		context.strokeStyle="#0022FF"
 		context.lineWidth=2/tileView.scale;
-		var bounds = this.bounds.inset(-BOUND_DIST);
+		var bounds = this.bounds.inset(-BOUND_DIST/tileView.scale);
 		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
 	}
 	this.drawHandlesRect = function(context){
@@ -137,7 +140,7 @@ function Annotation(type, tileView){
 	}
 	this.getPoint = function(id,handle){
 		var rect = this.bounds.clone();
-		if(handle)rect=rect.inset(-BOUND_DIST);
+		if(handle)rect=rect.inset(-BOUND_DIST/tileView.scale);
 		var loc = new Point();
 		switch(id){//0 is top left, increases clockwise
 			case 0:loc.x=rect.left;loc.y=rect.top;break;
@@ -180,8 +183,8 @@ function Annotation(type, tileView){
 		if(handleId==1||handleId==5){xDis=this.bounds.width();xDir=1;}
 		if(handleId==3||handleId==7){yDis=this.bounds.height();yDir=1;}
 				
-		if(xDis<=BOUND_DIST||xDir==-1)xDis = BOUND_DIST;
-		if(yDis<=BOUND_DIST||yDir==-1)yDis = BOUND_DIST;
+		if(xDis<=BOUND_DIST/tileView.scale||xDir==-1)xDis = BOUND_DIST/tileView.scale;
+		if(yDis<=BOUND_DIST/tileView.scale||yDir==-1)yDis = BOUND_DIST/tileView.scale;
 		
 		var xScale = xDir*((this.bounds.width()==0)?1:xDis/this.bounds.width());
 		var yScale = yDir*((this.bounds.height()==0)?1:yDis/this.bounds.height());
@@ -643,8 +646,8 @@ function AnnotationJSON(annotation){
 	this.closed;
 	//UNIVERSAL
 	this.id = annotation.id;
-	this.projectId = projectId;
-	this.sheetId = sheetId;
+	this.projectId = annotation.projectId;
+	this.sheetId = annotation.sheetId;
 	this.userId = annotation.userId;
 
 	this.type = annotation.type;
@@ -655,12 +658,13 @@ function AnnotationJSON(annotation){
 	this.fill = annotation.fill?1:0;
 	this.areaVisible = annotation.areaMeasured?1:0;
 	this.unitOfMeasure;
+	this.lineWidth=annotation.lineWidth;
 	if(annotation.measurement!=null){
 		this.unitOfMeasure = unitNames[annotation.measurement.type][annotation.measurement.unit].toLowerCase();
 	} else {
 		this.unitOfMeasure = "na";
 	}
-	this.lineWidth=annotation.lineWidth;
+
 	//SPECIFIC
 	if(!rectType)
 		this.points = annotation.points;
@@ -680,4 +684,45 @@ function AnnotationJSON(annotation){
 	if(annotation.type==POLYGON_ANNOTATION){
 		this.closed=annotation.closed;
 	}
+}
+function loadAnnotationJSON(json,tileView){
+	var annotation = new Annotation(json.type,tileView);
+	annotation.id=json.id;
+	annotation.projectId=json.projectId;
+	annotation.sheetId=json.sheetId;
+	annotation.userId=json.userId;
+
+	annotation.color.red = json.colorRed;
+	annotation.color.green = json.colorGreen;
+	annotation.color.blue = json.colorBlue;
+	annotation.zOrder = json.zOrder;
+	annotation.fill = json.fill==1;
+	annotation.areaMeasured = json.areaVisible==1;
+	annotation.lineWidth = json.lineWidth;
+	
+	if(json.unitOfMeasure!="na"){
+		var unitInfo = toUnit(json.unitOfMeasure);
+		if(json.type==SCALE_ANNOTATION||json.type==MEASURE_ANNOTATION){
+			annotation.measurement = new Measurement(json.distance,unitInfo[0],unitInfo[1]);			
+		} else {
+			annotation.measurement = new Measurement(0,unitInfo[0],unitInfo[1]);
+		}
+	}
+	var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
+					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
+	if(rectType){
+		annotation.points = [new Point(json.x,json.y), new Point(json.x+json.width,json.y+json.height)];
+	} else {
+		annotation.points = json.points;
+	}
+	if(json.type==TEXT_ANNOTATION){
+		annotation.text=json.text;
+		annotation.textSize=json.textSize;		
+	}
+	if(json.type==POLYGON_ANNOTATION){
+		annotation.closed=json.closed;
+	}
+	annotation.calcBounds();
+	annotation.updateMeasure();
+	return annotation;
 }

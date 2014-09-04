@@ -35,6 +35,10 @@ function loadSheet(slicePath,previewPath,sheet,project,user){
     canvas.onmousedown = tileView.mouseControls.onmousedown;
     canvas.onmouseup = tileView.mouseControls.onmouseup;
     canvas.onmousemove = tileView.mouseControls.onmousemove;
+    canvas.onclick = tileView.mouseControls.onclick;
+    canvas.ondblclick = tileView.mouseControls.ondblclick;
+        
+
     window.addEventListener("mousewheel",tileView.mouseControls.onmousewheel,true);
     window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);    
 }

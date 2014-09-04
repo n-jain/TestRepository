@@ -5,9 +5,6 @@ function MouseControls(tileView){
 	var tileview_start_x;
 	var tileview_start_y;
 	var dragging=false;
-	var clickStartTime;
-	var clickTime = 300;
-	var clickMove=10;
 	this.onmousewheel = function(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
 		var y = e.clientY/tileView.scale-tileView.scrollY;
@@ -47,11 +44,6 @@ function MouseControls(tileView){
 		var y = e.clientY/tileView.scale-tileView.scrollY;
 		tileView.annotationManager.onmouseup(x,y);
 		dragging=false;
-		var moved=false;
-		moved = Math.abs(mouse_start_x-e.clientX)>clickMove&&Math.abs(mouse_start_y-e.clientY)>clickMove;
-		if(getTime()-clickStartTime<clickTime&&!moved&&tileView.getTool()==NO_TOOL){
-			tileView.annotationManager.onclick(x,y);
-		}
 	}
 	this.onmousemove = function(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
@@ -63,6 +55,16 @@ function MouseControls(tileView){
 			tileView.scrollX=tileview_start_x+(window_x-mouse_start_x)/tileView.scale;
 			tileView.scrollY=tileview_start_y+(window_y-mouse_start_y)/tileView.scale;
 		}
+	}
+	this.onclick = function(e){
+		var x = e.clientX/tileView.scale-tileView.scrollX;
+		var y = e.clientY/tileView.scale-tileView.scrollY;
+		tileView.annotationManager.onclick(x,y);
+	}
+	this.ondblclick = function(e){
+		var x = e.clientX/tileView.scale-tileView.scrollX;
+		var y = e.clientY/tileView.scale-tileView.scrollY;
+		tileView.annotationManager.ondblclick(x,y);
 	}
 	var wheelDistance = function(evt){
 		if (!evt) evt = event;
