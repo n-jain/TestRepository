@@ -22,7 +22,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 
 	var firstDraw;
 
-	this.create = function(slicePath, previewPath){
+	this.create = function(sheet){
 		context=canvas.getContext('2d');
 
 		context.imageSmoothingEnabled=false;
@@ -32,7 +32,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.scrollX=0;
 	    this.scrollY=0;
 	    this.scale=1;
-		this.tileLoader = new TileLoader(slicePath,previewPath,this);
+		this.tileLoader = new TileLoader(sheet.slicesUrl,sheet.previewUrl,this);
 		this.keyboardControls = new KeyboardControls(this);
 		this.mouseControls = new MouseControls(this);
 		this.annotationManager = new AnnotationManager(this);
@@ -41,6 +41,10 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.firstDraw=false;
 		this.color=new Color(1,0,0,1);
 		tool=NO_TOOL;
+
+		for(var i=0; i<sheet.annotations.length; i++){
+			this.annotationManager.loadAnnotation(sheet.annotations[i].data);
+		}
 	}
 
 	this.drawAll = function() {

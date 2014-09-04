@@ -36,7 +36,7 @@ angular.module("bluvueSheet").directive("bvSheet", [
                  * }
                  */
 
-                loadSheet(scope.sheet.slicesUrl, scope.sheet.previewUrl, scope.sheet.sheetId, scope.sheet.projectId, scope.userId);
+                loadSheet(scope.sheet);
             }
         }
     }
@@ -52,10 +52,10 @@ var userId;
 var projectId;
 var sheetId;
 
-function loadSheet(slicePath,previewPath,sheet,project,user){
-    sheetId=sheet;
-    projectId=project;
-    userId=user;
+function loadSheet(sheet){
+    sheetId=sheet.sheetId;
+    projectId=sheet.projectId;
+    userId=sheet.userId;
     //make on screen controls
     toolMenu = new ToolMenu();
     optionsMenu = new OptionsMenu();
@@ -65,7 +65,7 @@ function loadSheet(slicePath,previewPath,sheet,project,user){
     var canvas = document.getElementById('canvas1');
     //make tileView
     tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor);
-    tileView.create(slicePath,previewPath);
+    tileView.create(sheet);
 
     //create loop
     setInterval(mainLoop, 1000/60);
