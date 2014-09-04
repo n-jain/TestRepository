@@ -14,6 +14,7 @@ function Tile(zipObject,tileLoader){
 		me.y=parseInt(parts[1])*tileLoader.tileSize*1000/me.zoomLevel;
 		tileLoader.loaded++;
 		tileLoader.calcSize();
+		tileLoader.levelAvailable[levelIndex(me.zoomLevel)]=true;
 	}
 	this.drawMe = function(context){
     	context.drawImage(this.image, this.x, this.y, this.image.width*1000/this.zoomLevel, this.image.height*1000/this.zoomLevel);
@@ -23,5 +24,19 @@ function Tile(zipObject,tileLoader){
 	}
 	this.getBottom = function(){
 		return this.y+this.image.height;
+	}
+	function levelIndex(level){
+		switch(level){
+			case 1000:
+				return 1;
+			case 500:
+				return 2;
+			case 250:
+				return 3;
+			case 125:
+				return 4;
+			case 63:
+				return 5;
+		}
 	}
 }

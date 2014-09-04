@@ -150,11 +150,10 @@ function AnnotationManager(tileView){
 		}
 	}
 	this.ondblclick = function(x,y){
-		console.log(x,y);
 		if(tileView.getTool()==POLYGON_TOOL){
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
-				if(dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
+				if(Point.dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
 					currentAnnotation.closed=true;
 				tileView.setTool(NO_TOOL);
 			}
@@ -348,7 +347,7 @@ function AnnotationManager(tileView){
 	}
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
-		return dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
+		return Point.dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
 	}
 	this.loadAnnotation = function(jsonString){
 		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);

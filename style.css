@@ -20,11 +20,6 @@ canvas {
 	width: 50px;
 	vertical-align: middle;
 }
-#res_menu {
-	position:fixed;
-	bottom: 10px;
-	left: 10px;
-}
 #tool_menu, #options_menu {
 	background: #000000;
 	opacity: 0.6;

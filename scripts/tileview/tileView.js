@@ -93,4 +93,11 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		}
 		this.annotationManager.updateOptionsMenu();
 	}
+	this.updateRes = function(){
+		this.tileLoader.setTileRes(5);
+		if(this.scale>0.063)this.tileLoader.setTileRes(4);
+		if(this.scale>0.125)this.tileLoader.setTileRes(3);
+		if(this.scale>0.25)this.tileLoader.setTileRes(2);
+		if(this.scale>0.5)this.tileLoader.setTileRes(1);
+	}
 }

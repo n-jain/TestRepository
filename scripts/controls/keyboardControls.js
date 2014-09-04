@@ -14,8 +14,14 @@ function KeyboardControls(tileView){
 			if(scrollRight)tileView.scrollX-=scrollSpeed/tileView.scale;
 			if(scrollUp)tileView.scrollY+=scrollSpeed/tileView.scale;
 			if(scrollDown)tileView.scrollY-=scrollSpeed/tileView.scale;
-			if(zoomIn)tileView.scale*=1.09;
-			if(zoomOut)tileView.scale/=1.09;
+			if(zoomIn){
+				tileView.scale*=1.09;
+				tileView.updateRes();
+			}
+			if(zoomOut){
+				tileView.scale/=1.09;
+				tileView.updateRes();
+			}
 			tileView.draw = (zoomIn||zoomOut||scrollLeft||scrollRight||scrollUp||scrollDown);
 		}
 	}

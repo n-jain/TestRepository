@@ -37,13 +37,9 @@ function loadSheet(slicePath,previewPath,sheet,project,user){
     canvas.onmousemove = tileView.mouseControls.onmousemove;
     canvas.onclick = tileView.mouseControls.onclick;
     canvas.ondblclick = tileView.mouseControls.ondblclick;
-        
 
     window.addEventListener("mousewheel",tileView.mouseControls.onmousewheel,true);
     window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);    
-}
-function setTileRes(id){
-    tileView.tileLoader.setTileRes(id);
 }
 function setTool(id){
     tileView.setTool(id);
