@@ -87,6 +87,9 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 			case AREA_OPTION:
 				this.annotationManager.areaSelectedAnnotation();
 				break;
+			case MASTER_OPTION:
+				this.annotationManager.masterSelectedAnnotations();
+				break;
 		}
 		this.annotationManager.updateOptionsMenu();
 	}

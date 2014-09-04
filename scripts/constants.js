@@ -21,7 +21,7 @@ var PEN_TOOL=9;
 var HIGHLIGHTER_TOOL=10;
 var RULER_TOOL=11;
 var MAIL_TOOL=12;
-
+//change these to match the JSON ones
 var NO_ANNOTATION=-1;
 var LASSO_ANNOTATION=0;
 var SQUARE_ANNOTATION=1;

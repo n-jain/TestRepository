@@ -1,15 +1,14 @@
 function Point(x,y){
 	this.x=x;
 	this.y=y;
-	this.dist = function(point){
-		var dx = this.x-point.x;
-		var dy = this.y-point.y;
-		return Math.sqrt((dx*dx)+(dy*dy));
-	}
+}
+function dist(p1, p2){
+	var dx = p1.x-p2.x;
+	var dy = p1.y-p2.y;
+	return Math.sqrt((dx*dx)+(dy*dy));
 }
 function ScaleMatrix(sx,sy,px,py){
 	this.applyTo = function(point){
-		
 		var dx = point.x-px;
 		var dy = point.y-py;
 		point.x=px+(dx*sx);

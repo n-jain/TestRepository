@@ -1,10 +1,11 @@
 var handleImage = new Image();
 handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
-	var rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
+	this.rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 
 	this.id=createUUID();
+	this.userId=userId;
 	this.type=type;
 	this.points=new Array();	
 
@@ -19,6 +20,8 @@ function Annotation(type, tileView){
 
 	this.text="";
 	this.textSize=tileView.textSize;
+
+	this.closed=false;
 
 	this.tileView=tileView;
 	this.offset_x=0;
@@ -85,9 +88,9 @@ function Annotation(type, tileView){
 		context.restore();
 	}
 	this.drawSelected = function(context){
-		if(rectType||!this.showHandles)this.drawBoundsRect(context);
+		if(this.rectType||!this.showHandles)this.drawBoundsRect(context);
 		if(this.showHandles){
-			if(rectType)
+			if(this.rectType)
 				this.drawHandlesRect(context);
 			else
 				this.drawHandlesPoint(context);
@@ -323,6 +326,9 @@ function drawPoints(context){
 		context.moveTo(this.points[0].x,this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
 			context.lineTo(this.points[i].x,this.points[i].y);
+		}
+		if(this.closed){
+			context.lineTo(this.points[0].x,this.points[0].y);	
 		}
 		if(this.fill&&this.type!=HIGHLIGHTER_ANNOTATION)context.fill();
 		context.stroke();
@@ -621,5 +627,57 @@ function Color(red,green,blue,alpha){
 	}
 	this.clone=function(){
 		return new Color(this.red, this.green, this.blue, this.alpha);
+	}
+}
+function AnnotationJSON(annotation){
+	var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
+					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
+	this.points;
+	this.x;
+	this.y;
+	this.width;
+	this.height;
+	this.text;
+	this.textSize;
+	this.distance;
+	this.closed;
+	//UNIVERSAL
+	this.id = annotation.id;
+	this.projectId = projectId;
+	this.sheetId = sheetId;
+	this.userId = annotation.userId;
+
+	this.type = annotation.type;
+	this.colorRed = annotation.color.red;
+	this.colorGreen = annotation.color.green;
+	this.colorBlue = annotation.color.blue;
+	this.zOrder = 0;
+	this.fill = annotation.fill?1:0;
+	this.areaVisible = annotation.areaMeasured?1:0;
+	this.unitOfMeasure;
+	if(annotation.measurement!=null){
+		this.unitOfMeasure = unitNames[annotation.measurement.type][annotation.measurement.unit].toLowerCase();
+	} else {
+		this.unitOfMeasure = "na";
+	}
+	this.lineWidth=annotation.lineWidth;
+	//SPECIFIC
+	if(!rectType)
+		this.points = annotation.points;
+	else {
+		this.x = annotation.bounds.left;
+		this.y = annotation.bounds.top;
+		this.width = annotation.bounds.width();
+		this.height = annotation.bounds.height();
+	}
+	if(annotation.type==TEXT_ANNOTATION){
+		this.text=annotation.text;
+		this.textSize=annotation.textSize;
+	}
+	if(annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION){
+		this.distance=annotation.measurement.amount;
+	}
+	if(annotation.type==POLYGON_ANNOTATION){
+		this.closed=annotation.closed;
 	}
 }

@@ -4,10 +4,17 @@ var optionsMenu;
 var colorMenu;
 var textEditor;
 
+var userId;
+var projectId;
+var sheetId;
+
 window.onload = function() {
-    loadSheet("sheet/slices.zip","sheet/preview.png");
+    loadSheet("sheet/slices.zip","sheet/preview.png","sheet1","project1","user1");
 }
-function loadSheet(slicePath,previewPath){
+function loadSheet(slicePath,previewPath,sheet,project,user){
+    sheetId=sheet;
+    projectId=project;
+    userId=user;
     //make on screen controls
     toolMenu = new ToolMenu();
     optionsMenu = new OptionsMenu();

@@ -38,9 +38,7 @@ function AnnotationManager(tileView){
 		if(selectedAnnotations.length==1){
 			touchedHandle=-1;
 			var annotation = selectedAnnotations[0];
-			var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
-			annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
-			if(normal){
+			if(annotation.rectType){
 				for(var i=0; i<8;i++){
 					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
 				}				
@@ -93,9 +91,7 @@ function AnnotationManager(tileView){
 				}				
 			} else {
 				var annotation = selectedAnnotations[0];
-				var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
-				annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
-				if(normal){
+				if(annotation.rectType){
 					annotation.scaleWithHandleTo(x,y,touchedHandle);
 				}else{
 					annotation.points[touchedHandle] = new Point(x,y);					
@@ -251,6 +247,17 @@ function AnnotationManager(tileView){
 			selectedAnnotations[0].updateMeasure();
 		}
 	}
+	this.masterSelectedAnnotations = function(){
+		var master = true;
+		for(var i=0; i<selectedAnnotations.length; i++){
+			if(selectedAnnotations[i].userId==undefined){
+				master=false;
+			}
+		}
+		for(var i=0; i<selectedAnnotations.length; i++){
+			selectedAnnotations[i].userId=master?undefined:userId;
+		}
+	}
 	var pointInLasso = function(point){
 		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
 		//find all intersections. count how many have an x value greater/less than. if both numbers are even, it is outside (ray goes through and comes out)
@@ -329,10 +336,11 @@ function AnnotationManager(tileView){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	var isHandleTouched = function(x,y,id,annotation){
-		var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
-			annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
-		var handleLoc = normal?annotation.getPoint(id,true):annotation.points[id];
-		return handleLoc.dist(new Point(x,y))<HANDLE_TOUCH_RADIUS/tileView.scale;
+		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
+		return dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
+	}
+	this.printJSON = function(){
+		alert(JSON.stringify(new AnnotationJSON(selectedAnnotations[0])));
 	}
 }
 function removeFromArray(array, element){

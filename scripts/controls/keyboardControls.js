@@ -62,6 +62,9 @@ function KeyboardControls(tileView){
 			case 69://E
 				zoomOut=false;
 				break;
+			case 74://J
+				tileView.annotationManager.printJSON();
+				break;
 		}
 	}	
 }
