@@ -1,3 +1,21 @@
+function Point(x,y){
+	this.x=x;
+	this.y=y;
+	this.dist = function(point){
+		var dx = this.x-point.x;
+		var dy = this.y-point.y;
+		return Math.sqrt((dx*dx)+(dy*dy));
+	}
+}
+function ScaleMatrix(sx,sy,px,py){
+	this.applyTo = function(point){
+		
+		var dx = point.x-px;
+		var dy = point.y-py;
+		point.x=px+(dx*sx);
+		point.y=py+(dy*sy);
+	}
+}
 function Rect(left,top,right,bottom){
 	this.left=left;
 	this.right=right;

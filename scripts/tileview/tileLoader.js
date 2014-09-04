@@ -1,10 +1,10 @@
-function TileLoader(){
+function TileLoader(slicePath, previewPath){
 	this.loaded=0;
 	this.zoomLevel=1000;
 	this.tileSize = 512;
 	this.tiles = null;
 	this.preview = new Image();
-	this.preview.src = "sheet/preview.png";
+	this.preview.src = previewPath;
 
 	//Drawing tiles
 	this.drawAllTiles = function(context){
@@ -36,7 +36,7 @@ function TileLoader(){
 		}
 		me.loadTiles(data);
 	}
-	JSZipUtils.getBinaryContent("sheet/slices.zip", this.doneLoading);
+	JSZipUtils.getBinaryContent(slicePath, this.doneLoading);
 
 	this.width=0;
 	this.height=0;

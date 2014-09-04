@@ -1,7 +1,6 @@
 var handleImage = new Image();
 handleImage.src="images/ui/handle1.png";
 function Annotation(type, tileView){
-	var boundDist=15;
 	var rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 
@@ -97,7 +96,7 @@ function Annotation(type, tileView){
 	this.drawBoundsRect = function(context){
 		context.strokeStyle="#0022FF"
 		context.lineWidth=2/tileView.scale;
-		var bounds = this.bounds.inset(-boundDist);
+		var bounds = this.bounds.inset(-BOUND_DIST);
 		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
 	}
 	this.drawHandlesRect = function(context){
@@ -135,7 +134,7 @@ function Annotation(type, tileView){
 	}
 	this.getPoint = function(id,handle){
 		var rect = this.bounds.clone();
-		if(handle)rect=rect.inset(-boundDist);
+		if(handle)rect=rect.inset(-BOUND_DIST);
 		var loc = new Point();
 		switch(id){//0 is top left, increases clockwise
 			case 0:loc.x=rect.left;loc.y=rect.top;break;
@@ -161,6 +160,35 @@ function Annotation(type, tileView){
 		this.calcBounds();
 		this.offset_x=0;
 		this.offset_y=0;
+	}
+	this.scaleWithHandleTo = function(x,y,handleId){
+		var xPositive = (handleId==2||handleId==3||handleId==4);
+		var yPositive = (handleId==4||handleId==5||handleId==6);
+				
+		var scaleOrigin = this.getPoint((handleId+4)%8,false);
+		
+		var xDis = Math.abs(scaleOrigin.x-x);
+		var yDis = Math.abs(scaleOrigin.y-y);
+		
+		//1 if normal, -1 if flipped
+		var xDir = x-scaleOrigin.x>=0?1:-1;if(!xPositive)xDir*=-1;
+		var yDir = y-scaleOrigin.y>=0?1:-1;if(!yPositive)yDir*=-1;
+
+		if(handleId==1||handleId==5){xDis=this.bounds.width();xDir=1;}
+		if(handleId==3||handleId==7){yDis=this.bounds.height();yDir=1;}
+				
+		if(xDis<=BOUND_DIST||xDir==-1)xDis = BOUND_DIST;
+		if(yDis<=BOUND_DIST||yDir==-1)yDis = BOUND_DIST;
+		
+		var xScale = xDir*((this.bounds.width()==0)?1:xDis/this.bounds.width());
+		var yScale = yDir*((this.bounds.height()==0)?1:yDis/this.bounds.height());
+		
+		var matrix = new ScaleMatrix(xDir*xScale, yDir*yScale, scaleOrigin.x, scaleOrigin.y);
+		for(var i=0; i<this.points.length; i++){
+			matrix.applyTo(this.points[i]);
+		}
+		this.calcBounds();
+		this.updateMeasure();
 	}
 }
 function updateMeasureLength(){
@@ -490,7 +518,6 @@ function drawMeasure(context){
 		var baseEndLength = 8;
 		var measureSpace;
 		if(this.measurement!=null){
-			console.log(this.measurement);
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
 			var text = this.measurement.toString();

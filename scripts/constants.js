@@ -98,3 +98,6 @@ var AREA = 1;
 
 var unitNames = [["IN","FT","FT IN","YD","MI","CM","M","KM"],
 				["IN2","FT2","YD2","AC","MI2","CM2","M2","HA","KM2"]];
+
+var HANDLE_TOUCH_RADIUS = 30;
+var BOUND_DIST = 15;

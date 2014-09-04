@@ -22,7 +22,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 
 	var firstDraw;
 
-	this.create = function(){
+	this.create = function(slicePath, previewPath){
 		context=canvas.getContext('2d');
 
 		context.imageSmoothingEnabled=false;
@@ -32,7 +32,7 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor){
 		this.scrollX=0;
 	    this.scrollY=0;
 	    this.scale=1;
-		this.tileLoader = new TileLoader();
+		this.tileLoader = new TileLoader(slicePath,previewPath);
 		this.keyboardControls = new KeyboardControls(this);
 		this.mouseControls = new MouseControls(this);
 		this.annotationManager = new AnnotationManager(this);

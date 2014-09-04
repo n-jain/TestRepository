@@ -5,18 +5,21 @@ var colorMenu;
 var textEditor;
 
 window.onload = function() {
-	//make canvas
-	var canvas = document.getElementById('canvas1');
+    loadSheet("sheet/slices.zip","sheet/preview.png");
+}
+function loadSheet(slicePath,previewPath){
     //make on screen controls
     toolMenu = new ToolMenu();
     optionsMenu = new OptionsMenu();
-	colorMenu = new ColorMenu();
+    colorMenu = new ColorMenu();
     textEditor = new TextEditor();
+    
+    var canvas = document.getElementById('canvas1');
     //make tileView
-	tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor);
-    tileView.create();
+    tileView = new TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor);
+    tileView.create(slicePath,previewPath);
 
-	//create loop
+    //create loop
     setInterval(mainLoop, 1000/60);
     //setup key controls
     window.addEventListener("keydown",tileView.keyboardControls.onKeyDown,true);
@@ -26,9 +29,7 @@ window.onload = function() {
     canvas.onmouseup = tileView.mouseControls.onmouseup;
     canvas.onmousemove = tileView.mouseControls.onmousemove;
     window.addEventListener("mousewheel",tileView.mouseControls.onmousewheel,true);
-    window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);
-
-    httpGet("Users/Me");
+    window.addEventListener("DOMMouseScroll",tileView.mouseControls.onmousewheel,true);    
 }
 function setTileRes(id){
     tileView.tileLoader.setTileRes(id);

@@ -3,6 +3,7 @@ function AnnotationManager(tileView){
 	var selectedAnnotations = new Array();
 	var currentAnnotation;
 	var lasso;
+	var touchedHandle=-1;
 	this.captureMouse=false;
 	this.captureKeyboard=false;
 	this.scaleAnnotation;
@@ -30,11 +31,28 @@ function AnnotationManager(tileView){
 		//check if selected annotation is being touched
 		var selectIndex=-1;
 		for(var i=0; i<selectedAnnotations.length; i++){
-			if(selectedAnnotations[i].bounds.contains(x,y)){
+			if(selectedAnnotations[i].bounds.inset(-BOUND_DIST).contains(x,y)){
 				selectIndex=i;
 			}
 		}
-		if(selectIndex!=-1){
+		if(selectedAnnotations.length==1){
+			touchedHandle=-1;
+			var annotation = selectedAnnotations[0];
+			var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
+			annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
+			if(normal){
+				for(var i=0; i<8;i++){
+					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
+				}				
+			} else {
+				for(var i=0; i<annotation.points.length;i++){
+					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
+				}
+			}
+
+			if(touchedHandle!=-1)this.captureMouse=true;
+		}
+		if(selectIndex!=-1&&touchedHandle==-1){
 			for(var i=0; i<selectedAnnotations.length; i++){
 				selectedAnnotations[i].x_handle = x-selectedAnnotations[i].bounds.centerX();
 				selectedAnnotations[i].y_handle = y-selectedAnnotations[i].bounds.centerY();
@@ -68,9 +86,21 @@ function AnnotationManager(tileView){
 			}
 		}
 		if(this.captureMouse&&currentAnnotation==null){
-			for(var i=0; i<selectedAnnotations.length; i++){
-				//move text box if it is present
-				selectedAnnotations[i].offsetTo(x,y);
+			if(touchedHandle==-1){
+				for(var i=0; i<selectedAnnotations.length; i++){
+					//move text box if it is present
+					selectedAnnotations[i].offsetTo(x,y);
+				}				
+			} else {
+				var annotation = selectedAnnotations[0];
+				var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
+				annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
+				if(normal){
+					annotation.scaleWithHandleTo(x,y,touchedHandle);
+				}else{
+					annotation.points[touchedHandle] = new Point(x,y);					
+					annotation.updateMeasure();
+				}
 			}
 		}
 	}
@@ -297,6 +327,12 @@ function AnnotationManager(tileView){
 	}
 	this.updateOptionsMenu = function(){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+	}
+	var isHandleTouched = function(x,y,id,annotation){
+		var normal = (annotation.type!=ARROW_ANNOTATION&&annotation.type!=POLYGON_ANNOTATION&&
+			annotation.type!=LINE_ANNOTATION&&annotation.type!=MEASURE_ANNOTATION&&annotation.type!=SCALE_ANNOTATION);
+		var handleLoc = normal?annotation.getPoint(id,true):annotation.points[id];
+		return handleLoc.dist(new Point(x,y))<HANDLE_TOUCH_RADIUS/tileView.scale;
 	}
 }
 function removeFromArray(array, element){
