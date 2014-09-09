@@ -33,10 +33,14 @@ function Annotation(type, tileView){
 	this.measurement;
 	this.updateMeasure = function(){};
 	this.bounds;
-
-	var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
-	this.color.alpha=alpha;
 	
+	this.setColor = function(color){
+		this.color=color.clone();
+		var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
+		this.color.alpha=alpha;
+	}
+	this.setColor(this.color);
+
 	if(type==LASSO_ANNOTATION){
 		this.color=new Color(0,0.2,1,1);
 		this.fill=true;
@@ -157,13 +161,17 @@ function Annotation(type, tileView){
 		this.offset_y=y-this.y_handle-this.bounds.centerY();
 	}
 	this.applyOffset = function(){
-		for(var i=0; i<this.points.length; i++){
-			this.points[i].x+=this.offset_x;
-			this.points[i].y+=this.offset_y;
+		if(this.offset_y!=0||this.offset_x!=0){
+			for(var i=0; i<this.points.length; i++){
+				this.points[i].x+=this.offset_x;
+				this.points[i].y+=this.offset_y;
+			}
+			this.calcBounds();
+			this.offset_x=0;
+			this.offset_y=0;
+			return true;
 		}
-		this.calcBounds();
-		this.offset_x=0;
-		this.offset_y=0;
+		return false;
 	}
 	this.scaleWithHandleTo = function(x,y,handleId){
 		var xPositive = (handleId==2||handleId==3||handleId==4);

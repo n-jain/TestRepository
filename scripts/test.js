@@ -52,7 +52,7 @@ data:"{\"id\":\"4cf1e61966284edb88cb9a5058715f13\",\"areaVisible\":0,\"colorRed\
             }
 
             $scope.deleteAnnotation = function(annotationId) {
-                var throwSaveError = true;
+                var throwSaveError = false;
                 var deferred = $q.defer();
 
                 setTimeout(function () {

@@ -1,6 +1,7 @@
 function AnnotationManager(tileView, scope){
 	var annotations = new Array();
 	var selectedAnnotations = new Array();
+	var toSave = new Array();
 	var currentAnnotation;
 	var lasso;
 	var touchedHandle=-1;
@@ -8,6 +9,13 @@ function AnnotationManager(tileView, scope){
 	this.captureMouse=false;
 	this.captureKeyboard=false;
 	this.scaleAnnotation;
+	var me = this;
+	setInterval(function(){
+		for(var i=0; i<toSave.length; i++){
+			me.saveAnnotation(toSave[i]);
+		}
+	}, 15000);
+
 
 	this.onmousedown = function(x,y){
 		this.captureMouse = false;
@@ -59,8 +67,14 @@ function AnnotationManager(tileView, scope){
 		}
 	}
 	this.onmouseup = function(x,y){
+		var save = false;
 		for(var i=0; i<selectedAnnotations.length; i++){
-			selectedAnnotations[i].applyOffset();
+			if(selectedAnnotations[i].applyOffset()){
+				save = true;
+			}
+		}
+		if(touchedHandle!=-1){
+			save=true;
 		}
 		this.captureMouse = false;
 		if(tileView.getTool()!=POLYGON_TOOL){
@@ -70,6 +84,9 @@ function AnnotationManager(tileView, scope){
 		if(lasso!=null){
 			this.selectAllInLasso();
 			lasso=null;
+		}
+		if(save){
+			this.saveSelectedAnnotations();
 		}
 	}
 	this.onmousemove = function(x,y){
@@ -170,8 +187,10 @@ function AnnotationManager(tileView, scope){
 	}
 	this.setTextSize = function(textSize){
 		if(selectedAnnotations.length==1)
-			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
+			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
 				selectedAnnotations[0].textSize=textSize;
+				this.saveSelectedAnnotations();
+			}	
 	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
@@ -193,6 +212,11 @@ function AnnotationManager(tileView, scope){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
+		if(selectedAnnotations.length==1){
+			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
+				this.saveSelectedAnnotations();
+			}
+		}
 		var toKill = new Array();
 		selectedAnnotations=new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -264,14 +288,16 @@ function AnnotationManager(tileView, scope){
 			selectedAnnotations[i].fill=totalFilled<selectedAnnotations.length;
 			ret = selectedAnnotations[i].fill;
 		}
+		this.saveSelectedAnnotations();
 		return ret;
 	}
 	this.colorSelectedAnnotations = function(color){
 		var ret = false;
 		for(var i=0; i<selectedAnnotations.length; i++){
-			selectedAnnotations[i].color=color;
+			selectedAnnotations[i].setColor(color);
 			ret=true;
 		}
+		this.saveSelectedAnnotations();
 		return ret;
 	}
 	this.areaSelectedAnnotation = function(){
@@ -280,6 +306,7 @@ function AnnotationManager(tileView, scope){
 			selectedAnnotations[0].measurement = new Measurement(0,toArea(this.scaleAnnotation.measurement.unit),AREA);
 			selectedAnnotations[0].updateMeasure();
 		}
+		this.saveSelectedAnnotations();
 	}
 	this.masterSelectedAnnotations = function(){
 		var master = true;
@@ -291,6 +318,7 @@ function AnnotationManager(tileView, scope){
 		for(var i=0; i<selectedAnnotations.length; i++){
 			selectedAnnotations[i].userId=master?undefined:userId;
 		}
+		this.saveSelectedAnnotations();
 	}
 	var pointInLasso = function(point){
 		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
@@ -354,6 +382,7 @@ function AnnotationManager(tileView, scope){
 					currentAnnotation.calcBounds();
 					annotations[annotations.length] = currentAnnotation;
 					if(currentAnnotation.type!=TEXT_ANNOTATION)currentAnnotation.added=true;
+					this.saveAnnotation(currentAnnotation);
 				}
 			}
 			if(currentAnnotation.type==TEXT_ANNOTATION){
@@ -362,10 +391,6 @@ function AnnotationManager(tileView, scope){
 			cancelClick=true;
 		}
 		currentAnnotation=null;
-	}
-	this.clearAnnotations = function(){
-		annotations = new Array();
-		this.scaleAnnotation=null;
 	}
 	this.updateOptionsMenu = function(){
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
@@ -384,9 +409,19 @@ function AnnotationManager(tileView, scope){
 		}
 		annotations[annotations.length] = annotation;
 	}
-	this.syncAnnotations = function(){
-		//saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
-		//delete annotation just needs the annotation id
+	this.saveSelectedAnnotations = function(){
+		for(var i=0; i<selectedAnnotations.length; i++){
+			this.saveAnnotation(selectedAnnotations[i]);
+		}
+	}
+	this.saveAnnotation = function(annotation){
+		scope.saveAnnotation(annotation.id,projectId,sheetId,userId,annotation.type,new AnnotationJSON(annotation)).then(function(){
+			removeFromArray(toSave, annotation);
+		}).catch(function(error){
+			if(toSave.indexOf(annotation)==-1){
+				toSave[toSave.length]=annotation;
+			}
+		});
 	}
 }
 function removeFromArray(array, element){
