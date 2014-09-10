@@ -5,17 +5,13 @@ function ToolMenu(){
 	toolMenu.id = "tool_menu";
 
 	for(var i=0; i<names.length; i++){
-		var button = document.createElement("input");
-		button.type = "image";
-		button.className = "tool_button";
-		button.src = "images/toolbar/toolbar_"+names[i].toLowerCase()+".png";
+		var button = document.createElement("div");
+		button.className = "bv-toolbar-image bv-toolbar-" + names[i].toLowerCase();
 		button.name = names[i];
 		button.onclick = function(){
 			setTool(window[this.name.toUpperCase()+"_TOOL"]);
 		};
 		toolMenu.appendChild(button);
-		var br  = document.createElement("br");
-		toolMenu.appendChild(br);
 	}
 	document.getElementsByTagName("body")[0].appendChild(toolMenu);
 }
@@ -28,11 +24,8 @@ function OptionsMenu(){
 	var addButton = function(index){
 		var button = document.getElementById("button_"+names[index]);
 		if(button!=null)return;
-
-		button = document.createElement("input");
-		button.type = "image";
-		button.className = "tool_button";
-		button.src = "images/optionsmenu/annotation_toolbar_"+names[index].toLowerCase()+".png";
+	    button = document.createElement("div");
+	    button.className = "bv-options-image bv-options-" + names[index].toLowerCase();
 		button.name = names[index];
 		button.id = "button_"+names[index];
 		button.onclick = function(){
@@ -140,10 +133,8 @@ function TextEditor(){
 	var textSizeMenu = document.createElement("div");
 	textSizeMenu.id = "text_size_menu";
 	for(var i=0; i<textSizes.length; i++){
-		var button = document.createElement("input");
-		button.type = "image";
-		button.className = "text_size_button";
-		button.src = "images/optionsmenu/annotation_toolbar_text.png";
+		var button = document.createElement("div");
+		button.className = "bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text";
 		button.name = textSizes[i];
 		button.onclick = function(){
 			setTextSize(parseInt(this.name));
