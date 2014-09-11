@@ -1,4 +1,4 @@
-function TileLoader(slicePath, previewPath, tileView){
+BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	this.levelAvailable = new Array();
 	this.loaded=0;
 	this.zoomLevel=1000;
@@ -6,9 +6,12 @@ function TileLoader(slicePath, previewPath, tileView){
 	this.tiles = null;
 	this.preview = new Image();
 	this.preview.src = previewPath;
+	this.width = 0;
+	this.height = 0;
 
 	//Drawing tiles
-	this.drawAllTiles = function(context){
+	this.drawAllTiles = function (context) {
+	    if (this.width == 0 || this.height == 0) { return; }
 		context.drawImage(this.preview, 0, 0, this.width, this.height);
 		if(this.tiles!=null){
 			for(var i=0; i<this.tiles.length; i++){
@@ -25,7 +28,7 @@ function TileLoader(slicePath, previewPath, tileView){
 		var pngs = zip.file(/.png/);
 		this.tiles = new Array(pngs.length);
 		for(var i=0; i<this.tiles.length; i++){
-			this.tiles[i]=new Tile(pngs[i],this);
+		    this.tiles[i] = new BluVueSheet.Tile(pngs[i], this);
 		}
 	}
 
@@ -39,8 +42,6 @@ function TileLoader(slicePath, previewPath, tileView){
 	}
 	JSZipUtils.getBinaryContent(slicePath, this.doneLoading);
 
-	this.width=0;
-	this.height=0;
 	this.calcSize = function(){
 		if(this.loaded==this.tiles.length){
 			this.width = 0;

@@ -1,11 +1,11 @@
-function Annotation(type, tileView){
+BluVueSheet.Annotation = function(type, tileView){
 	this.rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 
 	this.id=createUUID();
-	this.userId=userId;
-	this.projectId=projectId;
-	this.sheetId=sheetId;
+	this.userId = BluVueSheet.userId;
+	this.projectId = BluVueSheet.projectId;
+	this.sheetId = BluVueSheet.sheetId;
 
 	this.type=type;
 	this.points=new Array();	
@@ -58,7 +58,7 @@ function Annotation(type, tileView){
 		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
 	}
 	this.calcBounds = function(){
-		this.bounds = new Rect(0,0,0,0);
+	    this.bounds = new BluVueSheet.Rect(0, 0, 0, 0);
 		this.bounds.left = this.points[0].x;
 		this.bounds.top = this.points[0].y;
 		this.bounds.right = this.points[0].x;
@@ -111,14 +111,14 @@ function Annotation(type, tileView){
 		for(var i=0; i<8; i++){
 			var point = this.getPoint(i,true);
 			var size = 35/tileView.scale;
-			context.drawImage(Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
+			context.drawImage(BluVueSheet.Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
 		}
 	}
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 			var point = this.points[i];
 			var size = 35/tileView.scale;
-			context.drawImage(Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
+			context.drawImage(BluVueSheet.Annotation.handleImage, point.x - size / 2, point.y - size / 2, size, size);
 		}
 	}
 	this.drawArea = function(context){
@@ -143,7 +143,7 @@ function Annotation(type, tileView){
 	this.getPoint = function(id,handle){
 		var rect = this.bounds.clone();
 		if(handle)rect=rect.inset(-BOUND_DIST/tileView.scale);
-		var loc = new Point();
+		var loc = new BluVueSheet.Point();
 		switch(id){//0 is top left, increases clockwise
 			case 0:loc.x=rect.left;loc.y=rect.top;break;
 			case 1:loc.x=rect.centerX();loc.y=rect.top;break;
@@ -195,16 +195,31 @@ function Annotation(type, tileView){
 		var xScale = xDir*((this.bounds.width()==0)?1:xDis/this.bounds.width());
 		var yScale = yDir*((this.bounds.height()==0)?1:yDis/this.bounds.height());
 		
-		var matrix = new ScaleMatrix(xDir*xScale, yDir*yScale, scaleOrigin.x, scaleOrigin.y);
+		var matrix = new BluVueSheet.ScaleMatrix(xDir * xScale, yDir * yScale, scaleOrigin.x, scaleOrigin.y);
 		for(var i=0; i<this.points.length; i++){
 			matrix.applyTo(this.points[i]);
 		}
 		this.calcBounds();
 		this.updateMeasure();
 	}
+
+var drawFunctions = new Array();
+	drawFunctions[LASSO_ANNOTATION] = drawPoints;
+	drawFunctions[SQUARE_ANNOTATION] = drawRectangle;
+	drawFunctions[X_ANNOTATION] = drawX;
+	drawFunctions[CIRCLE_ANNOTATION] = drawCircle;
+	drawFunctions[CLOUD_ANNOTATION] = drawCloud;
+	drawFunctions[POLYGON_ANNOTATION] = drawPoints;
+	drawFunctions[TEXT_ANNOTATION] = drawText;
+	drawFunctions[LINE_ANNOTATION] = drawLine;
+	drawFunctions[ARROW_ANNOTATION] = drawArrow;
+	drawFunctions[PEN_ANNOTATION] = drawPoints;
+	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawPoints;
+	drawFunctions[SCALE_ANNOTATION] = drawScale;
+	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
 }
-Annotation.handleImage = new Image();
-Annotation.handleImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAtxJREFUWEfVmK2X4jAUxZFIZCUSiaxEViKRK0cikTgkshKJ5E+oRFZWjkSyjlGbvb804dA2fMwC0+49557TvJTk8vqS95KeMeZpCmNxUmMceve7DBrvURiJK3EvmvF4bCaTSYVxHPMizMVUTEJj3WPQeI3ClAmHw6GZz+dmv9/LfBt5npvlcmlGoxEDfIpzsa+u4Bx1Bo11CrG4xyu73U6mfwN/aDqdMuBBfMijQeMlhXkURWa73ar5GiDUeTRVMzivZ9AIhT4DEF+Hw0Gm1+J0OnlvZuJAprCOoLEUl81mMzvQO0F8ai5iM1KzqSVolOcQ91NYr9dMyo7QWDyVhjUo5lgM7/ZcHThEcxPoVT2VhlYrC+IdMXcPcsgft3d+qNkUKBB3+TPbyLNgz+z3+7+l4xyPlwKn/IO2QQKQlrUeGwJb9Z4H4SUvnqTHbj1eXMzG2RW4BWNj0QtMV6uV7ewC+JLSlOnxLFDxmdvOLuB4PCKKz8zC7Q0E19UdkGKljSKlp8Xb/uqtw8chAn/9ZFp7FC5HL61AwZm7g0uBH4Izdwf/lQcTDjldg0t5nF96EYegrgGn4Ty/UX8KZU8HQOmlfIywgRe422w2ZW8HkGUZovDYOdXNuhSHLv4oDs4CyXnHNirpOjhqUNVLD+VVKdA+qEhEedtwBygK01LX+UGrmXK7KAo128GF98ZqVgXahrJKm7FIRpOGym1DRaA1yL1tfOo0TZm8ECu3DBVx1lAumIIf/BS4q3GnOTJGVU/dYI16kR+88sLoGhCngvlLcxJbTS0hIxS4pCwWi4Wa7wHJwXkuKA4GjZ7CQMySJHnpbQOr1W3GxFzjs14yaKxTWPIZKIE40DwDvOa2ko149drNM2gMURgyKAcstoNHrn89ODESKlRNGoP7wIcv2IPGW3RCKSQLxY8ti5gc79ZJaPCH9C5Xvlyk2/T1HQaNj1KIxEREcIhcut+Msds0vb+jOBxgcpoKdgAAAABJRU5ErkJggg==";
+BluVueSheet.Annotation.handleImage = new Image();
+BluVueSheet.Annotation.handleImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAtxJREFUWEfVmK2X4jAUxZFIZCUSiaxEViKRK0cikTgkshKJ5E+oRFZWjkSyjlGbvb804dA2fMwC0+49557TvJTk8vqS95KeMeZpCmNxUmMceve7DBrvURiJK3EvmvF4bCaTSYVxHPMizMVUTEJj3WPQeI3ClAmHw6GZz+dmv9/LfBt5npvlcmlGoxEDfIpzsa+u4Bx1Bo11CrG4xyu73U6mfwN/aDqdMuBBfMijQeMlhXkURWa73ar5GiDUeTRVMzivZ9AIhT4DEF+Hw0Gm1+J0OnlvZuJAprCOoLEUl81mMzvQO0F8ai5iM1KzqSVolOcQ91NYr9dMyo7QWDyVhjUo5lgM7/ZcHThEcxPoVT2VhlYrC+IdMXcPcsgft3d+qNkUKBB3+TPbyLNgz+z3+7+l4xyPlwKn/IO2QQKQlrUeGwJb9Z4H4SUvnqTHbj1eXMzG2RW4BWNj0QtMV6uV7ewC+JLSlOnxLFDxmdvOLuB4PCKKz8zC7Q0E19UdkGKljSKlp8Xb/uqtw8chAn/9ZFp7FC5HL61AwZm7g0uBH4Izdwf/lQcTDjldg0t5nF96EYegrgGn4Ty/UX8KZU8HQOmlfIywgRe422w2ZW8HkGUZovDYOdXNuhSHLv4oDs4CyXnHNirpOjhqUNVLD+VVKdA+qEhEedtwBygK01LX+UGrmXK7KAo128GF98ZqVgXahrJKm7FIRpOGym1DRaA1yL1tfOo0TZm8ECu3DBVx1lAumIIf/BS4q3GnOTJGVU/dYI16kR+88sLoGhCngvlLcxJbTS0hIxS4pCwWi4Wa7wHJwXkuKA4GjZ7CQMySJHnpbQOr1W3GxFzjs14yaKxTWPIZKIE40DwDvOa2ko149drNM2gMURgyKAcstoNHrn89ODESKlRNGoP7wIcv2IPGW3RCKSQLxY8ti5gc79ZJaPCH9C5Xvlyk2/T1HQaNj1KIxEREcIhcut+Msds0vb+jOBxgcpoKdgAAAABJRU5ErkJggg==";
 function updateMeasureLength(){
 	if(this.tileView.annotationManager.scaleAnnotation!=null){
 		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
@@ -218,7 +233,7 @@ function updateMeasureRect(tileView){
 		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
 		var w = Math.abs(this.points[0].x-this.points[1].x);
 		var h = Math.abs(this.points[0].y-this.points[1].y);
-		this.measurement.setAmount(m.amount*m.amount*w*h/(l*l), toArea(m.unit));
+		this.measurement.setAmount(m.amount * m.amount * w * h / (l * l), BluVueSheet.Measurement.toArea(m.unit));
 	}
 }
 function updateMeasurePoly(tileView){
@@ -230,7 +245,7 @@ function updateMeasurePoly(tileView){
 			a+=this.points[i].x*this.points[(i+1)%this.points.length].y;
 			a-=this.points[(i+1)%this.points.length].x*this.points[i].y;
 		}
-		this.measurement.setAmount(m.amount*m.amount*a/(l*l), toArea(m.unit));
+		this.measurement.setAmount(m.amount * m.amount * a / (l * l), BluVueSheet.Measurement.toArea(m.unit));
 	}
 }
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){
@@ -604,20 +619,8 @@ function drawMeasure(context){
 		context.stroke();
 	}
 }
-var drawFunctions = new Array();
-drawFunctions[LASSO_ANNOTATION]=drawPoints;
-drawFunctions[SQUARE_ANNOTATION]=drawRectangle;
-drawFunctions[X_ANNOTATION]=drawX;
-drawFunctions[CIRCLE_ANNOTATION]=drawCircle;
-drawFunctions[CLOUD_ANNOTATION]=drawCloud;
-drawFunctions[POLYGON_ANNOTATION]=drawPoints;
-drawFunctions[TEXT_ANNOTATION]=drawText;
-drawFunctions[LINE_ANNOTATION]=drawLine;
-drawFunctions[ARROW_ANNOTATION]=drawArrow;
-drawFunctions[PEN_ANNOTATION]=drawPoints;
-drawFunctions[HIGHLIGHTER_ANNOTATION]=drawPoints;
-drawFunctions[SCALE_ANNOTATION]=drawScale;
-drawFunctions[MEASURE_ANNOTATION]=drawMeasure;
+
+
 function createUUID() {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -694,7 +697,7 @@ function AnnotationJSON(annotation){
 	}
 }
 function loadAnnotationJSON(json,tileView){
-	var annotation = new Annotation(json.type,tileView);
+    var annotation = new BluVueSheet.Annotation(json.type, tileView);
 	annotation.id=json.id;
 	annotation.projectId=json.projectId;
 	annotation.sheetId=json.sheetId;
@@ -709,17 +712,17 @@ function loadAnnotationJSON(json,tileView){
 	annotation.lineWidth = json.lineWidth;
 	
 	if(json.unitOfMeasure!="na"){
-		var unitInfo = toUnit(json.unitOfMeasure);
+	    var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);
 		if(json.type==SCALE_ANNOTATION||json.type==MEASURE_ANNOTATION){
-			annotation.measurement = new Measurement(json.distance,unitInfo[0],unitInfo[1]);			
+		    annotation.measurement = new BluVueSheet.Measurement(json.distance, unitInfo[0], unitInfo[1]);
 		} else {
-			annotation.measurement = new Measurement(0,unitInfo[0],unitInfo[1]);
+		    annotation.measurement = new BluVueSheet.Measurement(0, unitInfo[0], unitInfo[1]);
 		}
 	}
 	var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
 					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
 	if(rectType){
-		annotation.points = [new Point(json.x,json.y), new Point(json.x+json.width,json.y+json.height)];
+	    annotation.points = [new BluVueSheet.Point(json.x, json.y), new BluVueSheet.Point(json.x + json.width, json.y + json.height)];
 	} else {
 		annotation.points = json.points;
 	}

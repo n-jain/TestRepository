@@ -1,4 +1,4 @@
-function Measurement(amount, unit, type){
+BluVueSheet.Measurement = function(amount, unit, type){
 	var convMult = [[
 		//LENGTH UNIT CONVERSIONS
 		[1,1/12,1/12,1/36,1/63360,2.54,.0254,.0000254],
@@ -54,7 +54,7 @@ function Measurement(amount, unit, type){
 	}
 }
 
-function toUnit(str){
+BluVueSheet.Measurement.toUnit = function (str) {
 	var s = str.toLowerCase();
 	if(s==="m")return [M,LENGTH];
 	if(s==="cm")return [CM,LENGTH];
@@ -80,7 +80,7 @@ function toUnit(str){
 	return [-1,-1];
 }
 
-function toArea(lengthUnit){
+BluVueSheet.Measurement.toArea = function (lengthUnit) {
 	switch(lengthUnit){
 		case IN:return IN2;
 		case FT:return FT2;
@@ -94,7 +94,7 @@ function toArea(lengthUnit){
 	return -1;
 }
 
-function createMeasurement(str){
+BluVueSheet.Measurement.createMeasurement = function (str) {
 	function isDigit(str){
 		return !isNaN(parseInt(str));
 	}
@@ -132,12 +132,12 @@ function createMeasurement(str){
 			i=str.length;
 		}
 	}
-	var unitInfo = toUnit(str.substring(unitStart));
+	var unitInfo = BluVueSheet.Measurement.toUnit(str.substring(unitStart));
 	var type = unitInfo[1];
 	var unit = unitInfo[0];
 	if(unitEnd==0)unitEnd=str.length;
 	if(unit == -1){
-		 unitInfo = toUnit(str.substring(unitStart, unitEnd));
+	    unitInfo = BluVueSheet.Measurement.toUnit(str.substring(unitStart, unitEnd));
 		 unit = unitInfo[0];
 		 if(unit == -1)return null;
 		 if(unit == FT){
@@ -151,5 +151,5 @@ function createMeasurement(str){
 			 return null;
 		 }
 	}
-	return new Measurement(amount,unit,type);
+	return new BluVueSheet.Measurement(amount, unit, type);
 }

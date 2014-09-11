@@ -1,4 +1,4 @@
-function AnnotationManager(tileView, scope){
+BluVueSheet.AnnotationManager = function(tileView, scope){
 	var annotations = new Array();
 	var selectedAnnotations = new Array();
 	var toSave = new Array();
@@ -10,6 +10,11 @@ function AnnotationManager(tileView, scope){
 	this.captureKeyboard=false;
 	this.scaleAnnotation;
 	var me = this;
+    
+	var removeFromArray = function(array, element){
+	    array.splice(array.indexOf(element),1);
+	}
+
 	setInterval(function(){
 		for(var i=0; i<toSave.length; i++){
 			me.saveAnnotation(toSave[i]);
@@ -23,18 +28,18 @@ function AnnotationManager(tileView, scope){
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
 			var annType = toolToAnnotation(tileView.getTool());
 			if(this.scaleAnnotation!=null&&tileView.getTool()==RULER_TOOL)annType=MEASURE_ANNOTATION;
-			var ann = new Annotation(annType, tileView);
-			ann.points[0] = new Point(x,y);
+			var ann = new BluVueSheet.Annotation(annType, tileView);
+			ann.points[0] = new BluVueSheet.Point(x, y);
 			currentAnnotation = ann;
 			if(ann.type==LASSO_ANNOTATION)lasso=ann;
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
-				currentAnnotation.measurement = new Measurement(0,this.scaleAnnotation.measurement.unit,LENGTH);
+			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, LENGTH);
 			}
 			this.captureMouse = true;
 		}
 		//add point to existing polygon annotation
 		if(tileView.getTool()==POLYGON_TOOL){
-			currentAnnotation.points[currentAnnotation.points.length] = new Point(x,y);
+		    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			this.captureMouse = true;
 		}
 		//check if selected annotation is being touched
@@ -92,9 +97,9 @@ function AnnotationManager(tileView, scope){
 	this.onmousemove = function(x,y){
 		if(currentAnnotation!=null){
 			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
-				currentAnnotation.points[currentAnnotation.points.length] = new Point(x,y);
+			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			} else if(currentAnnotation.type!=POLYGON_ANNOTATION){
-				currentAnnotation.points[1] = new Point(x,y);
+			    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
 			}
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
@@ -111,7 +116,7 @@ function AnnotationManager(tileView, scope){
 				if(annotation.rectType){
 					annotation.scaleWithHandleTo(x,y,touchedHandle);
 				}else{
-					annotation.points[touchedHandle] = new Point(x,y);					
+				    annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
 					annotation.updateMeasure();
 				}
 			}
@@ -174,7 +179,7 @@ function AnnotationManager(tileView, scope){
 		if(tileView.getTool()==POLYGON_TOOL){
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
-				if(Point.dist(new Point(x,y),currentAnnotation.points[0])<HANDLE_TOUCH_RADIUS/tileView.scale)
+				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale)
 					currentAnnotation.closed=true;
 				tileView.setTool(NO_TOOL);
 			}
@@ -267,9 +272,9 @@ function AnnotationManager(tileView, scope){
 			if(annotation.type==SCALE_ANNOTATION)this.scaleAnnotation=null;
 			scope.deleteAnnotation(selectedAnnotations[i].id).then(function(){
 				//succeeded, do nothing
-			}).catch(function(error){
+			})["catch"](function(error){
 				deleteFailed();
-			}).finally(function(){
+			})["finally"](function(){
 				//nothing else is needed
 			});
 		}
@@ -303,7 +308,7 @@ function AnnotationManager(tileView, scope){
 	this.areaSelectedAnnotation = function(){
 		selectedAnnotations[0].areaMeasured=!selectedAnnotations[0].areaMeasured;
 		if(selectedAnnotations[0].areaMeasured){
-			selectedAnnotations[0].measurement = new Measurement(0,toArea(this.scaleAnnotation.measurement.unit),AREA);
+		    selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, BluVueSheet.Measurement.toArea(this.scaleAnnotation.measurement.unit), AREA);
 			selectedAnnotations[0].updateMeasure();
 		}
 		this.saveSelectedAnnotations();
@@ -334,11 +339,11 @@ function AnnotationManager(tileView, scope){
 			var ly = p1.y<p2.y?p1.y:p2.y;//""
 
 			if(p1.x-p2.x==0){
-				if(point.y>ly&&point.y<gy)intersections[intersections.length] = new Point(p1.x,point.y);					
+			    if (point.y > ly && point.y < gy) intersections[intersections.length] = new BluVueSheet.Point(p1.x, point.y);
 			}else{
 				var m = (p2.y-p1.y)/(p2.x-p1.x);
 				var xi = ((point.y-p1.y)/m) + p1.x;
-				if(xi>lx&&xi<gx)intersections[intersections.length] = new Point(xi,point.y);
+				if (xi > lx && xi < gx) intersections[intersections.length] = new BluVueSheet.Point(xi, point.y);
 			}
 		}
 		var il = 0;
@@ -372,7 +377,7 @@ function AnnotationManager(tileView, scope){
 							cancel=true;
 							del=true;
 						} else {
-							measurement=createMeasurement(measureString);
+						    measurement = BluVueSheet.Measurement.createMeasurement(measureString);
 							currentAnnotation.measurement=measurement;
 						}
 					}
@@ -397,7 +402,7 @@ function AnnotationManager(tileView, scope){
 	}
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
-		return Point.dist(new Point(x,y),handleLoc)<HANDLE_TOUCH_RADIUS/tileView.scale;
+		return BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), handleLoc) < HANDLE_TOUCH_RADIUS / tileView.scale;
 	}
 	this.loadAnnotation = function(jsonString){
 		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);
@@ -415,15 +420,12 @@ function AnnotationManager(tileView, scope){
 		}
 	}
 	this.saveAnnotation = function(annotation){
-		scope.saveAnnotation(annotation.id,projectId,sheetId,userId,annotation.type,new AnnotationJSON(annotation)).then(function(){
+	    scope.saveAnnotation(annotation.id, annotation.projectId, annotation.sheetId, annotation.userId, annotation.type, new AnnotationJSON(annotation)).then(function () {
 			removeFromArray(toSave, annotation);
-		}).catch(function(error){
+		})['catch'](function(error){
 			if(toSave.indexOf(annotation)==-1){
 				toSave[toSave.length]=annotation;
 			}
 		});
 	}
-}
-function removeFromArray(array, element){
-	array.splice(array.indexOf(element),1);
 }

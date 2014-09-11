@@ -1,4 +1,4 @@
-function KeyboardControls(tileView){
+BluVueSheet.KeyboardControls = function(tileView){
 	//controls variables
 	var scrollDown;
 	var scrollUp;

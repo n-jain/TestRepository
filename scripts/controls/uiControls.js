@@ -1,8 +1,8 @@
-function ToolMenu(){
+BluVueSheet.ToolMenu = function(setTool){
 	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler","Mail"];
 
-	var toolMenu = document.createElement("div");
-	toolMenu.id = "tool_menu";
+	this.toolMenuElement = document.createElement("div");
+    this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
 
 	for(var i=0; i<names.length; i++){
 		var button = document.createElement("div");
@@ -11,15 +11,15 @@ function ToolMenu(){
 		button.onclick = function(){
 			setTool(window[this.name.toUpperCase()+"_TOOL"]);
 		};
-		toolMenu.appendChild(button);
+		this.toolMenuElement.appendChild(button);
 	}
-	document.getElementsByTagName("body")[0].appendChild(toolMenu);
 }
-function OptionsMenu(){
+BluVueSheet.OptionsMenu = function(optionChosen){
 	var names = ["Master","Fill","Ruler","Area","Color","Delete"];
+	var t = this;
 
-	var optionsMenu = document.createElement("div");
-	optionsMenu.id = "options_menu";
+	this.optionsMenuElement = document.createElement("div");
+	this.optionsMenuElement.className = 'bluvue-sheet-options-menu';
 
 	var addButton = function(index){
 		var button = document.getElementById("button_"+names[index]);
@@ -31,11 +31,11 @@ function OptionsMenu(){
 		button.onclick = function(){
 			optionChosen(window[this.name.toUpperCase()+"_OPTION"]);
 		};
-		optionsMenu.appendChild(button);
+		t.optionsMenuElement.appendChild(button);
 	}
 	var removeButton = function(index){
 		var button = document.getElementById("button_"+names[index]);
-		if(button!=null)optionsMenu.removeChild(button);
+		if (button != null) { t.optionsMenuElement.removeChild(button); }
 	}
 	var setButtonSelected = function(index,bool){
 		//make button brighter
@@ -93,45 +93,42 @@ function OptionsMenu(){
 		if(selectedAnnotations.length>0)
 			addButton(5);
 	}
-	document.getElementById("top_right").appendChild(optionsMenu);
 }
-function ColorMenu(){
+BluVueSheet.ColorMenu = function(setColor){
 	var colors = [	new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),
 					new Color(1,1,0,1),new Color(1,0.647,0,1),new Color(1,0,1,1),
 					new Color(0.333,0.102,0.545,1),new Color(0,0,0,1),new Color(0.8,0.8,0.8,1)
 				 ];
-	var colorMenu = document.createElement("div");
-	colorMenu.id = "color_menu";
+	this.colorMenuElement = document.createElement("div");
+	this.colorMenuElement.className = 'bluvue-sheet-color-menu';
 
 	for(var i=0; i<colors.length; i++){
 		var button = document.createElement("div");
-		button.className = "color_button";
+		button.className = "bluvue-color-button";
 		button.style.background = colors[i].toStyle();
 		button.name = colors[i].toStyle();
 		button.onclick = function(){
 			setColor(this.name);
 		};
-		colorMenu.appendChild(button);
+		this.colorMenuElement.appendChild(button);
 		if(i%3==2){
-			var br  = document.createElement("br");
-			colorMenu.appendChild(br);			
+			var br = document.createElement("br");
+			this.colorMenuElement.appendChild(br);
 		}
 	}
-	this.show = function(){
-		document.getElementById("top_right").appendChild(colorMenu);
+	this.show = function () {
+	    this.colorMenuElement.style.display = 'block';
 	}
 	this.hide = function(){
-		if(document.getElementById(colorMenu.id)!=null)
-			document.getElementById("top_right").removeChild(colorMenu);
+	    this.colorMenuElement.style.display = 'none';
 	}
 }
-function TextEditor(){
+BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	var textSizes = [32,64,128,256,512];
-	var textEditor = document.createElement("div");
-	textEditor.id = "text_editor";
+	this.textEditorElement = document.createElement("div");
+	this.textEditorElement.className = "bluvue-text-editor";
 	
 	var textSizeMenu = document.createElement("div");
-	textSizeMenu.id = "text_size_menu";
 	for(var i=0; i<textSizes.length; i++){
 		var button = document.createElement("div");
 		button.className = "bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text";
@@ -141,30 +138,28 @@ function TextEditor(){
 		};
 		textSizeMenu.appendChild(button);
 	}
-	textEditor.appendChild(textSizeMenu);
+	this.textEditorElement.appendChild(textSizeMenu);
 	
 	var textBox = document.createElement("textarea");
-	textBox.id = "text_editor_input";
 	textBox.onchange = function(){
 		textUpdate(textBox.value);
 	}
 	textBox.onkeyup = function(){
 		textUpdate(textBox.value);
 	}
-	textEditor.appendChild(textBox);
+	this.textEditorElement.appendChild(textBox);
 
 	this.show = function(x,y){
-		textEditor.style.left=x+"px";
-		textEditor.style.top=y+"px";
-		document.getElementsByTagName("body")[0].appendChild(textEditor);
+	    this.textEditorElement.style.left = x + "px";
+	    this.textEditorElement.style.top = y + "px";
+	    this.textEditorElement.style.display = 'block';
 	}
 	this.hide = function(){
-		if(document.getElementById(textEditor.id)!=null)
-			document.getElementsByTagName("body")[0].removeChild(textEditor);
+	    this.textEditorElement.style.display = 'none';
 	}
 	this.setLoc = function(x,y){
-		textEditor.style.left=x+"px";
-		textEditor.style.top=y+"px";
+	    this.textEditorElement.style.left = x + "px";
+	    this.textEditorElement.style.top = y + "px";
 	}
 	this.setText = function(text){
 		textBox.value = text;

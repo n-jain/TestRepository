@@ -1,10 +1,17 @@
-function MouseControls(tileView){
+BluVueSheet.MouseControls = function(tileView){
 	//gesture vars
 	var mouse_start_x;
 	var mouse_start_y;
 	var tileview_start_x;
 	var tileview_start_y;
-	var dragging=false;
+	var dragging = false;
+	function preventDefault(e) {
+	    e = e || window.event;
+	    if (e.preventDefault)
+	        e.preventDefault();
+	    e.returnValue = false;
+	}
+
 	this.onmousewheel = function(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
 		var y = e.clientY/tileView.scale-tileView.scrollY;
@@ -19,6 +26,8 @@ function MouseControls(tileView){
 		tileView.scrollY+=ny-y;
 
 		tileView.updateRes();
+
+	    preventDefault(e);
 	}
 	this.onmousedown = function(e){
 		tileView.colorMenu.hide();
@@ -32,7 +41,6 @@ function MouseControls(tileView){
 		mouse_start_y=window_y;
 		tileview_start_x=tileView.scrollX;
 		tileview_start_y=tileView.scrollY;
-		clickStartTime = getTime();
 
 		//Event things
 		tileView.annotationManager.onmousedown(x,y);
@@ -40,6 +48,8 @@ function MouseControls(tileView){
 		if(!tileView.annotationManager.captureMouse){
 			dragging=true;
 		}
+
+		preventDefault(e);
 	}
 	this.onmouseup = function(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
@@ -76,7 +86,4 @@ function MouseControls(tileView){
  		else return -d/3;
 		} else return w/120;
 	}
-}
-function getTime(){
-	return new Date().getTime();
 }

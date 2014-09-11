@@ -1,4 +1,4 @@
-function Tile(zipObject,tileLoader){
+BluVueSheet.Tile = function(zipObject,tileLoader){
 	this.name=zipObject.name;
 	this.zoomLevel=0;
 	this.x=0;

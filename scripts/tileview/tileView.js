@@ -1,6 +1,6 @@
-function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
+BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
 	var context;
-	
+    var t = this;
 	this.toolMenu=toolMenu;
 	this.optionsMenu=optionsMenu;
 	this.colorMenu=colorMenu;
@@ -32,10 +32,10 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
 		this.scrollX=0;
 	    this.scrollY=0;
 	    this.scale=1;
-		this.tileLoader = new TileLoader(sheet.slicesUrl,sheet.previewUrl,this);
-		this.keyboardControls = new KeyboardControls(this);
-		this.mouseControls = new MouseControls(this);
-		this.annotationManager = new AnnotationManager(this,scope);
+	    this.tileLoader = new BluVueSheet.TileLoader(sheet.slicesUrl, sheet.previewUrl, this);
+	    this.keyboardControls = new BluVueSheet.KeyboardControls(this);
+	    this.mouseControls = new BluVueSheet.MouseControls(this);
+	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
 		this.draw=false;
 		this.firstDraw=false;
@@ -69,10 +69,10 @@ function TileView(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
 	}
 
 	this.mainLoop = function(){
-		this.keyboardControls.handleControls();
-		if(this.draw||!this.firstDraw){
-			if(this.tileLoader.tiles!=null)if(this.tileLoader.loaded==this.tileLoader.tiles.length)firstDraw=true;
-			this.drawAll();
+		t.keyboardControls.handleControls();
+		if(t.draw||!t.firstDraw){
+			if(t.tileLoader.tiles!=null)if(t.tileLoader.loaded==t.tileLoader.tiles.length)firstDraw=true;
+			t.drawAll();
 		}
 	}
 

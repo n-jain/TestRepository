@@ -1,13 +1,13 @@
-function Point(x,y){
+BluVueSheet.Point = function(x,y){
 	this.x=x;
 	this.y=y;
 }
-Point.dist = function(p1, p2){
+BluVueSheet.Point.dist = function(p1, p2){
 	var dx = p1.x-p2.x;
 	var dy = p1.y-p2.y;
 	return Math.sqrt((dx*dx)+(dy*dy));
 }
-function ScaleMatrix(sx,sy,px,py){
+BluVueSheet.ScaleMatrix = function(sx,sy,px,py){
 	this.applyTo = function(point){
 		var dx = point.x-px;
 		var dy = point.y-py;
@@ -15,7 +15,7 @@ function ScaleMatrix(sx,sy,px,py){
 		point.y=py+(dy*sy);
 	}
 }
-function Rect(left,top,right,bottom){
+BluVueSheet.Rect = function(left,top,right,bottom){
 	this.left=left;
 	this.right=right;
 	this.top=top;
@@ -48,7 +48,7 @@ function Rect(left,top,right,bottom){
 		return rect;
 	}
 	this.clone = function(){
-		return new Rect(this.left,this.top,this.right,this.bottom);
+	    return new BluVueSheet.Rect(this.left, this.top, this.right, this.bottom);
 	}
 	this.containsPoint = function (point){
 		return contains(point.x,point.y);
