@@ -9,6 +9,7 @@
                 projectId: "guid",
                 sheetId: "guid",
                 userId: "guid",
+                rotation: 0,
                 annotations: [
 {
 id:"4cf1e61966284edb88cb9a5058715f13",

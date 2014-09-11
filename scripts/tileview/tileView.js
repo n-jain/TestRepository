@@ -54,6 +54,7 @@ BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor
 		context.save();
 		context.scale(this.scale,this.scale);
 		context.translate(this.scrollX, this.scrollY);
+		context.rotate(scope.sheet.rotation/180*Math.PI);
 		this.tileLoader.drawAllTiles(context);
 		this.annotationManager.drawAllAnnotations(context);
 		context.restore();

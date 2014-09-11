@@ -83,6 +83,6 @@ BluVueSheet.MouseControls = function(tileView){
 	function mouseLoc(e){
 		var x = e.clientX/tileView.scale-tileView.scrollX;
 		var y = e.clientY/tileView.scale-tileView.scrollY;
-		return new Point(x,y);
+		return new BluVueSheet.Point(x,y);
 	}
 }
