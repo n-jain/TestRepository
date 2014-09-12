@@ -29,8 +29,13 @@ BluVueSheet.Sheet = function() {
         elem.append(this.colorMenu.colorMenuElement);
         elem.append(this.textEditor.textEditorElement);
 
+        var closeSheet = function() {
+            t.dispose();
+            scope.closeSheet();
+        }
+
         //make tileView
-        this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, scope);
+        this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, closeSheet, scope);
         this.tileView.create(sheet);
 
         //create loop
@@ -47,6 +52,13 @@ BluVueSheet.Sheet = function() {
 
         window.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
         window.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
+    };
+
+    this.dispose = function() {
+        window.removeEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
+        window.removeEventListener("keyup", this.tileView.keyboardControls.onKeyUp, true);
+        window.removeEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
+        window.removeEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
     };
 
     this.setTool = function (id) {

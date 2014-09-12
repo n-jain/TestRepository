@@ -1,11 +1,11 @@
-BluVueSheet.Annotation = function(type, tileView){
+BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	this.rectType = !(type==POLYGON_ANNOTATION||type==LINE_ANNOTATION||type==ARROW_ANNOTATION||
 					 type==SCALE_ANNOTATION||type==MEASURE_ANNOTATION);
 
 	this.id=createUUID();
-	this.userId = BluVueSheet.userId;
-	this.projectId = BluVueSheet.projectId;
-	this.sheetId = BluVueSheet.sheetId;
+	this.userId = userId;
+	this.projectId = projectId;
+	this.sheetId = sheetId;
 
 	this.type=type;
 	this.points=new Array();	

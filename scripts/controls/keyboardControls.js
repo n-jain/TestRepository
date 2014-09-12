@@ -1,4 +1,4 @@
-BluVueSheet.KeyboardControls = function(tileView){
+BluVueSheet.KeyboardControls = function(tileView, closeSheet){
 	//controls variables
 	var scrollDown;
 	var scrollUp;
@@ -48,8 +48,11 @@ BluVueSheet.KeyboardControls = function(tileView){
 				break;
 		}
 	}
-	this.onKeyUp = function(event){
-		switch(event.keyCode){
+	this.onKeyUp = function (event) {
+	    switch (event.keyCode) {
+	        case 27:// esc
+	            closeSheet();
+                break;
 			case 65://A
 				scrollLeft=false;
 				break;

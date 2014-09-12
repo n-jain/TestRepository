@@ -9,7 +9,8 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 sheet: "=",
                 userId: "=",
                 saveAnnotation: "=",
-                deleteAnnotation: "="
+                deleteAnnotation: "=",
+                closeSheet: "="
             },
             restrict: "E",
             replace: true,
@@ -36,8 +37,14 @@ angular.module("bluvueSheet").directive("bvSheet", [
                  * }
                  */
 
-                var bvSheet = new BluVueSheet.Sheet();
-                bvSheet.loadSheet(scope.sheet, scope, elem);
+                var bvSheet = null;
+                scope.$watch('sheet', function (newValue) {
+                    if (newValue != null) {
+                         bvSheet = new BluVueSheet.Sheet();
+                        bvSheet.loadSheet(scope.sheet, scope, elem);
+                    }
+                });
+                
             }
         }
     }

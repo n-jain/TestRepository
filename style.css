@@ -57,6 +57,7 @@ div.bluvue-sheet > canvas {
 	opacity: 0.8;
 	border-radius: 15px 15px 0 0;
 	position:fixed;
+    display: none;
 }
 .bluvue-text-editor textarea{
 	width: 250px;

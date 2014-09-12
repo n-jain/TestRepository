@@ -1,4 +1,4 @@
-BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor,scope){
+BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor,closeSheet,scope){
 	var context;
     var t = this;
 	this.toolMenu=toolMenu;
@@ -33,7 +33,7 @@ BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor
 	    this.scrollY=0;
 	    this.scale=1;
 	    this.tileLoader = new BluVueSheet.TileLoader(sheet.slicesUrl, sheet.previewUrl, this);
-	    this.keyboardControls = new BluVueSheet.KeyboardControls(this);
+	    this.keyboardControls = new BluVueSheet.KeyboardControls(this, closeSheet);
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 

@@ -28,7 +28,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
 			var annType = toolToAnnotation(tileView.getTool());
 			if(this.scaleAnnotation!=null&&tileView.getTool()==RULER_TOOL)annType=MEASURE_ANNOTATION;
-			var ann = new BluVueSheet.Annotation(annType, tileView);
+			var ann = new BluVueSheet.Annotation(annType, tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
 			ann.points[0] = new BluVueSheet.Point(x, y);
 			currentAnnotation = ann;
 			if(ann.type==LASSO_ANNOTATION)lasso=ann;
