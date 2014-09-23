@@ -6,6 +6,7 @@ BluVueSheet.Sheet = function() {
     this.optionsMenu = null;
     this.colorMenu = null;
     this.textEditor = null;
+    this.closeSheetButton = null;
 
     this.userId = null;
     this.projectId = null;
@@ -14,6 +15,11 @@ BluVueSheet.Sheet = function() {
     var t = this;
 
     this.loadSheet = function (sheet, scope, elem) {
+        var closeSheet = function () {
+            t.dispose();
+            scope.closeSheet();
+        }
+
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
         this.userId = sheet.userId;
@@ -22,17 +28,14 @@ BluVueSheet.Sheet = function() {
         this.optionsMenu = new BluVueSheet.OptionsMenu(this.optionChosen);
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
+        this.closeSheetButton = new BluVueSheet.CloseSheetButton(closeSheet);
 
         var canvas = elem.find('canvas')[0];
         elem.append(this.toolMenu.toolMenuElement);
         elem.append(this.optionsMenu.optionsMenuElement);
         elem.append(this.colorMenu.colorMenuElement);
         elem.append(this.textEditor.textEditorElement);
-
-        var closeSheet = function() {
-            t.dispose();
-            scope.closeSheet();
-        }
+        elem.append(this.closeSheetButton.closeMenuElement);
 
         //make tileView
         this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, closeSheet, scope);

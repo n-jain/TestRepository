@@ -165,3 +165,9 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 		textBox.value = text;
 	}
 }
+BluVueSheet.CloseSheetButton = function(closeSheet) {
+    this.closeMenuElement = document.createElement("span");
+    this.closeMenuElement.className = "bluvue-sheet-close-button";
+    this.closeMenuElement.innerHTML = "x";
+    this.closeMenuElement.onclick = closeSheet;
+}

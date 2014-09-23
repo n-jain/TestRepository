@@ -19,12 +19,12 @@ div.bluvue-sheet > canvas {
 	border-radius: 15px;
 }
 .bluvue-sheet-tool-menu {
-	top: 10px;
+	top: 60px;
 	left: 10px;
 	position:fixed;
 }
 .bluvue-sheet-options-menu {
-    top: 10px;
+    top: 60px;
 	right: 10px;
 	position:fixed;
 }
@@ -36,12 +36,12 @@ div.bluvue-sheet > canvas {
 	padding: 5px;
 	position: fixed;
 	right:70px;
-    top: 10px;
+    top: 60px;
 }
 .bluvue-color-button {
 	height: 45px;
 	width: 45px;
-	top: 10px;
+	top: 60px;
 	right: 10px;
 	border-radius: 50%;
 	float:left;
@@ -62,6 +62,25 @@ div.bluvue-sheet > canvas {
 .bluvue-text-editor textarea{
 	width: 250px;
 	height: 200px;
+}
+
+.bluvue-sheet-close-button {
+    background: #de1f00;
+    border: solid 1px #fff;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    height: 40px;
+    line-height: 34px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    top: 10px;
+    vertical-align: middle;
+    width: 40px;
 }
 
 .bv-options-image { background-repeat: no-repeat; background-position: center center;display: block; width: 50px; height: 50px;background-size: 50px 50px; }
