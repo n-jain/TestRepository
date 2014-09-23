@@ -11,6 +11,7 @@ BluVueSheet.Sheet = function() {
     this.userId = null;
     this.projectId = null;
     this.sheetId = null;
+    this.mainLoopTimeout = null;
 
     var t = this;
 
@@ -44,10 +45,10 @@ BluVueSheet.Sheet = function() {
         //create loop
         var mainLoop = function () {
             t.tileView.mainLoop();
-            setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
+            t.mainLoopTimeout = setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
         }
 
-        setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
+        this.mainLoopTimeout = setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
 
         //setup key controls
         window.addEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
@@ -63,11 +64,12 @@ BluVueSheet.Sheet = function() {
         window.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
     };
 
-    this.dispose = function() {
-        window.removeEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
-        window.removeEventListener("keyup", this.tileView.keyboardControls.onKeyUp, true);
-        window.removeEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
-        window.removeEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
+    this.dispose = function () {
+        clearTimeout(t.mainLoopTimeout);
+        window.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
+        window.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
+        window.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
+        window.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
     };
 
     this.setTool = function (id) {

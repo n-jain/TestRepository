@@ -20,6 +20,8 @@ data:"{\"id\":\"4cf1e61966284edb88cb9a5058715f13\",\"areaVisible\":0,\"colorRed\
                 ] // hard code annotations here for testing
             };
 
+            $scope.closeSheet = function() {};
+
             $scope.saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
                 /*
                  * returns a $q promise
