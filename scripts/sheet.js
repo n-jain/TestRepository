@@ -39,7 +39,13 @@ BluVueSheet.Sheet = function() {
         this.tileView.create(sheet);
 
         //create loop
-        setInterval(this.tileView.mainLoop, 1000 / 60);
+        var mainLoop = function () {
+            t.tileView.mainLoop();
+            setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
+        }
+
+        setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
+
         //setup key controls
         window.addEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
         window.addEventListener("keyup", this.tileView.keyboardControls.onKeyUp, true);
