@@ -171,3 +171,17 @@ BluVueSheet.CloseSheetButton = function(closeSheet) {
     this.closeMenuElement.innerHTML = "x";
     this.closeMenuElement.onclick = closeSheet;
 }
+
+BluVueSheet.LoadingSpinner = function() {
+    var createBounce = function(index) {
+        var elem = document.createElement("div");
+        elem.className = "bounce" + index;
+        return elem;
+    }
+
+    this.element = document.createElement("div");
+    this.element.className = "spinner";
+    this.element.appendChild(createBounce(1));
+    this.element.appendChild(createBounce(2));
+    this.element.appendChild(createBounce(3));
+}

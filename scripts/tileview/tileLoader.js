@@ -9,6 +9,8 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	this.width = 0;
 	this.height = 0;
 
+	var me = this;
+
 	//Drawing tiles
 	this.drawAllTiles = function (context) {
 	    if (this.width == 0 || this.height == 0) { return; }
@@ -33,15 +35,19 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	}
 
 	//Tile data loading
-	var me=this;
+	
 	this.doneLoading = function(err,data){
-		if(err){
+	    if (err) {
+	        tileView.setLoaded();
 			throw err;
 		}
-		me.loadTiles(data);
+	    me.loadTiles(data);
+	    tileView.setLoaded();
 	}
-	JSZipUtils.getBinaryContent(slicePath, this.doneLoading);
 
+    tileView.setLoading();
+    JSZipUtils.getBinaryContent(slicePath, me.doneLoading);
+    
 	this.calcSize = function(){
 		if(this.loaded==this.tiles.length){
 			this.width = 0;

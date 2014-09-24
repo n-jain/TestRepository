@@ -1,10 +1,10 @@
-BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor,closeSheet,scope){
+BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textEditor, closeSheet, scope, setLoading, setLoaded) {
 	var context;
     var t = this;
 	this.toolMenu=toolMenu;
 	this.optionsMenu=optionsMenu;
 	this.colorMenu=colorMenu;
-	this.textEditor=textEditor;
+	this.textEditor = textEditor;
 
 	this.tileLoader;
 	this.annotationManager;
@@ -21,6 +21,9 @@ BluVueSheet.TileView = function(canvas,toolMenu,optionsMenu,colorMenu,textEditor
 	var tool;
 
 	var firstDraw;
+
+	this.setLoading = setLoading;
+    this.setLoaded = setLoaded;
 
 	this.create = function(sheet){
 		context=canvas.getContext('2d');

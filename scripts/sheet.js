@@ -7,6 +7,7 @@ BluVueSheet.Sheet = function() {
     this.colorMenu = null;
     this.textEditor = null;
     this.closeSheetButton = null;
+    this.userInterface = null;
 
     this.userId = null;
     this.projectId = null;
@@ -14,6 +15,16 @@ BluVueSheet.Sheet = function() {
     this.mainLoopTimeout = null;
 
     var t = this;
+
+    this.setLoaded = function () {
+        t.loadingSpinner.element.style.display = "none";
+        t.userInterface.style.display = "block";
+    }
+
+    this.setLoading = function () {
+        t.loadingSpinner.element.style.display = "block";
+        t.userInterface.style.display = "none";
+    }
 
     this.loadSheet = function (sheet, scope, elem) {
         var closeSheet = function () {
@@ -30,16 +41,24 @@ BluVueSheet.Sheet = function() {
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
         this.closeSheetButton = new BluVueSheet.CloseSheetButton(closeSheet);
+        this.loadingSpinner = new BluVueSheet.LoadingSpinner();
 
         var canvas = elem.find('canvas')[0];
-        elem.append(this.toolMenu.toolMenuElement);
-        elem.append(this.optionsMenu.optionsMenuElement);
-        elem.append(this.colorMenu.colorMenuElement);
-        elem.append(this.textEditor.textEditorElement);
-        elem.append(this.closeSheetButton.closeMenuElement);
+
+        this.userInterface = document.createElement("div");
+        this.userInterface.appendChild(this.toolMenu.toolMenuElement);
+        this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
+        this.userInterface.appendChild(this.colorMenu.colorMenuElement);
+        this.userInterface.appendChild(this.textEditor.textEditorElement);
+        this.userInterface.appendChild(this.closeSheetButton.closeMenuElement);
+
+        elem.append(this.loadingSpinner.element);
+        elem.append(this.userInterface);
+
+        this.setLoading();
 
         //make tileView
-        this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, closeSheet, scope);
+        this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, closeSheet, scope, this.setLoading, this.setLoaded);
         this.tileView.create(sheet);
 
         //create loop
