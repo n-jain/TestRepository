@@ -17,13 +17,20 @@ BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textE
 
 	this.draw;
 	this.color;
-	this.textSize=128;
+	this.textSize = 128;
+    this.canDraw = false;
 	var tool;
 
 	var firstDraw;
 
-	this.setLoading = setLoading;
-    this.setLoaded = setLoaded;
+	this.setLoading = function () {
+	    this.canDraw = false;
+	    setLoading();
+	}
+	this.setLoaded = function () {
+	    this.canDraw = true;
+        setLoaded();
+    }
 
 	this.create = function(sheet){
 		context=canvas.getContext('2d');
@@ -50,11 +57,13 @@ BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textE
 		}
 	}
 
-	this.drawAll = function() {
-		canvas.width=window.innerWidth;
+	this.drawAll = function () {
+	    canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
 		context.clearRect(0,0,canvas.width,canvas.height);
 		context.save();
+
+		if (!this.canDraw) { return; }
 		context.scale(this.scale,this.scale);
 		context.translate(this.scrollX, this.scrollY);
 		context.rotate(scope.sheet.rotation/180*Math.PI);

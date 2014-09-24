@@ -44,14 +44,13 @@ BluVueSheet.Sheet = function() {
         this.loadingSpinner = new BluVueSheet.LoadingSpinner();
 
         var canvas = elem.find('canvas')[0];
-
         this.userInterface = document.createElement("div");
         this.userInterface.appendChild(this.toolMenu.toolMenuElement);
         this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
         this.userInterface.appendChild(this.colorMenu.colorMenuElement);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         this.userInterface.appendChild(this.closeSheetButton.closeMenuElement);
-
+        
         elem.append(this.loadingSpinner.element);
         elem.append(this.userInterface);
 
