@@ -93,7 +93,13 @@ BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textE
 		if(!this.annotationManager.colorSelectedAnnotations(color))this.color=color;
 	}
 
-	this.setTool = function(newTool){
+	this.setTool = function (newTool) {
+	    if (newTool === NO_TOOL) {
+            toolMenu.deselectAllTools();
+        }
+
+	    this.optionsMenu.deselectAllButtons();
+
 		tool=newTool;
 		this.annotationManager.finishAnnotation();
 		this.annotationManager.updateOptionsMenu();

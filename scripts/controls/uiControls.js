@@ -1,18 +1,31 @@
 BluVueSheet.ToolMenu = function(setTool){
 	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler","Mail"];
-
+    var t = this;
 	this.toolMenuElement = document.createElement("div");
     this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
 
 	for(var i=0; i<names.length; i++){
-		var button = document.createElement("div");
-		button.className = "bv-toolbar-image bv-toolbar-" + names[i].toLowerCase();
+	    var button = document.createElement("div");
+	    button.className = "bv-toolbar-image bv-toolbar-" + names[i].toLowerCase();
 		button.name = names[i];
-		button.onclick = function(){
+		button.onclick = function () {
+		    t.deselectAllTools();
+		    this.className = "bv-toolbar-image bv-toolbar-" + this.name.toLowerCase() + " selected";
 			setTool(window[this.name.toUpperCase()+"_TOOL"]);
 		};
+
 		this.toolMenuElement.appendChild(button);
-	}
+	};
+
+	this.deselectAllTools = function () {
+        var tools = document.getElementsByClassName("bv-toolbar-image");
+        for (var toolIndex = 0; toolIndex < tools.length; toolIndex++) {
+            if (tools[toolIndex].className.indexOf("selected") > 0) {
+                var tool = tools[toolIndex];
+                tool.className = tool.className.substr(0, tool.className.indexOf("selected"));
+            }
+        }
+    };
 }
 BluVueSheet.OptionsMenu = function(optionChosen){
 	var names = ["Master","Fill","Ruler","Area","Color","Delete"];
@@ -37,23 +50,40 @@ BluVueSheet.OptionsMenu = function(optionChosen){
 		var button = document.getElementById("button_"+names[index]);
 		if (button != null) { t.optionsMenuElement.removeChild(button); }
 	}
-	var setButtonSelected = function(index,bool){
-		//make button brighter
+	var setButtonSelected = function(index, isSelected){
+	    //make button brighter
+	    var className = "bv-options-image bv-options-" + names[index].toLowerCase();
+	    className = isSelected ? className + " selected" : className;
+	    document.getElementById("button_" + names[index]).className = className;
 	}
+    this.deselectAllButtons = function() {
+        var btns = document.getElementsByClassName("bv-options-image");
+        for (var toolIndex = 0; toolIndex < btns.length; toolIndex++) {
+            if (btns[toolIndex].className.indexOf("selected") > 0) {
+                var btn = btns[toolIndex];
+                btn.className = btn.className.substr(0, btn.className.indexOf("selected"));
+            }
+        }
+    };
+
 	this.setColor = function(color){
 		//set color overlay
 	}
 	this.setSelectedAnnotations = function(selectedAnnotations,tileView){
 		var userIsAdmin = true;
-		for(var i=0; i<names.length; i++)removeButton(i);
+		for (var x = 0; x < names.length; x++) { removeButton(x); }
+
 		if(selectedAnnotations.length>0){
 			if(userIsAdmin){
 				addButton(0);
 				var master = false;
-				for(var i=0; i<selectedAnnotations.length; i++){
-					if(selectedAnnotations.userId==null)
-						master=true;
+				for(var j=0; j<selectedAnnotations.length; j++){
+				    if(selectedAnnotations[j].userId === null ||
+                         selectedAnnotations[j].userId === undefined) {
+					    master=true;
+					}
 				}
+
 				setButtonSelected(0,master);
 			}
 		}

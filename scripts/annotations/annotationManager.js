@@ -331,8 +331,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				master=false;
 			}
 		}
-		for(var i=0; i<selectedAnnotations.length; i++){
-			selectedAnnotations[i].userId=master?undefined:userId;
+
+		for (var i = 0; i < selectedAnnotations.length; i++) {
+			selectedAnnotations[i].userId=master?undefined:scope.userId;
 		}
 		this.saveSelectedAnnotations();
 	}
