@@ -6,7 +6,10 @@ var TEXT_OPTION=2;
 var AREA_OPTION=3;
 var RULER_OPTION=4;
 var FILL_OPTION=5;
-var MASTER_OPTION=6;
+var MASTER_OPTION = 6;
+
+var MIN_SCALE = 0.05;
+var MAX_SCALE = 3;
 
 var NO_TOOL=-1;
 var LASSO_TOOL=0;

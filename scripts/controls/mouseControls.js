@@ -1,9 +1,10 @@
-BluVueSheet.MouseControls = function(tileView){
-	//gesture vars
-	var mouse_start_x;
-	var mouse_start_y;
-	var tileview_start_x;
-	var tileview_start_y;
+BluVueSheet.MouseControls = function (tileView) {
+    'use strict';
+	
+	var mouseStartX = 0;
+	var mouseStartY = 0;
+	var tileviewStartX = 0;
+	var tileviewStartY = 0;
 	var dragging = false;
 	function preventDefault(e) {
 	    e = e || window.event;
@@ -16,7 +17,11 @@ BluVueSheet.MouseControls = function(tileView){
 		var mouse = mouseLoc(e);
 		
 		var delta = wheelDistance(e);
-		tileView.scale*=1.0+(delta/15);
+		var newScale = tileView.scale * (1.0 + (delta / 15));
+	    
+		if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
+		    tileView.scale = newScale;
+        }
 
 		var nx = e.clientX/tileView.scale-tileView.scrollX;
 		var ny = e.clientY/tileView.scale-tileView.scrollY;
@@ -31,14 +36,14 @@ BluVueSheet.MouseControls = function(tileView){
 	this.onmousedown = function(e){
 		tileView.colorMenu.hide();
 		var mouse = mouseLoc(e);
-		var window_x = e.clientX;
-		var window_y = e.clientY;
+		var windowX = e.clientX;
+		var windowY = e.clientY;
 
 		//Gesture things
-		mouse_start_x=window_x;
-		mouse_start_y=window_y;
-		tileview_start_x=tileView.scrollX;
-		tileview_start_y=tileView.scrollY;
+		mouseStartX=windowX;
+		mouseStartY=windowY;
+		tileviewStartX=tileView.scrollX;
+		tileviewStartY=tileView.scrollY;
 
 		//Event things
 		tileView.annotationManager.onmousedown(mouse.x,mouse.y);
@@ -60,8 +65,8 @@ BluVueSheet.MouseControls = function(tileView){
 		var window_y = e.clientY;
 		tileView.annotationManager.onmousemove(mouse.x,mouse.y);
 		if(dragging){
-			tileView.scrollX=tileview_start_x+(window_x-mouse_start_x)/tileView.scale;
-			tileView.scrollY=tileview_start_y+(window_y-mouse_start_y)/tileView.scale;
+			tileView.scrollX=tileviewStartX+(window_x-mouseStartX)/tileView.scale;
+			tileView.scrollY=tileviewStartY+(window_y-mouseStartY)/tileView.scale;
 		}
 	}
 	this.onclick = function(e){
