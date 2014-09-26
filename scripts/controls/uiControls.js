@@ -54,7 +54,10 @@ BluVueSheet.OptionsMenu = function(optionChosen){
 	    //make button brighter
 	    var className = "bv-options-image bv-options-" + names[index].toLowerCase();
 	    className = isSelected ? className + " selected" : className;
-	    document.getElementById("button_" + names[index]).className = className;
+	    var elem = document.getElementById("button_" + names[index]);
+        if (elem) {
+            elem.className = className;
+        }
 	}
     this.deselectAllButtons = function() {
         var btns = document.getElementsByClassName("bv-options-image");
