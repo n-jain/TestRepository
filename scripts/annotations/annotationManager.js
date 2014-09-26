@@ -1,14 +1,14 @@
 BluVueSheet.AnnotationManager = function(tileView, scope){
-	var annotations = new Array();
+    var annotations = new Array();
 	var selectedAnnotations = new Array();
 	var toSave = new Array();
-	var currentAnnotation;
-	var lasso;
+	var currentAnnotation = null;
+	var lasso = null;
 	var touchedHandle=-1;
 	var cancelClick=false;
 	this.captureMouse=false;
 	this.captureKeyboard=false;
-	this.scaleAnnotation;
+	this.scaleAnnotation = null;
 	var me = this;
     
 	var removeFromArray = function(array, element){
@@ -36,12 +36,17 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, LENGTH);
 			}
 			this.captureMouse = true;
+		    return;
 		}
+
 		//add point to existing polygon annotation
 		if(tileView.getTool()==POLYGON_TOOL){
 		    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
-			this.captureMouse = true;
+		    this.captureMouse = true;
+		    cancelClick = true;
+		    return;
 		}
+
 		//check if selected annotation is being touched
 		var selectIndex=-1;
 		for(var i=0; i<selectedAnnotations.length; i++){
@@ -49,6 +54,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				selectIndex=i;
 			}
 		}
+
 		if(selectedAnnotations.length==1){
 			touchedHandle=-1;
 			var annotation = selectedAnnotations[0];
@@ -63,6 +69,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 			if(touchedHandle!=-1)this.captureMouse=true;
 		}
+
+        // panning annotations
 		if(selectIndex!=-1&&touchedHandle==-1){
 			for(var i=0; i<selectedAnnotations.length; i++){
 				selectedAnnotations[i].x_handle = x-selectedAnnotations[i].bounds.centerX();
@@ -124,56 +132,59 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}
 	this.onclick = function(x,y){
-		if(!cancelClick){
-			var lastSelectedId="";
-			if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
-			//get which annotations are touched
-			var touchedAnnotations = new Array(); 
-			for(var i=0;i<annotations.length; i++){
-				var bounds = annotations[i].bounds;
-				if(bounds.width()*tileView.scale<30)
-					bounds=bounds.inset(-(20/tileView.scale),0);
-				if(bounds.height()*tileView.scale<30)
-					bounds=bounds.inset(0,-(20/tileView.scale));			
-				if(bounds.contains(x,y))  {
-					touchedAnnotations[touchedAnnotations.length]=annotations[i];
-				}
-			}
-			//get which are selected already
-			var selected = new Array();
-			var anySelected = false;
-			for(var i=0; i<touchedAnnotations.length; i++){
-				selected[i] = touchedAnnotations[i].selected;
-				if(selected[i])anySelected=true;
-			}
-			//decide what to do
-			if(touchedAnnotations.length==0){
-				for(var i=0; i<annotations.length; i++){
-					annotations.selectIndex=0;
-				}
-				if(selectedAnnotations.length!=0){
-					this.deselectAllAnnotations();				
-				}
-			} else {
-				for(var i=0; i<touchedAnnotations.length; i++){
-					if(!anySelected){
-						var ann = touchedAnnotations[i];
-						if(ann.selectIndex<=0){
-							this.selectSingleAnnotation(touchedAnnotations[i]);
-							ann.selectIndex = touchedAnnotations.length;
-							break;
-						}
-					}
-					if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
-						this.deselectAllAnnotations();
-					}
-				}
-				for(var i=0;i<touchedAnnotations.length; i++){
-					if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
-				}
+	    if (cancelClick) {
+	        cancelClick = false;
+	        return;
+	    }
+
+	    cancelClick = false;
+	    var lastSelectedId="";
+		if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
+		//get which annotations are touched
+		var touchedAnnotations = new Array(); 
+		for(var i=0;i<annotations.length; i++){
+			var bounds = annotations[i].bounds;
+			if(bounds.width()*tileView.scale<30)
+				bounds=bounds.inset(-(20/tileView.scale),0);
+			if(bounds.height()*tileView.scale<30)
+				bounds=bounds.inset(0,-(20/tileView.scale));			
+			if(bounds.contains(x,y))  {
+				touchedAnnotations[touchedAnnotations.length]=annotations[i];
 			}
 		}
-		cancelClick=false;
+		//get which are selected already
+		var selected = new Array();
+		var anySelected = false;
+		for(var i=0; i<touchedAnnotations.length; i++){
+			selected[i] = touchedAnnotations[i].selected;
+			if(selected[i])anySelected=true;
+		}
+		//decide what to do
+		if(touchedAnnotations.length==0){
+			for(var i=0; i<annotations.length; i++){
+				annotations.selectIndex=0;
+			}
+			if(selectedAnnotations.length!=0){
+				this.deselectAllAnnotations();				
+			}
+		} else {
+			for(var i=0; i<touchedAnnotations.length; i++){
+				if(!anySelected){
+					var ann = touchedAnnotations[i];
+					if(ann.selectIndex<=0){
+						this.selectSingleAnnotation(touchedAnnotations[i]);
+						ann.selectIndex = touchedAnnotations.length;
+						break;
+					}
+				}
+				if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
+					this.deselectAllAnnotations();
+				}
+			}
+			for(var i=0;i<touchedAnnotations.length; i++){
+				if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
+			}
+		}
 	}
 	this.ondblclick = function(x,y){
 		if(tileView.getTool()==POLYGON_TOOL){
