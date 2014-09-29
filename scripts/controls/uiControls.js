@@ -1,5 +1,5 @@
 BluVueSheet.ToolMenu = function(setTool){
-	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler","Mail"];
+	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler"];
     var t = this;
 	this.toolMenuElement = document.createElement("div");
 	this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
