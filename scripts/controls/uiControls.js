@@ -51,6 +51,13 @@ BluVueSheet.OptionsMenu = function(optionChosen){
 		button.onclick = function(){
 			optionChosen(window[this.name.toUpperCase()+"_OPTION"]);
 		};
+
+        if (button.name == "Color") {
+            var circle = document.createElement("div");
+            circle.style.backgroundColor = BluVueSheet.ColorMenu.LastColor.toStyle();
+            button.appendChild(circle);
+        }
+
 		t.optionsMenuElement.appendChild(button);
 	}
 	var removeButton = function(index){
@@ -76,9 +83,15 @@ BluVueSheet.OptionsMenu = function(optionChosen){
         }
     };
 
-	this.setColor = function(color){
-		//set color overlay
-	}
+    this.setColor = function (color) {
+        BluVueSheet.ColorMenu.LastColor = color;
+        var btns = document.getElementsByClassName("bv-options-color");
+        if (btns.length === 0) { return; }
+        var btn = btns[0];
+        
+        btn.getElementsByTagName("div")[0].style.backgroundColor = color.toStyle();
+    }
+
 	this.setSelectedAnnotations = function(selectedAnnotations,tileView){
 		var userIsAdmin = true;
 		for (var x = 0; x < names.length; x++) { removeButton(x); }
@@ -134,19 +147,17 @@ BluVueSheet.OptionsMenu = function(optionChosen){
 			addButton(5);
 	}
 }
+
+
 BluVueSheet.ColorMenu = function(setColor){
-	var colors = [	new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),
-					new Color(1,1,0,1),new Color(1,0.647,0,1),new Color(1,0,1,1),
-					new Color(0.333,0.102,0.545,1),new Color(0,0,0,1),new Color(0.8,0.8,0.8,1)
-				 ];
 	this.colorMenuElement = document.createElement("div");
 	this.colorMenuElement.className = 'bluvue-sheet-color-menu';
 
-	for(var i=0; i<colors.length; i++){
+	for (var i = 0; i < BluVueSheet.ColorMenu.Colors.length; i++) {
 		var button = document.createElement("div");
 		button.className = "bluvue-color-button";
-		button.style.background = colors[i].toStyle();
-		button.name = colors[i].toStyle();
+		button.style.background = BluVueSheet.ColorMenu.Colors[i].toStyle();
+		button.name = BluVueSheet.ColorMenu.Colors[i].toStyle();
 		button.onclick = function(){
 			setColor(this.name);
 		};
@@ -163,6 +174,13 @@ BluVueSheet.ColorMenu = function(setColor){
 	    this.colorMenuElement.style.display = 'none';
 	}
 }
+BluVueSheet.ColorMenu.Colors = [
+    new Color(1, 0, 0, 1), new Color(0, 1, 0, 1), new Color(0, 0, 1, 1),
+	new Color(1, 1, 0, 1), new Color(1, 0.647, 0, 1), new Color(1, 0, 1, 1),
+	new Color(0.333, 0.102, 0.545, 1), new Color(0, 0, 0, 1), new Color(0.8, 0.8, 0.8, 1)
+];
+BluVueSheet.ColorMenu.LastColor = new Color(0.5725, 0.5725, 0.5725, 1);
+
 BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	var textSizes = [32,64,128,256,512];
 	this.textEditorElement = document.createElement("div");
