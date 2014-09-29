@@ -228,12 +228,6 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	    textBox.focus();
 	}
 }
-BluVueSheet.CloseSheetButton = function(closeSheet) {
-    this.closeMenuElement = document.createElement("span");
-    this.closeMenuElement.className = "bluvue-sheet-close-button";
-    this.closeMenuElement.innerHTML = "x";
-    this.closeMenuElement.onclick = closeSheet;
-}
 
 BluVueSheet.LoadingSpinner = function() {
     var createBounce = function(index) {
@@ -247,4 +241,21 @@ BluVueSheet.LoadingSpinner = function() {
     this.element.appendChild(createBounce(1));
     this.element.appendChild(createBounce(2));
     this.element.appendChild(createBounce(3));
+}
+
+BluVueSheet.Header = function(closeSheet) {
+    this.header = document.createElement("div");
+    this.header.className = "bluvue-sheet-header";
+    this.title = document.createElement("span");
+    this.header.appendChild(this.title);
+
+    var closeBtn = document.createElement("span");
+    closeBtn.className = "bluvue-sheet-close";
+    closeBtn.innerHTML = "close";
+    closeBtn.onclick = closeSheet;
+    this.header.appendChild(closeBtn);
+
+    this.setTitle = function(title) {
+        this.title.innerHTML = title;
+    }
 }

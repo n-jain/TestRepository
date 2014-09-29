@@ -4,6 +4,7 @@
             'use strict';
 
             $scope.sheet = {
+                name: 'Sheet 1!',
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",

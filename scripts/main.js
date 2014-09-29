@@ -23,7 +23,8 @@ angular.module("bluvueSheet").directive("bvSheet", [
                  * projectId: 'guid',
                  * slicesUrl: '',
                  * previewUrl: '',
-                 * annotations: []
+                 * annotations: [],
+                 * name: ''
                  * }
                  */
 
