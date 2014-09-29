@@ -141,8 +141,11 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		context.restore();
 	}
 	this.getPoint = function(id,handle){
-		var rect = this.bounds.clone();
-		if(handle)rect=rect.inset(-BOUND_DIST/tileView.scale);
+	    var rect = this.bounds.clone();
+	    if (handle) {
+	        rect = rect.inset(-BOUND_DIST / tileView.scale);
+	    }
+	    
 		var loc = new BluVueSheet.Point();
 		switch(id){//0 is top left, increases clockwise
 			case 0:loc.x=rect.left;loc.y=rect.top;break;
@@ -176,25 +179,24 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	this.scaleWithHandleTo = function(x,y,handleId){
 		var xPositive = (handleId==2||handleId==3||handleId==4);
 		var yPositive = (handleId==4||handleId==5||handleId==6);
-				
-		var scaleOrigin = this.getPoint((handleId+4)%8,false);
-		
-		var xDis = Math.abs(scaleOrigin.x-x);
-		var yDis = Math.abs(scaleOrigin.y-y);
-		
+
+		var scaleOrigin = this.getPoint((handleId + 4) % 8, false);
+		var xDis = Math.abs(scaleOrigin.x - x);
+	    var yDis = Math.abs(scaleOrigin.y - y);
+
 		//1 if normal, -1 if flipped
 		var xDir = x-scaleOrigin.x>=0?1:-1;if(!xPositive)xDir*=-1;
 		var yDir = y-scaleOrigin.y>=0?1:-1;if(!yPositive)yDir*=-1;
 
-		if(handleId==1||handleId==5){xDis=this.bounds.width();xDir=1;}
-		if(handleId==3||handleId==7){yDis=this.bounds.height();yDir=1;}
+		if (handleId == 1 || handleId == 5) { xDis = this.bounds.width() + BOUND_DIST / tileView.scale; xDir = 1; }
+		if (handleId == 3 || handleId == 7) { yDis = this.bounds.height() + BOUND_DIST / tileView.scale; yDir = 1; }
 				
 		if(xDis<=BOUND_DIST/tileView.scale||xDir==-1)xDis = BOUND_DIST/tileView.scale;
 		if(yDis<=BOUND_DIST/tileView.scale||yDir==-1)yDis = BOUND_DIST/tileView.scale;
 		
-		var xScale = xDir*((this.bounds.width()==0)?1:xDis/this.bounds.width());
-		var yScale = yDir*((this.bounds.height()==0)?1:yDis/this.bounds.height());
-		
+		var xScale = xDir*((this.bounds.width()==0)?1:xDis/(this.bounds.width() + BOUND_DIST/tileView.scale));
+		var yScale = yDir*((this.bounds.height()==0)?1:yDis/(this.bounds.height() + BOUND_DIST/tileView.scale));
+
 		var matrix = new BluVueSheet.ScaleMatrix(xDir * xScale, yDir * yScale, scaleOrigin.x, scaleOrigin.y);
 		for(var i=0; i<this.points.length; i++){
 			matrix.applyTo(this.points[i]);

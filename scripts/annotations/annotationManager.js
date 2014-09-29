@@ -121,7 +121,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				}
 			} else {
 				var annotation = selectedAnnotations[0];
-				if(annotation.rectType){
+				if (annotation.rectType) {
 					annotation.scaleWithHandleTo(x,y,touchedHandle);
 				}else{
 				    annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
