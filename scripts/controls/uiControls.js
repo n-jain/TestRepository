@@ -185,13 +185,16 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	var textSizes = [32,64,128,256,512];
 	this.textEditorElement = document.createElement("div");
 	this.textEditorElement.className = "bluvue-text-editor";
-	
+
+    var fontSize = 20;
 	var textSizeMenu = document.createElement("div");
 	for(var i=0; i<textSizes.length; i++){
 		var button = document.createElement("div");
 		button.className = "bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text";
 		button.name = textSizes[i];
-		button.onclick = function(){
+		button.style.fontSize = fontSize + "px";
+	    fontSize += 4;
+		button.onclick = function () {
 			setTextSize(parseInt(this.name));
 		};
 		textSizeMenu.appendChild(button);
