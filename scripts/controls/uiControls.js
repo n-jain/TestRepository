@@ -214,6 +214,7 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	    this.textEditorElement.style.left = x + "px";
 	    this.textEditorElement.style.top = y + "px";
 	    this.textEditorElement.style.display = 'block';
+	    textBox.focus();
 	}
 	this.hide = function(){
 	    this.textEditorElement.style.display = 'none';
@@ -223,7 +224,8 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	    this.textEditorElement.style.top = y + "px";
 	}
 	this.setText = function(text){
-		textBox.value = text;
+	    textBox.value = text;
+	    textBox.focus();
 	}
 }
 BluVueSheet.CloseSheetButton = function(closeSheet) {
