@@ -2,7 +2,8 @@ BluVueSheet.ToolMenu = function(setTool){
 	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler","Mail"];
     var t = this;
 	this.toolMenuElement = document.createElement("div");
-    this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
+	this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
+	this.currentToolName = null;
 
 	for(var i=0; i<names.length; i++){
 	    var button = document.createElement("div");
@@ -10,8 +11,14 @@ BluVueSheet.ToolMenu = function(setTool){
 		button.name = names[i];
 		button.onclick = function () {
 		    t.deselectAllTools();
-		    this.className = "bv-toolbar-image bv-toolbar-" + this.name.toLowerCase() + " selected";
-			setTool(window[this.name.toUpperCase()+"_TOOL"]);
+            if (t.currentToolName !== this.name) {
+                this.className = "bv-toolbar-image bv-toolbar-" + this.name.toLowerCase() + " selected";
+                setTool(window[this.name.toUpperCase() + "_TOOL"]);
+                t.currentToolName = this.name;
+            } else {
+                setTool(NO_TOOL);
+                t.currentToolName = null;
+            }
 		};
 
 		this.toolMenuElement.appendChild(button);
