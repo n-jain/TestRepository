@@ -6,6 +6,7 @@
     this.textEditor = null;
     this.closeSheetButton = null;
     this.userInterface = null;
+    this.header = null;
 
     this.userId = null;
     this.projectId = null;
@@ -39,7 +40,7 @@
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
         this.loadingSpinner = new BluVueSheet.LoadingSpinner();
-        this.header = new BluVueSheet.Header(closeSheet);
+        this.header = new BluVueSheet.Header(closeSheet, this.resetZoom);
         this.header.setTitle(scope.sheet.name);
         
         var canvas = elem.find('canvas')[0];
@@ -90,6 +91,10 @@
         window.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
         window.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
     };
+
+    this.resetZoom = function() {
+        t.tileView.fitToScreen();
+    }
 
     this.setTool = function (id) {
         t.tileView.setTool(id);

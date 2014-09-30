@@ -284,17 +284,25 @@ BluVueSheet.LoadingSpinner = function() {
     this.element.appendChild(createBounce(3));
 }
 
-BluVueSheet.Header = function(closeSheet) {
+BluVueSheet.Header = function(closeSheet, resetZoom) {
     this.header = document.createElement("div");
     this.header.className = "bluvue-sheet-header";
     this.title = document.createElement("span");
     this.header.appendChild(this.title);
 
+    var buttons = document.createElement("div");
+    buttons.className = "bluvue-sheet-header-buttons";
+    this.header.appendChild(buttons);
+
+    var resetZoomBtn = document.createElement("span");
+    resetZoomBtn.innerHTML = "100%";
+    resetZoomBtn.onclick = resetZoom;
+    buttons.appendChild(resetZoomBtn);
+
     var closeBtn = document.createElement("span");
-    closeBtn.className = "bluvue-sheet-close";
     closeBtn.innerHTML = "close";
     closeBtn.onclick = closeSheet;
-    this.header.appendChild(closeBtn);
+    buttons.appendChild(closeBtn);
 
     this.setTitle = function(title) {
         this.title.innerHTML = title;

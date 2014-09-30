@@ -24,12 +24,14 @@ div.bluvue-sheet > canvas {
     width: 100%;
 }
 
-.bluvue-sheet-close {
+.bluvue-sheet-header-buttons {
     text-align: right;
+    float: right;
+}
+.bluvue-sheet-header-buttons span {
     cursor: pointer;
     text-decoration: underline;
-    position: absolute;
-    right: 20px;
+    margin: 0 20px 0 0;
 }
 
 .bluvue-sheet-tool-menu {
