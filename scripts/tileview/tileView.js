@@ -18,7 +18,8 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	this.textSize = 128;
     this.canDraw = false;
 	var tool;
-    
+    this.animationFrameRequest = null;
+
 	this.setLoading = function () {
 	    this.canDraw = false;
 	    setLoading();
@@ -53,6 +54,10 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 		}
 	}
 
+    this.dispose = function() {
+        window.cancelAnimationFrame(this.animationFrameRequest);
+    }
+
 	this.drawAll = function () {
 	    canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
@@ -85,7 +90,7 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	this.render = function(){
 		t.drawAll();
 
-		requestAnimationFrame(t.render);
+		this.animationFrameRequest = requestAnimationFrame(t.render);
 	}
 
 	this.setColor = function(color){

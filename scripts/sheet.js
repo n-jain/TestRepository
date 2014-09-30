@@ -89,6 +89,7 @@
 
     this.dispose = function () {
         clearTimeout(t.mainLoopTimeout);
+        t.tileView.dispose();
         window.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
         window.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
         window.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
