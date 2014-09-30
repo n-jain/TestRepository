@@ -294,12 +294,12 @@ BluVueSheet.Header = function(closeSheet, resetZoom) {
     buttons.className = "bluvue-sheet-header-buttons";
     this.header.appendChild(buttons);
 
-    var resetZoomBtn = document.createElement("span");
+    var resetZoomBtn = document.createElement("button");
     resetZoomBtn.innerHTML = "100%";
     resetZoomBtn.onclick = resetZoom;
     buttons.appendChild(resetZoomBtn);
 
-    var closeBtn = document.createElement("span");
+    var closeBtn = document.createElement("button");
     closeBtn.innerHTML = "close";
     closeBtn.onclick = closeSheet;
     buttons.appendChild(closeBtn);

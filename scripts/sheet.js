@@ -52,9 +52,11 @@
         this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
         this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
 
+        elem.append(this.header.header);
+
         elem.append(this.loadingSpinner.element);
         elem.append(this.userInterface);
-        elem.append(this.header.header);
+        
 
         this.setLoading();
 

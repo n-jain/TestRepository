@@ -17,21 +17,21 @@ div.bluvue-sheet > canvas {
     background: white;
     border-bottom: solid 1px #aaa;
     font-family: Verdana;
-    padding: 10px 0 10px 10px;
+    padding: 10px 0 10px 0;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
 }
-
+.bluvue-sheet-header span:first-child {
+    margin: 0 0 0 10px;
+}
 .bluvue-sheet-header-buttons {
     text-align: right;
     float: right;
 }
-.bluvue-sheet-header-buttons span {
-    cursor: pointer;
-    text-decoration: underline;
-    margin: 0 20px 0 0;
+.bluvue-sheet-header-buttons button {
+    margin: 0 10px 0 0;
 }
 
 .bluvue-sheet-tool-menu {
