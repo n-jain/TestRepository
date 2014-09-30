@@ -31,7 +31,7 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
         setLoaded();
     }
 
-	this.create = function(sheet){
+	this.create = function(sheetObj){
 		context=canvas.getContext('2d');
 
 		context.imageSmoothingEnabled=false;
@@ -41,7 +41,7 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 		this.scrollX=0;
 	    this.scrollY=0;
 	    this.scale=1;
-	    this.tileLoader = new BluVueSheet.TileLoader(sheet.slicesUrl, sheet.previewUrl, this);
+	    this.tileLoader = new BluVueSheet.TileLoader(sheetObj.slicesUrl, sheetObj.previewUrl, this);
 	    this.keyboardControls = new BluVueSheet.KeyboardControls(this, closeSheet);
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
@@ -51,8 +51,8 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 		this.color=new Color(1,0,0,1);
 		tool=NO_TOOL;
 
-		for(var i=0; i<sheet.annotations.length; i++){
-			this.annotationManager.loadAnnotation(sheet.annotations[i].data);
+		for(var i=0; i<sheetObj.annotations.length; i++){
+			this.annotationManager.loadAnnotation(sheetObj.annotations[i].data);
 		}
 	}
 
@@ -72,7 +72,7 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	}
 
 	this.fitToScreen = function () {
-	    var headerHeight = sheet.header.header.offsetHeight;
+	    var headerHeight = this.sheet.header.header.offsetHeight;
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight) ? canvas.width : canvas.height - headerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
 	    this.scale = 0.9 * canvasDim / sheetDim;

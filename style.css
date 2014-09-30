@@ -2,6 +2,8 @@ div.bluvue-sheet {
     position: fixed;
     left: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 div.bluvue-sheet > canvas {
@@ -61,6 +63,7 @@ div.bluvue-sheet > canvas {
     top: 60px;
 }
 .bluvue-color-button {
+    cursor: pointer;
 	height: 45px;
 	width: 45px;
 	border-radius: 50%;
