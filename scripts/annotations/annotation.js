@@ -358,7 +358,10 @@ function drawPoints(context){
 		if(this.closed){
 			context.lineTo(this.points[0].x,this.points[0].y);	
 		}
-		if(this.fill&&this.type!=HIGHLIGHTER_ANNOTATION)context.fill();
+		if (this.fill && this.type != HIGHLIGHTER_ANNOTATION) context.fill();
+
+		context.lineCap = 'round';
+		context.lineJoin = "round";
 		context.stroke();
 		context.restore();
 	}
@@ -412,7 +415,8 @@ function drawLine(context){
 		context.beginPath();
 		context.moveTo(x1,y1);
 		context.lineTo(x2,y2);
-		
+		context.lineCap = 'round';
+		context.lineJoin = "round";
 		context.restore();
 		context.stroke();
 	}
