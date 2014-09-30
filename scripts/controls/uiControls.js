@@ -10,14 +10,15 @@ BluVueSheet.ToolMenu = function(setTool){
 	    button.className = "bv-toolbar-image bv-toolbar-" + names[i].toLowerCase();
 		button.name = names[i];
 		button.onclick = function () {
+		    var previouslySelectedToolName = t.currentToolName;
 		    t.deselectAllTools();
-            if (t.currentToolName !== this.name) {
+
+		    if (previouslySelectedToolName !== this.name) {
                 this.className = "bv-toolbar-image bv-toolbar-" + this.name.toLowerCase() + " selected";
                 setTool(window[this.name.toUpperCase() + "_TOOL"]);
                 t.currentToolName = this.name;
             } else {
                 setTool(NO_TOOL);
-                t.currentToolName = null;
             }
 		};
 
@@ -32,7 +33,9 @@ BluVueSheet.ToolMenu = function(setTool){
                 tool.className = tool.className.substr(0, tool.className.indexOf("selected"));
             }
         }
-    };
+
+	    t.currentToolName = null;
+	};
 }
 
 BluVueSheet.OptionsMenu = function(sheet) {
