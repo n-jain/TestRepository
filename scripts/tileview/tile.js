@@ -14,7 +14,7 @@ BluVueSheet.Tile = function(zipObject,tileLoader){
 		me.y=parseInt(parts[1])*tileLoader.tileSize*1000/me.zoomLevel;
 		tileLoader.loaded++;
 		tileLoader.calcSize();
-		tileLoader.levelAvailable[levelIndex(me.zoomLevel)]=true;
+		tileLoader.levelAvailable[levelIndex(me.zoomLevel)] = true;
 	}
 	this.drawMe = function(context){
     	context.drawImage(this.image, this.x, this.y, this.image.width*1000/this.zoomLevel, this.image.height*1000/this.zoomLevel);

@@ -8,6 +8,7 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	this.preview.src = previewPath;
 	this.width = 0;
 	this.height = 0;
+	this.tileView = tileView;
 
 	var me = this;
 
@@ -40,9 +41,9 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	    if (err) {
 	        tileView.setLoaded();
 			throw err;
-		}
+	    }
+
 	    me.loadTiles(data);
-	    tileView.setLoaded();
 	}
 
     tileView.setLoading();
@@ -62,8 +63,9 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 					}
 				}
 			}
-			//set zoom level
-			tileView.fitToScreen();
+		    //set zoom level
+		    tileView.fitToScreen();
+		    tileView.setLoaded();
 		}
 	}
 	this.setTileRes = function(id){

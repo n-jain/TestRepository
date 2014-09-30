@@ -63,10 +63,11 @@
         //make tileView
         this.tileView = new BluVueSheet.TileView(this, canvas, this.toolMenu, this.optionsMenu, closeSheet, scope, this.setLoading, this.setLoaded);
         this.tileView.create(sheet);
+        this.tileView.render();
 
         //create loop
         var mainLoop = function () {
-            t.tileView.mainLoop();
+            t.tileView.mainLoopKeyboardControls();
             t.mainLoopTimeout = setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
         }
 

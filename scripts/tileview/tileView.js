@@ -14,21 +14,20 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	this.scrollY;
 	this.scale;
 
-	this.draw;
 	this.color;
 	this.textSize = 128;
     this.canDraw = false;
 	var tool;
-
-	var firstDraw;
-
+    
 	this.setLoading = function () {
 	    this.canDraw = false;
 	    setLoading();
 	}
 	this.setLoaded = function () {
-	    this.canDraw = true;
-        setLoaded();
+        if (!this.canDraw) {
+	        this.canDraw = true;
+	        setLoaded();
+        }
     }
 
 	this.create = function(sheetObj){
@@ -46,8 +45,6 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
-		this.draw=false;
-		this.firstDraw=false;
 		this.color=new Color(1,0,0,1);
 		tool=NO_TOOL;
 
@@ -81,12 +78,14 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 		this.updateRes();
 	}
 
-	this.mainLoop = function(){
-		t.keyboardControls.handleControls();
-		if(t.draw||!t.firstDraw){
-			if(t.tileLoader.tiles!=null)if(t.tileLoader.loaded==t.tileLoader.tiles.length)firstDraw=true;
-			t.drawAll();
-		}
+    this.mainLoopKeyboardControls = function() {
+        t.keyboardControls.handleControls();
+    }
+
+	this.render = function(){
+		t.drawAll();
+
+		requestAnimationFrame(t.render);
 	}
 
 	this.setColor = function(color){
