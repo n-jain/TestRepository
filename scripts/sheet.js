@@ -1,6 +1,4 @@
-﻿var BluVueSheet = {};
-
-BluVueSheet.Sheet = function() {
+﻿BluVueSheet.Sheet = function() {
     this.tileView = null;
     this.toolMenu = null;
     this.optionsMenu = null;
@@ -37,20 +35,22 @@ BluVueSheet.Sheet = function() {
         this.userId = sheet.userId;
         //make on screen controls
         this.toolMenu = new BluVueSheet.ToolMenu(this.setTool);
-        this.optionsMenu = new BluVueSheet.OptionsMenu(this.optionChosen);
+        this.optionsMenu = new BluVueSheet.OptionsMenu(this);
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
         this.loadingSpinner = new BluVueSheet.LoadingSpinner();
         this.header = new BluVueSheet.Header(closeSheet);
         this.header.setTitle(scope.sheet.name);
-
+        
         var canvas = elem.find('canvas')[0];
         this.userInterface = document.createElement("div");
         this.userInterface.appendChild(this.toolMenu.toolMenuElement);
         this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
         this.userInterface.appendChild(this.colorMenu.colorMenuElement);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
-        
+        this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
+        this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
+
         elem.append(this.loadingSpinner.element);
         elem.append(this.userInterface);
         elem.append(this.header.header);
@@ -58,7 +58,7 @@ BluVueSheet.Sheet = function() {
         this.setLoading();
 
         //make tileView
-        this.tileView = new BluVueSheet.TileView(canvas, this.toolMenu, this.optionsMenu, this.colorMenu, this.textEditor, closeSheet, scope, this.setLoading, this.setLoaded);
+        this.tileView = new BluVueSheet.TileView(this, canvas, this.toolMenu, this.optionsMenu, closeSheet, scope, this.setLoading, this.setLoaded);
         this.tileView.create(sheet);
 
         //create loop
@@ -95,12 +95,17 @@ BluVueSheet.Sheet = function() {
         t.tileView.setTool(id);
     };
 
-    this.optionChosen = function (id) {
-        t.tileView.optionChosen(id);
-        if (id == COLOR_OPTION) {
-            t.colorMenu.show();
-        }
-    };
+    this.hideOptionMenus = function() {
+        t.optionsMenu.lengthUnitConverter.hide();
+        t.optionsMenu.areaUnitConverter.hide();
+        t.colorMenu.hide();
+    }
+
+    this.convertToUnit = function(type, subType) {
+        t.tileView.convertToUnit(type, subType);
+        t.optionsMenu.lengthUnitConverter.hide();
+        t.optionsMenu.areaUnitConverter.hide();
+    }
 
     this.setColor = function (colorName) {
         var csv = colorName.slice(5, colorName.length - 1);

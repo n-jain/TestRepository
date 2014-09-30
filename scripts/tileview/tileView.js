@@ -1,10 +1,9 @@
-BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textEditor, closeSheet, scope, setLoading, setLoaded) {
+BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeSheet, scope, setLoading, setLoaded) {
 	var context;
     var t = this;
 	this.toolMenu=toolMenu;
 	this.optionsMenu=optionsMenu;
-	this.colorMenu=colorMenu;
-	this.textEditor = textEditor;
+	this.sheet = sheet;
 
 	this.tileLoader;
 	this.annotationManager;
@@ -93,6 +92,10 @@ BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textE
 		if(!this.annotationManager.colorSelectedAnnotations(color))this.color=color;
 	}
 
+    this.convertToUnit = function(type, subType) {
+        this.annotationManager.convertToUnit(type, subType);
+    }
+
 	this.setTool = function (newTool) {
 	    if (newTool === NO_TOOL) {
             toolMenu.deselectAllTools();
@@ -108,23 +111,24 @@ BluVueSheet.TileView = function (canvas, toolMenu, optionsMenu, colorMenu, textE
 	this.getTool = function(){
 		return tool;
 	}
-	this.optionChosen = function(option){
-		switch(option){
-			case DELETE_OPTION:
-				this.annotationManager.deleteSelectedAnnotations();
-				break;
-			case FILL_OPTION:
-				this.annotationManager.fillSelectedAnnotations();
-				break;
-			case AREA_OPTION:
-				this.annotationManager.areaSelectedAnnotation();
-				break;
-			case MASTER_OPTION:
-				this.annotationManager.masterSelectedAnnotations();
-				break;
-		}
-		this.annotationManager.updateOptionsMenu();
-	}
+	this.optionChosen = function (option) {
+        switch (option) {
+        case BluVueSheet.Constants.OptionButtons.Delete.id:
+            this.annotationManager.deleteSelectedAnnotations();
+            break;
+        case BluVueSheet.Constants.OptionButtons.Fill.id:
+            this.annotationManager.fillSelectedAnnotations();
+            break;
+        case BluVueSheet.Constants.OptionButtons.Area.id:
+            this.annotationManager.areaSelectedAnnotation();
+            break;
+        case BluVueSheet.Constants.OptionButtons.Master.id:
+            this.annotationManager.masterSelectedAnnotations();
+            break;
+        }
+        this.annotationManager.updateOptionsMenu();
+    };
+
 	this.updateRes = function(){
 		this.tileLoader.setTileRes(5);
 		if(this.scale>0.038)this.tileLoader.setTileRes(4);

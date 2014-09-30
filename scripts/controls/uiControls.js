@@ -34,120 +34,158 @@ BluVueSheet.ToolMenu = function(setTool){
         }
     };
 }
-BluVueSheet.OptionsMenu = function(optionChosen){
-	var names = ["Master","Fill","Ruler","Area","Color","Delete"];
-	var t = this;
 
-	this.optionsMenuElement = document.createElement("div");
-	this.optionsMenuElement.className = 'bluvue-sheet-options-menu';
+BluVueSheet.OptionsMenu = function(sheet) {
+    var t = this;
 
-	var addButton = function(index){
-		var button = document.getElementById("button_"+names[index]);
-		if(button!=null)return;
-	    button = document.createElement("div");
-	    button.className = "bv-options-image bv-options-" + names[index].toLowerCase();
-		button.name = names[index];
-		button.id = "button_"+names[index];
-		button.onclick = function(){
-			optionChosen(window[this.name.toUpperCase()+"_OPTION"]);
-		};
+    this.sheet = sheet;
+    this.lengthUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Length, sheet.convertToUnit);
+    this.areaUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Area, sheet.convertToUnit);
 
-        if (button.name == "Color") {
+    this.optionsMenuElement = document.createElement("div");
+    this.optionsMenuElement.className = 'bluvue-sheet-options-menu';
+
+    var addButton = function(btnInfo) {
+        var button = document.getElementById("button_" + btnInfo.id);
+        if (button != null) {
+            return;
+        }
+
+        button = document.createElement("div");
+        button.className = "bv-options-image bv-options-" + btnInfo.className;
+        button.id = "button_" + btnInfo.id;
+        button.btnInfo = btnInfo;
+        
+        button.onclick = function () {
+            if (btnInfo.id === BluVueSheet.Constants.OptionButtons.Color.id) {
+                t.sheet.colorMenu.show();
+            } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitLength.id) {
+                t.lengthUnitConverter.show();
+            } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitArea.id) {
+                t.areaUnitConverter.show();
+            }
+
+            t.sheet.tileView.optionChosen(this.btnInfo.id);
+        };
+
+        if (btnInfo.id === BluVueSheet.Constants.OptionButtons.Color.id) {
             var circle = document.createElement("div");
             circle.style.backgroundColor = BluVueSheet.ColorMenu.LastColor.toStyle();
             button.appendChild(circle);
         }
 
-		t.optionsMenuElement.appendChild(button);
-	}
-	var removeButton = function(index){
-		var button = document.getElementById("button_"+names[index]);
-		if (button != null) { t.optionsMenuElement.removeChild(button); }
-	}
-	var setButtonSelected = function(index, isSelected){
-	    //make button brighter
-	    var className = "bv-options-image bv-options-" + names[index].toLowerCase();
-	    className = isSelected ? className + " selected" : className;
-	    var elem = document.getElementById("button_" + names[index]);
+        t.optionsMenuElement.appendChild(button);
+    }
+
+    var removeButton = function(btnInfo) {
+        var button = document.getElementById("button_" + btnInfo.id);
+        if (button != null) {
+            t.optionsMenuElement.removeChild(button);
+        }
+    }
+
+    var setButtonSelected = function(btnInfo, isSelected) {
+        //make button brighter
+        var className = "bv-options-image bv-options-" + btnInfo.className;
+        className = isSelected ? className + " selected" : className;
+        var elem = document.getElementById("button_" + btnInfo.id);
         if (elem) {
             elem.className = className;
         }
-	}
+    }
+
     this.deselectAllButtons = function() {
         var btns = document.getElementsByClassName("bv-options-image");
         for (var toolIndex = 0; toolIndex < btns.length; toolIndex++) {
             if (btns[toolIndex].className.indexOf("selected") > 0) {
                 var btn = btns[toolIndex];
-                btn.className = btn.className.substr(0, btn.className.indexOf("selected"));
+                btn.className = btn.className.substr(0, btn.className.indexOf(" selected"));
             }
         }
     };
 
-    this.setColor = function (color) {
+    this.setColor = function(color) {
         BluVueSheet.ColorMenu.LastColor = color;
         var btns = document.getElementsByClassName("bv-options-color");
-        if (btns.length === 0) { return; }
+        if (btns.length === 0) {
+            return;
+        }
         var btn = btns[0];
-        
+
         btn.getElementsByTagName("div")[0].style.backgroundColor = color.toStyle();
     }
 
-	this.setSelectedAnnotations = function(selectedAnnotations,tileView){
-		var userIsAdmin = true;
-		for (var x = 0; x < names.length; x++) { removeButton(x); }
+    this.setSelectedAnnotations = function(selectedAnnotations, tileView) {
+        var userIsAdmin = true;
+        var keys = Object.keys(BluVueSheet.Constants.OptionButtons);
+        for (var x = 0; x < keys.length; x++) {
+            removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);
+        }
 
-		if(selectedAnnotations.length>0){
-			if(userIsAdmin){
-				addButton(0);
-				var master = false;
-				for(var j=0; j<selectedAnnotations.length; j++){
-				    if(selectedAnnotations[j].userId === null ||
-                         selectedAnnotations[j].userId === undefined) {
-					    master=true;
-					}
-				}
+        if (selectedAnnotations.length > 0) {
+            if (userIsAdmin) {
+                addButton(BluVueSheet.Constants.OptionButtons.Master);
+                var master = false;
+                for (var j = 0; j < selectedAnnotations.length; j++) {
+                    if (selectedAnnotations[j].userId === null ||
+                        selectedAnnotations[j].userId === undefined) {
+                        master = true;
+                    }
+                }
 
-				setButtonSelected(0,master);
-			}
-		}
-		if(selectedAnnotations.length==1){
-			var type = selectedAnnotations[0].type;
-			this.setColor(selectedAnnotations[0].color);
-			if(type==MEASURE_ANNOTATION)
-				addButton(2);
-			if((type==SQUARE_ANNOTATION||type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)&&tileView.annotationManager.scaleAnnotation!=null){
-				if(selectedAnnotations[0].areaMeasured)addButton(2);
-				setButtonSelected(3,selectedAnnotations[0].areaMeasured);
-				addButton(3);
-			}
-		} else {
-			this.setColor(tileView.color);
-		}
-		if(selectedAnnotations.length>0){
-			var canFill = false;
-			for(var i=0; i<selectedAnnotations.length; i++){
-				if(selectedAnnotations[i].type!=TEXT_ANNOTATION&&selectedAnnotations[i].type!=HIGHLIGHTER_ANNOTATION&&
-						selectedAnnotations[i].type!=LINE_ANNOTATION&&selectedAnnotations[i].type!=ARROW_ANNOTATION&&
-						selectedAnnotations[i].type!=MEASURE_ANNOTATION&&selectedAnnotations[i].type!=SCALE_ANNOTATION)
-					canFill=true;
-			}
-			if(canFill){
-				var totalFilled = 0;
-				addButton(1);
-				for(var i=0; i<selectedAnnotations.length; i++){
-					if(selectedAnnotations[i].fill)totalFilled++;
-				}
-				//highlight the fill button if all selected paths are filled
-				setButtonSelected(1,totalFilled==selectedAnnotations.length);
-			}
-		}
-		if(tileView.getTool()!=LASSO_TOOL&&(tileView.getTool()!=NO_TOOL||selectedAnnotations.length>0))
-			addButton(4);
-		if(selectedAnnotations.length>0)
-			addButton(5);
-	}
-}
+                setButtonSelected(BluVueSheet.Constants.OptionButtons.Master, master);
+            }
+        }
 
+        if (selectedAnnotations.length == 1) {
+            var type = selectedAnnotations[0].type;
+            this.setColor(selectedAnnotations[0].color);
+            if (type == MEASURE_ANNOTATION)
+                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
+            if ((type == SQUARE_ANNOTATION || type == POLYGON_ANNOTATION || type == PEN_ANNOTATION) && tileView.annotationManager.scaleAnnotation != null) {
+                if (selectedAnnotations[0].areaMeasured) {
+                    addButton(BluVueSheet.Constants.OptionButtons.UnitArea);
+                }
+
+                setButtonSelected(BluVueSheet.Constants.OptionButtons.Area, selectedAnnotations[0].areaMeasured);
+                addButton(BluVueSheet.Constants.OptionButtons.Area);
+            }
+        } else {
+            this.setColor(tileView.color);
+        }
+
+        if (selectedAnnotations.length > 0) {
+            var canFill = false;
+            for (var i = 0; i < selectedAnnotations.length; i++) {
+                if (selectedAnnotations[i].type != TEXT_ANNOTATION && selectedAnnotations[i].type != HIGHLIGHTER_ANNOTATION &&
+                    selectedAnnotations[i].type != LINE_ANNOTATION && selectedAnnotations[i].type != ARROW_ANNOTATION &&
+                    selectedAnnotations[i].type != MEASURE_ANNOTATION && selectedAnnotations[i].type != SCALE_ANNOTATION) {
+                    canFill = true;
+                    break;
+                }
+            }
+
+            if (canFill) {
+                var totalFilled = 0;
+                addButton(BluVueSheet.Constants.OptionButtons.Fill);
+                for (var j = 0; j < selectedAnnotations.length; j++) {
+                    if (selectedAnnotations[j].fill)totalFilled++;
+                }
+
+                //highlight the fill button if all selected paths are filled
+                setButtonSelected(BluVueSheet.Constants.OptionButtons.Fill, totalFilled == selectedAnnotations.length);
+            }
+        }
+
+        if (tileView.getTool() != LASSO_TOOL && (tileView.getTool() != NO_TOOL || selectedAnnotations.length > 0)) {
+            addButton(BluVueSheet.Constants.OptionButtons.Color);
+        }
+
+        if (selectedAnnotations.length > 0) {
+            addButton(BluVueSheet.Constants.OptionButtons.Delete);
+        }
+    }
+};
 
 BluVueSheet.ColorMenu = function(setColor){
 	this.colorMenuElement = document.createElement("div");
@@ -257,5 +295,32 @@ BluVueSheet.Header = function(closeSheet) {
 
     this.setTitle = function(title) {
         this.title.innerHTML = title;
+    }
+}
+
+BluVueSheet.UnitConverter = function (type, convertToUnit) {
+    this.unitConverterElement = document.createElement("div");
+    this.unitConverterElement.className = 'bluvue-sheet-unit-converter-menu';
+
+    for (var i = 0; i < BluVueSheet.Constants.UnitNames[type].length; i++) {
+        var button = document.createElement("div");
+        button.className = "bluvue-unit-converter-button";
+        button.dataset.index = i;
+        button.innerHTML = BluVueSheet.Constants.UnitDisplayNames[type][i];
+        button.onclick = function () {
+            convertToUnit(type, this.dataset.index);
+        };
+        this.unitConverterElement.appendChild(button);
+        if (i % 3 == 2) {
+            var br = document.createElement("br");
+            this.unitConverterElement.appendChild(br);
+        }
+    }
+
+    this.show = function () {
+        this.unitConverterElement.style.display = 'block';
+    }
+    this.hide = function () {
+        this.unitConverterElement.style.display = 'none';
     }
 }

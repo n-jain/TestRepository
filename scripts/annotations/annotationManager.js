@@ -33,7 +33,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			currentAnnotation = ann;
 			if(ann.type==LASSO_ANNOTATION)lasso=ann;
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
-			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, LENGTH);
+			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
 			}
 			this.captureMouse = true;
 		    return;
@@ -216,8 +216,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			var corner = annotation.getPoint(2,true);
 			var x = (corner.x+tileView.scrollX)*tileView.scale;
 			var y = (corner.y+tileView.scrollY)*tileView.scale;
-			tileView.textEditor.setText(annotation.text);
-			tileView.textEditor.show(x,y);
+			tileView.sheet.textEditor.setText(annotation.text);
+			tileView.sheet.textEditor.show(x,y);
 			annotation.added=true;
 		}
 	}
@@ -244,7 +244,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 		this.captureKeyboard=false;
-		tileView.textEditor.hide();
+		tileView.sheet.textEditor.hide();
 		for(var i=0; i<toKill.length; i++){
 			removeFromArray(annotations,toKill[i]);
 		}
@@ -292,7 +292,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		selectedAnnotations = new Array();
 		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
 		this.captureKeyboard=false;
-		tileView.textEditor.hide();
+		tileView.sheet.textEditor.hide();
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;
@@ -319,11 +319,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.areaSelectedAnnotation = function(){
 		selectedAnnotations[0].areaMeasured=!selectedAnnotations[0].areaMeasured;
 		if(selectedAnnotations[0].areaMeasured){
-		    selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, BluVueSheet.Measurement.toArea(this.scaleAnnotation.measurement.unit), AREA);
+		    selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, BluVueSheet.Measurement.toArea(this.scaleAnnotation.measurement.unit), BluVueSheet.Constants.Area);
 			selectedAnnotations[0].updateMeasure();
 		}
 		this.saveSelectedAnnotations();
 	}
+    this.convertToUnit = function(type, subType) {
+        for (var i = 0; i < selectedAnnotations.length; i++) {
+            var ann = selectedAnnotations[i];
+            if (type === BluVueSheet.Constants.Length && ann.type === MEASURE_ANNOTATION) {
+                ann.measurement.changeToUnit(subType);
+            } else if (type === BluVueSheet.Constants.Area && ann.areaMeasured) {
+                ann.measurement.changeToUnit(subType);
+            }
+        }
+    }
 	this.masterSelectedAnnotations = function(){
 		var master = true;
 		for(var i=0; i<selectedAnnotations.length; i++){

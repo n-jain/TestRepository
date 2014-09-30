@@ -1,12 +1,6 @@
-var MAIN_LOOP_TIMEOUT = 1000 / 60;
+var BluVueSheet = {};
 
-var DELETE_OPTION = 0;
-var COLOR_OPTION=1;
-var TEXT_OPTION=2;
-var AREA_OPTION=3;
-var RULER_OPTION=4;
-var FILL_OPTION=5;
-var MASTER_OPTION = 6;
+var MAIN_LOOP_TIMEOUT = 1000 / 60;
 
 var MIN_SCALE = 0.05;
 var MAX_SCALE = 3;
@@ -94,14 +88,30 @@ var MI2=4;
 var CM2=5;
 var M2=6;
 var HA=7;
-var KM2=8;
+var KM2 = 8;
 
-//TYPES
-var LENGTH = 0;
-var AREA = 1;
-
-var unitNames = [["IN","FT","FT IN","YD","MI","CM","M","KM"],
-				["IN2","FT2","YD2","AC","MI2","CM2","M2","HA","KM2"]];
+BluVueSheet.Constants = {
+    UnitNames: [
+        ["IN", "FT", "FT IN", "YD", "MI", "CM", "M", "KM"],
+        ["IN2", "FT2", "YD2", "AC", "MI2", "CM2", "M2", "HA", "KM2"]
+    ],
+    UnitDisplayNames: [
+        ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
+        ["IN<sup>2</sup>", "FT<sup>2</sup>", "YD<sup>2</sup>", "AC", "MI<sup>2</sup>", "CM<sup>2</sup>", "M<sup>2</sup>", "HA", "KM<sup>2</sup>"]
+    ],
+    Length: 0,
+    Area: 1,
+    OptionButtons: {
+        Delete: { id: 0, className: "delete"},
+        Color: { id: 1, className: "color" },
+        Text: { id: 2, className: "text" },
+        Area: { id: 3, className: "area" },
+        UnitLength: { id: 4, className: "ruler" },
+        UnitArea: { id: 5, className: "ruler" },
+        Fill: { id: 6, className: "fill" },
+        Master: { id: 7, className: "master" }
+    }
+};
 
 var HANDLE_TOUCH_RADIUS = 30;
 var BOUND_DIST = 15;

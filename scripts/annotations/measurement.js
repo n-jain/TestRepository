@@ -24,24 +24,24 @@ BluVueSheet.Measurement = function(amount, unit, type){
 	this.unit=unit;
 	this.amount=amount;
 	this.type=type;
-	this.setAmount=function(amount,unit){
-		if(unit!=-1&&this.unit!=-1&&this.type!=-1){
-			this.amount = amount*convMult[this.type][unit][this.unit];
+	this.setAmount = function (newAmount, newUnit) {
+	    if (newUnit != -1 && this.unit != -1 && this.type != -1) {
+	        this.amount = newAmount * convMult[this.type][newUnit][this.unit];
 		}
 	}
 	this.convertTo=function(newUnit){
 		return this.amount*convMult[this.type][this.unit][newUnit];
 	}
-	this.changeToUnit=function(unit){
-		this.amount = this.amount*convMult[this.type][this.unit][unit];
-		this.unit=unit;
+	this.changeToUnit=function(newUnit){
+	    this.amount = this.amount * convMult[this.type][this.unit][newUnit];
+	    this.unit = newUnit;
 	}
 	this.toString=function(){
 		var str = "";
 		if(this.unit!=-1&&this.type!=-1)
-		if(!(this.unit==FT_IN&&this.type==LENGTH)){
+		    if (!(this.unit == FT_IN && this.type == BluVueSheet.Constants.Length)) {
 			var a = parseFloat(this.amount).toFixed(2);
-			str = a+" "+unitNames[this.type][this.unit];
+			str = a+" "+BluVueSheet.Constants.UnitNames[this.type][this.unit];
 		}else{
 			if(Math.floor(this.amount)!=0){
 				str+=Math.floor(this.amount);
@@ -56,27 +56,27 @@ BluVueSheet.Measurement = function(amount, unit, type){
 
 BluVueSheet.Measurement.toUnit = function (str) {
 	var s = str.toLowerCase();
-	if(s==="m")return [M,LENGTH];
-	if(s==="cm")return [CM,LENGTH];
-	if(s==="km")return [KM,LENGTH];
+	if(s==="m")return [M,BluVueSheet.Constants.Length];
+	if (s === "cm") return [CM, BluVueSheet.Constants.Length];
+	if (s === "km") return [KM, BluVueSheet.Constants.Length];
 
-	if(s==="in"||s==="inch"||s==="inches"||s==="\"")return [IN,LENGTH];
-	if(s==="ft"||s==="foot"||s==="feet"||s==="\'")return [FT,LENGTH];
-	if(s==="ftin")return [FT_IN,LENGTH];
-	if(s==="yd"||s==="yard"||s==="yards")return [YD,LENGTH];
-	if(s==="mi"||s==="mile"||s==="miles")return [MI,LENGTH];
+	if (s === "in" || s === "inch" || s === "inches" || s === "\"") return [IN, BluVueSheet.Constants.Length];
+	if (s === "ft" || s === "foot" || s === "feet" || s === "\'") return [FT, BluVueSheet.Constants.Length];
+	if (s === "ftin") return [FT_IN, BluVueSheet.Constants.Length];
+	if (s === "yd" || s === "yard" || s === "yards") return [YD, BluVueSheet.Constants.Length];
+	if (s === "mi" || s === "mile" || s === "miles") return [MI, BluVueSheet.Constants.Length];
 	
 	//area units load from JSON
-	if(s==="in2")return [IN2,AREA];
-	if(s==="ft2")return [FT2,AREA];
-	if(s==="yd2")return [YD2,AREA];
-	if(s==="ac")return [AC,AREA];
-	if(s==="mi2")return [MI2,AREA];
+	if (s === "in2") return [IN2, BluVueSheet.Constants.Area];
+	if (s === "ft2") return [FT2, BluVueSheet.Constants.Area];
+	if (s === "yd2") return [YD2, BluVueSheet.Constants.Area];
+	if (s === "ac") return [AC, BluVueSheet.Constants.Area];
+	if (s === "mi2") return [MI2, BluVueSheet.Constants.Area];
 
-	if(s==="cm2")return [CM2,AREA];
-	if(s==="m2")return [M2,AREA];
-	if(s==="ha")return [HA,AREA];
-	if(s==="km2")return [KM2,AREA];
+	if (s === "cm2") return [CM2, BluVueSheet.Constants.Area];
+	if (s === "m2") return [M2, BluVueSheet.Constants.Area];
+	if (s === "ha") return [HA, BluVueSheet.Constants.Area];
+	if (s === "km2") return [KM2, BluVueSheet.Constants.Area];
 	return [-1,-1];
 }
 

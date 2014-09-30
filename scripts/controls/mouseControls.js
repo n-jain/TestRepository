@@ -38,7 +38,8 @@ BluVueSheet.MouseControls = function(tileView) {
     };
 
     this.onmousedown = function(e) {
-        tileView.colorMenu.hide();
+        tileView.sheet.hideOptionMenus();
+
         var mouse = mouseLoc(e);
         var windowX = e.clientX;
         var windowY = e.clientY;
