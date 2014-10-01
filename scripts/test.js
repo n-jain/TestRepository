@@ -45,12 +45,14 @@
 
             $scope.sheet = sheets[currentSheetIndex];
 
+            $scope.pinnedSheets = [];
+
             $scope.userId = "guid";
 
             $scope.closeSheet = function() {
                 console.log("close sheet");
             };
-
+            
             $scope.nextSheet = function () {
                 if (currentSheetIndex === sheets.length - 1) { return; }
                 currentSheetIndex++;

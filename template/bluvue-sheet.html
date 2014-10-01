@@ -13,8 +13,8 @@
     </div>
     <canvas>Canvas is not supported</canvas>
     <footer class="bluvue-sheet-footer">
-        <div><button ng-click="pinCurrentSheet()" ng-disabled="pinnedSheets.currentSheetPinned">Pin Sheet</button></div>
-        <div ng-repeat="pinnedSheet in pinnedSheets.sheets" ng-class="{selected: pinnedSheet === sheet}">
+        <div><button ng-click="pinCurrentSheet()" ng-disabled="options.currentSheetPinned">Pin Sheet</button></div>
+        <div ng-repeat="pinnedSheet in pinnedSheets" ng-class="{selected: pinnedSheet.id === sheet.id}">
             <span ng-click="selectPinnedSheet(pinnedSheet)">{{pinnedSheet.name}}</span><a ng-click="unpinSheet($index)">x</a>
         </div>
     </footer>

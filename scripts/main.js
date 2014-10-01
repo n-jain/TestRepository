@@ -12,7 +12,8 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 deleteAnnotation: "=",
                 closeSheet: "=",
                 nextSheet: "=",
-                previousSheet: "="
+                previousSheet: "=",
+                pinnedSheets: "="
             },
             restrict: "E",
             replace: true,
@@ -22,9 +23,8 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 scope.currentSheet = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
-                scope.pinnedSheets = {
-                    currentSheetPinned: false,
-                    sheets: []
+                scope.options = {
+                    currentSheetPinned: false
                 };
 
                 scope.close = function () {
@@ -60,16 +60,16 @@ angular.module("bluvueSheet").directive("bvSheet", [
                     if (newValue != null) {
                         scope.currentSheet = new BluVueSheet.Sheet();
                         scope.currentSheet.loadSheet(scope.sheet, scope, elem);
-                        scope.pinnedSheets.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                        scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
                     } else {
-                        scope.pinnedSheets.currentSheetPinned = false;
+                        scope.options.currentSheetPinned = false;
                     }
                 });
                 
                 //#region Pin Sheets
                 var indexOfPinnedSheet = function(sheet) {
-                    for (var i = 0; i < scope.pinnedSheets.sheets.length; i++) {
-                        if (scope.pinnedSheets.sheets[i] === sheet) {
+                    for (var i = 0; i < scope.pinnedSheets.length; i++) {
+                        if (scope.pinnedSheets[i] === sheet) {
                             return i;
                         }
                     }
@@ -79,13 +79,13 @@ angular.module("bluvueSheet").directive("bvSheet", [
 
                 scope.pinCurrentSheet = function () {
                     if (indexOfPinnedSheet(scope.sheet) !== -1) { return; }
-                    scope.pinnedSheets.sheets.push(scope.sheet);
-                    scope.pinnedSheets.currentSheetPinned = true;
+                    scope.pinnedSheets.push(scope.sheet);
+                    scope.options.currentSheetPinned = true;
                 }
 
                 scope.unpinSheet = function(index) {
-                    scope.pinnedSheets.sheets.splice(index, 1);
-                    scope.pinnedSheets.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                    scope.pinnedSheets.splice(index, 1);
+                    scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
                 }
 
                 scope.selectPinnedSheet = function (pinnedSheet) {
