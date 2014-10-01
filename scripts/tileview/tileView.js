@@ -1,10 +1,11 @@
-BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeSheet, scope, setLoading, setLoaded) {
+BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, setLoaded, deselectTool) {
 	var context;
     var t = this;
-	this.toolMenu=toolMenu;
+
 	this.optionsMenu=optionsMenu;
 	this.sheet = sheet;
 
+    this.deselectTool = deselectTool;
 	this.tileLoader;
 	this.annotationManager;
 	this.keyboardControls;
@@ -42,21 +43,24 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	    this.scrollY=0;
 	    this.scale=1;
 	    this.tileLoader = new BluVueSheet.TileLoader(sheetObj.slicesUrl, sheetObj.previewUrl, this);
-	    this.keyboardControls = new BluVueSheet.KeyboardControls(this, closeSheet);
+	    this.keyboardControls = new BluVueSheet.KeyboardControls(this);
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
 		this.color=new Color(1,0,0,1);
-		tool=NO_TOOL;
+		tool = null;
 
 		for(var i=0; i<sheetObj.annotations.length; i++){
 			this.annotationManager.loadAnnotation(sheetObj.annotations[i].data);
 		}
 	}
 
-    this.dispose = function() {
-        window.cancelAnimationFrame(this.animationFrameRequest);
-    }
+	this.dispose = function () {
+	    this.canDraw = false;
+	    window.cancelAnimationFrame(this.animationFrameRequest);
+	    this.drawAll();
+
+	}
 
 	this.drawAll = function () {
 	    canvas.width=window.innerWidth;
@@ -74,7 +78,7 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
 	}
 
 	this.fitToScreen = function () {
-	    var headerHeight = this.sheet.header.header.offsetHeight;
+	    var headerHeight = 42;
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight) ? canvas.width : canvas.height - headerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
 	    this.scale = 0.9 * canvasDim / sheetDim;
@@ -102,13 +106,9 @@ BluVueSheet.TileView = function (sheet, canvas, toolMenu, optionsMenu, closeShee
     }
 
 	this.setTool = function (newTool) {
-	    if (newTool === NO_TOOL) {
-            toolMenu.deselectAllTools();
-        }
-
 	    this.optionsMenu.deselectAllButtons();
 
-		tool=newTool;
+		tool = newTool;
 		this.annotationManager.finishAnnotation();
 		this.annotationManager.updateOptionsMenu();
 	}

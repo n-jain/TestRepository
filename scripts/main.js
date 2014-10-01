@@ -10,39 +10,52 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 userId: "=",
                 saveAnnotation: "=",
                 deleteAnnotation: "=",
-                closeSheet: "="
+                closeSheet: "=",
+                nextSheet: "=",
+                previousSheet: "="
             },
             restrict: "E",
             replace: true,
             transclude: false,
-            template: "<div class='bluvue-sheet'><canvas>Canvas is not supported</canvas></div>",
+            templateUrl: "template/bluvue-sheet.html?_=" + Math.random().toString(36).substring(7),
             link: function bvSheetLink(scope, elem) {
-                // sheet object
-                /* {
-                 * id: 'guid',
-                 * projectId: 'guid',
-                 * slicesUrl: '',
-                 * previewUrl: '',
-                 * annotations: [],
-                 * name: ''
-                 * }
-                 */
+                scope.currentSheet = null;
+                scope.selectedTool = null;
+                scope.tools = BluVueSheet.Constants.Tools;
 
-                // annotation object
-                /*
-                 * {
-                 * id: 'guid',
-                 * userId: 'guid',
-                 * data: 'json string'
-                 * type: int
-                 * }
-                 */
+                scope.close = function () {
+                    scope.currentSheet.dispose();
+                    scope.closeSheet();
+                }
 
-                var bvSheet = null;
+                scope.deselectTool = function() {
+                    scope.selectTool(null);
+                    scope.$apply();
+                }
+
+                scope.selectTool = function(tool) {
+                    if (tool === scope.selectedTool && scope.selectedTool !== null) {
+                        scope.selectedTool = null;
+                    } else {
+                        scope.selectedTool = tool;
+                    }
+
+                    scope.currentSheet.setTool(scope.selectedTool);
+                }
+
+                scope.resetZoom = function () {
+                    scope.currentSheet.resetZoom();
+                }
+
                 scope.$watch('sheet', function (newValue) {
+                    if (scope.currentSheet != null) {
+                        scope.currentSheet.dispose();
+                        scope.currentSheet = null;
+                    }
+
                     if (newValue != null) {
-                         bvSheet = new BluVueSheet.Sheet();
-                        bvSheet.loadSheet(scope.sheet, scope, elem);
+                        scope.currentSheet = new BluVueSheet.Sheet();
+                        scope.currentSheet.loadSheet(scope.sheet, scope, elem);
                     }
                 });
                 

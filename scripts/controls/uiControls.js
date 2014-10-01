@@ -1,43 +1,3 @@
-BluVueSheet.ToolMenu = function(setTool){
-	var names = ["Lasso","Square","X","Circle","Cloud","Polygon","Text","Line","Arrow","Pen","Highlighter","Ruler"];
-    var t = this;
-	this.toolMenuElement = document.createElement("div");
-	this.toolMenuElement.className = 'bluvue-sheet-tool-menu';
-	this.currentToolName = null;
-
-	for(var i=0; i<names.length; i++){
-	    var button = document.createElement("div");
-	    button.className = "bv-toolbar-image bv-toolbar-" + names[i].toLowerCase();
-		button.name = names[i];
-		button.onclick = function () {
-		    var previouslySelectedToolName = t.currentToolName;
-		    t.deselectAllTools();
-
-		    if (previouslySelectedToolName !== this.name) {
-                this.className = "bv-toolbar-image bv-toolbar-" + this.name.toLowerCase() + " selected";
-                setTool(window[this.name.toUpperCase() + "_TOOL"]);
-                t.currentToolName = this.name;
-            } else {
-                setTool(NO_TOOL);
-            }
-		};
-
-		this.toolMenuElement.appendChild(button);
-	};
-
-	this.deselectAllTools = function () {
-        var tools = document.getElementsByClassName("bv-toolbar-image");
-        for (var toolIndex = 0; toolIndex < tools.length; toolIndex++) {
-            if (tools[toolIndex].className.indexOf("selected") > 0) {
-                var tool = tools[toolIndex];
-                tool.className = tool.className.substr(0, tool.className.indexOf("selected"));
-            }
-        }
-
-	    t.currentToolName = null;
-	};
-}
-
 BluVueSheet.OptionsMenu = function(sheet) {
     var t = this;
 
@@ -180,7 +140,7 @@ BluVueSheet.OptionsMenu = function(sheet) {
             }
         }
 
-        if (tileView.getTool() != LASSO_TOOL && (tileView.getTool() != NO_TOOL || selectedAnnotations.length > 0)) {
+        if (tileView.getTool() != BluVueSheet.Constants.Tools.Lasso && (tileView.getTool() !== null || selectedAnnotations.length > 0)) {
             addButton(BluVueSheet.Constants.OptionButtons.Color);
         }
 
@@ -282,31 +242,6 @@ BluVueSheet.LoadingSpinner = function() {
     this.element.appendChild(createBounce(1));
     this.element.appendChild(createBounce(2));
     this.element.appendChild(createBounce(3));
-}
-
-BluVueSheet.Header = function(closeSheet, resetZoom) {
-    this.header = document.createElement("div");
-    this.header.className = "bluvue-sheet-header";
-    this.title = document.createElement("span");
-    this.header.appendChild(this.title);
-
-    var buttons = document.createElement("div");
-    buttons.className = "bluvue-sheet-header-buttons";
-    this.header.appendChild(buttons);
-
-    var resetZoomBtn = document.createElement("button");
-    resetZoomBtn.innerHTML = "100%";
-    resetZoomBtn.onclick = resetZoom;
-    buttons.appendChild(resetZoomBtn);
-
-    var closeBtn = document.createElement("button");
-    closeBtn.innerHTML = "close";
-    closeBtn.onclick = closeSheet;
-    buttons.appendChild(closeBtn);
-
-    this.setTitle = function(title) {
-        this.title.innerHTML = title;
-    }
 }
 
 BluVueSheet.UnitConverter = function (type, convertToUnit) {

@@ -1,7 +1,10 @@
 rmdir bin /S /Q
 mkdir bin
-mkdir bin\libs
-type scripts\constants.js scripts\main.js scripts\sheet.js scripts\annotations\*.js scripts\controls\*.js scripts\tileview\*.js > bin\bluvue-sheet.js
-java -jar C:\YUI-Compressor\yuicompressor-2.4.8.jar -o bin\bluvue-sheet.min.js bin\bluvue-sheet.js
-copy style.css bin\style.css
-copy libs\* bin\libs
+mkdir bin\scripts
+mkdir bin\template
+mkdir bin\Content
+type scripts\constants.js scripts\main.js scripts\orderByObjectFilter.js scripts\sheet.js scripts\annotations\*.js scripts\controls\*.js scripts\tileview\*.js > bin\scripts\bluvue-sheet.js
+java -jar C:\YUI-Compressor\yuicompressor-2.4.8.jar -o bin\scripts\bluvue-sheet.min.js bin\scripts\bluvue-sheet.js
+copy style.css bin\Content\bluvue-sheet.css
+copy template\bluvue-sheet.html bin\template\bluvue-sheet.html
+copy libs\* bin\scripts

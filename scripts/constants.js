@@ -5,20 +5,6 @@ var MAIN_LOOP_TIMEOUT = 1000 / 60;
 var MIN_SCALE = 0.05;
 var MAX_SCALE = 3;
 
-var NO_TOOL=-1;
-var LASSO_TOOL=0;
-var SQUARE_TOOL=1;
-var X_TOOL=2;
-var CIRCLE_TOOL=3;
-var CLOUD_TOOL=4;
-var POLYGON_TOOL=5;
-var TEXT_TOOL=6;
-var LINE_TOOL=7;
-var ARROW_TOOL=8;
-var PEN_TOOL=9;
-var HIGHLIGHTER_TOOL=10;
-var RULER_TOOL=11;
-var MAIL_TOOL=12;
 //change these to match the JSON ones
 var NO_ANNOTATION=-1;
 var LASSO_ANNOTATION=0;
@@ -37,29 +23,29 @@ var MEASURE_ANNOTATION=10;
 
 function toolToAnnotation(tool){
 	switch(tool){
-		case LASSO_TOOL:
+		case BluVueSheet.Constants.Tools.Lasso:
 			return LASSO_ANNOTATION;
-		case SQUARE_TOOL:
+	    case BluVueSheet.Constants.Tools.Square:
 			return SQUARE_ANNOTATION;
-		case X_TOOL:
+	    case BluVueSheet.Constants.Tools.X:
 			return X_ANNOTATION;
-		case CIRCLE_TOOL:
+	    case BluVueSheet.Constants.Tools.Circle:
 			return CIRCLE_ANNOTATION;
-		case CLOUD_TOOL:
+	    case BluVueSheet.Constants.Tools.Cloud:
 			return CLOUD_ANNOTATION;
-		case POLYGON_TOOL:
+	    case BluVueSheet.Constants.Tools.Polygon:
 			return POLYGON_ANNOTATION;
-		case TEXT_TOOL:
+	    case BluVueSheet.Constants.Tools.Text:
 			return TEXT_ANNOTATION;
-		case LINE_TOOL:
+	    case BluVueSheet.Constants.Tools.Line:
 			return LINE_ANNOTATION;
-		case ARROW_TOOL:
+	    case BluVueSheet.Constants.Tools.Arrow:
 			return ARROW_ANNOTATION;
-		case PEN_TOOL:
+	    case BluVueSheet.Constants.Tools.Pen:
 			return PEN_ANNOTATION;
-		case HIGHLIGHTER_TOOL:
+	    case BluVueSheet.Constants.Tools.Highlighter:
 			return HIGHLIGHTER_ANNOTATION;
-		case RULER_TOOL:
+	    case BluVueSheet.Constants.Tools.Ruler:
 			return SCALE_ANNOTATION;
 	}
 	return NO_ANNOTATION;
@@ -110,6 +96,20 @@ BluVueSheet.Constants = {
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
         Master: { id: 7, className: "master" }
+    },
+    Tools: {
+        Lasso: { id: 0, name: "lasso" },
+        Square: { id: 1, name: "square" },
+        X: { id: 2, name: "x" },
+        Circle: { id: 3, name: "circle" },
+        Cloud: { id: 4, name: "cloud" },
+        Polygon: { id: 5, name: "polygon" },
+        Text: { id: 6, name: "text" },
+        Line: { id: 7, name: "line" },
+        Arrow: { id: 8, name: "arrow" },
+        Pen: { id: 9, name: "pen" },
+        Highlighter: { id: 10, name: "highlighter" },
+        Ruler: { id: 11, name: "ruler" }
     }
 };
 

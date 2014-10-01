@@ -1,12 +1,12 @@
 ﻿BluVueSheet.Sheet = function() {
     this.tileView = null;
-    this.toolMenu = null;
     this.optionsMenu = null;
     this.colorMenu = null;
     this.textEditor = null;
     this.closeSheetButton = null;
     this.userInterface = null;
-    this.header = null;
+    this.disposed = false;
+    this.canvas = null;
 
     this.userId = null;
     this.projectId = null;
@@ -26,42 +26,31 @@
     }
 
     this.loadSheet = function (sheet, scope, elem) {
-        var closeSheet = function () {
-            t.dispose();
-            scope.closeSheet();
-        }
-
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
         this.userId = sheet.userId;
         //make on screen controls
-        this.toolMenu = new BluVueSheet.ToolMenu(this.setTool);
+        
         this.optionsMenu = new BluVueSheet.OptionsMenu(this);
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
         this.loadingSpinner = new BluVueSheet.LoadingSpinner();
-        this.header = new BluVueSheet.Header(closeSheet, this.resetZoom);
-        this.header.setTitle(scope.sheet.name);
-        
-        var canvas = elem.find('canvas')[0];
+
         this.userInterface = document.createElement("div");
-        this.userInterface.appendChild(this.toolMenu.toolMenuElement);
         this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
         this.userInterface.appendChild(this.colorMenu.colorMenuElement);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
         this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
-
-        elem.append(this.header.header);
-
         elem.append(this.loadingSpinner.element);
         elem.append(this.userInterface);
         
+        this.canvas = elem.find('canvas')[0];
 
         this.setLoading();
 
         //make tileView
-        this.tileView = new BluVueSheet.TileView(this, canvas, this.toolMenu, this.optionsMenu, closeSheet, scope, this.setLoading, this.setLoaded);
+        this.tileView = new BluVueSheet.TileView(this, this.canvas, this.optionsMenu, scope, this.setLoading, this.setLoaded, scope.deselectTool);
         this.tileView.create(sheet);
         this.tileView.render();
 
@@ -77,31 +66,43 @@
         window.addEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
         window.addEventListener("keyup", this.tileView.keyboardControls.onKeyUp, true);
         //setup mouse controls
-        canvas.onmousedown = this.tileView.mouseControls.onmousedown;
-        canvas.onmouseup = this.tileView.mouseControls.onmouseup;
-        canvas.onmousemove = this.tileView.mouseControls.onmousemove;
-        canvas.onclick = this.tileView.mouseControls.onclick;
-        canvas.ondblclick = this.tileView.mouseControls.ondblclick;
+
+        this.canvas.onmousedown = this.tileView.mouseControls.onmousedown;
+        this.canvas.onmouseup = this.tileView.mouseControls.onmouseup;
+        this.canvas.onmousemove = this.tileView.mouseControls.onmousemove;
+        this.canvas.onclick = this.tileView.mouseControls.onclick;
+        this.canvas.ondblclick = this.tileView.mouseControls.ondblclick;
 
         window.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
         window.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
     };
 
     this.dispose = function () {
+        if (t.disposed) { return; }
         clearTimeout(t.mainLoopTimeout);
         t.tileView.dispose();
+        t.userInterface.parentElement.removeChild(t.userInterface);
+        this.loadingSpinner.element.parentElement.removeChild(t.loadingSpinner.element);
+
+        t.canvas.onmousedown = null;
+        t.canvas.onmouseup = null;
+        t.canvas.onmousemove = null;
+        t.canvas.onclick = null;
+        t.canvas.ondblclick = null;
+
         window.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
         window.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
         window.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
         window.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
+        t.disposed = true;
     };
 
     this.resetZoom = function() {
         t.tileView.fitToScreen();
     }
 
-    this.setTool = function (id) {
-        t.tileView.setTool(id);
+    this.setTool = function (tool) {
+        t.tileView.setTool(tool);
     };
 
     this.hideOptionMenus = function() {

@@ -50,9 +50,6 @@ BluVueSheet.KeyboardControls = function(tileView, closeSheet){
 	}
 	this.onKeyUp = function (event) {
 	    switch (event.keyCode) {
-	        case 27:// esc
-	            closeSheet();
-                break;
 			case 65://A
 				scrollLeft=false;
 				break;

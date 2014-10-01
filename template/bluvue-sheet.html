@@ -1,0 +1,15 @@
+﻿<div class='bluvue-sheet'>
+    <header class="bluvue-sheet">
+        <span>{{sheet.name}}</span>
+        <nav>
+            <button ng-click="previousSheet()">prev</button>
+            <button ng-click="nextSheet()">next</button>
+            <button ng-click="resetZoom()">100%</button>
+            <button ng-click="close()">close</button>
+        </nav>
+    </header>
+    <div class="bluvue-sheet-tool-menu">
+        <div ng-repeat="(toolName, tool) in tools | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{tool.name}}" ng-class="{selected: selectedTool === tool}" ng-click="selectTool(tool)"></div>
+    </div>
+    <canvas>Canvas is not supported</canvas>
+</div>

@@ -21,13 +21,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}, 15000);
 
-
 	this.onmousedown = function(x,y){
 		this.captureMouse = false;
 		//create new annotation
 		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
 			var annType = toolToAnnotation(tileView.getTool());
-			if(this.scaleAnnotation!=null&&tileView.getTool()==RULER_TOOL)annType=MEASURE_ANNOTATION;
+			if (this.scaleAnnotation != null && tileView.getTool() == BluVueSheet.Constants.Tools.Ruler) annType = MEASURE_ANNOTATION;
 			var ann = new BluVueSheet.Annotation(annType, tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
 			ann.points[0] = new BluVueSheet.Point(x, y);
 			currentAnnotation = ann;
@@ -40,7 +39,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 
 		//add point to existing polygon annotation
-		if(tileView.getTool()==POLYGON_TOOL){
+		if(tileView.getTool()==BluVueSheet.Constants.Tools.Polygon){
 		    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 		    this.captureMouse = true;
 		    cancelClick = true;
@@ -90,9 +89,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			save=true;
 		}
 		this.captureMouse = false;
-		if(tileView.getTool()!=POLYGON_TOOL){
+		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
 			this.finishAnnotation();
-			if(tileView.getTool()!=PEN_TOOL&&tileView.getTool()!=HIGHLIGHTER_TOOL)tileView.setTool(NO_TOOL);
+		    if (tileView.getTool() != BluVueSheet.Constants.Tools.Pen && tileView.getTool() != BluVueSheet.Constants.Tools.Highlighter)tileView.deselectTool();
 		}
 		if(lasso!=null){
 			this.selectAllInLasso();
@@ -187,12 +186,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}
 	this.ondblclick = function(x,y){
-		if(tileView.getTool()==POLYGON_TOOL){
+	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
 				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale)
 					currentAnnotation.closed=true;
-				tileView.setTool(NO_TOOL);
+				tileView.deselectTool();
 			}
 		}
 	}
