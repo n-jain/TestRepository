@@ -1,5 +1,5 @@
 ﻿<div class='bluvue-sheet'>
-    <header class="bluvue-sheet">
+    <header class="bluvue-sheet-header">
         <span>{{sheet.name}}</span>
         <nav>
             <button ng-click="previousSheet()">prev</button>
@@ -12,4 +12,10 @@
         <div ng-repeat="(toolName, tool) in tools | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{tool.name}}" ng-class="{selected: selectedTool === tool}" ng-click="selectTool(tool)"></div>
     </div>
     <canvas>Canvas is not supported</canvas>
+    <footer class="bluvue-sheet-footer">
+        <div><button ng-click="pinCurrentSheet()" ng-disabled="pinnedSheets.currentSheetPinned">Pin Sheet</button></div>
+        <div ng-repeat="pinnedSheet in pinnedSheets.sheets" ng-class="{selected: pinnedSheet === sheet}">
+            <span ng-click="selectPinnedSheet(pinnedSheet)">{{pinnedSheet.name}}</span><a ng-click="unpinSheet($index)">x</a>
+        </div>
+    </footer>
 </div>

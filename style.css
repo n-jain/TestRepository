@@ -15,7 +15,7 @@ div.bluvue-sheet > canvas {
 	padding:0;
 }
 
-header.bluvue-sheet {
+header.bluvue-sheet-header {
     background: white;
     border-bottom: solid 1px #aaa;
     font-family: Verdana;
@@ -25,18 +25,34 @@ header.bluvue-sheet {
     left: 0;
     width: 100%;
 }
-header.bluvue-sheet span {
+header.bluvue-sheet-header span {
     display: inline-block;
     font-size: 20px;
     margin: 0 0 0 10px;
 }
-header.bluvue-sheet nav {
+header.bluvue-sheet-header nav {
     text-align: right;
     float: right;
 }
-header.bluvue-sheet nav button {
+header.bluvue-sheet-header nav button {
     margin: 0 10px 0 0;
 }
+footer.bluvue-sheet-footer {
+    background: white;
+    border-top: solid 1px #aaa;
+    font-family: Verdana;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-size: 0;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+    footer.bluvue-sheet-footer div {cursor: pointer; display: inline-block; border-right: solid 1px #ccc;font-size: 20px;padding: 10px; }
+    footer.bluvue-sheet-footer div.selected { background: #eee; }
+    footer.bluvue-sheet-footer div span { margin-right: 10px;}
+    footer.bluvue-sheet-footer div a {color: blue;font-size: 16px;}
 
 .bluvue-sheet-tool-menu {
 	top: 60px;

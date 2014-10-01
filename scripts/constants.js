@@ -87,6 +87,8 @@ BluVueSheet.Constants = {
     ],
     Length: 0,
     Area: 1,
+    HeaderHeight: 42,
+    FooterHeight: 66,
     OptionButtons: {
         Delete: { id: 0, className: "delete"},
         Color: { id: 1, className: "color" },

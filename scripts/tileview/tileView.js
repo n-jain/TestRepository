@@ -78,12 +78,13 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 	}
 
 	this.fitToScreen = function () {
-	    var headerHeight = 42;
-	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight) ? canvas.width : canvas.height - headerHeight;
+	    var headerHeight = BluVueSheet.Constants.HeaderHeight;
+	    var footerHeight = BluVueSheet.Constants.FooterHeight;
+	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight - footerHeight) ? canvas.width : canvas.height - headerHeight - footerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
 	    this.scale = 0.9 * canvasDim / sheetDim;
 	    this.scrollX = (canvas.width - (this.tileLoader.width * this.scale)) / (2 * this.scale);
-	    this.scrollY = (canvas.height + headerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
+	    this.scrollY = (canvas.height + headerHeight - footerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
 		this.updateRes();
 	}
 

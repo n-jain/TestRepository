@@ -22,6 +22,10 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 scope.currentSheet = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
+                scope.pinnedSheets = {
+                    currentSheetPinned: false,
+                    sheets: []
+                };
 
                 scope.close = function () {
                     scope.currentSheet.dispose();
@@ -56,9 +60,39 @@ angular.module("bluvueSheet").directive("bvSheet", [
                     if (newValue != null) {
                         scope.currentSheet = new BluVueSheet.Sheet();
                         scope.currentSheet.loadSheet(scope.sheet, scope, elem);
+                        scope.pinnedSheets.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                    } else {
+                        scope.pinnedSheets.currentSheetPinned = false;
                     }
                 });
                 
+                //#region Pin Sheets
+                var indexOfPinnedSheet = function(sheet) {
+                    for (var i = 0; i < scope.pinnedSheets.sheets.length; i++) {
+                        if (scope.pinnedSheets.sheets[i] === sheet) {
+                            return i;
+                        }
+                    }
+
+                    return -1;
+                }
+
+                scope.pinCurrentSheet = function () {
+                    if (indexOfPinnedSheet(scope.sheet) !== -1) { return; }
+                    scope.pinnedSheets.sheets.push(scope.sheet);
+                    scope.pinnedSheets.currentSheetPinned = true;
+                }
+
+                scope.unpinSheet = function(index) {
+                    scope.pinnedSheets.sheets.splice(index, 1);
+                    scope.pinnedSheets.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                }
+
+                scope.selectPinnedSheet = function (pinnedSheet) {
+                    if (scope.sheet === pinnedSheet) { return; }
+                    scope.sheet = pinnedSheet;
+                }
+                //#endregion
             }
         }
     }
