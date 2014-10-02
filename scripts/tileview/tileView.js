@@ -19,7 +19,8 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 	this.textSize = 128;
     this.canDraw = false;
 	var tool;
-    this.animationFrameRequest = null;
+	this.animationFrameRequest = null;
+    this.loadingStep = 0;
 
 	this.setLoading = function () {
 	    this.canDraw = false;
@@ -62,13 +63,66 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 
 	}
 
+    this.drawProgressIndicator = function() {
+        var can = canvas;
+        var ctx = context;
+
+        ctx.save();
+
+        var totalDuration = 80;
+        var duration = 20;
+        var startStep2 = 15;
+        var startStep3 = 30;
+        var maxRadius = 8;
+        var minRadius = 0;
+        var radius = minRadius + (maxRadius - minRadius) * (t.loadingStep / duration);
+        if (radius > maxRadius && radius <= maxRadius * 2) { radius = maxRadius - (radius - maxRadius); }
+        if (radius > maxRadius * 2) { radius = 0; }
+        ctx.translate(can.width / 2 - maxRadius - maxRadius, can.height / 2);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+
+        if (t.loadingStep >= startStep2) {
+            radius = minRadius + (maxRadius - minRadius) * ((t.loadingStep - startStep2) / duration);
+            if (radius > maxRadius && radius <= maxRadius * 2) { radius = maxRadius - (radius - maxRadius); }
+            if (radius > maxRadius * 2) { radius = 0; }
+            ctx.translate(2 * maxRadius, 0);
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        if (t.loadingStep >= startStep3) {
+            radius = minRadius + (maxRadius - minRadius) * ((t.loadingStep - startStep3) / duration);
+            if (radius > maxRadius && radius <= maxRadius * 2) { radius = maxRadius - (radius - maxRadius); }
+            if (radius > maxRadius * 2) { radius = 0; }
+            ctx.translate(2 * maxRadius, 0);
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        t.loadingStep++;
+
+        if (t.loadingStep > totalDuration) {
+            t.loadingStep = 0;
+        }
+    };
+
 	this.drawAll = function () {
 	    canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
 		context.clearRect(0,0,canvas.width,canvas.height);
 		context.save();
 
-		if (!this.canDraw) { return; }
+		if (!this.canDraw) {
+		    this.drawProgressIndicator();
+		    return;
+		}
 		context.scale(this.scale,this.scale);
 		context.translate(this.scrollX, this.scrollY);
 		context.rotate(scope.sheet.rotation/180*Math.PI);

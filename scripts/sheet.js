@@ -16,12 +16,10 @@
     var t = this;
 
     this.setLoaded = function () {
-        t.loadingSpinner.element.style.display = "none";
         t.userInterface.style.display = "block";
     }
 
     this.setLoading = function () {
-        t.loadingSpinner.element.style.display = "block";
         t.userInterface.style.display = "none";
     }
 
@@ -34,7 +32,6 @@
         this.optionsMenu = new BluVueSheet.OptionsMenu(this);
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
-        this.loadingSpinner = new BluVueSheet.LoadingSpinner();
 
         this.userInterface = document.createElement("div");
         this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
@@ -42,7 +39,6 @@
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
         this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
-        elem.append(this.loadingSpinner.element);
         elem.append(this.userInterface);
         
         this.canvas = elem.find('canvas')[0];
@@ -82,7 +78,6 @@
         clearTimeout(t.mainLoopTimeout);
         t.tileView.dispose();
         t.userInterface.parentElement.removeChild(t.userInterface);
-        this.loadingSpinner.element.parentElement.removeChild(t.loadingSpinner.element);
 
         t.canvas.onmousedown = null;
         t.canvas.onmouseup = null;

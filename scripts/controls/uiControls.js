@@ -230,20 +230,6 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	}
 }
 
-BluVueSheet.LoadingSpinner = function() {
-    var createBounce = function(index) {
-        var elem = document.createElement("div");
-        elem.className = "bounce" + index;
-        return elem;
-    }
-
-    this.element = document.createElement("div");
-    this.element.className = "spinner";
-    this.element.appendChild(createBounce(1));
-    this.element.appendChild(createBounce(2));
-    this.element.appendChild(createBounce(3));
-}
-
 BluVueSheet.UnitConverter = function (type, convertToUnit) {
     this.unitConverterElement = document.createElement("div");
     this.unitConverterElement.className = 'bluvue-sheet-unit-converter-menu';
