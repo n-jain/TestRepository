@@ -1,7 +1,7 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", [
-    function sheetDirective() {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
+    function sheetDirective($window, $location) {
         'use strict';
 
         return {
@@ -23,11 +23,27 @@ angular.module("bluvueSheet").directive("bvSheet", [
                 scope.currentSheet = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
+                var backPressed = false;
+                $window.history.pushState({}, "", $location.absUrl());
+                $window.onpopstate = function () {
+                    scope.$apply(function () {
+                        backPressed = true;
+                        scope.close();
+                    });
+                }
+
                 scope.options = {
                     currentSheetPinned: false
                 };
 
                 scope.close = function () {
+                    if (!backPressed) {
+                        setTimeout(function() {
+                            $window.history.back();
+                        }, 0);
+                        return;
+                    }
+
                     scope.currentSheet.dispose();
                     scope.closeSheet();
                 }
@@ -66,6 +82,10 @@ angular.module("bluvueSheet").directive("bvSheet", [
                     }
                 });
                 
+                scope.$on('$destroy', function () {
+                    $window.onpopstate = null;
+                });
+
                 //#region Pin Sheets
                 var indexOfPinnedSheet = function(sheet) {
                     for (var i = 0; i < scope.pinnedSheets.length; i++) {
