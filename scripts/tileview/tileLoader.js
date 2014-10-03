@@ -97,7 +97,7 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	}
 
     this.setTileRes = function(level) {
-        if (!this.levelAvailable[level]) { throw "level not available"; }
+        if (!this.levelAvailable[level]) { throw "tile resolution level not available"; }
 
         switch (level) {
             case 0:

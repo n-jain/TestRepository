@@ -201,8 +201,8 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
     };
 
 	this.updateRes = function () {
-	    if (this.scale > 0.75) { this.tileLoader.setTileRes(0); } // 0.3
-	    else if (this.scale > 0.375 || !this.tileLoader.levelAvailable[2]) { this.tileLoader.setTileRes(1); } // 0.15
+	    if (this.scale > 0.75 || !this.tileLoader.levelAvailable[1]) { this.tileLoader.setTileRes(0); }
+	    else if (this.scale > 0.375 || !this.tileLoader.levelAvailable[2]) { this.tileLoader.setTileRes(1); }
 	    else if (this.scale > 0.1875 || !this.tileLoader.levelAvailable[3]) { this.tileLoader.setTileRes(2); }
 	    else if (this.scale > 0.09375 || !this.tileLoader.levelAvailable[4]) { this.tileLoader.setTileRes(3); }
 	    else { this.tileLoader.setTileRes(4); }
