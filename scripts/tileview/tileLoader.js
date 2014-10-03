@@ -3,36 +3,43 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 	this.loaded=0;
 	this.zoomLevel=1000;
 	this.tileSize = 512;
-	this.tiles = null;
 	this.preview = new Image();
 	this.preview.src = previewPath;
 	this.width = 0;
 	this.height = 0;
 	this.tileView = tileView;
+	this.allTiles = [];
+	var totalTiles = 0;
+
+    for (var j = 0; j < 5; j++) { this.allTiles[j] = []; }
 
 	var me = this;
 
 	//Drawing tiles
-	this.drawAllTiles = function (context) {
+	this.drawAllTiles = function (context, rect) {
 	    if (this.width == 0 || this.height == 0) { return; }
-		context.drawImage(this.preview, 0, 0, this.width, this.height);
-		if(this.tiles!=null){
-			for(var i=0; i<this.tiles.length; i++){
-				if(this.zoomLevel==this.tiles[i].zoomLevel){
-					this.tiles[i].drawMe(context);
-				}
-			}
-		}
+	    
+	    context.drawImage(this.preview, 0, 0, this.width, this.height);
+	    var tiles = this.allTiles[this.zoomLevelIndex(this.zoomLevel)];
+	    for (var i = 0; i < tiles.length; i++) {
+	        if (tiles[i].getRight() > rect.x &&
+	            tiles[i].getBottom() > rect.y &&
+	            tiles[i].x < rect.x2 &&
+	            tiles[i].y < rect.y2) {
+	            tiles[i].drawMe(context);
+	        }
+	    }
 	};
 
 	//Tile creation
 	this.loadTiles = function(data){
 		var zip = new JSZip(data);
 		var pngs = zip.file(/.png/);
-		this.tiles = new Array(pngs.length);
-		for(var i=0; i<this.tiles.length; i++){
-		    this.tiles[i] = new BluVueSheet.Tile(pngs[i], this);
-		}
+	    totalTiles = pngs.length;
+	    for (var i = 0; i < pngs.length; i++) {
+	        var tile = new BluVueSheet.Tile(pngs[i], this);
+	        this.allTiles[tile.zoomLevelIndex].push(tile);
+	    }
 	}
 
 	//Tile data loading
@@ -50,43 +57,68 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
     JSZipUtils.getBinaryContent(slicePath, me.doneLoading);
     
 	this.calcSize = function(){
-		if(this.loaded==this.tiles.length){
-			this.width = 0;
-			this.height = 0;
-			for(var i=0; i<this.tiles.length; i++){
-				if(this.zoomLevel==this.tiles[i].zoomLevel){
-					if(this.tiles[i].getRight()>this.width){
-						this.width=this.tiles[i].getRight();
-					}
-					if(this.tiles[i].getBottom()>this.height){
-						this.height=this.tiles[i].getBottom();
-					}
-				}
-			}
-		    //set zoom level
-		    tileView.fitToScreen();
-		    tileView.setLoaded();
-		}
-	}
-	this.setTileRes = function(id){
-		if(this.levelAvailable[id]){
-			switch(id){
-				case 0:
-					this.zoomLevel=1000;
-					break;
-				case 1:
-					this.zoomLevel=500;
-					break;
-				case 2:
-					this.zoomLevel=250;
-					break;
-				case 3:
-					this.zoomLevel=125;
-					break;
-				case 4:
-					this.zoomLevel=63;
-					break;
+	    if (this.loaded !== totalTiles) { return; }
+
+	    this.width = 0;
+		this.height = 0;
+		for (var i = 4; i >= 0; i--) {
+            if (this.allTiles[i].length === 0) { continue; }
+
+		    var tiles = this.allTiles[i],
+		        w = 0,
+		        h = 0;
+		    for (var k = 0; k < tiles.length; k++) {
+		        var tile = tiles[k];
+                if (tile.getRight() > w) { w = tile.getRight(); }
+                if (tile.getBottom() > h) { h = tile.getBottom(); }
 		    }
+
+		    this.width = w;
+		    this.height = h;
+		    break;
 		}
+
+	    //set zoom level
+		tileView.fitToScreen();
+		tileView.setLoaded();
 	}
+
+	this.zoomLevelIndex = function (level) {
+        switch (level) {
+	        case 1000:
+	            return 0;
+	        case 500:
+	            return 1;
+	        case 250:
+	            return 2;
+	        case 125:
+	            return 3;
+	        case 63:
+	            return 4;
+	        default:
+	            return -1;
+	    }
+	}
+
+    this.setTileRes = function(level) {
+        if (!this.levelAvailable[level]) { throw "level not available"; }
+
+        switch (level) {
+            case 0:
+                this.zoomLevel = 1000;
+                break;
+            case 1:
+                this.zoomLevel = 500;
+                break;
+            case 2:
+                this.zoomLevel = 250;
+                break;
+            case 3:
+                this.zoomLevel = 125;
+                break;
+            case 4:
+                this.zoomLevel = 63;
+                break;
+        }
+    };
 }

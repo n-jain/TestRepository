@@ -227,7 +227,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		selectedAnnotations[selectedAnnotations.length]=annotation;
 		annotation.selected=true;
 		annotation.showHandles=true;
-		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
 	this.deselectAllAnnotations = function(){
 		if(selectedAnnotations.length==1){
@@ -237,7 +237,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		var toKill = new Array();
 		selectedAnnotations=new Array();
-		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		for(var i=0;i<annotations.length; i++){
 			annotations[i].selected=false;
 			annotations[i].showHandles=false;
@@ -264,7 +264,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(selectedAnnotations.length==1){
 			selectedAnnotations[0].showHandles=true;
 		}
-		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
 	this.deleteSelectedAnnotations = function(){
 		var tempSelected = selectedAnnotations;
@@ -292,7 +292,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			});
 		}
 		selectedAnnotations = new Array();
-		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
 	}
@@ -422,7 +422,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		currentAnnotation=null;
 	}
 	this.updateOptionsMenu = function(){
-		tileView.optionsMenu.setSelectedAnnotations(selectedAnnotations,tileView);
+		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];

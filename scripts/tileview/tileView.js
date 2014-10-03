@@ -113,7 +113,7 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
         }
     };
 
-	this.drawAll = function () {
+    this.drawAll = function () {
 	    canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
 		context.clearRect(0,0,canvas.width,canvas.height);
@@ -125,8 +125,19 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 		}
 		context.scale(this.scale,this.scale);
 		context.translate(this.scrollX, this.scrollY);
-		context.rotate(scope.sheet.rotation/180*Math.PI);
-		this.tileLoader.drawAllTiles(context);
+		context.rotate(scope.sheet.rotation / 180 * Math.PI);
+
+		var visibleLeft = this.scrollX < 0 ? this.scrollX * -1 : 0;
+		var visibleTop = this.scrollY < 0 ? this.scrollY * -1 : 0;
+		var visibleWidth = canvas.width / this.scale;
+		var visibleHeight = canvas.height / this.scale;
+
+		this.tileLoader.drawAllTiles(context, {
+		    x: visibleLeft,
+		    y: visibleTop,
+		    x2: visibleLeft + visibleWidth,
+		    y2: visibleTop + visibleHeight
+		});
 		this.annotationManager.drawAllAnnotations(context);
 		context.restore();
 	}
@@ -139,7 +150,7 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 	    this.scale = 0.9 * canvasDim / sheetDim;
 	    this.scrollX = (canvas.width - (this.tileLoader.width * this.scale)) / (2 * this.scale);
 	    this.scrollY = (canvas.height + headerHeight - footerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
-		this.updateRes();
+	    this.updateRes();
 	}
 
     this.mainLoopKeyboardControls = function() {
@@ -189,11 +200,11 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
         this.annotationManager.updateOptionsMenu();
     };
 
-	this.updateRes = function(){
-		this.tileLoader.setTileRes(5);
-		if(this.scale>0.038)this.tileLoader.setTileRes(4);
-		if(this.scale>0.075)this.tileLoader.setTileRes(3);
-		if(this.scale>0.15)this.tileLoader.setTileRes(2);
-		if(this.scale>0.3)this.tileLoader.setTileRes(1);
+	this.updateRes = function () {
+	    if (this.scale > 0.6) { this.tileLoader.setTileRes(0); } // 0.3
+	    else if (this.scale > 0.3 || !this.tileLoader.levelAvailable[2]) { this.tileLoader.setTileRes(1); } // 0.15
+	    else if (this.scale > 0.15 || !this.tileLoader.levelAvailable[3]) { this.tileLoader.setTileRes(2); }
+	    else if (this.scale > 0.075 || !this.tileLoader.levelAvailable[4]) { this.tileLoader.setTileRes(3); }
+	    else { this.tileLoader.setTileRes(4); }
 	}
 }

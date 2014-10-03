@@ -78,7 +78,7 @@ BluVueSheet.OptionsMenu = function(sheet) {
         btn.getElementsByTagName("div")[0].style.backgroundColor = color.toStyle();
     }
 
-    this.setSelectedAnnotations = function(selectedAnnotations, tileView) {
+    this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
         var userIsAdmin = true;
         var keys = Object.keys(BluVueSheet.Constants.OptionButtons);
         for (var x = 0; x < keys.length; x++) {
