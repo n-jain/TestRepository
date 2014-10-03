@@ -667,10 +667,10 @@ function AnnotationJSON(annotation){
 	this.distance;
 	this.closed;
 	//UNIVERSAL
-	this.id = annotation.id;
-	this.projectId = annotation.projectId;
-	this.sheetId = annotation.sheetId;
-	this.userId = annotation.userId;
+	this.id = annotation.id.replace(/-/g, "");
+	this.projectId = annotation.projectId.replace(/-/g, "");
+	this.sheetId = annotation.sheetId.replace(/-/g, "");
+	this.userId = annotation.userId ? annotation.userId.replace(/-/g, "") : undefined;
 
 	this.type = annotation.type;
 	this.colorRed = annotation.color.red;

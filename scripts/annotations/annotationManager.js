@@ -444,7 +444,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}
 	this.saveAnnotation = function(annotation){
-	    scope.saveAnnotation(annotation.id, annotation.projectId, annotation.sheetId, annotation.userId, annotation.type, new AnnotationJSON(annotation)).then(function () {
+	    scope.saveAnnotation(annotation.id, annotation.projectId, annotation.sheetId, annotation.userId === undefined ? null : annotation.userId, annotation.type, new AnnotationJSON(annotation)).then(function () {
 			removeFromArray(toSave, annotation);
 		})['catch'](function(error){
 			if(toSave.indexOf(annotation)==-1){
