@@ -137,7 +137,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    }
 
 	    cancelClick = false;
-	    this.handleClick();
+	    this.handleClick(x, y);
 	}
 	this.ondblclick = function(x,y){
 	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
