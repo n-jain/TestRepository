@@ -11,8 +11,8 @@ BluVueSheet.Tile = function(zipObject,tileLoader){
 	var parts = me.name.split(".")[0].split("_");
 	me.zoomLevel = parseInt(parts[0]);
 	me.zoomLevelIndex = tileLoader.zoomLevelIndex(me.zoomLevel);
-	me.x = parseInt(parts[2]) * tileLoader.tileSize * Math.round(1000 / me.zoomLevel);
-	me.y = parseInt(parts[1]) * tileLoader.tileSize * Math.round(1000 / me.zoomLevel);
+	me.x = parseInt(parts[2]) * tileLoader.tileSize * 1000 / me.zoomLevel;
+	me.y = parseInt(parts[1]) * tileLoader.tileSize * 1000 / me.zoomLevel;
 
 	this.image.onload = function() {
 		tileLoader.loaded++;
@@ -23,9 +23,9 @@ BluVueSheet.Tile = function(zipObject,tileLoader){
 	    context.drawImage(this.image, this.x, this.y, this.image.width * 1000 / this.zoomLevel, this.image.height * 1000 / this.zoomLevel);
 	}
 	this.getRight = function(){
-		return this.x+this.image.width * Math.round(1000 / me.zoomLevel);
+		return this.x+this.image.width * 1000 / me.zoomLevel;
 	}
 	this.getBottom = function(){
-	    return this.y + this.image.height * Math.round(1000 / me.zoomLevel);
+	    return this.y + this.image.height * 1000 / me.zoomLevel;
 	}
 }

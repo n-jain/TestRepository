@@ -61,22 +61,18 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 
 	    this.width = 0;
 		this.height = 0;
-		for (var i = 4; i >= 0; i--) {
-            if (this.allTiles[i].length === 0) { continue; }
-
-		    var tiles = this.allTiles[i],
-		        w = 0,
-		        h = 0;
-		    for (var k = 0; k < tiles.length; k++) {
-		        var tile = tiles[k];
-                if (tile.getRight() > w) { w = tile.getRight(); }
-                if (tile.getBottom() > h) { h = tile.getBottom(); }
-		    }
-
-		    this.width = w;
-		    this.height = h;
-		    break;
+		
+		var tiles = this.allTiles[0],
+		    w = 0,
+		    h = 0;
+		for (var k = 0; k < tiles.length; k++) {
+		    var tile = tiles[k];
+            if (tile.getRight() > w) { w = tile.getRight(); }
+            if (tile.getBottom() > h) { h = tile.getBottom(); }
 		}
+
+		this.width = w;
+		this.height = h;
 
 	    //set zoom level
 		tileView.fitToScreen();
