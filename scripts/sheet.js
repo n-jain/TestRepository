@@ -68,9 +68,14 @@
         this.canvas.onmousemove = this.tileView.mouseControls.onmousemove;
         this.canvas.onclick = this.tileView.mouseControls.onclick;
         this.canvas.ondblclick = this.tileView.mouseControls.ondblclick;
+        
 
-        window.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
-        window.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
+        this.canvas.addEventListener("touchstart", this.tileView.mouseControls.ontouchstart, true);
+        this.canvas.addEventListener("touchmove", this.tileView.mouseControls.ontouchmove, true);
+        this.canvas.addEventListener("touchend", this.tileView.mouseControls.ontouchend, true);
+        this.canvas.addEventListener("touchcancel", this.tileView.mouseControls.ontouchcancel, true);
+        this.canvas.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
+        this.canvas.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
     };
 
     this.dispose = function () {
@@ -85,10 +90,14 @@
         t.canvas.onclick = null;
         t.canvas.ondblclick = null;
 
-        window.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
-        window.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
-        window.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
-        window.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
+        this.canvas.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
+        this.canvas.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
+        this.canvas.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
+        this.canvas.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
+        this.canvas.removeEventListener("touchstart", this.tileView.mouseControls.ontouchstart, true);
+        this.canvas.removeEventListener("touchmove", this.tileView.mouseControls.ontouchmove, true);
+        this.canvas.removeEventListener("touchend", this.tileView.mouseControls.ontouchend, true);
+        this.canvas.removeEventListener("touchcancel", this.tileView.mouseControls.ontouchcancel, true);
         t.disposed = true;
     };
 

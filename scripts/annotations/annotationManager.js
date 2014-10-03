@@ -137,53 +137,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    }
 
 	    cancelClick = false;
-	    var lastSelectedId="";
-		if(selectedAnnotations.length==1)lastSelectedId=selectedAnnotations[0].id;
-		//get which annotations are touched
-		var touchedAnnotations = new Array(); 
-		for(var i=0;i<annotations.length; i++){
-			var bounds = annotations[i].bounds;
-			if(bounds.width()*tileView.scale<30)
-				bounds=bounds.inset(-(20/tileView.scale),0);
-			if(bounds.height()*tileView.scale<30)
-				bounds=bounds.inset(0,-(20/tileView.scale));			
-			if(bounds.contains(x,y))  {
-				touchedAnnotations[touchedAnnotations.length]=annotations[i];
-			}
-		}
-		//get which are selected already
-		var selected = new Array();
-		var anySelected = false;
-		for(var i=0; i<touchedAnnotations.length; i++){
-			selected[i] = touchedAnnotations[i].selected;
-			if(selected[i])anySelected=true;
-		}
-		//decide what to do
-		if(touchedAnnotations.length==0){
-			for(var i=0; i<annotations.length; i++){
-				annotations.selectIndex=0;
-			}
-			if(selectedAnnotations.length!=0){
-				this.deselectAllAnnotations();				
-			}
-		} else {
-			for(var i=0; i<touchedAnnotations.length; i++){
-				if(!anySelected){
-					var ann = touchedAnnotations[i];
-					if(ann.selectIndex<=0){
-						this.selectSingleAnnotation(touchedAnnotations[i]);
-						ann.selectIndex = touchedAnnotations.length;
-						break;
-					}
-				}
-				if(selected[i]&&touchedAnnotations[i].type!=TEXT_ANNOTATION){
-					this.deselectAllAnnotations();
-				}
-			}
-			for(var i=0;i<touchedAnnotations.length; i++){
-				if(!anySelected)touchedAnnotations[i].selectIndex-=1;	
-			}
-		}
+	    this.handleClick();
 	}
 	this.ondblclick = function(x,y){
 	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
@@ -195,7 +149,56 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 	}
-	this.textUpdate = function(text){
+
+    this.handleClick = function(x, y) {
+        //get which annotations are touched
+        var touchedAnnotations = new Array();
+        for (var i = 0; i < annotations.length; i++) {
+            var bounds = annotations[i].bounds;
+            if (bounds.width() * tileView.scale < 30)
+                bounds = bounds.inset(-(20 / tileView.scale), 0);
+            if (bounds.height() * tileView.scale < 30)
+                bounds = bounds.inset(0, -(20 / tileView.scale));
+            if (bounds.contains(x, y)) {
+                touchedAnnotations[touchedAnnotations.length] = annotations[i];
+            }
+        }
+        //get which are selected already
+        var selected = new Array();
+        var anySelected = false;
+        for (var i = 0; i < touchedAnnotations.length; i++) {
+            selected[i] = touchedAnnotations[i].selected;
+            if (selected[i]) anySelected = true;
+        }
+        //decide what to do
+        if (touchedAnnotations.length == 0) {
+            for (var i = 0; i < annotations.length; i++) {
+                annotations.selectIndex = 0;
+            }
+            if (selectedAnnotations.length != 0) {
+                this.deselectAllAnnotations();
+            }
+        } else {
+            for (var i = 0; i < touchedAnnotations.length; i++) {
+                if (!anySelected) {
+                    var ann = touchedAnnotations[i];
+                    if (ann.selectIndex <= 0) {
+                        this.selectSingleAnnotation(touchedAnnotations[i]);
+                        ann.selectIndex = touchedAnnotations.length;
+                        break;
+                    }
+                }
+                if (selected[i] && touchedAnnotations[i].type != TEXT_ANNOTATION) {
+                    this.deselectAllAnnotations();
+                }
+            }
+            for (var i = 0; i < touchedAnnotations.length; i++) {
+                if (!anySelected) touchedAnnotations[i].selectIndex -= 1;
+            }
+        }
+    }
+
+	this.textUpdate = function (text) {
 		if(selectedAnnotations.length==1)
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
