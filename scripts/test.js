@@ -85,6 +85,8 @@
                 var throwSaveError = false;
                 var deferred = $q.defer();
 
+                console.log("save annotation");
+
                 setTimeout(function () {
                     if (throwSaveError) {
                         deferred.reject('Reason the annotation could not save.');
@@ -100,6 +102,8 @@
             $scope.deleteAnnotation = function(annotationId) {
                 var throwSaveError = false;
                 var deferred = $q.defer();
+
+                console.log("delete annotation");
 
                 setTimeout(function () {
                     if (throwSaveError) {

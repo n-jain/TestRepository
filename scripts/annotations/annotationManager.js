@@ -106,13 +106,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			} else if (currentAnnotation.type != POLYGON_ANNOTATION) {
-			    if (Math.abs(x - currentAnnotation.points[0].x) < BOUND_DIST / tileView.scale) {
-			        x += x < currentAnnotation.points[0].x ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
-			    }
+                if (currentAnnotation.rectType) {
+			        if (Math.abs(x - currentAnnotation.points[0].x) < BOUND_DIST / tileView.scale) {
+			            x += x < currentAnnotation.points[0].x ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
+			        }
 
-			    if (Math.abs(y - currentAnnotation.points[0].y) < BOUND_DIST / tileView.scale) {
-			        y += y < currentAnnotation.points[0].y ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
-			    }
+			        if (Math.abs(y - currentAnnotation.points[0].y) < BOUND_DIST / tileView.scale) {
+			            y += y < currentAnnotation.points[0].y ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
+			        }
+                }
 
 			    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
 
@@ -222,8 +224,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		this.selectAnnotation(annotation);
-		if(annotation.type==TEXT_ANNOTATION){
-			this.captureKeyboard=true
+		if(annotation.type==TEXT_ANNOTATION) {
+		    this.captureKeyboard = true;
 			var corner = annotation.getPoint(2,true);
 			var x = (corner.x+tileView.scrollX)*tileView.scale;
 			var y = (corner.y+tileView.scrollY)*tileView.scale;
@@ -419,8 +421,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				if(!del){
 					currentAnnotation.calcBounds();
 					annotations[annotations.length] = currentAnnotation;
-					if(currentAnnotation.type!=TEXT_ANNOTATION)currentAnnotation.added=true;
-					this.saveAnnotation(currentAnnotation);
+					if (currentAnnotation.type != TEXT_ANNOTATION) {
+					    currentAnnotation.added = true;
+					    this.saveAnnotation(currentAnnotation);
+					}
 				}
 			}
 			if(currentAnnotation.type==TEXT_ANNOTATION){
@@ -448,7 +452,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		annotations[annotations.length] = annotation;
 	}
 	this.saveSelectedAnnotations = function(){
-		for(var i=0; i<selectedAnnotations.length; i++){
+	    for (var i = 0; i < selectedAnnotations.length; i++) {
+            if (selectedAnnotations[i].type === TEXT_ANNOTATION && selectedAnnotations[i].text.length === 0) {
+                continue;
+            }
 			this.saveAnnotation(selectedAnnotations[i]);
 		}
 	}
