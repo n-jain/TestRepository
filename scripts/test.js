@@ -8,7 +8,7 @@
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
-                sheetId: "guid",
+                id: "guid",
                 userId: "guid",
                 rotation: 0,
                 annotations: [
@@ -25,7 +25,7 @@
                 slicesUrl: "sheet2/slices.zip",
                 previewUrl: "sheet2/preview.png",
                 projectId: "guid",
-                sheetId: "guid",
+                id: "guid",
                 userId: "guid",
                 rotation: 0,
                 annotations: []
@@ -35,7 +35,7 @@
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
-                sheetId: "guid",
+                id: "guid",
                 userId: "guid",
                 rotation: 0,
                 annotations: []

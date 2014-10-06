@@ -105,14 +105,23 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(currentAnnotation!=null){
 			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
-			} else if(currentAnnotation.type!=POLYGON_ANNOTATION){
+			} else if (currentAnnotation.type != POLYGON_ANNOTATION) {
+			    if (Math.abs(x - currentAnnotation.points[0].x) < BOUND_DIST / tileView.scale) {
+			        x += x < currentAnnotation.points[0].x ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
+			    }
+
+			    if (Math.abs(y - currentAnnotation.points[0].y) < BOUND_DIST / tileView.scale) {
+			        y += y < currentAnnotation.points[0].y ? -BOUND_DIST / tileView.scale : BOUND_DIST / tileView.scale;
+			    }
+
 			    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
+
 			}
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
 			}
 		}
-		if(this.captureMouse&&currentAnnotation==null){
+		if (this.captureMouse && currentAnnotation == null) {
 			if(touchedHandle==-1){
 				for(var i=0; i<selectedAnnotations.length; i++){
 					//move text box if it is present

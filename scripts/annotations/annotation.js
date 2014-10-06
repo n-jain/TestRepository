@@ -176,31 +176,31 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		}
 		return false;
 	}
-	this.scaleWithHandleTo = function(x,y,handleId){
-		var xPositive = (handleId==2||handleId==3||handleId==4);
-		var yPositive = (handleId==4||handleId==5||handleId==6);
+	this.scaleWithHandleTo = function(x,y,handleId) {
+	    var xPositive = [2, 3, 4].indexOf(handleId) >= 0;
+	    var yPositive = [4, 5, 6].indexOf(handleId) >= 0;
+	    var scalingX = [0, 6, 7, 2, 3, 4].indexOf(handleId) >= 0;
+	    var scalingY = [0, 1, 2, 4, 5, 6].indexOf(handleId) >= 0;
 
-		var scaleOrigin = this.getPoint((handleId + 4) % 8, false);
-		var xDis = Math.abs(scaleOrigin.x - x);
-	    var yDis = Math.abs(scaleOrigin.y - y);
+	    var scaleOrigin = this.getPoint((handleId + 4) % 8, false);
+	    
+		var xDis = scaleOrigin.x - x;
+		var yDis = scaleOrigin.y - y;
+	    var flippedX = (x < scaleOrigin.x && xPositive) || (x > scaleOrigin.x && !xPositive);
+	    var flippedY = (y < scaleOrigin.y && yPositive) || (y > scaleOrigin.y && !yPositive);
 
-		//1 if normal, -1 if flipped
-		var xDir = x-scaleOrigin.x>=0?1:-1;if(!xPositive)xDir*=-1;
-		var yDir = y-scaleOrigin.y>=0?1:-1;if(!yPositive)yDir*=-1;
+	    var xScale = scalingX && !flippedX ? Math.abs(xDis / (this.bounds.width() + BOUND_DIST / tileView.scale)) : 1;
+	    var yScale = scalingY && !flippedY ? Math.abs(yDis / (this.bounds.height() + BOUND_DIST / tileView.scale)) : 1;
 
-		if (handleId == 1 || handleId == 5) { xDis = this.bounds.width() + BOUND_DIST / tileView.scale; xDir = 1; }
-		if (handleId == 3 || handleId == 7) { yDis = this.bounds.height() + BOUND_DIST / tileView.scale; yDir = 1; }
-				
-		if(xDis<=BOUND_DIST/tileView.scale||xDir==-1)xDis = BOUND_DIST/tileView.scale;
-		if(yDis<=BOUND_DIST/tileView.scale||yDir==-1)yDis = BOUND_DIST/tileView.scale;
-		
-		var xScale = xDir*((this.bounds.width()==0)?1:xDis/(this.bounds.width() + BOUND_DIST/tileView.scale));
-		var yScale = yDir*((this.bounds.height()==0)?1:yDis/(this.bounds.height() + BOUND_DIST/tileView.scale));
+        // force min size
+		if (Math.abs(this.bounds.width() * xScale) < BOUND_DIST / tileView.scale) { xScale = 1; }
+		if (Math.abs(this.bounds.height() * yScale) < BOUND_DIST / tileView.scale) { yScale = 1; }
 
-		var matrix = new BluVueSheet.ScaleMatrix(xDir * xScale, yDir * yScale, scaleOrigin.x, scaleOrigin.y);
-		for(var i=0; i<this.points.length; i++){
-			matrix.applyTo(this.points[i]);
+		var matrix = new BluVueSheet.ScaleMatrix(xScale, yScale, scaleOrigin.x, scaleOrigin.y);
+		for(var i=0; i<this.points.length; i++) {
+		    matrix.applyTo(this.points[i]);
 		}
+
 		this.calcBounds();
 		this.updateMeasure();
 	}
@@ -654,8 +654,8 @@ function Color(red,green,blue,alpha){
 		return new Color(this.red, this.green, this.blue, this.alpha);
 	}
 }
-function AnnotationJSON(annotation){
-	var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
+function AnnotationJSON(annotation) {
+    var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
 					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
 	this.points;
 	this.x;
