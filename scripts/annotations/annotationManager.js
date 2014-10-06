@@ -117,7 +117,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
                 }
 
 			    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
-
 			}
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
@@ -135,7 +134,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 					annotation.scaleWithHandleTo(x,y,touchedHandle);
 				}else{
 				    annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
-					annotation.updateMeasure();
+				    annotation.calcBounds();
+				    annotation.updateMeasure();
 				}
 			}
 			cancelClick=true;
@@ -170,6 +170,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
                 bounds = bounds.inset(-(20 / tileView.scale), 0);
             if (bounds.height() * tileView.scale < 30)
                 bounds = bounds.inset(0, -(20 / tileView.scale));
+
             if (bounds.contains(x, y)) {
                 touchedAnnotations[touchedAnnotations.length] = annotations[i];
             }
