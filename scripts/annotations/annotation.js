@@ -248,10 +248,13 @@ function updateMeasurePoly(tileView) {
 		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
 		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
 		var a = 0;
-		for(var i=0; i<this.points.length; i++){
-			a+=this.points[i].x*this.points[(i+1)%this.points.length].y;
-			a-=this.points[(i+1)%this.points.length].x*this.points[i].y;
+		for(var i=0; i<this.points.length; i++) {
+		    a += this.points[i].x * this.points[(i + 1) % this.points.length].y;
+		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
 		}
+
+	    a = Math.abs(a);
+
 		this.measurement.setAmount(m.amount * m.amount * a / (l * l), BluVueSheet.Measurement.toArea(m.unit));
 	}
 }
