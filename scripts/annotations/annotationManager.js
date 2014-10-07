@@ -101,7 +101,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			this.saveSelectedAnnotations();
 		}
 	}
-	this.onmousemove = function(x,y){
+	this.onmousemove = function (x, y) {
+        // new annotation
 		if(currentAnnotation!=null){
 			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
@@ -121,23 +122,29 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
 			}
-		}
-		if (this.captureMouse && currentAnnotation == null) {
+		} else if (this.captureMouse) {
 			if(touchedHandle==-1){
-				for(var i=0; i<selectedAnnotations.length; i++){
+				for(var i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
 					selectedAnnotations[i].offsetTo(x,y);
 				}
 			} else {
 				var annotation = selectedAnnotations[0];
 				if (annotation.rectType) {
-					annotation.scaleWithHandleTo(x,y,touchedHandle);
-				}else{
-				    annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
+				    annotation.scaleWithHandleTo(x, y, touchedHandle);
+				} else {
+			        annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
 				    annotation.calcBounds();
 				    annotation.updateMeasure();
+
+				    if (annotation.type === SCALE_ANNOTATION) {
+				        for (var i = 0; i < annotations.length; i++) {
+				            annotations[i].updateMeasure();
+				        }
+				    }
 				}
 			}
+
 			cancelClick=true;
 		}
 	}

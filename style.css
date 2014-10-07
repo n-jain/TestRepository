@@ -103,16 +103,14 @@ footer.bluvue-sheet-footer {
 
 .bluvue-unit-converter-button {
     cursor: pointer;
-    height: 45px;
-	width: 60px;
-	border-radius: 50%;
+    padding: 10px 0 10px 0;
+    width: 50px;
 	float: left;
-    line-height: 45px;
+    margin: 2.5px;
     font-family: Verdana;
-	margin: 2.5px;
     text-align: center;
-    vertical-align: middle;
 }
+
 
 .bluvue-text-size-button {
 	height: 50px;
