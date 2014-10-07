@@ -97,9 +97,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			this.selectAllInLasso();
 			lasso=null;
 		}
-		if(save){
-			this.saveSelectedAnnotations();
-		}
+		if (save) {
+		    this.saveSelectedAnnotations();
+
+            for (var i = 0; i < selectedAnnotations.length; i++) {
+                if (selectedAnnotations[i].type === SCALE_ANNOTATION) {
+                    // change made to scale annotation, update all measurement type annotations.
+                    for (var j = 0; j < annotations.length; j++) {
+                        if (annotations[j].measurement !== null && annotations[j].type !== SCALE_ANNOTATION) {
+                            this.saveAnnotation(annotations[j]);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 	}
 	this.onmousemove = function (x, y) {
         // new annotation
