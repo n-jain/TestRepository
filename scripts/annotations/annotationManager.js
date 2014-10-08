@@ -235,6 +235,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
 	}
+	this.updateTextEditorIfPresent= function(){		
+		if(currentAnnotation==null&&touchedHandle==-1&&selectedAnnotations.length==1) {
+			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0])); 
+		}
+	}
 	function calcTextEditorLocation(annotation){
 		var corner = annotation.getPoint(2,true);
 		var x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;

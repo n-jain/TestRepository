@@ -81,6 +81,7 @@ BluVueSheet.MouseControls = function(tileView) {
         if (dragging) {
             tileView.scrollX = tileviewStartX + (window_x - mouseStartX) / tileView.scale;
             tileView.scrollY = tileviewStartY + (window_y - mouseStartY) / tileView.scale;
+            tileView.annotationManager.updateTextEditorIfPresent();
         }
     };
 
