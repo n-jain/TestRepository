@@ -138,6 +138,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(touchedHandle==-1){
 				for(var i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
+					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
 			} else {
@@ -234,6 +235,17 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
 	}
+	function calcTextEditorLocation(annotation){
+		var corner = annotation.getPoint(2,true);
+		var x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;
+		var y = (corner.y+annotation.offset_y+tileView.scrollY)*tileView.scale;
+		var w = tileView.sheet.textEditor.getWidth();
+		if(x+w>window.innerWidth){
+			corner = annotation.getPoint(0,true);
+			x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale-w;
+		}
+		return new BluVueSheet.Point(x,y);
+	}
 	this.setTextSize = function(textSize){
 		if(selectedAnnotations.length==1)
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
@@ -246,11 +258,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		this.selectAnnotation(annotation);
 		if(annotation.type==TEXT_ANNOTATION) {
 		    this.captureKeyboard = true;
-			var corner = annotation.getPoint(2,true);
-			var x = (corner.x+tileView.scrollX)*tileView.scale;
-			var y = (corner.y+tileView.scrollY)*tileView.scale;
 			tileView.sheet.textEditor.setText(annotation.text);
-			tileView.sheet.textEditor.show(x,y);
+			tileView.sheet.textEditor.show(calcTextEditorLocation(annotation));
 			annotation.added=true;
 		}
 	}

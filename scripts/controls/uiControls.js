@@ -211,23 +211,29 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	}
 	this.textEditorElement.appendChild(textBox);
 
-	this.show = function(x,y){
-	    this.textEditorElement.style.left = x + "px";
-	    this.textEditorElement.style.top = y + "px";
+	this.show = function(loc){
+	    this.textEditorElement.style.left = loc.x + "px";
+	    this.textEditorElement.style.top = loc.y + "px";
 	    this.textEditorElement.style.display = 'block';
 	    textBox.focus();
 	}
 	this.hide = function(){
 	    this.textEditorElement.style.display = 'none';
 	}
-	this.setLoc = function(x,y){
-	    this.textEditorElement.style.left = x + "px";
-	    this.textEditorElement.style.top = y + "px";
+	this.setLoc = function(loc){
+	    this.textEditorElement.style.left = loc.x + "px";
+	    this.textEditorElement.style.top = loc.y + "px";
 	}
 	this.setText = function(text){
 	    textBox.value = text;
 	    textBox.focus();
 	}
+    this.getWidth = function(){
+        return this.textEditorElement.offsetWidth;
+    }
+    this.getHeight = function(){
+        return this.textEditorElement.offsetHeight;
+    }
 }
 
 BluVueSheet.UnitConverter = function (type, convertToUnit) {
