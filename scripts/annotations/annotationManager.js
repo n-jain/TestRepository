@@ -174,8 +174,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
-				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale)
+				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale){					
+					currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
 					currentAnnotation.closed=true;
+				}
 				tileView.deselectTool();
 			}
 		}
