@@ -8,6 +8,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
             scope: {
                 sheet: "=",
                 userId: "=",
+                isAdmin: "=",
                 saveAnnotation: "=",
                 deleteAnnotation: "=",
                 closeSheet: "=",

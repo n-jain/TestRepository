@@ -20,9 +20,9 @@
                     },
                     {
                         id: "04840b5829aa4088801edaf986970a72",
-                        userId: "arandomuserid",
+                        userId: "",
                         type:6,
-                        data: "{\"id\": \"04840b5829aa4088801edaf986970a72\", \"projectId\": \"guid\", \"sheetId\": \"guid\", \"userId\": \"guid\", \"type\": 6, \"colorRed\": 1, \"colorGreen\": 0, \"colorBlue\": 0, \"zOrder\": 0, \"fill\": 0, \"areaVisible\": 0, \"lineWidth\": 7.5, \"unitOfMeasure\": \"na\", \"x\": 3037.162891046386, \"y\": 2915.9719525350592, \"width\": 2524.9487594390503, \"height\": 1552.3031283710898, \"text\": \"brad\", \"textSize\": 128 }"
+                        data: "{\"id\": \"04840b5829aa4088801edaf986970a72\", \"projectId\": \"guid\", \"sheetId\": \"guid\", \"type\": 6, \"colorRed\": 1, \"colorGreen\": 0, \"colorBlue\": 0, \"zOrder\": 0, \"fill\": 0, \"areaVisible\": 0, \"lineWidth\": 7.5, \"unitOfMeasure\": \"na\", \"x\": 3037.162891046386, \"y\": 2915.9719525350592, \"width\": 2524.9487594390503, \"height\": 1552.3031283710898, \"text\": \"brad\", \"textSize\": 128 }"
                     }
                 ] // hard code annotations here for testing
             },
@@ -54,6 +54,8 @@
             $scope.pinnedSheets = [];
 
             $scope.userId = "guid";
+
+            $scope.isAdmin = true;
 
             $scope.closeSheet = function() {
                 console.log("close sheet");
