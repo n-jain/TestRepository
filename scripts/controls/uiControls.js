@@ -1,4 +1,4 @@
-BluVueSheet.OptionsMenu = function(sheet) {
+BluVueSheet.OptionsMenu = function(sheet, scope) {
     var t = this;
 
     this.sheet = sheet;
@@ -79,7 +79,7 @@ BluVueSheet.OptionsMenu = function(sheet) {
     }
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
-        var userIsAdmin = true;
+        var userIsAdmin = scope.isAdmin;
         var keys = Object.keys(BluVueSheet.Constants.OptionButtons);
         for (var x = 0; x < keys.length; x++) {
             removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);

@@ -29,7 +29,7 @@
         this.userId = sheet.userId;
         //make on screen controls
         
-        this.optionsMenu = new BluVueSheet.OptionsMenu(this);
+        this.optionsMenu = new BluVueSheet.OptionsMenu(this, scope);
         this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
 

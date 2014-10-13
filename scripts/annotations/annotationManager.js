@@ -262,8 +262,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
-		this.selectAnnotation(annotation);
-		if(annotation.type==TEXT_ANNOTATION) {
+		var valid = this.selectAnnotation(annotation);
+		if(annotation.type==TEXT_ANNOTATION&&valid) {
 		    this.captureKeyboard = true;
 			tileView.sheet.textEditor.setText(annotation.text);
 			tileView.sheet.textEditor.show(calcTextEditorLocation(annotation));
@@ -271,10 +271,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}
 	this.selectAnnotation = function(annotation){
+		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
 		selectedAnnotations[selectedAnnotations.length]=annotation;
 		annotation.selected=true;
 		annotation.showHandles=true;
 		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		return true;
 	}
 	this.deselectAllAnnotations = function(){
 		if(selectedAnnotations.length==1){
