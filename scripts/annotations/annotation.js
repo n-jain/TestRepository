@@ -253,7 +253,7 @@ function updateMeasurePoly(tileView) {
 		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
 		}
 
-	    a = Math.abs(a);
+	    a = Math.abs(a)/2;
 
 		this.measurement.setAmount(m.amount * m.amount * a / (l * l), BluVueSheet.Measurement.toArea(m.unit));
 	}
