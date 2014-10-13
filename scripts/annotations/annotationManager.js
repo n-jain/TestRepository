@@ -382,6 +382,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
                 ann.measurement.changeToUnit(subType);
             }
         }
+       	this.saveSelectedAnnotations();
     }
 	this.masterSelectedAnnotations = function(){
 		var master = true;
