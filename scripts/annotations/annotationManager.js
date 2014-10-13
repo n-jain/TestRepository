@@ -482,6 +482,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 	this.loadAnnotation = function(jsonString){
 		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);
+		annotation.added=true;
 		if(annotation.type==SCALE_ANNOTATION){
 			this.scaleAnnotation=annotation;
 			for(var i=0; i<annotations.length; i++){

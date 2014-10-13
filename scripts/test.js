@@ -55,7 +55,7 @@
 
             $scope.userId = "guid";
 
-            $scope.isAdmin = false;
+            $scope.isAdmin = true;
 
             $scope.closeSheet = function() {
                 console.log("close sheet");
