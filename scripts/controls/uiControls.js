@@ -183,16 +183,16 @@ BluVueSheet.ColorMenu.Colors = [
 BluVueSheet.ColorMenu.LastColor = new Color(0.5725, 0.5725, 0.5725, 1);
 
 BluVueSheet.TextEditor = function(textUpdate, setTextSize){
-	var textSizes = [32,64,128,256,512];
+	
 	this.textEditorElement = document.createElement("div");
 	this.textEditorElement.className = "bluvue-text-editor";
 
     var fontSize = 20;
 	var textSizeMenu = document.createElement("div");
-	for(var i=0; i<textSizes.length; i++){
+	for(var i=0; i<BluVueSheet.Constants.TextSizes.length; i++){
 		var button = document.createElement("div");
 		button.className = "bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text";
-		button.name = textSizes[i];
+		button.name = BluVueSheet.Constants.TextSizes[i];
 		button.style.fontSize = fontSize + "px";
 	    fontSize += 4;
 		button.onclick = function () {
