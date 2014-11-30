@@ -80,10 +80,9 @@ footer.bluvue-sheet-footer {
 }
 
 .bluvue-sheet-color-menu {
-	background: #FFFFFF;
+	background: #000000;
     display: none;
 	opacity: 0.9;
-	border-radius: 15px;
 	padding: 5px;
 	position: fixed;
 	right:5px;
@@ -93,9 +92,15 @@ footer.bluvue-sheet-footer {
     cursor: pointer;
 	height: 45px;
 	width: 45px;
-	border-radius: 50%;
+    border-radius: 50%;
 	float:left;
 	margin: 2.5px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 45px 45px;
+}
+.bluvue-color-button.selected {
+    border: 5px solid white;
 }
 
 .bluvue-sheet-unit-converter-menu {

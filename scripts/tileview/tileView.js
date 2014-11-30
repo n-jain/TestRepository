@@ -48,7 +48,7 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
-		this.color=new Color(1,0,0,1);
+		this.color=BluVueSheet.Constants.Colors[0].color;
 		tool = null;
 
 		for(var i=0; i<sheetObj.annotations.length; i++){

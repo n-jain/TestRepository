@@ -123,12 +123,10 @@
     }
 
     this.setColor = function (colorName) {
-        var csv = colorName.slice(5, colorName.length - 1);
-        var vals = csv.split(",");
-        var color = new Color(parseFloat(vals[0]) / 255, parseFloat(vals[1]) / 255, parseFloat(vals[2]) / 255, parseFloat(vals[3]));
+        var color = colorFromString(colorName);
         t.tileView.setColor(color);
         t.optionsMenu.setColor(color);
-        t.optionsMneu.colorMenu.hide();
+        t.optionsMenu.colorMenu.hide();
     };
 
     this.textUpdate = function (text) {

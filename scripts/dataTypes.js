@@ -14,3 +14,8 @@ function Color(red,green,blue,alpha){
 		return new Color(this.red, this.green, this.blue, this.alpha);
 	}
 }
+function colorFromString(colorName){
+	var csv = colorName.slice(5, colorName.length - 1);
+	var vals = csv.split(",");
+	return new Color(parseFloat(vals[0]) / 255, parseFloat(vals[1]) / 255, parseFloat(vals[2]) / 255, parseFloat(vals[3]));
+}

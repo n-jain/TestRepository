@@ -76,14 +76,24 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
     };
 
     this.setColor = function(color) {
+        function getColorIndex(c){
+            for(var i=0; i<BluVueSheet.Constants.Colors.length; i++){
+                if(c===BluVueSheet.Constants.Colors[i])return i;
+            }
+            return -1;
+        }
         BluVueSheet.ColorMenu.LastColor = color;
         var btns = document.getElementsByClassName("bv-options-color");
         if (btns.length === 0) {
             return;
         }
         var btn = btns[0];
+        btn.getElementsByTagName("div")[0].style.background = color.toStyle();
 
-        btn.getElementsByTagName("div")[0].style.backgroundColor = color.toStyle();
+        var colorIndex = getColorIndex(color);
+        if(colorIndex==-1)return;
+        btn.getElementsByTagName("div")[0].style.background = "";
+        btn.getElementsByTagName("div")[0].style.backgroundImage = "url('"+BluVueSheet.Constants.Colors[colorIndex].imageURL+"')";
     }
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
@@ -167,6 +177,10 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
     }
 };
 
+BluVueSheet.BelowSelectedMenu = function (){
+    
+}
+
 BluVueSheet.ColorMenu = function(setColor){
 	this.colorMenuElement = document.createElement("div");
 	this.colorMenuElement.className = 'bluvue-sheet-color-menu';
@@ -174,10 +188,10 @@ BluVueSheet.ColorMenu = function(setColor){
 	for (var i = 0; i < BluVueSheet.Constants.Colors.length; i++) {
 		var button = document.createElement("div");
 		button.className = "bluvue-color-button";
-		button.style.background = BluVueSheet.Constants.Colors[i].color.toStyle();
-        button.name = BluVueSheet.Constants.Colors[i].color.toStyle();
+        button.style.backgroundImage = "url('" +BluVueSheet.Constants.Colors[i].imageURL +"')";
+        button.name = i;
 		button.onclick = function(){
-			setColor(this.name);
+			setColor(BluVueSheet.Constants.Colors[parseInt(this.name)].color.toStyle());
 		};
 		this.colorMenuElement.appendChild(button);
 		if(i%3==2){
