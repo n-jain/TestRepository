@@ -1,8 +1,9 @@
 ﻿BluVueSheet.Sheet = function() {
     this.tileView = null;
+
     this.optionsMenu = null;
-    this.colorMenu = null;
     this.textEditor = null;
+
     this.closeSheetButton = null;
     this.userInterface = null;
     this.disposed = false;
@@ -27,15 +28,14 @@
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
         this.userId = sheet.userId;
-        //make on screen controls
         
+        //make on screen controls
         this.optionsMenu = new BluVueSheet.OptionsMenu(this, scope);
-        this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
 
         this.userInterface = document.createElement("div");
         this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
-        this.userInterface.appendChild(this.colorMenu.colorMenuElement);
+        this.userInterface.appendChild(this.optionsMenu.colorMenu.colorMenuElement);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
         this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
@@ -112,7 +112,8 @@
     this.hideOptionMenus = function() {
         t.optionsMenu.lengthUnitConverter.hide();
         t.optionsMenu.areaUnitConverter.hide();
-        t.colorMenu.hide();
+        t.optionsMenu.textSizeMenu.style.display = "none";
+        t.optionsMenu.colorMenu.hide();
     }
 
     this.convertToUnit = function(type, subType) {
@@ -127,7 +128,7 @@
         var color = new Color(parseFloat(vals[0]) / 255, parseFloat(vals[1]) / 255, parseFloat(vals[2]) / 255, parseFloat(vals[3]));
         t.tileView.setColor(color);
         t.optionsMenu.setColor(color);
-        t.colorMenu.hide();
+        t.optionsMneu.colorMenu.hide();
     };
 
     this.textUpdate = function (text) {
@@ -135,6 +136,7 @@
     };
 
     this.setTextSize = function (textSize) {
+        console.log(textSize);
         t.tileView.annotationManager.setTextSize(textSize);
         t.tileView.textSize = textSize;
     };

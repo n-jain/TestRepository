@@ -26,6 +26,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
                 scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
+                scope.textSizes = BluVueSheet.Constants.TextSizes;
+                
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
                 $window.onpopstate = function () {

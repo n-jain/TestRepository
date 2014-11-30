@@ -4,6 +4,8 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
     this.sheet = sheet;
     this.lengthUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Length, sheet.convertToUnit);
     this.areaUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Area, sheet.convertToUnit);
+    this.textSizeMenu = document.getElementsByClassName("bluvue-sheet-textsize-menu")[0];
+    this.colorMenu = new BluVueSheet.ColorMenu(sheet.setColor);
 
     this.optionsMenuElement = document.createElement("div");
     this.optionsMenuElement.className = 'bluvue-sheet-options-menu';
@@ -21,11 +23,17 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
         
         button.onclick = function () {
             if (btnInfo.id === BluVueSheet.Constants.OptionButtons.Color.id) {
-                t.sheet.colorMenu.show();
+                t.colorMenu.show();
             } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitLength.id) {
                 t.lengthUnitConverter.show();
             } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitArea.id) {
                 t.areaUnitConverter.show();
+            } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.Text.id){
+                if(t.textSizeMenu.style.display=="block"){
+                    t.textSizeMenu.style.display="none";
+                    return;
+                }
+                t.textSizeMenu.style.display = "block";
             }
 
             t.sheet.tileView.optionChosen(this.btnInfo.id);
@@ -140,6 +148,15 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
             }
         }
 
+        if(tileView.getTool() === BluVueSheet.Constants.Tools.Text){
+            addButton(BluVueSheet.Constants.OptionButtons.Text);
+        }
+        if(selectedAnnotations.length == 1){
+            if(selectedAnnotations[0].type == TEXT_ANNOTATION){
+                addButton(BluVueSheet.Constants.OptionButtons.Text)
+            }
+        }
+
         if (tileView.getTool() != BluVueSheet.Constants.Tools.Lasso && (tileView.getTool() !== null || selectedAnnotations.length > 0)) {
             addButton(BluVueSheet.Constants.OptionButtons.Color);
         }
@@ -183,24 +200,9 @@ BluVueSheet.ColorMenu.Colors = [
 BluVueSheet.ColorMenu.LastColor = new Color(0.5725, 0.5725, 0.5725, 1);
 
 BluVueSheet.TextEditor = function(textUpdate, setTextSize){
-	
+
 	this.textEditorElement = document.createElement("div");
 	this.textEditorElement.className = "bluvue-text-editor";
-
-    var fontSize = 20;
-	var textSizeMenu = document.createElement("div");
-	for(var i=0; i<BluVueSheet.Constants.TextSizes.length; i++){
-		var button = document.createElement("div");
-		button.className = "bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text";
-		button.name = BluVueSheet.Constants.TextSizes[i];
-		button.style.fontSize = fontSize + "px";
-	    fontSize += 4;
-		button.onclick = function () {
-			setTextSize(parseInt(this.name));
-		};
-		textSizeMenu.appendChild(button);
-	}
-	this.textEditorElement.appendChild(textSizeMenu);
 	
 	var textBox = document.createElement("textarea");
 	textBox.onchange = function(){
@@ -214,7 +216,7 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	this.show = function(loc){
 	    this.textEditorElement.style.left = loc.x + "px";
 	    this.textEditorElement.style.top = loc.y + "px";
-	    this.textEditorElement.style.display = 'block';
+	    this.textEditorElement.style.display = "block";
 	    textBox.focus();
 	}
 	this.hide = function(){
