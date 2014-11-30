@@ -121,7 +121,18 @@ BluVueSheet.Constants = {
        FreeAnnotations: { id: 3, name: "free_annotations_button", hasMenu: true },
        MeasurementAnnotations: { id: 4, name: "measurement_annotations_button", hasMenu: true },
        TextAnnotations: { id: 5, name: "test_button", hasMenu: false },
-    }
+    },
+    Colors: [
+        { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1)},
+        { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1)},
+        { id: 2, className: "green", color: new Color(0.293, 0.648, 0, 1)},
+        { id: 3, className: "yellow", color: new Color(0.773, 0.797, 0, 1)},
+        { id: 4, className: "orange", color: new Color(0.840, 0.508, 0, 1)},
+        { id: 5, className: "purple", color: new Color(0.781, 0, 0.875, 1)},
+        { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1)},
+        { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1)},
+        { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1)}
+    ]
 };
 
 var HANDLE_TOUCH_RADIUS = 30;

@@ -171,11 +171,11 @@ BluVueSheet.ColorMenu = function(setColor){
 	this.colorMenuElement = document.createElement("div");
 	this.colorMenuElement.className = 'bluvue-sheet-color-menu';
 
-	for (var i = 0; i < BluVueSheet.ColorMenu.Colors.length; i++) {
+	for (var i = 0; i < BluVueSheet.Constants.Colors.length; i++) {
 		var button = document.createElement("div");
 		button.className = "bluvue-color-button";
-		button.style.background = BluVueSheet.ColorMenu.Colors[i].toStyle();
-		button.name = BluVueSheet.ColorMenu.Colors[i].toStyle();
+		button.style.background = BluVueSheet.Constants.Colors[i].color.toStyle();
+        button.name = BluVueSheet.Constants.Colors[i].color.toStyle();
 		button.onclick = function(){
 			setColor(this.name);
 		};
@@ -192,11 +192,6 @@ BluVueSheet.ColorMenu = function(setColor){
 	    this.colorMenuElement.style.display = 'none';
 	}
 }
-BluVueSheet.ColorMenu.Colors = [
-    new Color(1, 0, 0, 1), new Color(0, 1, 0, 1), new Color(0, 0, 1, 1),
-	new Color(1, 1, 0, 1), new Color(1, 0.647, 0, 1), new Color(1, 0, 1, 1),
-	new Color(0.333, 0.102, 0.545, 1), new Color(0, 0, 0, 1), new Color(0.8, 0.8, 0.8, 1)
-];
 BluVueSheet.ColorMenu.LastColor = new Color(0.5725, 0.5725, 0.5725, 1);
 
 BluVueSheet.TextEditor = function(textUpdate, setTextSize){
