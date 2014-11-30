@@ -139,6 +139,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				for(var i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
 					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[i]));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
 			} else {
@@ -239,7 +240,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 	this.updateTextEditorIfPresent= function(){		
 		if(currentAnnotation==null&&touchedHandle==-1&&selectedAnnotations.length==1) {
-			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0])); 
+			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
+			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[0])); 
 		}
 	}
 	function calcTextEditorLocation(annotation){
@@ -252,6 +254,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale-w;
 		}
 		return new BluVueSheet.Point(x,y);
+	}
+	function calcFloatingOptionsMenuLocation(annotation){
+		var corner = annotation.getPoint(5,true);
+		var x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;
+		var y = (corner.y+annotation.offset_y+tileView.scrollY)*tileView.scale;
+		var w = tileView.sheet.floatingOptionsMenu.getWidth();
+		return new BluVueSheet.Point(x-(w/2),y);	
 	}
 	this.setTextSize = function(textSize){
 		if(selectedAnnotations.length==1)
@@ -269,13 +278,14 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			tileView.sheet.textEditor.show(calcTextEditorLocation(annotation));
 			annotation.added=true;
 		}
+		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotation));
 	}
 	this.selectAnnotation = function(annotation){
 		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
 		selectedAnnotations[selectedAnnotations.length]=annotation;
 		annotation.selected=true;
 		annotation.showHandles=true;
-		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		return true;
 	}
 	this.deselectAllAnnotations = function(){
@@ -286,7 +296,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		var toKill = new Array();
 		selectedAnnotations=new Array();
-		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		for(var i=0;i<annotations.length; i++){
 			annotations[i].selected=false;
 			annotations[i].showHandles=false;
@@ -296,6 +306,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
+		tileView.sheet.floatingOptionsMenu.hide();
 		for(var i=0; i<toKill.length; i++){
 			removeFromArray(annotations,toKill[i]);
 		}
@@ -313,7 +324,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(selectedAnnotations.length==1){
 			selectedAnnotations[0].showHandles=true;
 		}
-		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
 	this.deleteSelectedAnnotations = function(){
 		var tempSelected = selectedAnnotations;
@@ -341,9 +352,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			});
 		}
 		selectedAnnotations = new Array();
-		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
+		tileView.sheet.floatingOptionsMenu.hide();
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;
@@ -474,7 +486,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		currentAnnotation=null;
 	}
 	this.updateOptionsMenu = function(){
-		tileView.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];

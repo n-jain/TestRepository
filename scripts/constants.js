@@ -98,7 +98,8 @@ BluVueSheet.Constants = {
         UnitLength: { id: 4, className: "ruler" },
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
-        Master: { id: 7, className: "master" }
+        Master: { id: 7, className: "master" },
+        Copy: {id: 8, className: "copy"}
     },
     Tools: {
         Lasso: { id: 0, name: "lasso" },
