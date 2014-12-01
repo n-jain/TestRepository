@@ -38,8 +38,8 @@
             },
             {
                 name: 'Sheet 3!',
-                slicesUrl: "sheet/slices.zip",
-                previewUrl: "sheet/preview.png",
+                slicesUrl: "sheet3/slices.zip",
+                previewUrl: "sheet3/preview.png",
                 projectId: "guid",
                 id: "guid",
                 userId: "guid",
