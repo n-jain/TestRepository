@@ -139,13 +139,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				for(var i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
 					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
-					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[i]));
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
 			} else {
 				var annotation = selectedAnnotations[0];
 				if (annotation.rectType) {
 				    annotation.scaleWithHandleTo(x, y, touchedHandle);
+				    tileView.sheet.textEditor.setLoc(calcTextEditorLocation(annotation));
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 				} else {
 			        annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
 				    annotation.calcBounds();
@@ -255,19 +257,33 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		return new BluVueSheet.Point(x,y);
 	}
-	function calcFloatingOptionsMenuLocation(annotation){
-		var corner = annotation.getPoint(5,true);
-		var x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;
-		var y = (corner.y+annotation.offset_y+tileView.scrollY)*tileView.scale;
+	function calcFloatingOptionsMenuLocation(annotations){
 		var w = tileView.sheet.floatingOptionsMenu.getWidth();
-		return new BluVueSheet.Point(x-(w/2),y);	
+		var minX = -1;
+		var maxX = -1;
+		var maxY = -1;
+		for(var i=0; i<annotations.length; i++){
+			var pmix = annotations[i].getPoint(7, true);
+			var pmax = annotations[i].getPoint(2, true);
+			var pmay = annotations[i].getPoint(4, true);
+
+			var amix = (pmix.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
+			var amax = (pmax.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
+			var amay = (pmay.y+annotations[i].offset_y+tileView.scrollY)*tileView.scale;
+
+			if(amix < minX || minX==-1) minX = amix;
+			if(amax > maxX || maxX==-1) maxX = amax;
+			if(amay > maxY || maxY==-1) maxY = amay;			
+			console.log(minX+" "+maxX+" "+maxY+" "+pmix.x+" "+pmix.y);
+		}
+		return new BluVueSheet.Point(((minX+maxX)/2)-(w/2),maxY);	
 	}
 	this.setTextSize = function(textSize){
 		if(selectedAnnotations.length==1)
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
 				selectedAnnotations[0].textSize=textSize;
 				this.saveSelectedAnnotations();
-			}	
+			}
 	}
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
@@ -278,7 +294,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			tileView.sheet.textEditor.show(calcTextEditorLocation(annotation));
 			annotation.added=true;
 		}
-		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotation));
+		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 	}
 	this.selectAnnotation = function(annotation){
 		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
@@ -325,6 +341,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			selectedAnnotations[0].showHandles=true;
 		}
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+		if(selectedAnnotations.length>0)tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotations));
 	}
 	this.deleteSelectedAnnotations = function(){
 		var tempSelected = selectedAnnotations;

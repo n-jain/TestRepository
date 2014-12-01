@@ -176,6 +176,8 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
     this.floatingOptionsMenuElement = document.createElement("div");
     this.floatingOptionsMenuElement.className = 'bluvue-sheet-floating-options-menu';
+    this.loc = null;
+    this.width = 0;
 
     var addButton = function(btnInfo) {
         var button = document.getElementById("button_" + btnInfo.id);
@@ -204,13 +206,16 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
             t.sheet.tileView.optionChosen(this.btnInfo.id);
         };
         t.floatingOptionsMenuElement.appendChild(button);
+        t.width+=50;
     }
 
     var removeButton = function(btnInfo) {
         var button = document.getElementById("button_" + btnInfo.id);
         if (button != null) {
-            if(button.parentNode === t.floatingOptionsMenuElement)
+            if(button.parentNode === t.floatingOptionsMenuElement){
                 t.floatingOptionsMenuElement.removeChild(button);
+                t.width-=50;                
+            }
         }
     }
 
@@ -230,13 +235,12 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         for (var x = 0; x < keys.length; x++) {
             removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);
         }
-
-        if (selectedAnnotations.length > 0) {
-            addButton(BluVueSheet.Constants.OptionButtons.Copy);
+        this.width = 0;
+        
+        if (selectedAnnotations.length > 0)
             addButton(BluVueSheet.Constants.OptionButtons.Delete);
-        }
-
-        if (selectedAnnotations.length > 0) {
+        if (selectedAnnotations.length == 1) {
+            addButton(BluVueSheet.Constants.OptionButtons.Copy);
             if (userIsAdmin) {
                 addButton(BluVueSheet.Constants.OptionButtons.Master);
                 var master = false;
@@ -267,9 +271,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     }
 
     this.show = function(loc){
-        this.floatingOptionsMenuElement.style.left = loc.x + "px";
-        this.floatingOptionsMenuElement.style.top = loc.y + "px";
-        //SET OTHER LOCATIONS TOO
+        this.setLoc(loc);
         this.floatingOptionsMenuElement.style.display = "block";
     }
 
@@ -278,14 +280,19 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     }
 
     this.getWidth = function(){
+        return this.width;
+    }
+
+    this.getHeight = function(){
         return this.floatingOptionsMenuElement.offsetWidth;
     }
 
     this.setLoc = function(loc){
+        this.loc = loc;
         this.floatingOptionsMenuElement.style.left = loc.x + "px";
         this.floatingOptionsMenuElement.style.top = loc.y + "px";
     }
-    
+
     this.hideAllMenus = function(){
         this.lengthUnitConverter.hide();
         this.areaUnitConverter.hide();
@@ -296,7 +303,6 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         userInterface.appendChild(this.lengthUnitConverter.unitConverterElement);
         userInterface.appendChild(this.areaUnitConverter.unitConverterElement);   
     }
-
 }
 
 BluVueSheet.ColorMenu = function(setColor){
@@ -389,7 +395,9 @@ BluVueSheet.UnitConverter = function (type, convertToUnit) {
     this.visible = function(){
         return (this.unitConverterElement.style.display == "block")
     }
-    this.show = function () {
+    this.show = function (loc) {
+        this.unitConverterElement.style.left = loc.x + "px";
+        this.unitConverterElement.style.top = loc.y + "px";
         this.unitConverterElement.style.display = 'block';
     }
     this.hide = function () {
