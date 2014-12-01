@@ -22,8 +22,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
             templateUrl: "template/bluvue-sheet.html?_=" + Math.random().toString(36).substring(7),
             link: function bvSheetLink(scope, elem) {
                 scope.currentSheet = null;
+                scope.selectedToolMenuButton = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
+                scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
+                scope.textSizes = BluVueSheet.Constants.TextSizes;
+                
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
                 $window.onpopstate = function () {
@@ -64,8 +68,39 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     scope.currentSheet.setTool(scope.selectedTool);
                 }
 
+                scope.toolMenuButtonClicked = function(toolMenuButton) {
+                    console.log(toolMenuButton);
+                }
+
                 scope.resetZoom = function () {
                     scope.currentSheet.resetZoom();
+                }
+                scope.enterFullscreen = function() {
+                    if (!document.fullscreenElement && !document.mozFullScreenElement && 
+                        !document.webkitFullscreenElement && !document.msFullscreenElement ){
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen();
+                        } else if (document.documentElement.msRequestFullscreen) {
+                            document.documentElement.msRequestFullscreen();
+                        } else if (document.documentElement.mozRequestFullScreen) {
+                            document.documentElement.mozRequestFullScreen();
+                        } else if (document.documentElement.webkitRequestFullscreen) {
+                            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                        }
+                        console.log(document.getElementById("fullscreen_button"));
+                        document.getElementById("fullscreen_button").innerHTML = "Exit Full Screen";
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        }
+                        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
+                    }
                 }
 
                 scope.$watch('sheet', function (newValue) {

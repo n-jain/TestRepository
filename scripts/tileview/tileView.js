@@ -1,8 +1,7 @@
-BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, setLoaded, deselectTool) {
+BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, deselectTool) {
 	var context;
     var t = this;
 
-	this.optionsMenu=optionsMenu;
 	this.sheet = sheet;
 
     this.deselectTool = deselectTool;
@@ -48,7 +47,7 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
-		this.color=new Color(1,0,0,1);
+		this.color=BluVueSheet.Constants.Colors[0].color;
 		tool = null;
 
 		for(var i=0; i<sheetObj.annotations.length; i++){
@@ -172,7 +171,7 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
     }
 
 	this.setTool = function (newTool) {
-	    this.optionsMenu.deselectAllButtons();
+	    this.sheet.optionsMenu.deselectAllButtons();
 
 		tool = newTool;
 		this.annotationManager.finishAnnotation();
@@ -199,6 +198,11 @@ BluVueSheet.TileView = function (sheet, canvas, optionsMenu, scope, setLoading, 
         }
         this.annotationManager.updateOptionsMenu();
     };
+
+    this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
+    	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+    	this.sheet.floatingOptionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+    }
 
 	this.updateRes = function () {
 	    if (this.scale > 0.75 || !this.tileLoader.levelAvailable[1]) { this.tileLoader.setTileRes(0); }

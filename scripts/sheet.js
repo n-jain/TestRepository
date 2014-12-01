@@ -1,8 +1,10 @@
 ﻿BluVueSheet.Sheet = function() {
     this.tileView = null;
+
     this.optionsMenu = null;
-    this.colorMenu = null;
+    this.floatingOptionsMenu = null;
     this.textEditor = null;
+
     this.closeSheetButton = null;
     this.userInterface = null;
     this.disposed = false;
@@ -27,18 +29,17 @@
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
         this.userId = sheet.userId;
-        //make on screen controls
         
+        //make on screen controls
+        this.userInterface = document.createElement("div");
+
         this.optionsMenu = new BluVueSheet.OptionsMenu(this, scope);
-        this.colorMenu = new BluVueSheet.ColorMenu(this.setColor);
+        this.floatingOptionsMenu = new BluVueSheet.FloatingOptionsMenu(this, scope);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
 
-        this.userInterface = document.createElement("div");
-        this.userInterface.appendChild(this.optionsMenu.optionsMenuElement);
-        this.userInterface.appendChild(this.colorMenu.colorMenuElement);
+        this.optionsMenu.appendTo(this.userInterface);
+        this.floatingOptionsMenu.appendTo(this.userInterface);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
-        this.userInterface.appendChild(this.optionsMenu.lengthUnitConverter.unitConverterElement);
-        this.userInterface.appendChild(this.optionsMenu.areaUnitConverter.unitConverterElement);
         elem.append(this.userInterface);
         
         this.canvas = elem.find('canvas')[0];
@@ -46,7 +47,7 @@
         this.setLoading();
 
         //make tileView
-        this.tileView = new BluVueSheet.TileView(this, this.canvas, this.optionsMenu, scope, this.setLoading, this.setLoaded, scope.deselectTool);
+        this.tileView = new BluVueSheet.TileView(this, this.canvas, scope, this.setLoading, this.setLoaded, scope.deselectTool);
         this.tileView.create(sheet);
         this.tileView.render();
 
@@ -110,9 +111,7 @@
     };
 
     this.hideOptionMenus = function() {
-        t.optionsMenu.lengthUnitConverter.hide();
-        t.optionsMenu.areaUnitConverter.hide();
-        t.colorMenu.hide();
+        t.optionsMenu.hideAllMenus();
     }
 
     this.convertToUnit = function(type, subType) {
@@ -122,12 +121,10 @@
     }
 
     this.setColor = function (colorName) {
-        var csv = colorName.slice(5, colorName.length - 1);
-        var vals = csv.split(",");
-        var color = new Color(parseFloat(vals[0]) / 255, parseFloat(vals[1]) / 255, parseFloat(vals[2]) / 255, parseFloat(vals[3]));
+        var color = colorFromString(colorName);
         t.tileView.setColor(color);
         t.optionsMenu.setColor(color);
-        t.colorMenu.hide();
+        t.optionsMenu.colorMenu.hide();
     };
 
     this.textUpdate = function (text) {
@@ -135,6 +132,7 @@
     };
 
     this.setTextSize = function (textSize) {
+        console.log(textSize);
         t.tileView.annotationManager.setTextSize(textSize);
         t.tileView.textSize = textSize;
     };

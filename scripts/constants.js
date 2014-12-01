@@ -85,6 +85,7 @@ BluVueSheet.Constants = {
         ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
         ["IN<sup>2</sup>", "FT<sup>2</sup>", "YD<sup>2</sup>", "AC", "MI<sup>2</sup>", "CM<sup>2</sup>", "M<sup>2</sup>", "HA", "KM<sup>2</sup>"]
     ],
+    TextSizes: [32,64,128,256,512],
     Length: 0,
     Area: 1,
     HeaderHeight: 42,
@@ -97,7 +98,8 @@ BluVueSheet.Constants = {
         UnitLength: { id: 4, className: "ruler" },
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
-        Master: { id: 7, className: "master" }
+        Master: { id: 7, className: "master" },
+        Copy: {id: 8, className: "copy"}
     },
     Tools: {
         Lasso: { id: 0, name: "lasso" },
@@ -112,7 +114,26 @@ BluVueSheet.Constants = {
         Pen: { id: 9, name: "pen" },
         Highlighter: { id: 10, name: "highlighter" },
         Ruler: { id: 11, name: "ruler" }
-    }
+    },
+    ToolMenuButtons: {
+       Lasso: { id: 0, name: "lasso_button", hasMenu: false },
+       ClosedAnnotations: { id: 1, name: "closed_annotations_button", hasMenu: true },
+       LineAnnotations: { id: 2, name: "line_annotations_button", hasMenu: true },
+       FreeAnnotations: { id: 3, name: "free_annotations_button", hasMenu: true },
+       MeasurementAnnotations: { id: 4, name: "measurement_annotations_button", hasMenu: true },
+       TextAnnotations: { id: 5, name: "test_button", hasMenu: false },
+    },
+    Colors: [
+        { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "images/update/color_pink.png"},
+        { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1), imageURL: "images/update/color_blue.png"},
+        { id: 2, className: "green", color: new Color(0.293, 0.648, 0, 1), imageURL: "images/update/color_green.png"},
+        { id: 3, className: "yellow", color: new Color(0.773, 0.797, 0, 1), imageURL: "images/update/color_yellow.png"},
+        { id: 4, className: "orange", color: new Color(0.840, 0.508, 0, 1), imageURL: "images/update/color_orange.png"},
+        { id: 5, className: "purple", color: new Color(0.781, 0, 0.875, 1), imageURL: "images/update/color_purple.png"},
+        { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1), imageURL: "images/update/color_dark_purple.png"},
+        { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1), imageURL: "images/update/color_aqua.png"},
+        { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
+    ]
 };
 
 var HANDLE_TOUCH_RADIUS = 30;

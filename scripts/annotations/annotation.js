@@ -641,22 +641,6 @@ function createUUID() {
         return v.toString(16);
     });
 }
-function Color(red,green,blue,alpha){
-	this.red=red;
-	this.green=green;
-	this.blue=blue;
-	this.alpha=alpha;
-	this.toStyle=function(){
-		var style = "rgba("+Math.floor(this.red*255)+","+Math.floor(this.green*255)+","+Math.floor(this.blue*255)+","+(this.alpha)+")";
-		return style;
-	}
-	this.transparent = function(){
-		return new Color(this.red,this.green,this.blue,this.alpha*0.3);
-	}
-	this.clone=function(){
-		return new Color(this.red, this.green, this.blue, this.alpha);
-	}
-}
 function AnnotationJSON(annotation) {
     var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
 					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);

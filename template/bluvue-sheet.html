@@ -5,11 +5,15 @@
             <button ng-click="previousSheet()">< Previous</button>
             <button ng-click="nextSheet()">Next ></button>
             <button ng-click="resetZoom()">Fit to Screen</button>
+            <button id="fullscreen_button" ng-click="enterFullscreen(this)">Full Screen</button>
             <button ng-click="close()">Close</button>
         </nav>
     </header>
     <div class="bluvue-sheet-tool-menu">
         <div ng-repeat="(toolName, tool) in tools | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{tool.name}}" ng-class="{selected: selectedTool === tool}" ng-click="selectTool(tool)"></div>
+    </div>
+    <div class="bluvue-sheet-textsize-menu">
+        <div ng-repeat="textSize in textSizes" class="bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text" ng-class="{selected: currentSheet.tileView.textSize === textSize}" ng-click="currentSheet.setTextSize(textSize)"></div>
     </div>
     <canvas>Canvas is not supported</canvas>
     <footer class="bluvue-sheet-footer">
