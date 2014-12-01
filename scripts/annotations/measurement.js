@@ -144,7 +144,8 @@ BluVueSheet.Measurement.createMeasurement = function (str) {
 			var m = create(str.substring(unitEnd));
 			if(m==null)return null;
 			if(m.unit==IN){
-				unit = FT_IN;
+			    unit = FT_IN;
+			    type = BluVueSheet.Constants.Length;
 				amount += m.convertTo(FT);
 			}
 		 }else{

@@ -18,8 +18,8 @@ var LINE_ANNOTATION=7;
 var ARROW_ANNOTATION=4;
 var PEN_ANNOTATION=8;
 var HIGHLIGHTER_ANNOTATION=9;
-var SCALE_ANNOTATION=11;
-var MEASURE_ANNOTATION=10;
+var SCALE_ANNOTATION=10;
+var MEASURE_ANNOTATION=11;
 
 function toolToAnnotation(tool){
 	switch(tool){
@@ -78,7 +78,7 @@ var KM2 = 8;
 
 BluVueSheet.Constants = {
     UnitNames: [
-        ["IN", "FT", "FT IN", "YD", "MI", "CM", "M", "KM"],
+        ["IN", "FT", "FTIN", "YD", "MI", "CM", "M", "KM"],
         ["IN2", "FT2", "YD2", "AC", "MI2", "CM2", "M2", "HA", "KM2"]
     ],
     UnitDisplayNames: [
