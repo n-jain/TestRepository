@@ -64,6 +64,15 @@ footer.bluvue-sheet-footer {
     width: 100%;
 }
 
+.bluvue-sheet-tool-menu-extension {
+    left: 0px;
+    top: 40px;
+    position:fixed;
+    background-color: #000000; 
+    opacity: 0.7;
+    width: 100%;
+}
+
 .bluvue-sheet-textsize-menu {
     right: 5px;
     bottom: 155px;

@@ -36,7 +36,7 @@
         this.optionsMenu = new BluVueSheet.OptionsMenu(this, scope);
         this.floatingOptionsMenu = new BluVueSheet.FloatingOptionsMenu(this, scope);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
-
+        
         this.optionsMenu.appendTo(this.userInterface);
         this.floatingOptionsMenu.appendTo(this.userInterface);
         this.userInterface.appendChild(this.textEditor.textEditorElement);

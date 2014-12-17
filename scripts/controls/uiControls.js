@@ -166,7 +166,7 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
         userInterface.appendChild(this.optionsMenuElement);
         userInterface.appendChild(this.colorMenu.colorMenuElement);
     }
-};
+}
 
 BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     var t = this;

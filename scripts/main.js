@@ -22,10 +22,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
             templateUrl: "template/bluvue-sheet.html?_=" + Math.random().toString(36).substring(7),
             link: function bvSheetLink(scope, elem) {
                 scope.currentSheet = null;
-                scope.selectedToolMenuButton = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
                 scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
+                scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
+                scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
                 
                 var backPressed = false;
@@ -64,12 +65,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     } else {
                         scope.selectedTool = tool;
                     }
-
                     scope.currentSheet.setTool(scope.selectedTool);
+
+                    //update tool menu
+                    scope.selectedToolMenu = null;
+                    //set menu button's icon to match the tool's icon, including the selection
                 }
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
                     console.log(toolMenuButton);
+                    scope.selectedToolMenu = toolMenuButton;
                 }
 
                 scope.resetZoom = function () {
