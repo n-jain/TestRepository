@@ -66,7 +66,7 @@ footer.bluvue-sheet-footer {
 
 .bluvue-sheet-tool-menu-extension {
     left: 0px;
-    top: 40px;
+    bottom: 95px;
     position:fixed;
     background-color: #000000; 
     opacity: 0.7;
@@ -174,6 +174,7 @@ footer.bluvue-sheet-footer {
 .bv-toolbar-image {	background-repeat: no-repeat; background-position: center center;cursor: pointer;display: inline-block; width: 70px; height: 50px;background-size: 50px 50px;}
 .bv-toolbar-extension-image { background-repeat: no-repeat; background-position: center center;cursor: pointer;display: block; width: 70px; height: 50px;background-size: 50px 50px;}
 .bv-toolbar-image.selected { background-color: #fff; }
+.bv-toolbar-extension-image.selected { background-color: #fff; }
 .bv-toolbar-image-inline { display: inline-block; }
 .bv-toolbar-arrow { background-image: url(images/update/icon_toolbars_arrow_white.png); } .bv-toolbar-arrow.selected { background-image: url(images/update/icon_toolbars_arrow_grey.png); }
 .bv-toolbar-circle { background-image: url(images/update/icon_toolbars_circle_white.png); } .bv-toolbar-circle.selected { background-image: url(images/update/icon_toolbars_circle_grey.png); }

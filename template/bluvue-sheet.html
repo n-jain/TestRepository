@@ -10,7 +10,7 @@
         </nav>
     </header>
     <div class="bluvue-sheet-tool-menu">
-        <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
+        <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
     </div>
     <div class="bluvue-sheet-tool-menu-extension">
         <div ng-repeat="(toolName, tool) in selectedToolMenu.buttons | orderObjectBy:'menuIndex':true" class="bv-toolbar-extension-image bv-toolbar-{{tool.name}}" ng-class="{selected: selectedTool === tool}" ng-click="selectTool(tool)"></div>

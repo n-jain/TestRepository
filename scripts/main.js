@@ -60,16 +60,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.selectTool = function(tool) {
-                    if (tool === scope.selectedTool && scope.selectedTool !== null) {
+                    if (tool === scope.selectedTool && scope.selectedTool != null) {
                         scope.selectedTool = null;
                     } else {
                         scope.selectedTool = tool;
+                        if(tool!=null) scope.toolMenuButtonTools[tool.menuId] = tool.menuIndex;
                     }
                     scope.currentSheet.setTool(scope.selectedTool);
 
                     //update tool menu
                     scope.selectedToolMenu = null;
-                    //set menu button's icon to match the tool's icon, including the selection
                 }
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
