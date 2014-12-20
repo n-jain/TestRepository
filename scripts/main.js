@@ -73,8 +73,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
-                    console.log(toolMenuButton);
-                    scope.selectedToolMenu = toolMenuButton;
+                    if(toolMenuButton.buttons.length == 1){
+                        scope.selectTool(toolMenuButton.buttons[0]);
+                        scope.selectedToolMenu = null;
+                    } else {
+                        scope.selectedToolMenu = toolMenuButton;                        
+                    }
+                    scope.currentSheet.toolMenuExtension.updateLocation(toolMenuButton);
                 }
 
                 scope.resetZoom = function () {
