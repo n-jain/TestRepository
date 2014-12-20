@@ -150,8 +150,7 @@ BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Con
                                                                 BluVueSheet.Constants.Tools.X];
 BluVueSheet.Constants.ToolMenuButtons.FreeAnnotations.buttons = [BluVueSheet.Constants.Tools.Pen,
                                                                  BluVueSheet.Constants.Tools.Highlighter];
-BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSheet.Constants.Tools.Ruler,
-                                                                        BluVueSheet.Constants.Tools.Ruler];
+BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSheet.Constants.Tools.Ruler];
 BluVueSheet.Constants.ToolMenuButtons.TextAnnotations.buttons = [BluVueSheet.Constants.Tools.Text];
 BluVueSheet.Constants.ToolMenuButtons.HideMenu.buttons = [BluVueSheet.Constants.HideButton];
 
