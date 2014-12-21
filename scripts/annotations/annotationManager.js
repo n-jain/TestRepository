@@ -374,6 +374,16 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		tileView.sheet.textEditor.hide();
 		tileView.sheet.floatingOptionsMenu.hide();
 	}
+	this.copySelectedAnnotations = function(){
+		var copies = new Array();
+		for(var i=0; i<selectedAnnotations.length; i++){
+			copies[i] = loadAnnotationJSON(JSON.parse(JSON.stringify(new AnnotationJSON(selectedAnnotations[i]))), tileView);
+			copies[i].id = createUUID();
+			copies[i].added = true;
+			this.saveAnnotation(copies[i]);
+			annotations[annotations.length] = copies[i];
+		}
+	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;
 		var ret = false;

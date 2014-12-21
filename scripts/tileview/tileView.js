@@ -195,6 +195,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         case BluVueSheet.Constants.OptionButtons.Master.id:
             this.annotationManager.masterSelectedAnnotations();
             break;
+        case BluVueSheet.Constants.OptionButtons.Copy.id:
+        	this.annotationManager.copySelectedAnnotations();
+            break;
         }
         this.annotationManager.updateOptionsMenu();
     };
