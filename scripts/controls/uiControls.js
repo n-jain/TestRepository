@@ -428,3 +428,78 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
         this.toolMenuExtensionElement.style.left = (70*toolMenuButton.id)+"px";
     }
 }
+
+BluVueSheet.Dialog = function() {
+  var dialog = this;
+
+  var defaultHideAction = function defaultHideAction(){
+    dialog.hide();
+  }
+
+  var cancelAction = defaultHideAction;
+
+  this.showConfirmDialog = function showDialog( options ) {
+    cancelAction = options.cancelAction || defaultHideAction;
+    return dialog.showDialog( {
+      title: options.title||"Confirm",
+      dialogClass: 'bluvue-dialog-confirmBody',
+      message: options.message,
+      buttons: [
+        {
+          label: options.cancelLabel||"Cancel",
+          action: cancelAction,
+          buttonClass: 'cancel'
+        },
+        {
+          label: options.okLabel||"Ok",
+          action: options.okAction||defaultHideAction
+        }
+      ]
+    })
+  }
+
+  this.showDialog = function showConfirmDialog( options ) {
+    var content = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
+    if( options.title )
+      content.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
+    if( options.message )
+      content.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
+    if( options.buttons )
+    {
+      var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
+      options.buttons.forEach( function( spec ) {
+        var button = angular.element( "<div class='dialog-button'>" + spec.label + "</div>" );
+        if( spec.buttonClass )
+          button.addClass( spec.buttonClass );
+        button.on( 'click', spec.action );
+        buttonHolder.append( button );
+      } );
+      content.append( buttonHolder );
+    }
+    return dialog.show( content );
+  }
+
+  this.show = function( body )
+  {
+    content.append( angular.element( body ) );
+    holder.css( { display: "block" } );
+  }
+
+  this.hide = function() {
+    holder.css( { display: "none" } );
+    content.empty();
+  }
+
+  this.destroy = function() {
+    holder.remove();
+  }
+
+  var parent = angular.element( document.querySelector('.bluvue-sheet') );
+  var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
+  var content = angular.element( '<div class="bluvue-dialog-content"></div>');
+  holder.on( 'click', cancelAction );
+  holder.append( content );
+  this.hide();
+
+  parent.append( holder );
+}

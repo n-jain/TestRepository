@@ -344,35 +344,45 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(selectedAnnotations.length>0)tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotations));
 	}
 	this.deleteSelectedAnnotations = function(){
-		var tempSelected = selectedAnnotations;
-		var reAdded = false;
-		function deleteFailed(){
-			if(!reAdded){
-				for(var i=0; i<tempSelected.length; i++){
-					var annotation=tempSelected[i];
-					annotations[annotations.length] = annotation;
-					if(annotation.type==SCALE_ANNOTATION)this.scaleAnnotation=annotation;
-				}
-				reAdded=true;
-			}
-		}
-		for(var i=0; i<selectedAnnotations.length; i++){
-			var annotation = selectedAnnotations[i];
-			removeFromArray(annotations, annotation);
-			if(annotation.type==SCALE_ANNOTATION)this.scaleAnnotation=null;
-			scope.deleteAnnotation(selectedAnnotations[i].id).then(function(){
-				//succeeded, do nothing
-			})["catch"](function(error){
-				deleteFailed();
-			})["finally"](function(){
-				//nothing else is needed
-			});
-		}
-		selectedAnnotations = new Array();
-		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
-		this.captureKeyboard=false;
-		tileView.sheet.textEditor.hide();
-		tileView.sheet.floatingOptionsMenu.hide();
+	  var self = this;
+	  var dialog = new BluVueSheet.Dialog();
+	  var msg =  "This will permanently delete " + (selectedAnnotations.length == 1 ? "this annotation" : (selectedAnnotations.length + " annotations") );
+	  dialog.showConfirmDialog( {
+	    title: "Delete Annotation?",
+	    message: msg,
+	    okLabel:"Delete",
+	    okAction:function(){
+	      var tempSelected = selectedAnnotations;
+    		var reAdded = false;
+    		function deleteFailed(){
+    			if(!reAdded){
+    				for(var i=0; i<tempSelected.length; i++){
+    					var annotation=tempSelected[i];
+    					annotations[annotations.length] = annotation;
+    					if(annotation.type==SCALE_ANNOTATION)self.scaleAnnotation=annotation;
+    				}
+    				reAdded=true;
+    			}
+    		}
+    		for(var i=0; i<selectedAnnotations.length; i++){
+    			var annotation = selectedAnnotations[i];
+    			removeFromArray(annotations, annotation);
+    			if(annotation.type==SCALE_ANNOTATION)self.scaleAnnotation=null;
+    			scope.deleteAnnotation(selectedAnnotations[i].id).then(function(){
+    				//succeeded, do nothing
+    			})["catch"](function(error){
+    				deleteFailed();
+    			})["finally"](function(){
+    				//nothing else is needed
+    			});
+    		}
+    		selectedAnnotations = new Array();
+    		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+    		self.captureKeyboard=false;
+    		tileView.sheet.textEditor.hide();
+    		tileView.sheet.floatingOptionsMenu.hide();
+	    }
+	  });
 	}
 	this.copySelectedAnnotations = function(){
 		var copies = new Array();
