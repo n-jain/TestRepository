@@ -105,18 +105,20 @@ BluVueSheet.Constants = {
     Tools: {
         //menuId is the id of the menuButton it is part of
         //menuIndex is its index within that menu
-        Lasso: { id: 0, name: "lasso", menuId: 0, menuIndex: 0 },
-        Square: { id: 1, name: "square", menuId: 1, menuIndex: 1 },
-        X: { id: 2, name: "x", menuId: 2, menuIndex: 2 },
-        Circle: { id: 3, name: "circle", menuId: 1, menuIndex: 0 },
-        Cloud: { id: 4, name: "cloud", menuId: 1, menuIndex: 2 },
-        Polygon: { id: 5, name: "polygon", menuId: 1, menuIndex: 3 },
-        Text: { id: 6, name: "text", menuId: 5, menuIndex: 0 },
-        Line: { id: 7, name: "line", menuId: 2, menuIndex: 0 },
-        Arrow: { id: 8, name: "arrow", menuId: 2, menuIndex: 1 },
-        Pen: { id: 9, name: "pen", menuId: 3, menuIndex: 0 },
-        Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1 },
-        Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex: 0 }
+        Lasso: { id: 0, name: "lasso", menuId: 0, menuIndex: 0, description:"Click and drag around annotations to select them.", heroImage:"images/update/icon_toolbars_lasso_white.png" },
+        Square: { id: 1, name: "square", menuId: 1, menuIndex: 1, description:"Click and drag to place a rectangle on the drawing.", heroImage:"images/update/icon_toolbars_rectangle_white.png" },
+        X: { id: 2, name: "x", menuId: 2, menuIndex: 2, description:"Click and drag to place an X on the drawing.", heroImage:"images/update/icon_toolbars_x_white.png" },
+        Circle: { id: 3, name: "circle", menuId: 1, menuIndex: 0, description:"Click and drag to place an oval on the drawing.", heroImage:"images/update/icon_toolbars_circle_white.png" },
+        Cloud: { id: 4, name: "cloud", menuId: 1, menuIndex: 2, description:"Click and drag to place a cloud on the drawing.", heroImage:"images/update/icon_toolbars_cloud_white.png" },
+        Polygon: { id: 5, name: "polygon", menuId: 1, menuIndex: 3, description:"Click each corner of a polygon to place on the drawing. Double click to complete the polygon.", heroImage:"images/update/icon_toolbars_polygon_white.png" },
+        Text: { id: 6, name: "text", menuId: 5, menuIndex: 0, description:"Click to place a text box. You can reposition the text by tapping it to select and then dragging it.", heroImage:"images/update/icon_toolbars_text_white.png" },
+        Line: { id: 7, name: "line", menuId: 2, menuIndex: 0, description:"Click and drag to place a line on the drawing.", heroImage:"images/update/icon_toolbars_line_white.png" },
+        Arrow: { id: 8, name: "arrow", menuId: 2, menuIndex: 1, description:"Click and drag to place an arrow on the drawing.", heroImage:"images/update/icon_toolbars_arrow_white.png" },
+        Pen: { id: 9, name: "pen", menuId: 3, menuIndex: 0, description:"Click and drag to draw a line on the drawing.", heroImage:"images/update/icon_toolbars_pencil_white.png" },
+        Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1, description:"Click and drag to highlight part of the drawing.", heroImage:"images/update/icon_toolbars_highlighter_white.png" },
+        Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" }
+        //Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" }
+        //Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 2, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
     },
     ToolMenuButtons: {
        Lasso: { id: 0, name: "lasso-button" },

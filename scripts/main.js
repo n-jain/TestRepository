@@ -28,7 +28,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
-                
+
+                var toolipDialog = new BluVueSheet.Dialog();
+
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
                 $window.onpopstate = function () {
@@ -63,6 +65,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     if (tool === scope.selectedTool && scope.selectedTool != null) {
                         scope.selectedTool = null;
                     } else {
+                        if( tool )
+                        {
+                            // Todo: Also check the options to see if tooltips are displayed 100% of the time
+                            if( !tool.visited )
+                            {
+                                toolipDialog.showTooltip( {
+                                   title: tool.label||tool.name,
+                                   message:tool.description,
+                                   image: tool.heroImage
+                                });
+                            }
+                            tool.visited = true;
+                        }
+
                         scope.selectedTool = tool;
                         if(tool!=null) scope.toolMenuButtonTools[tool.menuId] = tool.menuIndex;
                     }
@@ -77,7 +93,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         scope.selectTool(toolMenuButton.buttons[0]);
                         scope.selectedToolMenu = null;
                     } else {
-                        scope.selectedToolMenu = toolMenuButton;                        
+                        scope.selectedToolMenu = toolMenuButton;
                     }
                     scope.currentSheet.toolMenuExtension.updateLocation(toolMenuButton);
                 }
@@ -86,7 +102,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     scope.currentSheet.resetZoom();
                 }
                 scope.enterFullscreen = function() {
-                    if (!document.fullscreenElement && !document.mozFullScreenElement && 
+                    if (!document.fullscreenElement && !document.mozFullScreenElement &&
                         !document.webkitFullscreenElement && !document.msFullscreenElement ){
                         if (document.documentElement.requestFullscreen) {
                             document.documentElement.requestFullscreen();
@@ -127,7 +143,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         scope.options.currentSheetPinned = false;
                     }
                 });
-                
+
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
                 });

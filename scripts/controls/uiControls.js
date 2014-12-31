@@ -427,7 +427,7 @@ BluVueSheet.Dialog = function() {
     cancelAction = options.cancelAction || defaultHideAction;
     return dialog.showDialog( {
       title: options.title||"Confirm",
-      dialogClass: 'bluvue-dialog-confirmBody',
+      bodyClass: 'bluvue-dialog-confirmBody',
       message: options.message,
       buttons: [
         {
@@ -443,8 +443,20 @@ BluVueSheet.Dialog = function() {
     })
   }
 
+  this.showTooltip = function showTooltip( options ) {
+      return dialog.showDialog( {
+          image: options.image,
+          title: options.title||"Tip",
+          dialogClass: 'bluvue-tooltip',
+          bodyClass: 'bluvue-dialog-tooltipBody',
+          message: options.message,
+      });
+  }
+
   this.showDialog = function showConfirmDialog( options ) {
     var content = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
+    if( options.image )
+      content.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
     if( options.title )
       content.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
     if( options.message )
@@ -461,17 +473,22 @@ BluVueSheet.Dialog = function() {
       } );
       content.append( buttonHolder );
     }
-    return dialog.show( content );
+    return dialog.show( content, options.dialogClass );
   }
 
-  this.show = function( body )
+  this.show = function( body, dialogClass )
   {
+    if( dialogClass )
+      content.addClass( dialogClass );
+
     content.append( angular.element( body ) );
     holder.css( { display: "block" } );
   }
 
   this.hide = function() {
     holder.css( { display: "none" } );
+    content.removeClass();
+    content.addClass( 'bluvue-dialog-holder' );
     content.empty();
   }
 
