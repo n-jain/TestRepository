@@ -20,7 +20,7 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
         button.className = "bv-options-image bv-options-" + btnInfo.className;
         button.id = "button_" + btnInfo.id;
         button.btnInfo = btnInfo;
-        
+
         button.onclick = function () {
             function toggleMenu(menu){
                 if(menu.visible()){
@@ -189,7 +189,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         button.className = "bv-options-image bv-options-" + btnInfo.className;
         button.id = "button_" + btnInfo.id;
         button.btnInfo = btnInfo;
-        
+
         button.onclick = function () {
             function toggleMenu(menu){
                 if(menu.visible()){
@@ -206,7 +206,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
             t.sheet.tileView.optionChosen(this.btnInfo.id);
         };
         t.floatingOptionsMenuElement.appendChild(button);
-        t.width+=50;
+        t.width+=50+20;
     }
 
     var removeButton = function(btnInfo) {
@@ -214,7 +214,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         if (button != null) {
             if(button.parentNode === t.floatingOptionsMenuElement){
                 t.floatingOptionsMenuElement.removeChild(button);
-                t.width-=50;                
+                t.width-=50;
             }
         }
     }
@@ -236,7 +236,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
             removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);
         }
         this.width = 0;
-        
+
         if (selectedAnnotations.length > 0)
             addButton(BluVueSheet.Constants.OptionButtons.Delete);
         if (selectedAnnotations.length == 1) {
@@ -301,7 +301,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     this.appendTo = function(userInterface){
         userInterface.appendChild(this.floatingOptionsMenuElement);
         userInterface.appendChild(this.lengthUnitConverter.unitConverterElement);
-        userInterface.appendChild(this.areaUnitConverter.unitConverterElement);   
+        userInterface.appendChild(this.areaUnitConverter.unitConverterElement);
     }
 }
 
@@ -339,7 +339,7 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 
 	this.textEditorElement = document.createElement("div");
 	this.textEditorElement.className = "bluvue-text-editor";
-	
+
 	var textBox = document.createElement("textarea");
 	textBox.onchange = function(){
 		textUpdate(textBox.value);

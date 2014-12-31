@@ -64,7 +64,7 @@ var MI=4;
 var CM=5;
 var M=6;
 var KM=7;
-	
+
 //AREA
 var IN2=0;
 var FT2=1;
@@ -142,7 +142,7 @@ BluVueSheet.Constants = {
 //Define the items in the button menus
 BluVueSheet.Constants.ToolMenuButtons.Lasso.buttons = [BluVueSheet.Constants.Tools.Lasso];
 BluVueSheet.Constants.ToolMenuButtons.ClosedAnnotations.buttons = [BluVueSheet.Constants.Tools.Circle,
-                                                                BluVueSheet.Constants.Tools.Square, 
+                                                                BluVueSheet.Constants.Tools.Square,
                                                                 BluVueSheet.Constants.Tools.Cloud,
                                                                 BluVueSheet.Constants.Tools.Polygon];
 BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Constants.Tools.Line,

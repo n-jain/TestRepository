@@ -10,7 +10,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.captureKeyboard=false;
 	this.scaleAnnotation = null;
 	var me = this;
-    
+
 	var removeFromArray = function(array, element){
 	    array.splice(array.indexOf(element),1);
 	}
@@ -60,7 +60,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(annotation.rectType){
 				for(var i=0; i<8;i++){
 					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
-				}				
+				}
 			} else {
 				for(var i=0; i<annotation.points.length;i++){
 					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
@@ -178,7 +178,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
 			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
-				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale){					
+				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale){
 					currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
 					currentAnnotation.closed=true;
 				}
@@ -241,10 +241,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
 	}
-	this.updateTextEditorIfPresent= function(){		
+	this.updateTextEditorIfPresent= function(){
 		if(currentAnnotation==null&&touchedHandle==-1&&selectedAnnotations.length==1) {
 			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
-			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[0])); 
+			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[0]));
 		}
 	}
 	function calcTextEditorLocation(annotation){
@@ -274,9 +274,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 			if(amix < minX || minX==-1) minX = amix;
 			if(amax > maxX || maxX==-1) maxX = amax;
-			if(amay > maxY || maxY==-1) maxY = amay;			
+			if(amay > maxY || maxY==-1) maxY = amay;
 		}
-		return new BluVueSheet.Point(((minX+maxX)/2)-(w/2),maxY);	
+		return new BluVueSheet.Point(((minX+maxX)/2)-(w/2),maxY);
 	}
 	this.setTextSize = function(textSize){
 		if(selectedAnnotations.length==1)
@@ -465,7 +465,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(intersections[i].x>point.x)ir++;
 			else if(intersections[i].x<point.x)il++;
 		}
-		return ir%2==1&&il%2==1;		
+		return ir%2==1&&il%2==1;
 	}
 	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){

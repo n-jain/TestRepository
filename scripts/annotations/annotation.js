@@ -8,7 +8,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	this.sheetId = sheetId;
 
 	this.type=type;
-	this.points=new Array();	
+	this.points=new Array();
 
 	this.selected=false;
 	this.showHandles=false;
@@ -33,7 +33,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
     this.measurement = null;
 	this.updateMeasure = function(){};
 	this.bounds;
-	
+
 	this.setColor = function(color){
 		this.color=color.clone();
 		var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
@@ -46,14 +46,14 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		this.fill=true;
 	}
 
-	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;	
+	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
-	
+
 	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
 	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
 	if(type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)this.updateMeasure=updateMeasurePoly;
-	
+
 	this.getLength = function(){
 		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
 	}
@@ -145,7 +145,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	    if (handle) {
 	        rect = rect.inset(-BOUND_DIST / tileView.scale);
 	    }
-	    
+
 		var loc = new BluVueSheet.Point();
 		switch(id){//0 is top left, increases clockwise
 			case 0:loc.x=rect.left;loc.y=rect.top;break;
@@ -183,7 +183,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	    var scalingY = [0, 1, 2, 4, 5, 6].indexOf(handleId) >= 0;
 
 	    var scaleOrigin = this.getPoint((handleId + 4) % 8, false);
-	    
+
 		var xDis = scaleOrigin.x - x;
 		var yDis = scaleOrigin.y - y;
 	    var flippedX = (x < scaleOrigin.x && xPositive) || (x > scaleOrigin.x && !xPositive);
@@ -290,7 +290,7 @@ function drawX(context){
 		context.lineTo(x2,y2);
 		context.moveTo(x1,y2);
 		context.lineTo(x2,y1);
-		
+
 		context.restore();
 		context.stroke();
 	}
@@ -357,14 +357,14 @@ function drawCloud(context){
 function drawPoints(context){
 	if(this.points.length>1){
 		context.save();
-		
+
 		context.beginPath();
 		context.moveTo(this.points[0].x,this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
 			context.lineTo(this.points[i].x,this.points[i].y);
 		}
 		if(this.closed){
-			context.lineTo(this.points[0].x,this.points[0].y);	
+			context.lineTo(this.points[0].x,this.points[0].y);
 		}
 		if (this.fill && this.type != HIGHLIGHTER_ANNOTATION) context.fill();
 
@@ -437,10 +437,10 @@ function drawArrow(context){
 		var x2 = this.points[1].x;
 		var y2 = this.points[1].y;
 		context.beginPath();
-		
+
 		context.moveTo(x1,y1);
 		context.lineTo(x2,y2);
-		
+
 		var angle = Math.atan((y2-y1)/(x2-x1));
 		if((x2-x1)<0)angle+=Math.PI;
 		var length = this.lineWidth*20;
@@ -448,9 +448,9 @@ function drawArrow(context){
 		//draw two arrow things
 		context.moveTo(x1,y1);
 		context.lineTo(x1+(length*Math.cos(angle+da)), y1+(length*Math.sin(angle+da)));
-		
+
 		context.moveTo(x1,y1);
-		context.lineTo(x1+(length*Math.cos(angle-da)), y1+(length*Math.sin(angle-da)));	
+		context.lineTo(x1+(length*Math.cos(angle-da)), y1+(length*Math.sin(angle-da)));
 
 		context.restore();
 		context.stroke();
@@ -496,11 +496,11 @@ function drawScale(context){
 		//first half
 		context.moveTo(x1, y1);
 		context.lineTo(bx1, by1);
-		
+
 		//second half
 		context.moveTo(bx2, by2);
 		context.lineTo(x2, y2);
-		
+
 		//end 1
 		var angle1 = (Math.PI/8)*3;
 		var angle2 = (Math.PI/8)*5;
@@ -518,7 +518,7 @@ function drawScale(context){
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta+angle1)*endLength), y2+(Math.sin(theta+angle1)*endLength));
 		context.moveTo(x2,y2);
-		context.lineTo(x2+(Math.cos(theta-angle1)*endLength), y2+(Math.sin(theta-angle1)*endLength));			
+		context.lineTo(x2+(Math.cos(theta-angle1)*endLength), y2+(Math.sin(theta-angle1)*endLength));
 
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta+angle2)*endLength), y2+(Math.sin(theta+angle2)*endLength));
@@ -539,7 +539,7 @@ function drawScale(context){
 			}
 			context.fillStyle = this.color;
 			context.textAlign = "center";
-			
+
 			context.fillText(this.measurement.toString(),0,textSize/3);
 
 			context.restore();
@@ -576,7 +576,7 @@ function drawMeasure(context){
 		} else {
 			measureSpace = 0;
 		}
-		
+
 		//text space
 		var bx1=x1+(x2-x1)*(0.5-measureSpace/1.5);
 		var by1=y1+(y2-y1)*(0.5-measureSpace/1.5);
@@ -588,7 +588,7 @@ function drawMeasure(context){
 		//first half
 		context.moveTo(x1, y1);
 		context.lineTo(bx1, by1);
-		
+
 		//second half
 		context.moveTo(bx2, by2);
 		context.lineTo(x2, y2);
@@ -602,12 +602,12 @@ function drawMeasure(context){
 		context.lineTo(x1+(Math.cos(theta+Math.PI/2)*endLength), y1+(Math.sin(theta+Math.PI/2)*endLength));
 		context.moveTo(x1,y1);
 		context.lineTo(x1+(Math.cos(theta-Math.PI/2)*endLength), y1+(Math.sin(theta-Math.PI/2)*endLength));
-		
+
 		//end 2
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta+Math.PI/2)*endLength), y2+(Math.sin(theta+Math.PI/2)*endLength));
 		context.moveTo(x2,y2);
-		context.lineTo(x2+(Math.cos(theta-Math.PI/2)*endLength), y2+(Math.sin(theta-Math.PI/2)*endLength));	
+		context.lineTo(x2+(Math.cos(theta-Math.PI/2)*endLength), y2+(Math.sin(theta-Math.PI/2)*endLength));
 
 		//draw text
 		if(this.measurement!=null){
@@ -623,7 +623,7 @@ function drawMeasure(context){
 			}
 			context.fillStyle = this.color;
 			context.textAlign = "center";
-			
+
 			context.fillText(this.measurement.toString(),0,textSize/3);
 
 			context.restore();
@@ -708,7 +708,7 @@ function loadAnnotationJSON(json,tileView){
 	annotation.fill = json.fill==1;
 	annotation.areaMeasured = json.areaVisible==1;
 	annotation.lineWidth = json.lineWidth;
-	
+
 	if(json.unitOfMeasure!="na"){
 	    var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);
 		if(json.type==SCALE_ANNOTATION||json.type==MEASURE_ANNOTATION){
@@ -726,7 +726,7 @@ function loadAnnotationJSON(json,tileView){
 	}
 	if(json.type==TEXT_ANNOTATION){
 		annotation.text=json.text;
-		annotation.textSize=json.textSize;		
+		annotation.textSize=json.textSize;
 	}
 	if(json.type==POLYGON_ANNOTATION){
 		annotation.closed=json.closed;
