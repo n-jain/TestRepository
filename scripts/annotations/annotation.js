@@ -641,8 +641,7 @@ function setPatternStroke( context, pattern ) {
     oldStroke = context.getLineDash();
     context.setLineDash( pattern );
   }
-
-  if( context.mozDash !== undefined )
+  else if( context.mozDash !== undefined )
   {
     oldStroke = context.mozDash;
     context.mozDash = pattern;
