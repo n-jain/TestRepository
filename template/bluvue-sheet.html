@@ -16,7 +16,8 @@
         <div ng-repeat="textSize in textSizes" class="bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text" ng-class="{selected: currentSheet.tileView.textSize === textSize}" ng-click="currentSheet.setTextSize(textSize)"></div>
     </div>
     <canvas>Canvas is not supported</canvas>
-    <footer class="bluvue-sheet-footer">
+
+    <footer class="bluvue-sheet-footer" ng-show="false">
         <div><button ng-click="pinCurrentSheet()" ng-disabled="options.currentSheetPinned">Pin Sheet</button></div>
         <div ng-repeat="pinnedSheet in pinnedSheets" ng-class="{selected: pinnedSheet.id === sheet.id}">
             <span ng-click="selectPinnedSheet(pinnedSheet)">{{pinnedSheet.name}}</span><a ng-click="unpinSheet($index)">x</a>
