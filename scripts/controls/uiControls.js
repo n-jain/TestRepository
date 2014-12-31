@@ -245,21 +245,6 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
             addButton(BluVueSheet.Constants.OptionButtons.Delete);
         if (selectedAnnotations.length == 1) {
             addButton(BluVueSheet.Constants.OptionButtons.Copy);
-
-            /* // Removed per BWA-963, though the userIsAdmin flag is worth looking into
-            if (userIsAdmin) {
-                addButton(BluVueSheet.Constants.OptionButtons.Master);
-                var master = false;
-                for (var j = 0; j < selectedAnnotations.length; j++) {
-                    if (selectedAnnotations[j].userId === null ||
-                        selectedAnnotations[j].userId === undefined) {
-                        master = true;
-                    }
-                }
-
-                setButtonSelected(BluVueSheet.Constants.OptionButtons.Master, master);
-            }
-            */
         }
 
         if (selectedAnnotations.length == 1) {
