@@ -114,16 +114,12 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	}
 	this.drawHandlesRect = function(context){
 		for(var i=0; i<8; i++){
-			var point = this.getPoint(i,true);
-			var size = 35/tileView.scale;
-			context.drawImage(BluVueSheet.Annotation.handleImage,point.x-size/2,point.y-size/2,size,size);
+		  drawHandle( context, this.getPoint(i,true), tileView.scale );
 		}
 	}
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
-			var point = this.points[i];
-			var size = 35/tileView.scale;
-			context.drawImage(BluVueSheet.Annotation.handleImage, point.x - size / 2, point.y - size / 2, size, size);
+		  drawHandle( context, this.getPoint(i,true), tileView.scale );
 		}
 	}
 	this.drawArea = function(context){
@@ -225,8 +221,7 @@ var drawFunctions = new Array();
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
 }
-BluVueSheet.Annotation.handleImage = new Image();
-BluVueSheet.Annotation.handleImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAAtxJREFUWEfVmK2X4jAUxZFIZCUSiaxEViKRK0cikTgkshKJ5E+oRFZWjkSyjlGbvb804dA2fMwC0+49557TvJTk8vqS95KeMeZpCmNxUmMceve7DBrvURiJK3EvmvF4bCaTSYVxHPMizMVUTEJj3WPQeI3ClAmHw6GZz+dmv9/LfBt5npvlcmlGoxEDfIpzsa+u4Bx1Bo11CrG4xyu73U6mfwN/aDqdMuBBfMijQeMlhXkURWa73ar5GiDUeTRVMzivZ9AIhT4DEF+Hw0Gm1+J0OnlvZuJAprCOoLEUl81mMzvQO0F8ai5iM1KzqSVolOcQ91NYr9dMyo7QWDyVhjUo5lgM7/ZcHThEcxPoVT2VhlYrC+IdMXcPcsgft3d+qNkUKBB3+TPbyLNgz+z3+7+l4xyPlwKn/IO2QQKQlrUeGwJb9Z4H4SUvnqTHbj1eXMzG2RW4BWNj0QtMV6uV7ewC+JLSlOnxLFDxmdvOLuB4PCKKz8zC7Q0E19UdkGKljSKlp8Xb/uqtw8chAn/9ZFp7FC5HL61AwZm7g0uBH4Izdwf/lQcTDjldg0t5nF96EYegrgGn4Ty/UX8KZU8HQOmlfIywgRe422w2ZW8HkGUZovDYOdXNuhSHLv4oDs4CyXnHNirpOjhqUNVLD+VVKdA+qEhEedtwBygK01LX+UGrmXK7KAo128GF98ZqVgXahrJKm7FIRpOGym1DRaA1yL1tfOo0TZm8ECu3DBVx1lAumIIf/BS4q3GnOTJGVU/dYI16kR+88sLoGhCngvlLcxJbTS0hIxS4pCwWi4Wa7wHJwXkuKA4GjZ7CQMySJHnpbQOr1W3GxFzjs14yaKxTWPIZKIE40DwDvOa2ko149drNM2gMURgyKAcstoNHrn89ODESKlRNGoP7wIcv2IPGW3RCKSQLxY8ti5gc79ZJaPCH9C5Xvlyk2/T1HQaNj1KIxEREcIhcut+Msds0vb+jOBxgcpoKdgAAAABJRU5ErkJggg==";
+
 function updateMeasureLength() {
     if (this.measurement === null) { return; }
 
@@ -653,6 +648,18 @@ function setPatternStroke( context, pattern ) {
     context.mozDash = pattern;
   }
   return oldStroke;
+}
+
+function drawHandle( context, point, scale )
+{
+  context.beginPath();
+  context.arc( point.x, point.y, 10/scale, 0, 2 * Math.PI, false);
+  context.fillStyle = 'white';
+  context.fill();
+
+  context.strokeStyle = '#070707';
+  context.lineWidth = 2/scale;
+  context.stroke();
 }
 
 function createUUID() {
