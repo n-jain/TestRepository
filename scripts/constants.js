@@ -155,4 +155,4 @@ BluVueSheet.Constants.ToolMenuButtons.TextAnnotations.buttons = [BluVueSheet.Con
 BluVueSheet.Constants.ToolMenuButtons.HideMenu.buttons = [BluVueSheet.Constants.HideButton];
 
 var HANDLE_TOUCH_RADIUS = 30;
-var BOUND_DIST = 15;
+var BOUND_DIST = 20;
