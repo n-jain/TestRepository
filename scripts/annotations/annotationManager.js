@@ -249,7 +249,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 	function calcTextEditorLocation(annotation){
 		var corner = annotation.getPoint(2,true);
-		var x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;
+		var x = BOUND_DIST+(corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale;
 		var y = (corner.y+annotation.offset_y+tileView.scrollY)*tileView.scale;
 		var w = tileView.sheet.textEditor.getWidth();
 		if(x+w>window.innerWidth){
@@ -270,7 +270,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 			var amix = (pmix.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
 			var amax = (pmax.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
-			var amay = (pmay.y+annotations[i].offset_y+tileView.scrollY)*tileView.scale;
+			var amay = BOUND_DIST+(pmay.y+annotations[i].offset_y+tileView.scrollY)*tileView.scale;
 
 			if(amix < minX || minX==-1) minX = amix;
 			if(amax > maxX || maxX==-1) maxX = amax;
