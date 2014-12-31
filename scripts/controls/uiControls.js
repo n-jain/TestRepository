@@ -85,24 +85,28 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
     }
 
     this.setColor = function(color) {
+        function hash(c) {
+            return Math.floor(c.red*255)+","+Math.floor(c.green*255)+","+Math.floor(c.blue*255);
+        }
         function getColorIndex(c){
+            var c1 = hash(c);
             for(var i=0; i<BluVueSheet.Constants.Colors.length; i++){
-                if(c===BluVueSheet.Constants.Colors[i])return i;
+                if( c===BluVueSheet.Constants.Colors[i] || c1 == hash(BluVueSheet.Constants.Colors[i].color) ){
+                    return i;
+                }
             }
             return -1;
         }
         BluVueSheet.ColorMenu.LastColor = color;
+
+        sheet.optionsMenu.colorMenu.setSelectedColor( getColorIndex( color ) );
+
         var btns = document.getElementsByClassName("bv-options-color");
         if (btns.length === 0) {
             return;
         }
         var btn = btns[0];
         btn.getElementsByTagName("div")[0].style.background = color.toStyle();
-
-        var colorIndex = getColorIndex(color);
-        if(colorIndex==-1)return;
-        btn.getElementsByTagName("div")[0].style.background = "";
-        btn.getElementsByTagName("div")[0].style.backgroundImage = "url('"+BluVueSheet.Constants.Colors[colorIndex].imageURL+"')";
     }
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
@@ -314,9 +318,8 @@ BluVueSheet.ColorMenu = function(setColor){
 
 	for (var i = 0; i < BluVueSheet.Constants.Colors.length; i++) {
 		var button = document.createElement("div");
-		button.className = "bluvue-color-button";
-        button.style.backgroundImage = "url('" +BluVueSheet.Constants.Colors[i].imageURL +"')";
-        button.name = i;
+		button.className = "bluvue-color-button bluvue-color-button-"+BluVueSheet.Constants.Colors[i].className;
+    button.name = i;
 		button.onclick = function(){
 			setColor(BluVueSheet.Constants.Colors[parseInt(this.name)].color.toStyle());
 		};
@@ -334,6 +337,15 @@ BluVueSheet.ColorMenu = function(setColor){
 	}
 	this.hide = function(){
 	    this.colorMenuElement.style.display = 'none';
+	}
+	this.setSelectedColor = function( colorIndex ) {
+      var selectedColor = colorIndex == -1 ? {className:"USER_COLOR"} : BluVueSheet.Constants.Colors[colorIndex];
+      var selectedColorClass = 'bluvue-color-button-'+selectedColor.className;
+
+      angular.forEach( document.querySelectorAll( '.bluvue-color-button' ), function( el, index ) {
+          var element = angular.element( el );
+          element.toggleClass( 'bluvue-color-button-selected', element.hasClass( selectedColorClass ) );
+      } );
 	}
 }
 BluVueSheet.ColorMenu.LastColor = new Color(0.5725, 0.5725, 0.5725, 1);
