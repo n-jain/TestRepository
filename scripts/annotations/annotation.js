@@ -102,10 +102,15 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		}
 	}
 	this.drawBoundsRect = function(context){
-		context.strokeStyle="#0022FF"
-		context.lineWidth=2/tileView.scale;
-		var bounds = this.bounds.inset(-BOUND_DIST/tileView.scale);
-		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
+		context.strokeStyle="#7e7e7e"
+
+    var oldStroke = setPatternStroke( context, [80,40] );
+    {
+  		context.lineWidth=3/tileView.scale;
+  		var bounds = this.bounds.inset(-BOUND_DIST/tileView.scale);
+  		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
+    }
+    setPatternStroke( context, oldStroke );
 	}
 	this.drawHandlesRect = function(context){
 		for(var i=0; i<8; i++){
@@ -634,6 +639,21 @@ function drawMeasure(context){
 	}
 }
 
+function setPatternStroke( context, pattern ) {
+  var oldStroke = null;
+  if( context.setLineDash !== undefined )
+  {
+    oldStroke = context.getLineDash();
+    context.setLineDash( pattern );
+  }
+
+  if( context.mozDash !== undefined )
+  {
+    oldStroke = context.mozDash;
+    context.mozDash = pattern;
+  }
+  return oldStroke;
+}
 
 function createUUID() {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
