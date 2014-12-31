@@ -302,6 +302,7 @@ footer.bluvue-sheet-footer {
     left: 0;
     right: 0;
     background: rgba(64,64,64,0.5);
+    z-index: 1000;
 }
 
 .bluvue-dialog-content {
@@ -309,7 +310,7 @@ footer.bluvue-sheet-footer {
     border: 1px solid white;
     border-radius: 8px;
     background-color: white;
-    margin: 200px auto;
+    margin: auto auto;
     padding: 20px;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     display: table;
@@ -365,7 +366,7 @@ footer.bluvue-sheet-footer {
   letter-spacing: 1px;
 }
 
-.bluvue-dialog-content.bluvue-dialog-holder.bluvue-tooltip {
+.bluvue-dialog-content.bluvue-tooltip {
   width: 200px;
   border-radius: 20px;
   padding: 20px 40px;
