@@ -354,21 +354,21 @@ footer.bluvue-sheet-footer {
   margin-top: 10px;
   margin-bottom:30px;
   font-weight: 400;
+  text-transform: capitalize;
 }
 
 .dialog-message {
   font-size: 16px;
   text-align: center;
-  margin-bottom:30px;
+  margin-bottom:10px;
   font-weight:200;
   letter-spacing: 1px;
 }
 
 .bluvue-dialog-content.bluvue-dialog-holder.bluvue-tooltip {
   width: 200px;
-  height: 275px;
   border-radius: 20px;
-  padding: 40px;
+  padding: 20px 40px;
   background-color: #474747;
   border: 1px solid #474747;
   color: white;
