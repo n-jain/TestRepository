@@ -158,6 +158,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				            annotations[i].updateMeasure();
 				        }
 				    }
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 				}
 			}
 
@@ -274,7 +275,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(amix < minX || minX==-1) minX = amix;
 			if(amax > maxX || maxX==-1) maxX = amax;
 			if(amay > maxY || maxY==-1) maxY = amay;			
-			console.log(minX+" "+maxX+" "+maxY+" "+pmix.x+" "+pmix.y);
 		}
 		return new BluVueSheet.Point(((minX+maxX)/2)-(w/2),maxY);	
 	}
@@ -373,6 +373,16 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
 		tileView.sheet.floatingOptionsMenu.hide();
+	}
+	this.copySelectedAnnotations = function(){
+		var copies = new Array();
+		for(var i=0; i<selectedAnnotations.length; i++){
+			copies[i] = loadAnnotationJSON(JSON.parse(JSON.stringify(new AnnotationJSON(selectedAnnotations[i]))), tileView);
+			copies[i].id = createUUID();
+			copies[i].added = true;
+			this.saveAnnotation(copies[i]);
+			annotations[annotations.length] = copies[i];
+		}
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;

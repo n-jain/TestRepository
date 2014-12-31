@@ -166,7 +166,7 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
         userInterface.appendChild(this.optionsMenuElement);
         userInterface.appendChild(this.colorMenu.colorMenuElement);
     }
-};
+}
 
 BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     var t = this;
@@ -402,5 +402,14 @@ BluVueSheet.UnitConverter = function (type, convertToUnit) {
     }
     this.hide = function () {
         this.unitConverterElement.style.display = 'none';
+    }
+}
+
+BluVueSheet.ToolMenuExtension = function(sheet, scope){
+    this.toolMenuExtensionElement = document.getElementsByClassName("bluvue-sheet-tool-menu-extension")[0];
+
+    this.updateLocation = function(toolMenuButton){
+        var button = document.getElementsByClassName("bv-toolbar-"+toolMenuButton.name)[0];
+        this.toolMenuExtensionElement.style.left = (70*toolMenuButton.id)+"px";
     }
 }

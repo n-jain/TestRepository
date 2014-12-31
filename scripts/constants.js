@@ -90,6 +90,7 @@ BluVueSheet.Constants = {
     Area: 1,
     HeaderHeight: 42,
     FooterHeight: 66,
+    HideButton: {className: "hide"},
     OptionButtons: {
         Delete: { id: 0, className: "delete"},
         Color: { id: 1, className: "color" },
@@ -102,26 +103,29 @@ BluVueSheet.Constants = {
         Copy: {id: 8, className: "copy"}
     },
     Tools: {
-        Lasso: { id: 0, name: "lasso" },
-        Square: { id: 1, name: "square" },
-        X: { id: 2, name: "x" },
-        Circle: { id: 3, name: "circle" },
-        Cloud: { id: 4, name: "cloud" },
-        Polygon: { id: 5, name: "polygon" },
-        Text: { id: 6, name: "text" },
-        Line: { id: 7, name: "line" },
-        Arrow: { id: 8, name: "arrow" },
-        Pen: { id: 9, name: "pen" },
-        Highlighter: { id: 10, name: "highlighter" },
-        Ruler: { id: 11, name: "ruler" }
+        //menuId is the id of the menuButton it is part of
+        //menuIndex is its index within that menu
+        Lasso: { id: 0, name: "lasso", menuId: 0, menuIndex: 0 },
+        Square: { id: 1, name: "square", menuId: 1, menuIndex: 1 },
+        X: { id: 2, name: "x", menuId: 2, menuIndex: 2 },
+        Circle: { id: 3, name: "circle", menuId: 1, menuIndex: 0 },
+        Cloud: { id: 4, name: "cloud", menuId: 1, menuIndex: 2 },
+        Polygon: { id: 5, name: "polygon", menuId: 1, menuIndex: 3 },
+        Text: { id: 6, name: "text", menuId: 5, menuIndex: 0 },
+        Line: { id: 7, name: "line", menuId: 2, menuIndex: 0 },
+        Arrow: { id: 8, name: "arrow", menuId: 2, menuIndex: 1 },
+        Pen: { id: 9, name: "pen", menuId: 3, menuIndex: 0 },
+        Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1 },
+        Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex: 0 }
     },
     ToolMenuButtons: {
-       Lasso: { id: 0, name: "lasso_button", hasMenu: false },
-       ClosedAnnotations: { id: 1, name: "closed_annotations_button", hasMenu: true },
-       LineAnnotations: { id: 2, name: "line_annotations_button", hasMenu: true },
-       FreeAnnotations: { id: 3, name: "free_annotations_button", hasMenu: true },
-       MeasurementAnnotations: { id: 4, name: "measurement_annotations_button", hasMenu: true },
-       TextAnnotations: { id: 5, name: "test_button", hasMenu: false },
+       Lasso: { id: 0, name: "lasso-button" },
+       ClosedAnnotations: { id: 1, name: "closed-annotations-button" },
+       LineAnnotations: { id: 2, name: "line-annotations-button" },
+       FreeAnnotations: { id: 3, name: "free-annotations-button" },
+       MeasurementAnnotations: { id: 4, name: "measurement-annotations-button" },
+       TextAnnotations: { id: 5, name: "text-button" },
+       HideMenu: { id: 6, name: "hide-button" }
     },
     Colors: [
         { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "images/update/color_pink.png"},
@@ -135,6 +139,20 @@ BluVueSheet.Constants = {
         { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
     ]
 };
+//Define the items in the button menus
+BluVueSheet.Constants.ToolMenuButtons.Lasso.buttons = [BluVueSheet.Constants.Tools.Lasso];
+BluVueSheet.Constants.ToolMenuButtons.ClosedAnnotations.buttons = [BluVueSheet.Constants.Tools.Circle,
+                                                                BluVueSheet.Constants.Tools.Square, 
+                                                                BluVueSheet.Constants.Tools.Cloud,
+                                                                BluVueSheet.Constants.Tools.Polygon];
+BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Constants.Tools.Line,
+                                                                BluVueSheet.Constants.Tools.Arrow,
+                                                                BluVueSheet.Constants.Tools.X];
+BluVueSheet.Constants.ToolMenuButtons.FreeAnnotations.buttons = [BluVueSheet.Constants.Tools.Pen,
+                                                                 BluVueSheet.Constants.Tools.Highlighter];
+BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSheet.Constants.Tools.Ruler];
+BluVueSheet.Constants.ToolMenuButtons.TextAnnotations.buttons = [BluVueSheet.Constants.Tools.Text];
+BluVueSheet.Constants.ToolMenuButtons.HideMenu.buttons = [BluVueSheet.Constants.HideButton];
 
 var HANDLE_TOUCH_RADIUS = 30;
 var BOUND_DIST = 15;
