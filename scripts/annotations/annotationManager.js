@@ -390,6 +390,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			copies[i] = loadAnnotationJSON(JSON.parse(JSON.stringify(new AnnotationJSON(selectedAnnotations[i]))), tileView);
 			copies[i].id = createUUID();
 			copies[i].added = true;
+			copies[i].offset_x = -25/tileView.scale;
+			copies[i].offset_y = -25/tileView.scale;
+			copies[i].applyOffset();
 			this.saveAnnotation(copies[i]);
 			annotations[annotations.length] = copies[i];
 		}
