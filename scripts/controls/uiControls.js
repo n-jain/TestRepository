@@ -410,7 +410,7 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
 
     this.updateLocation = function(toolMenuButton){
         var button = document.getElementsByClassName("bv-toolbar-"+toolMenuButton.name)[0];
-        this.toolMenuExtensionElement.style.left = (70*toolMenuButton.id)+"px";
+        this.toolMenuExtensionElement.style.left = (61*toolMenuButton.id)+"px";
     }
 }
 
