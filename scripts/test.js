@@ -47,6 +47,32 @@
                 annotations: []
             }];
 
+            $scope.revisionsForSheet = function (sheet) {
+                // for testing this always returns the same thing
+                return [
+                    {
+                        name: 'Revision 1',
+                        slicesUrl: "sheet2/slices.zip",
+                        previewUrl: "sheet2/preview.png",
+                        projectId: "guid",
+                        id: "guid",
+                        userId: "guid",
+                        rotation: 0,
+                        annotations: []
+                    },
+                    {
+                        name: 'Revision 2',
+                        slicesUrl: "sheet3/slices.zip",
+                        previewUrl: "sheet3/preview.png",
+                        projectId: "guid",
+                        id: "guid",
+                        userId: "guid",
+                        rotation: 0,
+                        annotations: []
+                    }
+                ];
+            };
+
             var currentSheetIndex = 0;
 
             $scope.sheet = sheets[currentSheetIndex];
