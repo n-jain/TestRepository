@@ -14,7 +14,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 closeSheet: "=",
                 nextSheet: "=",
                 previousSheet: "=",
-                pinnedSheets: "="
+                pinnedSheets: "=",
+                getCurrentIndex: "=",
+                getTotalSheets: "="
             },
             restrict: "E",
             replace: true,
