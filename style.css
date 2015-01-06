@@ -27,13 +27,20 @@ header.bluvue-sheet-header {
     width: 100%;
 }
 header.bluvue-sheet-header span {
+    position: absolute;
     display: inline-block;
     font-size: 20px;
     margin: 0 0 0 10px;
+    top: 10px;
+    text-align: center;
+    left: 0;
+    width: 100%;
 }
 header.bluvue-sheet-header nav {
     text-align: right;
-    float: right;
+    position: relative;
+    right: 0;
+    /*float: right;*/
 }
 header.bluvue-sheet-header nav button {
     margin: 0 10px 0 0;
