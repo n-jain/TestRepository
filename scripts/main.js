@@ -115,6 +115,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         }
                         console.log(document.getElementById("fullscreen_button"));
                         document.getElementById("fullscreen_button").innerHTML = "Exit Full Screen";
+                        document.getElementById("fullscreen_floating_block").style.display = "block";
+                        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "none";
+                        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "none";
                     } else {
                         if (document.exitFullscreen) {
                             document.exitFullscreen();
@@ -126,6 +129,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                             document.webkitExitFullscreen();
                         }
                         document.getElementById("fullscreen_button").innerHTML = "Full Screen";
+                        document.getElementById("fullscreen_floating_block").style.display = "none";
+                        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
+                        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
                     }
                 }
 

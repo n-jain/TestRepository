@@ -26,6 +26,12 @@ header.bluvue-sheet-header {
     left: 0;
     width: 100%;
 }
+
+header.bluvue-sheet-header .back-block {
+    left: 10px;
+    position: absolute;
+}
+
 header.bluvue-sheet-header span {
     position: absolute;
     display: inline-block;
@@ -401,4 +407,11 @@ footer.bluvue-sheet-footer {
   margin-right: auto;
   display: block;
   width: 160px;
+}
+
+#fullscreen_floating_block {
+    display: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
 }
