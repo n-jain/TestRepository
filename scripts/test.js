@@ -99,6 +99,14 @@
                 $scope.sheet = sheets[currentSheetIndex];
             };
 
+            scope.getCurrentIndex = function () {
+                return currentSheetIndex;
+            }
+
+            $scope.getTotalSheets = function () {
+                return sheets.length;
+            }
+
             $scope.saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
                 /*
                  * returns a $q promise
