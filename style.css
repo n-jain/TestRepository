@@ -415,3 +415,30 @@ footer.bluvue-sheet-footer {
     top: 10px;
     right: 10px;
 }
+
+#fullscreen_button {
+    background: url(images/update/icon_sheet_fullscreen.png) no-repeat;
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    height: 50px;
+    width: 50px;
+}
+
+#fullscreen_exit_button {
+    background: url(images/update/icon_sheet_restore.png) no-repeat;
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    height: 50px;
+    width: 50px;
+}
+
+#more_menu {
+    background: url(images/update/icon_sheet_more.png) no-repeat;
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    height: 50px;
+    width: 50px;
+}
