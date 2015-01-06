@@ -440,7 +440,7 @@ BluVueSheet.Dialog = function() {
           action: options.okAction||defaultHideAction
         }
       ]
-    })
+    });
   }
 
   this.showTooltip = function showTooltip( options ) {
