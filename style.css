@@ -82,7 +82,7 @@ footer.bluvue-sheet-footer {
 
 .bluvue-sheet-textsize-menu {
     right: 5px;
-    bottom: 155px;
+    bottom: 110px;
     position:fixed;
     background-color: #000000;
     opacity: 0.7;
@@ -90,7 +90,7 @@ footer.bluvue-sheet-footer {
 }
 
 .bluvue-sheet-options-menu {
-    bottom: 95px;
+    bottom: 50px;
 	right: 5px;
 	position:fixed;
 }
@@ -107,7 +107,7 @@ footer.bluvue-sheet-footer {
 	padding: 20px;
 	position: fixed;
 	right:5px;
-  bottom: 155px;
+  bottom: 110px;
 }
 .bluvue-color-button {
   cursor: pointer;
