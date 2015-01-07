@@ -153,8 +153,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     bodyElement: holder,
                     okLabel:'Save',
                     okAction: function saveSheetNameAction() {
-                      scope.sheet.name = editor[0].value;
-                      // TODO: Persist sheet name and update UI.
+                      scope.$apply(function() {
+                        var val = editor[0].value;
+                        if( val.length == 0 )
+                          val = "Untitled";
+                        if( val.length > 50 )
+                          val = val.substring( 0, 50 );
+                        scope.sheet.name = val;
+                      });
                     },
                     cancelAction: function hideAction(){
                       scope.currentSheet.tileView.annotationManager.captureKeyboard=oldKeyCapture;
