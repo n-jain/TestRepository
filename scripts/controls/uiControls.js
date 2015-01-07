@@ -421,6 +421,26 @@ BluVueSheet.Dialog = function() {
     dialog.hide();
   }
 
+  // Need this resize listener to ensure that vertical height is honored, even
+  // if css margin:auto doesn't work (I'm lookin' at you, Firefox)
+  var onResize = function dialogOnResize() {
+    var w = window;
+    var d = document;
+    var e = d.documentElement;
+    var g = d.getElementsByTagName('body')[0];
+    var y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    var cy = content[0].offsetHeight;
+
+    content[0].style.top = (y/2 - cy/2) + 'px';
+  };
+
+  var resizeTimer;
+  var resizeListener = function dialogResizeListener() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout( onResize, 100 );
+  };
+
+
   var cancelAction = defaultHideAction;
 
   this.showConfirmDialog = function showDialog( options ) {
@@ -483,9 +503,12 @@ BluVueSheet.Dialog = function() {
 
     content.append( angular.element( body ) );
     holder.css( { display: "block" } );
+    window.addEventListener( 'resize', resizeListener );
+    onResize(); // Initialize the height logic
   }
 
   this.hide = function() {
+    window.removeEventListener( 'resize', resizeListener );
     holder.css( { display: "none" } );
     content.removeClass();
     content.addClass( 'bluvue-dialog-holder' );
