@@ -16,7 +16,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 previousSheet: "=",
                 pinnedSheets: "=",
                 getCurrentIndex: "=",
-                getTotalSheets: "="
+                getTotalSheets: "=",
+                revisionsForSheet: "="
             },
             restrict: "E",
             replace: true,
@@ -158,6 +159,36 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     cancelAction: function hideAction(){
                       scope.currentSheet.tileView.annotationManager.captureKeyboard=oldKeyCapture;
                       dialog.hide();
+                    }
+                  });
+                }
+
+                scope.selectRevision = function selectRevision() {
+                  var dialog = new BluVueSheet.Dialog();
+                  var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+                  var revisions = scope.revisionsForSheet( scope.currentSheet );
+                  var editor = angular.element( "<select class='bluvue-revision-edit'></select>" );
+
+                  revisions.forEach( function( rev, index ) {
+                    editor.append( angular.element( "<option value='" + index + "'>"+ rev.name +"</option>") );
+                  });
+
+                  holder.append( editor );
+                  // Allow user to click input field
+                  editor.on( 'click', function(e){ e.stopPropagation(); } );
+                  dialog.showConfirmDialog( {
+                    title: 'Change Revision',
+                    message: 'Choose revision from history list',
+                    bodyElement: holder,
+                    okLabel:'Change',
+                    okAction: function saveSheetNameAction() {
+                      scope.sheet = revisions[ editor[0].value ];
+
+                      // not sure why $watch() didn't catch this edit, so force it through
+                      scope.currentSheet = new BluVueSheet.Sheet();
+                      scope.currentSheet.loadSheet(scope.sheet, scope, elem);
+                      scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
                     }
                   });
                 }
