@@ -124,7 +124,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	}
 	this.drawArea = function(context){
 		var textSize=32*this.lineWidth;
-		var text = this.measurement.toString();
+		var text = htmlDecode( this.measurement.toString() );
 
 		context.font = textSize+"px Verdana";
 
@@ -138,7 +138,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
 		context.fillStyle = this.color;
 		context.textAlign = "center";
-		context.fillText(this.measurement.toString(),0,textSize/3);
+		context.fillText(text,0,textSize/3);
 		context.restore();
 	}
 	this.getPoint = function(id,handle){
@@ -470,7 +470,7 @@ function drawScale(context){
 		if(this.measurement!=null){
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
-			var text = this.measurement.toString();
+			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
 				textSize-=4*this.lineWidth;
@@ -540,7 +540,7 @@ function drawScale(context){
 			context.fillStyle = this.color;
 			context.textAlign = "center";
 
-			context.fillText(this.measurement.toString(),0,textSize/3);
+			context.fillText( text,0,textSize/3);
 
 			context.restore();
 		}
@@ -566,7 +566,7 @@ function drawMeasure(context){
 		if(this.measurement!=null){
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
-			var text = this.measurement.toString();
+			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
 				textSize-=4*this.lineWidth;
@@ -624,7 +624,7 @@ function drawMeasure(context){
 			context.fillStyle = this.color;
 			context.textAlign = "center";
 
-			context.fillText(this.measurement.toString(),0,textSize/3);
+			context.fillText( text ,0,textSize/3);
 
 			context.restore();
 		}
@@ -760,4 +760,9 @@ function loadAnnotationJSON(json,tileView){
 	annotation.calcBounds();
 	annotation.updateMeasure();
 	return annotation;
+}
+function htmlDecode(input){
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes[0].nodeValue;
 }

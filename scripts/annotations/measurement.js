@@ -41,7 +41,7 @@ BluVueSheet.Measurement = function(amount, unit, type){
 		if(this.unit!=-1&&this.type!=-1)
 		    if (!(this.unit == FT_IN && this.type == BluVueSheet.Constants.Length)) {
 			var a = parseFloat(this.amount).toFixed(2);
-			str = a+" "+BluVueSheet.Constants.UnitNames[this.type][this.unit];
+			str = a+" "+BluVueSheet.Constants.UnitDisplayNames[this.type][this.unit];
 		}else{
 			if(Math.floor(this.amount)!=0){
 				str+=Math.floor(this.amount);
