@@ -99,7 +99,7 @@
                 $scope.sheet = sheets[currentSheetIndex];
             };
 
-            scope.getCurrentIndex = function () {
+            $scope.getCurrentIndex = function () {
                 return currentSheetIndex;
             }
 
