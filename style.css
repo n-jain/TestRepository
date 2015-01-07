@@ -455,3 +455,22 @@ input.bluvue-sheetname-edit {
     text-align:center;
     padding-top:10px;
 }
+
+.bluvue-annotation-unit-tools {
+  padding-top: 10px;
+  display:block;
+  text-align:center;
+}
+.bluvue-annotation-convert-button {
+  display: inline-block;
+  color: #157efb;
+  background-color: white;
+  border: 2px solid #157efb;
+  border-radius:40px;
+  padding: 10px 20px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  cursor: pointer;
+}
+.bluvue-annotation-convert-button:hover {
+  background-color: #f4f8f9;
+}

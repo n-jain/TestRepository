@@ -175,8 +175,7 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
 BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     var t = this;
     this.sheet = sheet;
-    this.lengthUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Length, sheet.convertToUnit);
-    this.areaUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Area, sheet.convertToUnit);
+    this.convertButton = null;
 
     this.floatingOptionsMenuElement = document.createElement("div");
     this.floatingOptionsMenuElement.className = 'bluvue-sheet-floating-options-menu';
@@ -202,15 +201,10 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 t.hideAllMenus();
                 menu.show();
             }
-            if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitLength.id) {
-                toggleMenu(t.lengthUnitConverter);
-            } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitArea.id) {
-                toggleMenu(t.areaUnitConverter);
-            }
             t.sheet.tileView.optionChosen(this.btnInfo.id);
         };
         t.floatingOptionsMenuElement.appendChild(button);
-        t.width+=50+20;
+        t.width+=(50+20);
     }
 
     var removeButton = function(btnInfo) {
@@ -218,7 +212,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         if (button != null) {
             if(button.parentNode === t.floatingOptionsMenuElement){
                 t.floatingOptionsMenuElement.removeChild(button);
-                t.width-=50;
+                t.width-=(50+20);
             }
         }
     }
@@ -239,6 +233,11 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         for (var x = 0; x < keys.length; x++) {
             removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);
         }
+        if( t.convertButton )
+        {
+          t.convertButton.remove();
+          t.convertButton = null;
+        }
         this.width = 0;
 
         if (selectedAnnotations.length > 0)
@@ -258,6 +257,23 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
                 setButtonSelected(BluVueSheet.Constants.OptionButtons.Area, selectedAnnotations[0].areaMeasured);
                 addButton(BluVueSheet.Constants.OptionButtons.Area);
+            }
+
+            if( selectedAnnotations[0].measurement )
+            {
+              var m = selectedAnnotations[0].measurement;
+              var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
+              var prefix = "Convert Units: ";
+              t.convertButton = angular.element( "<div></div>" ).addClass( 'bluvue-annotation-unit-tools');
+              var actualButton = angular.element( "<div>" + prefix + unitName + "</div>" ).addClass( 'bluvue-annotation-convert-button');
+              t.convertButton.append( actualButton );
+              actualButton.on( 'click', function() {
+                t.showAnnotationUnitChooser( m, function updateSelectedAnnotationUnits( newUnit ) {
+                  m.changeToUnit( newUnit );
+                  actualButton.html( prefix + BluVueSheet.Constants.UnitDisplayNames[ m.type ][ newUnit ] );
+                } );
+              })
+              angular.element( t.floatingOptionsMenuElement ).append( t.convertButton );
             }
         }
     }
@@ -286,14 +302,35 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     }
 
     this.hideAllMenus = function(){
-        this.lengthUnitConverter.hide();
-        this.areaUnitConverter.hide();
     }
 
     this.appendTo = function(userInterface){
         userInterface.appendChild(this.floatingOptionsMenuElement);
-        userInterface.appendChild(this.lengthUnitConverter.unitConverterElement);
-        userInterface.appendChild(this.areaUnitConverter.unitConverterElement);
+    }
+
+    this.showAnnotationUnitChooser = function showAnnotationUnitChooser( measurement, okAction ) {
+        var dialog = new BluVueSheet.Dialog();
+        var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+        var units = BluVueSheet.Constants.UnitNames[ measurement.type ];
+        var unitNames = BluVueSheet.Constants.UnitDisplayNames[ measurement.type ];
+        var editor = angular.element( "<select class='bluvue-annotation-unit-edit'></select>" );
+
+        units.forEach( function( key, index ) {
+          var selected = ( index == measurement.unit ) ? " selected" : "";
+          editor.append( angular.element( "<option value='" + index + "'" + selected + ">"+ unitNames[index] +"</option>") );
+        });
+
+        holder.append( editor );
+        // Allow user to click input field
+        editor.on( 'click', function(e){ e.stopPropagation(); } );
+        dialog.showConfirmDialog( {
+          title: 'Convert Units',
+          message: 'Select the unit of measurement to convert to',
+          bodyElement: holder,
+          okLabel:'Convert',
+          okAction: function() { okAction( editor[0].value ); }
+        });
     }
 }
 

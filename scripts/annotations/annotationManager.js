@@ -427,41 +427,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.saveSelectedAnnotations();
 	}
-  this.chooseSelectedAnnotationUnits = function chooseSelectedAnnotationUnits() {
-
-    var m = selectedAnnotations[0].measurement;
-    if( m )
-    {
-      var dialog = new BluVueSheet.Dialog();
-      var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
-
-      var units = BluVueSheet.Constants.UnitNames[ m.type ];
-      var unitNames = BluVueSheet.Constants.UnitDisplayNames[ m.type ];
-      var editor = angular.element( "<select class='bluvue-annotation-unit-edit'></select>" );
-
-      units.forEach( function( key, index ) {
-        editor.append( angular.element( "<option value='" + index + "'>"+ unitNames[index] +"</option>") );
-      });
-
-      holder.append( editor );
-      // Allow user to click input field
-      editor.on( 'click', function(e){ e.stopPropagation(); } );
-      dialog.showConfirmDialog( {
-        title: 'Convert Units',
-        message: 'Select the unit of measurement to convert to',
-        bodyElement: holder,
-        okLabel:'Convert',
-        okAction: function updateSelectedAnnotationUnits() {
-          m.changeToUnit( editor[0].value );
-        }
-      });
-    }
-    else
-    {
-      console.log( "Cannot update annotation unit, no measurement!", selectedAnnotations[0] );
-    }
-  }
-
     this.convertToUnit = function(type, subType) {
         for (var i = 0; i < selectedAnnotations.length; i++) {
             var ann = selectedAnnotations[i];
