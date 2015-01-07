@@ -137,6 +137,31 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     }
                 }
 
+                scope.editSheetName = function editSheetName() {
+                  var dialog = new BluVueSheet.Dialog();
+                  var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+                  var editor = angular.element( "<input class='bluvue-sheetname-edit' value='"+ scope.sheet.name +"'></input>" );
+                  holder.append( editor );
+                  // Allow user to click input field
+                  editor.on( 'click', function(e){ e.stopPropagation(); } );
+                  // Spoof BluVueSheet.KeyboardControls to make it not eat our keypresses
+                  var oldKeyCapture = scope.currentSheet.tileView.annotationManager.captureKeyboard;
+                  scope.currentSheet.tileView.annotationManager.captureKeyboard=true;
+                  dialog.showConfirmDialog( {
+                    title: 'Change sheet name',
+                    bodyElement: holder,
+                    okLabel:'Save',
+                    okAction: function saveSheetNameAction() {
+                      scope.sheet.name = editor[0].value;
+                      // TODO: Persist sheet name and update UI.
+                    },
+                    cancelAction: function hideAction(){
+                      scope.currentSheet.tileView.annotationManager.captureKeyboard=oldKeyCapture;
+                      dialog.hide();
+                    }
+                  });
+                }
+
                 scope.$watch('sheet', function (newValue) {
                     if (scope.currentSheet != null) {
                         scope.currentSheet.dispose();

@@ -449,6 +449,7 @@ BluVueSheet.Dialog = function() {
       title: options.title||"Confirm",
       bodyClass: 'bluvue-dialog-confirmBody',
       message: options.message,
+      bodyElement: options.bodyElement,
       buttons: [
         {
           label: options.cancelLabel||"Cancel",
@@ -481,6 +482,8 @@ BluVueSheet.Dialog = function() {
       content.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
     if( options.message )
       content.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
+    if( options.bodyElement )
+      content.append( options.bodyElement );
     if( options.buttons )
     {
       var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
@@ -502,6 +505,7 @@ BluVueSheet.Dialog = function() {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
+    holder.on( 'click', cancelAction );
     holder.css( { display: "block" } );
     window.addEventListener( 'resize', resizeListener );
     onResize(); // Initialize the height logic
@@ -510,6 +514,7 @@ BluVueSheet.Dialog = function() {
   this.hide = function() {
     window.removeEventListener( 'resize', resizeListener );
     holder.css( { display: "none" } );
+    holder.off( 'click', cancelAction );
     content.removeClass();
     content.addClass( 'bluvue-dialog-holder' );
     content.empty();
@@ -522,7 +527,6 @@ BluVueSheet.Dialog = function() {
   var parent = angular.element( document.querySelector('.bluvue-sheet') );
   var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
-  holder.on( 'click', cancelAction );
   holder.append( content );
   this.hide();
 

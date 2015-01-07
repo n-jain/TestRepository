@@ -337,7 +337,7 @@ footer.bluvue-sheet-footer {
     border: 1px solid white;
     border-radius: 8px;
     background-color: white;
-    margin: auto auto;
+    margin: 0 auto;
     padding: 20px;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     display: table;
@@ -441,4 +441,17 @@ footer.bluvue-sheet-footer {
     text-indent: -9999px;
     height: 50px;
     width: 50px;
+}
+
+input.bluvue-sheetname-edit {
+    width: 80%;
+    font-size:18px;
+    padding:4px;
+    border-radius: 4px;
+}
+
+.bluvue-editor-holder {
+    width: 100%;
+    text-align:center;
+    padding-top:10px;
 }
