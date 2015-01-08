@@ -29,6 +29,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if (this.scaleAnnotation != null && tileView.getTool() == BluVueSheet.Constants.Tools.Ruler) annType = MEASURE_ANNOTATION;
 			var ann = new BluVueSheet.Annotation(annType, tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
 			ann.points[0] = new BluVueSheet.Point(x, y);
+
+			// Arrows always have a direction, so assign the END POINT now (it's point[1])
+			if( annType == ARROW_ANNOTATION )
+  			ann.points[1] = new BluVueSheet.Point(x,y);
+
 			currentAnnotation = ann;
 			if(ann.type==LASSO_ANNOTATION)lasso=ann;
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
@@ -129,7 +134,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			        }
                 }
 
-			    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
+          if( currentAnnotation.type == ARROW_ANNOTATION )
+          {
+              // drag moves the arrowhead, not the endpoint
+              currentAnnotation.points[0] = new BluVueSheet.Point(x, y);
+          }
+          else
+  			      currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
 			}
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 				currentAnnotation.updateMeasure();
