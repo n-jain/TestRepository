@@ -182,7 +182,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     this.loc = null;
     this.width = 0;
 
-    var addButton = function(btnInfo) {
+    var addButton = function(btnInfo, clickCallback ) {
         var button = document.getElementById("button_" + btnInfo.id);
         if (button != null) {
             return;
@@ -202,9 +202,13 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 menu.show();
             }
             t.sheet.tileView.optionChosen(this.btnInfo.id);
+            if( clickCallback )
+              clickCallback( button );
         };
         t.floatingOptionsMenuElement.appendChild(button);
         t.width+=(50+20);
+
+        return button;
     }
 
     var removeButton = function(btnInfo) {
@@ -217,14 +221,8 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         }
     }
 
-    var setButtonSelected = function(btnInfo, isSelected) {
-        //make button brighter
-        var className = "bv-options-image bv-options-" + btnInfo.className;
-        className = isSelected ? className + " selected" : className;
-        var elem = document.getElementById("button_" + btnInfo.id);
-        if (elem) {
-            elem.className = className;
-        }
+    var selectCallback = function( button ) {
+      angular.element( button ).toggleClass( 'selected' );
     }
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
@@ -247,19 +245,31 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         }
 
         if (selectedAnnotations.length == 1) {
-            var type = selectedAnnotations[0].type;
-            if (type == MEASURE_ANNOTATION)
-                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
-            if ((type == SQUARE_ANNOTATION || type == POLYGON_ANNOTATION || type == PEN_ANNOTATION) && tileView.annotationManager.scaleAnnotation != null) {
-                if (selectedAnnotations[0].areaMeasured) {
-                    addButton(BluVueSheet.Constants.OptionButtons.UnitArea);
+            var a = selectedAnnotations[0];
+
+            if(  (tileView.annotationManager.scaleAnnotation != null) )
+            {
+                if( selectedAnnotations[0].hasPerimeter )
+                {
+                    var button = addButton( BluVueSheet.Constants.OptionButtons.Perimeter, selectCallback );
+                    if( a.measurement && a.perimeterMeasured )
+                        angular.element( button ).addClass( 'selected' );
                 }
 
-                setButtonSelected(BluVueSheet.Constants.OptionButtons.Area, selectedAnnotations[0].areaMeasured);
-                addButton(BluVueSheet.Constants.OptionButtons.Area);
+                if( selectedAnnotations[0].hasArea )
+                {
+                    var button = addButton( BluVueSheet.Constants.OptionButtons.Area, selectCallback );
+                    if( a.measurement && a.areaMeasured )
+                       angular.element( button ).addClass( 'selected' );
+                }
             }
 
-            if( selectedAnnotations[0].measurement )
+            /*
+            if (type == MEASURE_ANNOTATION)
+                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
+            */
+
+            if( a.measurement && (a.areaMeasured || a.perimeterMeasured) )
             {
               var m = selectedAnnotations[0].measurement;
               var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
@@ -271,6 +281,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 t.showAnnotationUnitChooser( m, function updateSelectedAnnotationUnits( newUnit ) {
                   m.changeToUnit( newUnit );
                   actualButton.html( prefix + BluVueSheet.Constants.UnitDisplayNames[ m.type ][ newUnit ] );
+                  tileView.annotationManager.saveSelectedAnnotations();
                 } );
               })
               angular.element( t.floatingOptionsMenuElement ).append( t.convertButton );

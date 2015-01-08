@@ -192,6 +192,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         case BluVueSheet.Constants.OptionButtons.Area.id:
             this.annotationManager.areaSelectedAnnotation();
             break;
+        case BluVueSheet.Constants.OptionButtons.Perimeter.id:
+            this.annotationManager.perimeterSelectedAnnotation();
+            break;
         case BluVueSheet.Constants.OptionButtons.Master.id:
             this.annotationManager.masterSelectedAnnotations();
             break;

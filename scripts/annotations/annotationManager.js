@@ -460,11 +460,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		this.saveSelectedAnnotations();
 		return ret;
 	}
+	this.perimeterSelectedAnnotation = function(){
+		selectedAnnotations[0].perimeterMeasured=!selectedAnnotations[0].perimeterMeasured;
+		if(selectedAnnotations[0].perimeterMeasured){
+    	  selectedAnnotations[0].areaMeasured=false;
+		    selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+		  	selectedAnnotations[0].updateMeasure();
+		}
+		this.saveSelectedAnnotations();
+	}
 	this.areaSelectedAnnotation = function(){
 		selectedAnnotations[0].areaMeasured=!selectedAnnotations[0].areaMeasured;
 		if(selectedAnnotations[0].areaMeasured){
+    	  selectedAnnotations[0].perimeterMeasured=false;
 		    selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, BluVueSheet.Measurement.toArea(this.scaleAnnotation.measurement.unit), BluVueSheet.Constants.Area);
-			selectedAnnotations[0].updateMeasure();
+		  	selectedAnnotations[0].updateMeasure();
 		}
 		this.saveSelectedAnnotations();
 	}

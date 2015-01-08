@@ -100,7 +100,8 @@ BluVueSheet.Constants = {
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
         Master: { id: 7, className: "master" },
-        Copy: {id: 8, className: "copy"}
+        Copy: {id: 8, className: "copy"},
+        Perimeter: { id: 9, className: "ruler" }
     },
     Tools: {
         //menuId is the id of the menuButton it is part of

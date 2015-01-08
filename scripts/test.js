@@ -22,8 +22,21 @@
                         id: "04840b5829aa4088801edaf986970a72",
                         userId: "",
                         type:6,
-                        data: "{\"id\": \"04840b5829aa4088801edaf986970a72\", \"projectId\": \"guid\", \"sheetId\": \"guid\", \"type\": 6, \"colorRed\": 1, \"colorGreen\": 0, \"colorBlue\": 0, \"zOrder\": 0, \"fill\": 0, \"areaVisible\": 0, \"lineWidth\": 7.5, \"unitOfMeasure\": \"na\", \"x\": 3037.162891046386, \"y\": 2915.9719525350592, \"width\": 2524.9487594390503, \"height\": 1552.3031283710898, \"text\": \"brad\", \"textSize\": 128 }"
-                    }
+                        data: '{"id":"04840b5829aa4088801edaf986970a72","projectId":"guid","sheetId":"guid","type":6,"colorRed":1,"colorGreen":0,"colorBlue":0,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"na","x":3037.162891046386,"y":2915.9719525350592,"width":786.7879003898297,"height":551.7229772489736,"text":"brad","textSize":128}'
+                    },
+                    {
+                      id:'c36387e9ad2e47098aaf72d4cb8e79f0',
+                      userId: 'guid',
+                      type: 10,
+                      data: '{"id":"c36387e9ad2e47098aaf72d4cb8e79f0","projectId":"guid","sheetId":"guid","userId":"guid","type":10,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","points":[{"x":1248.0025234602954,"y":5298.389953473701},{"x":3767.4252819178296,"y":5274.164734642378}],"distance":50}'
+                    },
+                    {
+                      id:"3e457065b71f4f90857f8161314afc8b",
+                      userId: "guid",
+                      type: 1,
+//                      data:'{"id":"3e457065b71f4f90857f8161314afc8b","projectId":"guid","sheetId":"guid","userId":"guid","type":1,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"na","x":2226.01589436749,"y":3683.511186353196,"width":2518.239836683612,"height":504.17242332066644}'
+                      data: '{"id":"3e457065b71f4f90857f8161314afc8b","projectId":"guid","sheetId":"guid","userId":"guid","type":1,"colorRed":0.058823529411764705,"colorGreen":0.38823529411764707,"colorBlue":0.8941176470588236,"zOrder":0,"fill":1,"perimeterVisible":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","x":1868.6369344133827,"y":3982.678780228193,"width":2510.449196870806,"height":519.954943142649}'
+                      }
                 ] // hard code annotations here for testing
             },
             {
