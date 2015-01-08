@@ -137,7 +137,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
                     }
-                }
+                };
 
                 scope.editSheetName = function editSheetName() {
                   var dialog = new BluVueSheet.Dialog();
@@ -273,3 +273,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
     }
 ]);
 
+
+
+angular.element(window).on('resize', function(){ //when the browser size change
+    var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
+
+    if(!checkFullscreen) {
+        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
+        document.getElementById("fullscreen_floating_block").style.display = "none";
+        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
+        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
+    }
+});

@@ -51,6 +51,8 @@ BluVueSheet.KeyboardControls = function(tileView, closeSheet){
 			case 69://E
 				zoomOut=true;
 				break;
+            case 27://Esc
+                //enterFullscreen();
 		}
 	}
 	this.onKeyUp = function (event) {
