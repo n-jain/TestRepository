@@ -14,7 +14,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 closeSheet: "=",
                 nextSheet: "=",
                 previousSheet: "=",
-                pinnedSheets: "="
+                pinnedSheets: "=",
+                getCurrentIndex: "=",
+                getTotalSheets: "=",
+                revisionsForSheet: "="
             },
             restrict: "E",
             replace: true,
@@ -134,6 +137,67 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
                     }
+                }
+
+                scope.editSheetName = function editSheetName() {
+                  var dialog = new BluVueSheet.Dialog();
+                  var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+                  var editor = angular.element( "<input class='bluvue-sheetname-edit' value='"+ scope.sheet.name +"'></input>" );
+                  holder.append( editor );
+                  // Allow user to click input field
+                  editor.on( 'click', function(e){ e.stopPropagation(); } );
+                  // Spoof BluVueSheet.KeyboardControls to make it not eat our keypresses
+                  var oldKeyCapture = scope.currentSheet.tileView.annotationManager.captureKeyboard;
+                  scope.currentSheet.tileView.annotationManager.captureKeyboard=true;
+                  dialog.showConfirmDialog( {
+                    title: 'Change sheet name',
+                    bodyElement: holder,
+                    okLabel:'Save',
+                    okAction: function saveSheetNameAction() {
+                      scope.$apply(function() {
+                        var val = editor[0].value;
+                        if( val.length == 0 )
+                          val = "Untitled";
+                        if( val.length > 50 )
+                          val = val.substring( 0, 50 );
+                        scope.sheet.name = val;
+                      });
+                    },
+                    cancelAction: function hideAction(){
+                      scope.currentSheet.tileView.annotationManager.captureKeyboard=oldKeyCapture;
+                      dialog.hide();
+                    }
+                  });
+                }
+
+                scope.selectRevision = function selectRevision() {
+                  var dialog = new BluVueSheet.Dialog();
+                  var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+                  var revisions = scope.revisionsForSheet( scope.currentSheet );
+                  var editor = angular.element( "<select class='bluvue-revision-edit'></select>" );
+
+                  revisions.forEach( function( rev, index ) {
+                    editor.append( angular.element( "<option value='" + index + "'>"+ rev.name +"</option>") );
+                  });
+
+                  holder.append( editor );
+                  // Allow user to click input field
+                  editor.on( 'click', function(e){ e.stopPropagation(); } );
+                  dialog.showConfirmDialog( {
+                    title: 'Change Revision',
+                    message: 'Choose revision from history list',
+                    bodyElement: holder,
+                    okLabel:'Change',
+                    okAction: function saveSheetNameAction() {
+                      scope.sheet = revisions[ editor[0].value ];
+
+                      // not sure why $watch() didn't catch this edit, so force it through
+                      scope.currentSheet = new BluVueSheet.Sheet();
+                      scope.currentSheet.loadSheet(scope.sheet, scope, elem);
+                      scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                    }
+                  });
                 }
 
                 scope.$watch('sheet', function (newValue) {

@@ -175,15 +175,14 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
 BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     var t = this;
     this.sheet = sheet;
-    this.lengthUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Length, sheet.convertToUnit);
-    this.areaUnitConverter = new BluVueSheet.UnitConverter(BluVueSheet.Constants.Area, sheet.convertToUnit);
+    this.convertButton = null;
 
     this.floatingOptionsMenuElement = document.createElement("div");
     this.floatingOptionsMenuElement.className = 'bluvue-sheet-floating-options-menu';
     this.loc = null;
     this.width = 0;
 
-    var addButton = function(btnInfo) {
+    var addButton = function(btnInfo, clickCallback ) {
         var button = document.getElementById("button_" + btnInfo.id);
         if (button != null) {
             return;
@@ -202,15 +201,14 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 t.hideAllMenus();
                 menu.show();
             }
-            if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitLength.id) {
-                toggleMenu(t.lengthUnitConverter);
-            } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitArea.id) {
-                toggleMenu(t.areaUnitConverter);
-            }
             t.sheet.tileView.optionChosen(this.btnInfo.id);
+            if( clickCallback )
+              clickCallback( button );
         };
         t.floatingOptionsMenuElement.appendChild(button);
-        t.width+=50+20;
+        t.width+=(50+20);
+
+        return button;
     }
 
     var removeButton = function(btnInfo) {
@@ -218,19 +216,13 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         if (button != null) {
             if(button.parentNode === t.floatingOptionsMenuElement){
                 t.floatingOptionsMenuElement.removeChild(button);
-                t.width-=50;
+                t.width-=(50+20);
             }
         }
     }
 
-    var setButtonSelected = function(btnInfo, isSelected) {
-        //make button brighter
-        var className = "bv-options-image bv-options-" + btnInfo.className;
-        className = isSelected ? className + " selected" : className;
-        var elem = document.getElementById("button_" + btnInfo.id);
-        if (elem) {
-            elem.className = className;
-        }
+    var selectCallback = function( button ) {
+      angular.element( button ).toggleClass( 'selected' );
     }
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations, tileView) {
@@ -238,6 +230,11 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         var keys = Object.keys(BluVueSheet.Constants.OptionButtons);
         for (var x = 0; x < keys.length; x++) {
             removeButton(BluVueSheet.Constants.OptionButtons[keys[x]]);
+        }
+        if( t.convertButton )
+        {
+          t.convertButton.remove();
+          t.convertButton = null;
         }
         this.width = 0;
 
@@ -248,16 +245,46 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         }
 
         if (selectedAnnotations.length == 1) {
-            var type = selectedAnnotations[0].type;
-            if (type == MEASURE_ANNOTATION)
-                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
-            if ((type == SQUARE_ANNOTATION || type == POLYGON_ANNOTATION || type == PEN_ANNOTATION) && tileView.annotationManager.scaleAnnotation != null) {
-                if (selectedAnnotations[0].areaMeasured) {
-                    addButton(BluVueSheet.Constants.OptionButtons.UnitArea);
+            var a = selectedAnnotations[0];
+
+            if(  (tileView.annotationManager.scaleAnnotation != null) )
+            {
+                if( selectedAnnotations[0].hasPerimeter )
+                {
+                    var button = addButton( BluVueSheet.Constants.OptionButtons.Perimeter, selectCallback );
+                    if( a.measurement && a.perimeterMeasured )
+                        angular.element( button ).addClass( 'selected' );
                 }
 
-                setButtonSelected(BluVueSheet.Constants.OptionButtons.Area, selectedAnnotations[0].areaMeasured);
-                addButton(BluVueSheet.Constants.OptionButtons.Area);
+                if( selectedAnnotations[0].hasArea )
+                {
+                    var button = addButton( BluVueSheet.Constants.OptionButtons.Area, selectCallback );
+                    if( a.measurement && a.areaMeasured )
+                       angular.element( button ).addClass( 'selected' );
+                }
+            }
+
+            /*
+            if (type == MEASURE_ANNOTATION)
+                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
+            */
+
+            if( a.measurement && (a.areaMeasured || a.perimeterMeasured) )
+            {
+              var m = selectedAnnotations[0].measurement;
+              var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
+              var prefix = "Convert Units: ";
+              t.convertButton = angular.element( "<div></div>" ).addClass( 'bluvue-annotation-unit-tools');
+              var actualButton = angular.element( "<div>" + prefix + unitName + "</div>" ).addClass( 'bluvue-annotation-convert-button');
+              t.convertButton.append( actualButton );
+              actualButton.on( 'click', function() {
+                t.showAnnotationUnitChooser( m, function updateSelectedAnnotationUnits( newUnit ) {
+                  m.changeToUnit( newUnit );
+                  actualButton.html( prefix + BluVueSheet.Constants.UnitDisplayNames[ m.type ][ newUnit ] );
+                  tileView.annotationManager.saveSelectedAnnotations();
+                } );
+              })
+              angular.element( t.floatingOptionsMenuElement ).append( t.convertButton );
             }
         }
     }
@@ -286,16 +313,117 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     }
 
     this.hideAllMenus = function(){
-        this.lengthUnitConverter.hide();
-        this.areaUnitConverter.hide();
     }
 
     this.appendTo = function(userInterface){
         userInterface.appendChild(this.floatingOptionsMenuElement);
-        userInterface.appendChild(this.lengthUnitConverter.unitConverterElement);
-        userInterface.appendChild(this.areaUnitConverter.unitConverterElement);
+    }
+
+    this.showAnnotationUnitChooser = function showAnnotationUnitChooser( measurement, okAction ) {
+        var dialog = new BluVueSheet.Dialog();
+        var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+        var units = BluVueSheet.Constants.UnitNames[ measurement.type ];
+        var unitNames = BluVueSheet.Constants.UnitDisplayNames[ measurement.type ];
+        var editor = angular.element( "<select class='bluvue-annotation-unit-edit'></select>" );
+
+        units.forEach( function( key, index ) {
+          var selected = ( index == measurement.unit ) ? " selected" : "";
+          editor.append( angular.element( "<option value='" + index + "'" + selected + ">"+ unitNames[index] +"</option>") );
+        });
+
+        holder.append( editor );
+        // Allow user to click input field
+        editor.on( 'click', function(e){ e.stopPropagation(); } );
+        dialog.showConfirmDialog( {
+          title: 'Convert Units',
+          message: 'Select the unit of measurement to convert to',
+          bodyElement: holder,
+          okLabel:'Convert',
+          okAction: function() { okAction( editor[0].value ); }
+        });
     }
 }
+
+BluVueSheet.FloatingToolsMenu = function (sheet, scope){
+    var t = this;
+    this.sheet = sheet;
+
+    this.floatingToolsMenuElement = document.createElement("div");
+    this.floatingToolsMenuElement.className = 'bluvue-sheet-floating-tools-menu';
+    this.loc = null;
+    this.width = 300;
+    this.height = 42;
+
+    this.setSelectedToolsForAnnotations = function( selectedAnnotations, tileView )
+    {
+        var menu = angular.element( document.querySelector( '.bluvue-sheet-floating-tools-menu' ));
+        menu.empty();
+
+        var userIsAdmin = scope.isAdmin;
+        if( userIsAdmin && selectedAnnotations.length >= 1 )
+        {
+            menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
+                sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
+            }) );
+        }
+    }
+
+    this.createMasterPersonalControl = function( annotations, applyState )
+    {
+        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster();
+
+        var masterPersonalControl = angular.element( "<div></div>" ).addClass( 'bluvue-sheet-floating-tools-toggle');
+        var masterButton = angular.element( "<div>Master</div>" ).addClass( 'bv-toggle-master');
+        masterButton.on( 'click', function() {
+            masterPersonalControl.addClass( 'master' );
+            masterPersonalControl.removeClass( 'personal' );
+            applyState( annotations, 'master' );
+        } );
+        var personalButton = angular.element( "<div>Personal</div>" ).addClass( 'bv-toggle-personal');
+        personalButton.on( 'click', function() {
+            masterPersonalControl.removeClass( 'master' );
+            masterPersonalControl.addClass( 'personal' );
+            applyState( annotations, 'personal' );
+        } );
+        masterPersonalControl.append( masterButton ).append( personalButton );
+        masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
+
+        return masterPersonalControl;
+    }
+
+    this.show = function(loc){
+        this.setLoc(loc);
+        this.floatingToolsMenuElement.style.display = "block";
+    }
+
+    this.hide = function(){
+        this.floatingToolsMenuElement.style.display = 'none';
+    }
+
+    this.getWidth = function(){
+        return this.width;
+    }
+
+    this.getHeight = function(){
+        return this.floatingToolsMenuElement.offsetWidth;
+    }
+
+    this.setLoc = function(loc){
+        this.loc = loc;
+        this.floatingToolsMenuElement.style.width = this.width + "px";
+        this.floatingToolsMenuElement.style.left = loc.x + "px";
+        this.floatingToolsMenuElement.style.top = (loc.y - this.height - 2*BOUND_DIST) + "px";
+    }
+
+    this.hideAllMenus = function(){
+    }
+
+    this.appendTo = function(userInterface){
+        userInterface.appendChild(this.floatingToolsMenuElement);
+    }
+}
+
 
 BluVueSheet.ColorMenu = function(setColor){
 	this.colorMenuElement = document.createElement("div");
@@ -421,6 +549,26 @@ BluVueSheet.Dialog = function() {
     dialog.hide();
   }
 
+  // Need this resize listener to ensure that vertical height is honored, even
+  // if css margin:auto doesn't work (I'm lookin' at you, Firefox)
+  var onResize = function dialogOnResize() {
+    var w = window;
+    var d = document;
+    var e = d.documentElement;
+    var g = d.getElementsByTagName('body')[0];
+    var y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    var cy = content[0].offsetHeight;
+
+    content[0].style.top = (y/2 - cy/2) + 'px';
+  };
+
+  var resizeTimer;
+  var resizeListener = function dialogResizeListener() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout( onResize, 100 );
+  };
+
+
   var cancelAction = defaultHideAction;
 
   this.showConfirmDialog = function showDialog( options ) {
@@ -429,6 +577,7 @@ BluVueSheet.Dialog = function() {
       title: options.title||"Confirm",
       bodyClass: 'bluvue-dialog-confirmBody',
       message: options.message,
+      bodyElement: options.bodyElement,
       buttons: [
         {
           label: options.cancelLabel||"Cancel",
@@ -440,7 +589,7 @@ BluVueSheet.Dialog = function() {
           action: options.okAction||defaultHideAction
         }
       ]
-    })
+    });
   }
 
   this.showTooltip = function showTooltip( options ) {
@@ -461,6 +610,8 @@ BluVueSheet.Dialog = function() {
       content.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
     if( options.message )
       content.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
+    if( options.bodyElement )
+      content.append( options.bodyElement );
     if( options.buttons )
     {
       var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
@@ -482,11 +633,16 @@ BluVueSheet.Dialog = function() {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
+    holder.on( 'click', cancelAction );
     holder.css( { display: "block" } );
+    window.addEventListener( 'resize', resizeListener );
+    onResize(); // Initialize the height logic
   }
 
   this.hide = function() {
+    window.removeEventListener( 'resize', resizeListener );
     holder.css( { display: "none" } );
+    holder.off( 'click', cancelAction );
     content.removeClass();
     content.addClass( 'bluvue-dialog-holder' );
     content.empty();
@@ -499,7 +655,6 @@ BluVueSheet.Dialog = function() {
   var parent = angular.element( document.querySelector('.bluvue-sheet') );
   var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
-  holder.on( 'click', cancelAction );
   holder.append( content );
   this.hide();
 

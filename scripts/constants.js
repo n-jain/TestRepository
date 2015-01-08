@@ -83,7 +83,7 @@ BluVueSheet.Constants = {
     ],
     UnitDisplayNames: [
         ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
-        ["IN<sup>2</sup>", "FT<sup>2</sup>", "YD<sup>2</sup>", "AC", "MI<sup>2</sup>", "CM<sup>2</sup>", "M<sup>2</sup>", "HA", "KM<sup>2</sup>"]
+        ["IN&sup2;", "FT&sup2;", "YD&sup2;", "AC", "MI&sup2;", "CM&sup2;", "M&sup2;", "HA", "KM&sup2;"]
     ],
     TextSizes: [32,64,128,256,512],
     Length: 0,
@@ -100,7 +100,8 @@ BluVueSheet.Constants = {
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
         Master: { id: 7, className: "master" },
-        Copy: {id: 8, className: "copy"}
+        Copy: {id: 8, className: "copy"},
+        Perimeter: { id: 9, className: "ruler" }
     },
     Tools: {
         //menuId is the id of the menuButton it is part of

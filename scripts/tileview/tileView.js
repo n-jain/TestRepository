@@ -192,6 +192,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         case BluVueSheet.Constants.OptionButtons.Area.id:
             this.annotationManager.areaSelectedAnnotation();
             break;
+        case BluVueSheet.Constants.OptionButtons.Perimeter.id:
+            this.annotationManager.perimeterSelectedAnnotation();
+            break;
         case BluVueSheet.Constants.OptionButtons.Master.id:
             this.annotationManager.masterSelectedAnnotations();
             break;
@@ -204,6 +207,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+    	this.sheet.floatingToolsMenu.setSelectedToolsForAnnotations( selectedAnnotations, tileView );
     	this.sheet.floatingOptionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     }
 
