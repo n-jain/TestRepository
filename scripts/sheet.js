@@ -2,6 +2,7 @@
     this.tileView = null;
 
     this.optionsMenu = null;
+    this.floatingToolsMenu = null;
     this.floatingOptionsMenu = null;
     this.textEditor = null;
     this.toolMenuExtension = null;
@@ -35,11 +36,13 @@
         this.userInterface = document.createElement("div");
 
         this.optionsMenu = new BluVueSheet.OptionsMenu(this, scope);
+        this.floatingToolsMenu = new BluVueSheet.FloatingToolsMenu(this, scope);
         this.floatingOptionsMenu = new BluVueSheet.FloatingOptionsMenu(this, scope);
         this.textEditor = new BluVueSheet.TextEditor(this.textUpdate, this.setTextSize);
         this.toolMenuExtension = new BluVueSheet.ToolMenuExtension(this, scope);
 
         this.optionsMenu.appendTo(this.userInterface);
+        this.floatingToolsMenu.appendTo(this.userInterface);
         this.floatingOptionsMenu.appendTo(this.userInterface);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         elem.append(this.userInterface);

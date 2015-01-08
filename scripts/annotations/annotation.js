@@ -17,6 +17,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 
 	this.color=tileView.color.clone();
 	this.fill=false;
+	this.perimeterMeasured=false;
 	this.areaMeasured=false;
 
 	this.text="";
@@ -32,6 +33,8 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 
     this.measurement = null;
 	this.updateMeasure = function(){};
+	this.hasArea = false;
+	this.hasPerimeter = false;
 	this.bounds;
 
 	this.setColor = function(color){
@@ -50,9 +53,29 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
 
-	if(type==MEASURE_ANNOTATION)this.updateMeasure=updateMeasureLength;
-	if(type==SQUARE_ANNOTATION)this.updateMeasure=updateMeasureRect;
-	if(type==POLYGON_ANNOTATION||type==PEN_ANNOTATION)this.updateMeasure=updateMeasurePoly;
+  var initMeasurement = function( self, linearCalc, areaCalc )
+  {
+      self.hasPerimeter = (typeof(linearCalc) == 'function');
+      self.hasArea = (typeof(areaCalc) == 'function');
+
+      self.updateMeasure = function() {
+          if( self.areaMeasured && self.hasArea )
+              areaCalc.apply( self );
+          else if( !self.areaMeasured && self.hasPerimeter )
+              linearCalc.apply( self );
+
+          return self.measurement;
+      }
+  };
+
+  switch( type )
+  {
+      case MEASURE_ANNOTATION: initMeasurement( this, updateMeasureLength, undefined ); break;
+      case SQUARE_ANNOTATION: initMeasurement( this, updateMeasureRectPerimeter, updateMeasureRect ); break;
+      case POLYGON_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
+      case PEN_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
+      default: initMeasurement( this, undefined, undefined );
+  }
 
 	this.getLength = function(){
 		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
@@ -87,12 +110,13 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		if(this.selected){
 			this.drawSelected(context);
 		}
-		if(this.areaMeasured){
-			this.drawArea(context);
+		if( this.areaMeasured || this.perimeterMeasured ){
+			this.drawMeasurement(context);
 		}
 		context.restore();
 	}
 	this.drawSelected = function(context){
+	  context.save();
 		if(this.rectType||!this.showHandles)this.drawBoundsRect(context);
 		if(this.showHandles){
 			if(this.rectType)
@@ -100,6 +124,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 			else
 				this.drawHandlesPoint(context);
 		}
+		context.restore();
 	}
 	this.drawBoundsRect = function(context){
 		context.strokeStyle="#7e7e7e"
@@ -119,12 +144,12 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	}
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
-		  drawHandle( context, this.getPoint(i,true), tileView.scale );
+		  drawHandle( context, this.points[i], tileView.scale );
 		}
 	}
-	this.drawArea = function(context){
+	this.drawMeasurement = function(context){
 		var textSize=32*this.lineWidth;
-		var text = this.measurement.toString();
+		var text = htmlDecode( this.measurement.toString() );
 
 		context.font = textSize+"px Verdana";
 
@@ -138,7 +163,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
 		context.fillStyle = this.color;
 		context.textAlign = "center";
-		context.fillText(this.measurement.toString(),0,textSize/3);
+		context.fillText(text,0,textSize/3);
 		context.restore();
 	}
 	this.getPoint = function(id,handle){
@@ -220,6 +245,28 @@ var drawFunctions = new Array();
 	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawPoints;
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
+
+  	function updateMeasureRect() {
+        if (this.measurement && this.tileView.annotationManager.scaleAnnotation!=null )
+        {
+            var m = this.tileView.annotationManager.scaleAnnotation.measurement;
+            var l = this.tileView.annotationManager.scaleAnnotation.getLength();
+            var w = Math.abs(this.points[0].x-this.points[1].x);
+            var h = Math.abs(this.points[0].y-this.points[1].y);
+            this.measurement.setAmount(m.amount * m.amount * w * h / (l * l), BluVueSheet.Measurement.toArea(m.unit));
+        }
+    }
+
+  	function updateMeasureRectPerimeter() {
+        if (this.measurement && this.tileView.annotationManager.scaleAnnotation!=null )
+        {
+        		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
+        		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
+        		var w = Math.abs(this.points[0].x-this.points[1].x);
+        		var h = Math.abs(this.points[0].y-this.points[1].y);
+        		this.measurement.setAmount( m.amount * (w+w+h+h) / l, m.unit );
+      	}
+    }
 }
 
 function updateMeasureLength() {
@@ -229,16 +276,6 @@ function updateMeasureLength() {
 		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
 		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
 		this.measurement.setAmount(m.amount*(this.getLength()/l), m.unit);
-	}
-}
-function updateMeasureRect(tileView) {
-    if (this.measurement === null) { return; }
-	if(this.tileView.annotationManager.scaleAnnotation!=null){
-		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
-		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
-		var w = Math.abs(this.points[0].x-this.points[1].x);
-		var h = Math.abs(this.points[0].y-this.points[1].y);
-		this.measurement.setAmount(m.amount * m.amount * w * h / (l * l), BluVueSheet.Measurement.toArea(m.unit));
 	}
 }
 function updateMeasurePoly(tileView) {
@@ -470,7 +507,7 @@ function drawScale(context){
 		if(this.measurement!=null){
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
-			var text = this.measurement.toString();
+			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
 				textSize-=4*this.lineWidth;
@@ -540,7 +577,7 @@ function drawScale(context){
 			context.fillStyle = this.color;
 			context.textAlign = "center";
 
-			context.fillText(this.measurement.toString(),0,textSize/3);
+			context.fillText( text,0,textSize/3);
 
 			context.restore();
 		}
@@ -566,7 +603,7 @@ function drawMeasure(context){
 		if(this.measurement!=null){
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
-			var text = this.measurement.toString();
+			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
 				textSize-=4*this.lineWidth;
@@ -624,7 +661,7 @@ function drawMeasure(context){
 			context.fillStyle = this.color;
 			context.textAlign = "center";
 
-			context.fillText(this.measurement.toString(),0,textSize/3);
+			context.fillText( text ,0,textSize/3);
 
 			context.restore();
 		}
@@ -691,6 +728,7 @@ function AnnotationJSON(annotation) {
 	this.colorBlue = annotation.color.blue;
 	this.zOrder = 0;
 	this.fill = annotation.fill?1:0;
+	this.perimeterVisible = annotation.perimeterMeasured?1:0;
 	this.areaVisible = annotation.areaMeasured?1:0;
 	this.unitOfMeasure;
 	this.lineWidth=annotation.lineWidth;
@@ -733,6 +771,7 @@ function loadAnnotationJSON(json,tileView){
 	annotation.zOrder = json.zOrder;
 	annotation.fill = json.fill==1;
 	annotation.areaMeasured = json.areaVisible==1;
+	annotation.perimeterMeasured = json.perimeterVisible==1;
 	annotation.lineWidth = json.lineWidth;
 
 	if(json.unitOfMeasure!="na"){
@@ -760,4 +799,9 @@ function loadAnnotationJSON(json,tileView){
 	annotation.calcBounds();
 	annotation.updateMeasure();
 	return annotation;
+}
+function htmlDecode(input){
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes[0].nodeValue;
 }

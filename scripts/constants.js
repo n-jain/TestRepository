@@ -83,7 +83,7 @@ BluVueSheet.Constants = {
     ],
     UnitDisplayNames: [
         ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
-        ["IN<sup>2</sup>", "FT<sup>2</sup>", "YD<sup>2</sup>", "AC", "MI<sup>2</sup>", "CM<sup>2</sup>", "M<sup>2</sup>", "HA", "KM<sup>2</sup>"]
+        ["IN&sup2;", "FT&sup2;", "YD&sup2;", "AC", "MI&sup2;", "CM&sup2;", "M&sup2;", "HA", "KM&sup2;"]
     ],
     TextSizes: [32,64,128,256,512],
     Length: 0,
@@ -100,7 +100,8 @@ BluVueSheet.Constants = {
         UnitArea: { id: 5, className: "ruler" },
         Fill: { id: 6, className: "fill" },
         Master: { id: 7, className: "master" },
-        Copy: {id: 8, className: "copy"}
+        Copy: {id: 8, className: "copy"},
+        Perimeter: { id: 9, className: "ruler" }
     },
     Tools: {
         //menuId is the id of the menuButton it is part of
@@ -139,6 +140,12 @@ BluVueSheet.Constants = {
         { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1), imageURL: "images/update/color_dark_purple.png"},
         { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1), imageURL: "images/update/color_aqua.png"},
         { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
+    ],
+    MoreMenu: [
+        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
+        { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
+        { id: 2, func: "rotate_sheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
+        { id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };
 //Define the items in the button menus

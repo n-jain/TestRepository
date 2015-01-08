@@ -9,13 +9,21 @@
             <button ng-click="nextSheet()">Next ></button>
             <button ng-click="resetZoom()" style="display: none;">Fit to Screen</button>
 
-            <button id="more_menu">...</button>
+            <button id="more_menu" ng-click="moreMenuToggle()">...</button>
             <button id="fullscreen_button" ng-click="enterFullscreen(this)">Full Screen</button>
         </nav>
     </header>
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
     </div>
+
+
+    <div class="bluvue-sheet-more-menu">
+        <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" class="" ng-click="moreMenuItemClicked(menuItem)">
+            <img src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
+        </div>
+    </div>
+
 
     <div class="bluvue-sheet-tool-menu">
         <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>

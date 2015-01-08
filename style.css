@@ -30,6 +30,7 @@ header.bluvue-sheet-header {
 header.bluvue-sheet-header .back-block {
     left: 10px;
     position: absolute;
+    z-index: 3;
 }
 
 header.bluvue-sheet-header span {
@@ -109,6 +110,7 @@ footer.bluvue-sheet-footer {
 	position:fixed;
 }
 
+.bluvue-sheet-floating-tools-menu,
 .bluvue-sheet-floating-options-menu {
     position: fixed;
     display: none;
@@ -337,7 +339,7 @@ footer.bluvue-sheet-footer {
     border: 1px solid white;
     border-radius: 8px;
     background-color: white;
-    margin: auto auto;
+    margin: 0 auto;
     padding: 20px;
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     display: table;
@@ -441,4 +443,144 @@ footer.bluvue-sheet-footer {
     text-indent: -9999px;
     height: 50px;
     width: 50px;
+}
+
+.bluvue-sheet-more-menu {
+    color: #fff;
+    display: none;
+    font-family: "Helvetica Neue",Helvetica,sans-serif;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 94px;
+    right: 10px;
+    width: 310px;
+    z-index: 2;
+}
+
+.bluvue-sheet-more-menu:before {
+    content: " ";
+    background: url(images/update/popover-background-arrow-up.png);
+    position: absolute;
+    top: -12px;
+    left: 212px;
+    height: 12px;
+    width: 24px;
+}
+
+.bluvue-sheet-more-menu img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 45px;
+}
+
+.bluvue-sheet-more-menu div {
+    border-bottom: 1px solid black;
+    cursor: pointer;
+    padding: 5px 8px;
+}
+
+.bluvue-sheet-more-menu div:last-child {
+    border: none;
+}
+
+.bluvue-sheet-more-menu div:hover {
+    background-color: rgba(96, 96, 96, 0.7);
+}
+
+
+input.bluvue-sheetname-edit {
+    width: 80%;
+    font-size:18px;
+    padding:4px;
+    border-radius: 4px;
+}
+
+.bluvue-editor-holder {
+    width: 100%;
+    text-align:center;
+    padding-top:10px;
+}
+
+.bluvue-annotation-unit-tools {
+  padding-top: 10px;
+  display:block;
+  text-align:center;
+}
+.bluvue-annotation-convert-button {
+  display: inline-block;
+  color: #157efb;
+  background-color: white;
+  border: 2px solid #157efb;
+  border-radius:40px;
+  padding: 10px 20px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  cursor: pointer;
+}
+.bluvue-annotation-convert-button:hover {
+  background-color: #f4f8f9;
+}
+
+.bluvue-sheet-floating-tools-menu {
+    text-align:  center;
+}
+
+.bv-toggle-master {
+   border-top-left-radius: 20px;
+   border-bottom-left-radius: 20px;
+   border-right: 2px solid white;
+}
+
+.bv-toggle-personal {
+   border-top-right-radius: 20px;
+   border-bottom-right-radius: 20px;
+   border-left: 2px solid white;
+}
+
+
+.master .bv-toggle-master {
+    color: white;
+    background-color: #157efb;
+}
+
+.personal .bv-toggle-personal {
+    color: white;
+    background-color: #157efb;
+}
+
+.personal .bv-toggle-master:hover {
+    background-color: #f4f8f9;
+}
+
+.master .bv-toggle-personal:hover {
+    background-color: #f4f8f9;
+}
+
+.bluvue-sheet-floating-tools-toggle {
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    display:  inline-block;
+}
+
+.bluvue-sheet-floating-tools-toggle div{
+  color: #157efb;
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+  width: 100px;
+  text-align: center;
+  border: 2px solid #157efb;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.back-block button {
+    background: url(images/update/back.png) no-repeat;
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    margin-top: 7px;
+    height: 34px;
+    width: 88px;
 }
