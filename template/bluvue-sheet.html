@@ -9,7 +9,7 @@
             <button ng-click="nextSheet()">Next ></button>
             <button ng-click="resetZoom()" style="display: none;">Fit to Screen</button>
 
-            <button id="more_menu">...</button>
+            <button id="more_menu" ng-click="moreMenuToggle()">...</button>
             <button id="fullscreen_button" ng-click="enterFullscreen(this)">Full Screen</button>
         </nav>
     </header>
@@ -19,7 +19,7 @@
 
 
     <div class="bluvue-sheet-more-menu">
-        <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" class="">
+        <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" class="" ng-click="moreMenuItemClicked(menuItem)">
             <img src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
         </div>
     </div>

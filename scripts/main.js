@@ -246,6 +246,28 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     scope.sheet = pinnedSheet;
                 }
                 //#endregion
+
+                scope.moreMenuToggle = function () {
+                    var menu = document.getElementsByClassName('bluvue-sheet-more-menu')[0];
+                    var isClosed = menu.style.display == 'none';
+
+                    if(isClosed) {
+                        menu.style.display = 'block';
+                    } else {
+                        menu.style.display = 'none';
+                    }
+                }
+
+                scope.moreMenuItemClicked = function(menuItem) {
+                    var f = menuItem.func;
+
+                    try {
+                        scope[f]();
+                    }
+                    catch(err) {
+                        console.log('Function "' + menuItem.func + '" don\'t exists');
+                    }
+                }
             }
         }
     }
