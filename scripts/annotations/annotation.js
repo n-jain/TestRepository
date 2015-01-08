@@ -119,7 +119,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 	}
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
-		  drawHandle( context, this.getPoint(i,true), tileView.scale );
+		  drawHandle( context, this.points[i], tileView.scale );
 		}
 	}
 	this.drawArea = function(context){
