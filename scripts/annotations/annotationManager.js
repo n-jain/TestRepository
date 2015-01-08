@@ -139,6 +139,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				for(var i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
 					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
+					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
 					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
@@ -147,6 +148,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				if (annotation.rectType) {
 				    annotation.scaleWithHandleTo(x, y, touchedHandle);
 				    tileView.sheet.textEditor.setLoc(calcTextEditorLocation(annotation));
+					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
 					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 				} else {
 			        annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
@@ -158,6 +160,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				            annotations[i].updateMeasure();
 				        }
 				    }
+					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
 					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 				}
 			}
@@ -244,6 +247,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.updateTextEditorIfPresent= function(){
 		if(currentAnnotation==null&&touchedHandle==-1&&selectedAnnotations.length==1) {
 			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
+			tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations[0]));
 			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations[0]));
 		}
 	}
@@ -257,6 +261,26 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			x = (corner.x+annotation.offset_x+tileView.scrollX)*tileView.scale-w;
 		}
 		return new BluVueSheet.Point(x,y);
+	}
+	function calcFloatingToolsMenuLocation(annotations){
+		var w = tileView.sheet.floatingToolsMenu.getWidth();
+		var minX = -1;
+		var maxX = -1;
+		var minY = -1;
+		for(var i=0; i<annotations.length; i++){
+			var pmix = annotations[i].getPoint(7, true);
+			var pmax = annotations[i].getPoint(2, true);
+			var pmiy = annotations[i].getPoint(0, true);
+
+			var amix = (pmix.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
+			var amax = (pmax.x+annotations[i].offset_x+tileView.scrollX)*tileView.scale;
+			var amiy = BOUND_DIST+(pmiy.y+annotations[i].offset_y+tileView.scrollY)*tileView.scale;
+
+			if(amix < minX || minX==-1) minX = amix;
+			if(amax > maxX || maxX==-1) maxX = amax;
+			if(amiy < minY || minY==-1) minY = amiy;
+		}
+		return new BluVueSheet.Point(((minX+maxX)/2)-(w/2),minY);
 	}
 	function calcFloatingOptionsMenuLocation(annotations){
 		var w = tileView.sheet.floatingOptionsMenu.getWidth();
@@ -294,6 +318,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			tileView.sheet.textEditor.show(calcTextEditorLocation(annotation));
 			annotation.added=true;
 		}
+		tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
 		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 	}
 	this.selectAnnotation = function(annotation){
@@ -322,6 +347,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
+		tileView.sheet.floatingToolsMenu.hide();
 		tileView.sheet.floatingOptionsMenu.hide();
 		for(var i=0; i<toKill.length; i++){
 			removeFromArray(annotations,toKill[i]);
@@ -341,7 +367,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			selectedAnnotations[0].showHandles=true;
 		}
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
-		if(selectedAnnotations.length>0)tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotations));
+		if(selectedAnnotations.length>0){
+		  tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(annotations));
+		  tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotations));
+		}
 	}
 	this.deleteSelectedAnnotations = function(){
 	  var self = this;
@@ -380,6 +409,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     		self.captureKeyboard=false;
     		tileView.sheet.textEditor.hide();
+    		tileView.sheet.floatingToolsMenu.hide();
     		tileView.sheet.floatingOptionsMenu.hide();
 	    }
 	  });

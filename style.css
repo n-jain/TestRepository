@@ -109,6 +109,7 @@ footer.bluvue-sheet-footer {
 	position:fixed;
 }
 
+.bluvue-sheet-floating-tools-menu,
 .bluvue-sheet-floating-options-menu {
     position: fixed;
     display: none;
@@ -473,4 +474,58 @@ input.bluvue-sheetname-edit {
 }
 .bluvue-annotation-convert-button:hover {
   background-color: #f4f8f9;
+}
+
+.bluvue-sheet-floating-tools-menu {
+    text-align:  center;
+}
+
+.bv-toggle-master {
+   border-top-left-radius: 20px;
+   border-bottom-left-radius: 20px;
+   border-right: 2px solid white;
+}
+
+.bv-toggle-personal {
+   border-top-right-radius: 20px;
+   border-bottom-right-radius: 20px;
+   border-left: 2px solid white;
+}
+
+
+.master .bv-toggle-master {
+    color: white;
+    background-color: #157efb;
+}
+
+.personal .bv-toggle-personal {
+    color: white;
+    background-color: #157efb;
+}
+
+.personal .bv-toggle-master:hover {
+    background-color: #f4f8f9;
+}
+
+.master .bv-toggle-personal:hover {
+    background-color: #f4f8f9;
+}
+
+.bluvue-sheet-floating-tools-toggle {
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    display:  inline-block;
+}
+
+.bluvue-sheet-floating-tools-toggle div{
+  color: #157efb;
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+  width: 100px;
+  text-align: center;
+  border: 2px solid #157efb;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  cursor: pointer;
 }

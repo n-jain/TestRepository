@@ -334,6 +334,86 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     }
 }
 
+BluVueSheet.FloatingToolsMenu = function (sheet, scope){
+    var t = this;
+    this.sheet = sheet;
+
+    this.floatingToolsMenuElement = document.createElement("div");
+    this.floatingToolsMenuElement.className = 'bluvue-sheet-floating-tools-menu';
+    this.loc = null;
+    this.width = 300;
+    this.height = 42;
+
+    this.setSelectedToolsForAnnotations = function( annotations, tileView )
+    {
+        var menu = angular.element( document.querySelector( '.bluvue-sheet-floating-tools-menu' ));
+        menu.empty();
+
+        var userIsAdmin = scope.isAdmin;
+        if( userIsAdmin && annotations.length == 1 )
+        {
+          menu.append( this.createMasterPersonalControl( annotations[0], function( annotation, newState ) {
+            console.log( "State is now ", annotation, newState );
+          }) );
+        }
+    }
+
+    this.createMasterPersonalControl = function( annotation, applyState )
+    {
+        var isMaster = true;
+
+        var masterPersonalControl = angular.element( "<div></div>" ).addClass( 'bluvue-sheet-floating-tools-toggle');
+        var masterButton = angular.element( "<div>Master</div>" ).addClass( 'bv-toggle-master');
+        masterButton.on( 'click', function() {
+          masterPersonalControl.addClass( 'master' );
+          masterPersonalControl.removeClass( 'personal' );
+          applyState( annotation, 'master' );
+        } );
+        var personalButton = angular.element( "<div>Personal</div>" ).addClass( 'bv-toggle-personal');
+        personalButton.on( 'click', function() {
+          masterPersonalControl.removeClass( 'master' );
+          masterPersonalControl.addClass( 'personal' );
+          applyState( annotation, 'personal' );
+        } );
+        masterPersonalControl.append( masterButton ).append( personalButton );
+        masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
+
+        return masterPersonalControl;
+    }
+
+    this.show = function(loc){
+        this.setLoc(loc);
+        this.floatingToolsMenuElement.style.display = "block";
+    }
+
+    this.hide = function(){
+        this.floatingToolsMenuElement.style.display = 'none';
+    }
+
+    this.getWidth = function(){
+        return this.width;
+    }
+
+    this.getHeight = function(){
+        return this.floatingToolsMenuElement.offsetWidth;
+    }
+
+    this.setLoc = function(loc){
+        this.loc = loc;
+        this.floatingToolsMenuElement.style.width = this.width + "px";
+        this.floatingToolsMenuElement.style.left = loc.x + "px";
+        this.floatingToolsMenuElement.style.top = (loc.y - this.height - 2*BOUND_DIST) + "px";
+    }
+
+    this.hideAllMenus = function(){
+    }
+
+    this.appendTo = function(userInterface){
+        userInterface.appendChild(this.floatingToolsMenuElement);
+    }
+}
+
+
 BluVueSheet.ColorMenu = function(setColor){
 	this.colorMenuElement = document.createElement("div");
 	this.colorMenuElement.className = 'bluvue-sheet-color-menu';

@@ -204,6 +204,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+    	this.sheet.floatingToolsMenu.setSelectedToolsForAnnotations( selectedAnnotations, tileView );
     	this.sheet.floatingOptionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     }
 
