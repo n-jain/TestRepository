@@ -33,11 +33,14 @@ BluVueSheet.MouseControls = function(tileView) {
             tileView.scale = newScale;
         }
 
-        var nx = e.clientX / tileView.scale - tileView.scrollX;
-        var ny = e.clientY / tileView.scale - tileView.scrollY;
+        var mouse2 = locationInTileview(e.clientX, e.clientY);
+
+        var nx = mouse2.x - mouse.x;
+        var ny = mouse2.y - mouse.y;
+
         //centers zoom around mouse
-        tileView.scrollX += nx - mouse.x;
-        tileView.scrollY += ny - mouse.y;
+        tileView.scrollX += nx;
+        tileView.scrollY += ny;
 
         tileView.updateRes();
 
@@ -110,9 +113,22 @@ BluVueSheet.MouseControls = function(tileView) {
     };
 
     function locationInTileview(x, y) {
-        var x1 = x / tileView.scale - tileView.scrollX;
-        var y1 = y / tileView.scale - tileView.scrollY;
-        return new BluVueSheet.Point(x1, y1);
+        var centerX = tileView.tileLoader.width / 2;
+        var centerY = tileView.tileLoader.height / 2;
+
+        var x1 = x / tileView.scale - tileView.scrollX - (tileView.canvas.width / tileView.scale - tileView.tileLoader.width) / 2;
+        var y1 = y / tileView.scale - tileView.scrollY - (tileView.canvas.height / tileView.scale - tileView.tileLoader.height) / 2;
+
+        // rotate
+        var angle = tileView.sheet.rotation * Math.PI / 180 * -1;
+        var newX = centerX + (x1 - centerX) * Math.cos(angle) - (y1 - centerY) * Math.sin(angle);
+        var newY = centerY + (x1 - centerX) * Math.sin(angle) + (y1 - centerY) * Math.cos(angle);
+
+        var p = new BluVueSheet.Point(newX, newY);
+
+        console.log(p);
+
+        return p;
     }
 
     //#region Touch Events

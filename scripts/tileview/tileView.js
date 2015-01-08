@@ -2,7 +2,8 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	var context;
     var t = this;
 
-	this.sheet = sheet;
+    this.sheet = sheet;
+    this.canvas = canvas;
 
     this.deselectTool = deselectTool;
 	this.tileLoader;
@@ -116,17 +117,25 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
 		context.clearRect(0,0,canvas.width,canvas.height);
-		context.save();
-
+		
 		if (!this.canDraw) {
 		    this.drawProgressIndicator();
 		    return;
 		}
-		context.scale(this.scale,this.scale);
-		context.translate(this.scrollX, this.scrollY);
-		context.rotate(scope.sheet.rotation / 180 * Math.PI);
 
-		var visibleLeft = this.scrollX < 0 ? this.scrollX * -1 : 0;
+		context.save();
+
+        context.scale(this.scale, this.scale);
+        context.translate(this.scrollX, this.scrollY);
+        context.translate(canvas.width / this.scale / 2, canvas.height / this.scale / 2);
+
+        context.rotate(this.sheet.rotation / 180 * Math.PI);
+
+        BluVueSheet.TileView.OffsetTop = -this.tileLoader.height / 2;
+        BluVueSheet.TileView.OffsetLeft = -this.tileLoader.width / 2;
+        context.translate(BluVueSheet.TileView.OffsetLeft, BluVueSheet.TileView.OffsetTop);
+        
+        var visibleLeft = this.scrollX < 0 ? this.scrollX * -1 : 0;
 		var visibleTop = this.scrollY < 0 ? this.scrollY * -1 : 0;
 		var visibleWidth = canvas.width / this.scale;
 		var visibleHeight = canvas.height / this.scale;
@@ -137,18 +146,27 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 		    x2: visibleLeft + visibleWidth,
 		    y2: visibleTop + visibleHeight
 		});
+
 		this.annotationManager.drawAllAnnotations(context);
+		
 		context.restore();
 	}
 
-	this.fitToScreen = function () {
+    this.fitToScreen = function () {
 	    var headerHeight = BluVueSheet.Constants.HeaderHeight;
 	    var footerHeight = BluVueSheet.Constants.FooterHeight;
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight - footerHeight) ? canvas.width : canvas.height - headerHeight - footerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
-	    this.scale = 0.9 * canvasDim / sheetDim;
-	    this.scrollX = (canvas.width - (this.tileLoader.width * this.scale)) / (2 * this.scale);
-	    this.scrollY = (canvas.height + headerHeight - footerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
+	    this.scale = 0.8 * canvasDim / sheetDim;
+
+	    console.log(canvas.width, this.tileLoader.height * this.scale, this.tileLoader.width * this.scale);
+
+        
+	    //this.scrollX = this.tileLoader.height / 2;
+	    //this.scrollY = this.tileLoader.width / 2;
+        
+	    //this.scrollX = (canvas.width - (this.tileLoader.width * this.scale)) / (2 * this.scale);
+	    //this.scrollY = (canvas.height + headerHeight - footerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
 	    this.updateRes();
 	}
 
@@ -215,3 +233,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    else { this.tileLoader.setTileRes(4); }
 	}
 }
+
+BluVueSheet.TileView.OffsetLeft = 0;
+BluVueSheet.TileView.OffsetTop = 0;
