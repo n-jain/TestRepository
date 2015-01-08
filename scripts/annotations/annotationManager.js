@@ -468,16 +468,20 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         }
        	this.saveSelectedAnnotations();
     }
-	this.masterSelectedAnnotations = function(){
-		var master = true;
+  this.isAnnotationContextMaster = function(){
 		for(var i=0; i<selectedAnnotations.length; i++){
-			if(selectedAnnotations[i].userId==undefined){
-				master=false;
+			if( selectedAnnotations[i].userId ){
+				return false;
 			}
 		}
-
-		for (var i = 0; i < selectedAnnotations.length; i++) {
-			selectedAnnotations[i].userId=master?undefined:scope.userId;
+		return true;
+	}
+	this.masterSelectedAnnotations = function toggleAnnotationContextMaster(){
+	  this.setAnnotationContextMaster( !this.isAnnotationContextMaster() );
+	}
+	this.setAnnotationContextMaster = function( isMaster ) {
+		for( var i = 0; i < selectedAnnotations.length; i++) {
+			selectedAnnotations[i].userId = isMaster ? null : scope.userId;
 		}
 		this.saveSelectedAnnotations();
 	}

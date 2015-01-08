@@ -344,36 +344,36 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
     this.width = 300;
     this.height = 42;
 
-    this.setSelectedToolsForAnnotations = function( annotations, tileView )
+    this.setSelectedToolsForAnnotations = function( selectedAnnotations, tileView )
     {
         var menu = angular.element( document.querySelector( '.bluvue-sheet-floating-tools-menu' ));
         menu.empty();
 
         var userIsAdmin = scope.isAdmin;
-        if( userIsAdmin && annotations.length == 1 )
+        if( userIsAdmin && selectedAnnotations.length >= 1 )
         {
-          menu.append( this.createMasterPersonalControl( annotations[0], function( annotation, newState ) {
-            console.log( "State is now ", annotation, newState );
-          }) );
+            menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
+                sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
+            }) );
         }
     }
 
-    this.createMasterPersonalControl = function( annotation, applyState )
+    this.createMasterPersonalControl = function( annotations, applyState )
     {
-        var isMaster = true;
+        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster();
 
         var masterPersonalControl = angular.element( "<div></div>" ).addClass( 'bluvue-sheet-floating-tools-toggle');
         var masterButton = angular.element( "<div>Master</div>" ).addClass( 'bv-toggle-master');
         masterButton.on( 'click', function() {
-          masterPersonalControl.addClass( 'master' );
-          masterPersonalControl.removeClass( 'personal' );
-          applyState( annotation, 'master' );
+            masterPersonalControl.addClass( 'master' );
+            masterPersonalControl.removeClass( 'personal' );
+            applyState( annotations, 'master' );
         } );
         var personalButton = angular.element( "<div>Personal</div>" ).addClass( 'bv-toggle-personal');
         personalButton.on( 'click', function() {
-          masterPersonalControl.removeClass( 'master' );
-          masterPersonalControl.addClass( 'personal' );
-          applyState( annotation, 'personal' );
+            masterPersonalControl.removeClass( 'master' );
+            masterPersonalControl.addClass( 'personal' );
+            applyState( annotations, 'personal' );
         } );
         masterPersonalControl.append( masterButton ).append( personalButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
