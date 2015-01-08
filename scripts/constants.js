@@ -139,6 +139,12 @@ BluVueSheet.Constants = {
         { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1), imageURL: "images/update/color_dark_purple.png"},
         { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1), imageURL: "images/update/color_aqua.png"},
         { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
+    ],
+    MoreMenu: [
+        { id: 0, click: "edit_sheet_name", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
+        { id: 1, click: "edit_sheet_revision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
+        { id: 2, click: "rotate_sheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
+        { id: 3, click: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };
 //Define the items in the button menus

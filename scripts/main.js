@@ -25,6 +25,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
                 scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
+                scope.toolMoreMenu = BluVueSheet.Constants.MoreMenu;
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
