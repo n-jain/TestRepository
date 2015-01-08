@@ -30,6 +30,7 @@ header.bluvue-sheet-header {
 header.bluvue-sheet-header .back-block {
     left: 10px;
     position: absolute;
+    z-index: 3;
 }
 
 header.bluvue-sheet-header span {
@@ -574,3 +575,12 @@ input.bluvue-sheetname-edit {
   cursor: pointer;
 }
 
+.back-block button {
+    background: url(images/update/back.png) no-repeat;
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    margin-top: 7px;
+    height: 34px;
+    width: 88px;
+}
