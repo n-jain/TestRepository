@@ -96,7 +96,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		this.captureMouse = false;
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
 			this.finishAnnotation();
-		    if (tileView.getTool() != BluVueSheet.Constants.Tools.Pen && tileView.getTool() != BluVueSheet.Constants.Tools.Highlighter)tileView.deselectTool();
+		    if (tileView.getTool() != BluVueSheet.Constants.Tools.Pen && tileView.getTool() != BluVueSheet.Constants.Tools.Highlighter) tileView.deselectTool();
 		}
 		if(lasso!=null){
 			this.selectAllInLasso();

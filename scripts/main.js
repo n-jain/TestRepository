@@ -63,6 +63,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 scope.deselectTool = function() {
                     scope.selectTool(null);
                     scope.$apply();
+                    scope.moreMenuToggle(true);
                 }
 
                 scope.selectTool = function(tool) {
@@ -269,11 +270,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
                 //#endregion
 
-                scope.moreMenuToggle = function () {
-                    var menu = document.getElementsByClassName('bluvue-sheet-more-menu')[0];
-                    var isClosed = menu.style.display == 'none';
+                scope.moreMenuToggle = function (need_closed) {
+                    var need_closed = need_closed || false;
 
-                    if(isClosed) {
+                    var menu = document.getElementsByClassName('bluvue-sheet-more-menu')[0];
+                    var isClosed = menu.style.display == 'none' || menu.style.display == '';
+
+                    if(isClosed && !need_closed) {
                         menu.style.display = 'block';
                     } else {
                         menu.style.display = 'none';
