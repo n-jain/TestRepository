@@ -17,10 +17,10 @@ div.bluvue-sheet > canvas {
 }
 
 header.bluvue-sheet-header {
-    background: white;
+    background: rgba(247, 247, 247, 0.86);
     border-bottom: solid 1px #aaa;
     font-family: Verdana;
-    padding: 10px 0 10px 0;
+    padding: 10px 0px 10px 0;
     position: absolute;
     top: 0;
     left: 0;
@@ -423,11 +423,12 @@ footer.bluvue-sheet-footer {
 
 #fullscreen_button {
     background: url(images/update/icon_sheet_fullscreen.png) no-repeat;
+    background-size: contain;
     border: none;
     cursor: pointer;
     text-indent: -9999px;
-    height: 50px;
-    width: 50px;
+    height: 25px;
+    width: 25px;
 }
 
 #fullscreen_exit_button {
@@ -441,11 +442,12 @@ footer.bluvue-sheet-footer {
 
 #more_menu {
     background: url(images/update/icon_sheet_more.png) no-repeat;
+    background-size: contain;
     border: none;
     cursor: pointer;
     text-indent: -9999px;
-    height: 50px;
-    width: 50px;
+    height: 25px;
+    width: 25px;
 }
 
 .bluvue-sheet-more-menu {
@@ -455,7 +457,7 @@ footer.bluvue-sheet-footer {
     font-size: 16px;
     background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
-    top: 94px;
+    top: 64px;
     right: 10px;
     width: 310px;
     z-index: 2;
@@ -466,21 +468,21 @@ footer.bluvue-sheet-footer {
     background: url(images/update/popover-background-arrow-up.png);
     position: absolute;
     top: -12px;
-    left: 212px;
+    left: 248px;
     height: 12px;
     width: 24px;
 }
 
 .bluvue-sheet-more-menu img {
     vertical-align: middle;
-    margin-right: 5px;
-    width: 45px;
+    margin-right: 3px;
+    width: 25px;
 }
 
 .bluvue-sheet-more-menu div {
     border-bottom: 1px solid black;
     cursor: pointer;
-    padding: 5px 8px;
+    padding: 10px 8px;
 }
 
 .bluvue-sheet-more-menu div:last-child {
@@ -581,12 +583,12 @@ input.bluvue-sheetname-edit {
 
 .back-block button {
     background: url(images/update/back.png) no-repeat;
+    background-size: contain;
     border: none;
     cursor: pointer;
     text-indent: -9999px;
-    margin-top: 7px;
-    height: 34px;
-    width: 88px;
+    height: 30px;
+    width: 82px;
 }
 
 #previous-sheet-arrow {
