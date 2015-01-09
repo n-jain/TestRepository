@@ -588,3 +588,37 @@ input.bluvue-sheetname-edit {
     height: 34px;
     width: 88px;
 }
+
+#previous-sheet-arrow {
+    background: url(images/update/arrow-previous.png) no-repeat 44% 50%;
+    background-color: rgba(96, 96, 96, 0.7);
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    margin-top: 7px;
+    height: 80px;
+    position: fixed;
+    margin-top: -40px;
+    top: 50%;
+    left: 0;
+    width: 58px;
+}
+
+#next-sheet-arrow {
+    background: url(images/update/arrow-next.png) no-repeat 52% 50%;
+    background-color: rgba(96, 96, 96, 0.7);
+    border: none;
+    cursor: pointer;
+    text-indent: -9999px;
+    margin-top: 7px;
+    height: 80px;
+    position: fixed;
+    margin-top: -40px;
+    top: 50%;
+    right: 0;
+    width: 58px;
+}
+
+#previous-sheet-arrow:hover, #next-sheet-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
