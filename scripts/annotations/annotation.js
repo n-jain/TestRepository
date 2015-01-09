@@ -74,6 +74,20 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
       case SQUARE_ANNOTATION: initMeasurement( this, updateMeasureRectPerimeter, updateMeasureRect ); break;
       case POLYGON_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
       case PEN_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
+
+      case CIRCLE_ANNOTATION: initMeasurement( this, updateMeasureEllipsePerimeter, updateMeasureEllipseArea ); break;
+
+      // Unimplemented cases fall through to the default case
+      case X_ANNOTATION:
+      case CLOUD_ANNOTATION:
+      case TEXT_ANNOTATION:
+      case LINE_ANNOTATION:
+      case ARROW_ANNOTATION:
+      case HIGHLIGHTER_ANNOTATION:
+      case SCALE_ANNOTATION:
+
+      case NO_ANNOTATION:
+      case LASSO_ANNOTATION:
       default: initMeasurement( this, undefined, undefined );
   }
 
@@ -246,26 +260,46 @@ var drawFunctions = new Array();
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
 
-  	function updateMeasureRect() {
-        if (this.measurement && this.tileView.annotationManager.scaleAnnotation!=null )
+    function setMeasurement( annotation, value, isArea )
+    {
+        if( annotation.measurement && annotation.tileView.annotationManager.scaleAnnotation!=null )
         {
-            var m = this.tileView.annotationManager.scaleAnnotation.measurement;
-            var l = this.tileView.annotationManager.scaleAnnotation.getLength();
-            var w = Math.abs(this.points[0].x-this.points[1].x);
-            var h = Math.abs(this.points[0].y-this.points[1].y);
-            this.measurement.setAmount(m.amount * m.amount * w * h / (l * l), BluVueSheet.Measurement.toArea(m.unit));
+            var m = annotation.tileView.annotationManager.scaleAnnotation.measurement;
+            var l = annotation.tileView.annotationManager.scaleAnnotation.getLength();
+
+            var scale = m.amount / l;
+            if( isArea )
+                annotation.measurement.setAmount( value * scale * scale, BluVueSheet.Measurement.toArea( m.unit ) );
+            else
+                annotation.measurement.setAmount( value * scale, m.unit );
         }
     }
 
+  	function updateMeasureRect() {
+  	    var w = Math.abs(this.points[0].x-this.points[1].x);
+        var h = Math.abs(this.points[0].y-this.points[1].y);
+        setMeasurement( this, w*h, true );
+    }
+
   	function updateMeasureRectPerimeter() {
-        if (this.measurement && this.tileView.annotationManager.scaleAnnotation!=null )
-        {
-        		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
-        		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
-        		var w = Math.abs(this.points[0].x-this.points[1].x);
-        		var h = Math.abs(this.points[0].y-this.points[1].y);
-        		this.measurement.setAmount( m.amount * (w+w+h+h) / l, m.unit );
-      	}
+        var w = Math.abs(this.points[0].x-this.points[1].x);
+        var h = Math.abs(this.points[0].y-this.points[1].y);
+        setMeasurement( this, w+w+h+h, false );
+    }
+
+    function updateMeasureEllipseArea() {
+  	    var a = Math.abs(this.points[0].x-this.points[1].x)/2;
+    	  var b = Math.abs(this.points[0].y-this.points[1].y)/2;
+    	  setMeasurement( this, Math.PI * a * b, true );
+    }
+
+    function updateMeasureEllipsePerimeter() {
+        // Ramanujan's 3rd approximation of ellipse perimeter
+        // http://www.mathsisfun.com/geometry/ellipse-perimeter.html
+	      var a = Math.abs(this.points[0].x-this.points[1].x)/2;
+	      var b = Math.abs(this.points[0].y-this.points[1].y)/2;
+	      var h = (a - b) * (a - b) / (a + b) / (a + b);
+	      setMeasurement(this, Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h))), false );
     }
 }
 
