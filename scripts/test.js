@@ -8,7 +8,7 @@
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet001-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: [
@@ -44,7 +44,7 @@
                 slicesUrl: "sheet2/slices.zip",
                 previewUrl: "sheet2/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet002-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: []
@@ -54,7 +54,7 @@
                 slicesUrl: "sheet3/slices.zip",
                 previewUrl: "sheet3/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet003-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: []
@@ -63,12 +63,13 @@
             $scope.revisionsForSheet = function (sheet) {
                 // for testing this always returns the same thing
                 return [
+                    sheets[0],
                     {
                         name: 'Revision 1',
                         slicesUrl: "sheet2/slices.zip",
                         previewUrl: "sheet2/preview.png",
                         projectId: "guid",
-                        id: "guid",
+                        id: "sheet001-r1",
                         userId: "guid",
                         rotation: 0,
                         annotations: []
@@ -78,7 +79,7 @@
                         slicesUrl: "sheet3/slices.zip",
                         previewUrl: "sheet3/preview.png",
                         projectId: "guid",
-                        id: "guid",
+                        id: "sheet001-r2",
                         userId: "guid",
                         rotation: 0,
                         annotations: []
