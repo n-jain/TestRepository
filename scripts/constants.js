@@ -46,6 +46,8 @@ function toolToAnnotation(tool){
 	    case BluVueSheet.Constants.Tools.Highlighter:
 			return HIGHLIGHTER_ANNOTATION;
 	    case BluVueSheet.Constants.Tools.Ruler:
+			return MEASURE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Calibration:
 			return SCALE_ANNOTATION;
 	}
 	return NO_ANNOTATION;
@@ -101,7 +103,8 @@ BluVueSheet.Constants = {
         Fill: { id: 6, className: "fill" },
         Master: { id: 7, className: "master" },
         Copy: {id: 8, className: "copy"},
-        Perimeter: { id: 9, className: "ruler" }
+        Perimeter: { id: 9, className: "ruler" },
+        Calibrate: { id: 10, className: "calibrate" }
     },
     Tools: {
         //menuId is the id of the menuButton it is part of
@@ -117,9 +120,9 @@ BluVueSheet.Constants = {
         Arrow: { id: 8, name: "arrow", menuId: 2, menuIndex: 1, description:"Click and drag to place an arrow on the drawing.", heroImage:"images/update/icon_toolbars_arrow_white.png" },
         Pen: { id: 9, name: "pen", menuId: 3, menuIndex: 0, description:"Click and drag to draw a line on the drawing.", heroImage:"images/update/icon_toolbars_pencil_white.png" },
         Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1, description:"Click and drag to highlight part of the drawing.", heroImage:"images/update/icon_toolbars_highlighter_white.png" },
-        Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" }
-        //Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" }
-        //Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 2, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
+        Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" },
+        //Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" },
+        Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
     },
     ToolMenuButtons: {
        Lasso: { id: 0, name: "lasso-button" },
@@ -145,7 +148,8 @@ BluVueSheet.Constants = {
         { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
         { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
         { id: 2, func: "rotate_sheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
-        { id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
+        { id: 2, func: "rotate_sheet", text: "Show Tool Help", imageURL: "images/update/icon_tool_help.png"},
+        //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };
 //Define the items in the button menus
@@ -159,7 +163,8 @@ BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Con
                                                                 BluVueSheet.Constants.Tools.X];
 BluVueSheet.Constants.ToolMenuButtons.FreeAnnotations.buttons = [BluVueSheet.Constants.Tools.Pen,
                                                                  BluVueSheet.Constants.Tools.Highlighter];
-BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSheet.Constants.Tools.Ruler];
+BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSheet.Constants.Tools.Ruler,
+                                                                        BluVueSheet.Constants.Tools.Calibration];
 BluVueSheet.Constants.ToolMenuButtons.TextAnnotations.buttons = [BluVueSheet.Constants.Tools.Text];
 BluVueSheet.Constants.ToolMenuButtons.HideMenu.buttons = [BluVueSheet.Constants.HideButton];
 

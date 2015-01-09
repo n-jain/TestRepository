@@ -5,14 +5,16 @@
         </div>
         <span>{{sheet.name}}</span>
         <nav>
-            <button ng-click="previousSheet()">< Previous</button>
-            <button ng-click="nextSheet()">Next ></button>
             <button ng-click="resetZoom()" style="display: none;">Fit to Screen</button>
 
             <button id="more_menu" ng-click="moreMenuToggle()">...</button>
             <button id="fullscreen_button" ng-click="enterFullscreen(this)">Full Screen</button>
         </nav>
     </header>
+
+    <button ng-click="previousSheet()" id="previous-sheet-arrow">< Previous</button>
+    <button ng-click="nextSheet()" id="next-sheet-arrow">Next ></button>
+
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
     </div>

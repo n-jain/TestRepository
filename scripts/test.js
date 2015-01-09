@@ -8,7 +8,7 @@
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet001-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: [
@@ -23,8 +23,7 @@
                         userId: "",
                         type:6,
                         data: '{"id":"04840b5829aa4088801edaf986970a72","projectId":"guid","sheetId":"guid","type":6,"colorRed":1,"colorGreen":0,"colorBlue":0,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"na","x":3037.162891046386,"y":2915.9719525350592,"width":786.7879003898297,"height":551.7229772489736,"text":"brad","textSize":128}'
-                    },
-                    {
+                    },                    {
                       id:'c36387e9ad2e47098aaf72d4cb8e79f0',
                       userId: 'guid',
                       type: 10,
@@ -36,7 +35,13 @@
                       type: 1,
 //                      data:'{"id":"3e457065b71f4f90857f8161314afc8b","projectId":"guid","sheetId":"guid","userId":"guid","type":1,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"na","x":2226.01589436749,"y":3683.511186353196,"width":2518.239836683612,"height":504.17242332066644}'
                       data: '{"id":"3e457065b71f4f90857f8161314afc8b","projectId":"guid","sheetId":"guid","userId":"guid","type":1,"colorRed":0.058823529411764705,"colorGreen":0.38823529411764707,"colorBlue":0.8941176470588236,"zOrder":0,"fill":1,"perimeterVisible":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","x":1868.6369344133827,"y":3982.678780228193,"width":2510.449196870806,"height":519.954943142649}'
-                      }
+                    },
+                    {
+                      id:'e39ddf5ca3184ea2a8b1adeaa5e4b97e',
+                      userId:"guid",
+                      type:13,
+                      data:'{"id":"e39ddf5ca3184ea2a8b1adeaa5e4b97e","projectId":"guid","sheetId":"sheet001r0","userId":"guid","type":13,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":0,"perimeterVisible":0,"areaVisible":1,"lineWidth":7.5,"unitOfMeasure":"ft2","points":[{"x":5894.363581910751,"y":2979.8074273734655},{"x":5396.010781671158,"y":3715.8361784965555},{"x":6921.737047020065,"y":3938.17819706499},{"x":6983.072776280323,"y":3370.8227014076074}],"closed":true}'
+                    }
                 ] // hard code annotations here for testing
             },
             {
@@ -44,7 +49,7 @@
                 slicesUrl: "sheet2/slices.zip",
                 previewUrl: "sheet2/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet002-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: []
@@ -54,7 +59,7 @@
                 slicesUrl: "sheet3/slices.zip",
                 previewUrl: "sheet3/preview.png",
                 projectId: "guid",
-                id: "guid",
+                id: "sheet003-r0",
                 userId: "guid",
                 rotation: 0,
                 annotations: []
@@ -63,12 +68,13 @@
             $scope.revisionsForSheet = function (sheet) {
                 // for testing this always returns the same thing
                 return [
+                    sheets[0],
                     {
                         name: 'Revision 1',
                         slicesUrl: "sheet2/slices.zip",
                         previewUrl: "sheet2/preview.png",
                         projectId: "guid",
-                        id: "guid",
+                        id: "sheet001-r1",
                         userId: "guid",
                         rotation: 0,
                         annotations: []
@@ -78,7 +84,7 @@
                         slicesUrl: "sheet3/slices.zip",
                         previewUrl: "sheet3/preview.png",
                         projectId: "guid",
-                        id: "guid",
+                        id: "sheet001-r2",
                         userId: "guid",
                         rotation: 0,
                         annotations: []
