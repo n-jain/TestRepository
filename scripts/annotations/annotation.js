@@ -71,29 +71,35 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
   switch( type )
   {
       case MEASURE_ANNOTATION: initMeasurement( this, updateMeasureLength, undefined ); break;
-      case SQUARE_ANNOTATION: initMeasurement( this, updateMeasureRectPerimeter, updateMeasureRect ); break;
-      case POLYGON_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
-      case PEN_ANNOTATION: initMeasurement( this, undefined, updateMeasurePoly ); break;
-
+      case SQUARE_ANNOTATION: initMeasurement( this, updateMeasureRectPerimeter, updateMeasureRectArea ); break;
+      case POLYGON_ANNOTATION: initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea ); break;
+      case PEN_ANNOTATION:
+          if( this.closed )
+              initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea );
+          else
+              initMeasurement( this, updateMeasurePolylineLength, null );
+          break;
       case CIRCLE_ANNOTATION: initMeasurement( this, updateMeasureEllipsePerimeter, updateMeasureEllipseArea ); break;
 
       // Unimplemented cases fall through to the default case
-      case X_ANNOTATION:
-      case CLOUD_ANNOTATION:
-      case TEXT_ANNOTATION:
       case LINE_ANNOTATION:
       case ARROW_ANNOTATION:
       case HIGHLIGHTER_ANNOTATION:
       case SCALE_ANNOTATION:
-
+      case X_ANNOTATION:
+      case CLOUD_ANNOTATION:
+      case TEXT_ANNOTATION:
       case NO_ANNOTATION:
       case LASSO_ANNOTATION:
       default: initMeasurement( this, undefined, undefined );
   }
 
-	this.getLength = function(){
-		return Math.sqrt((this.points[1].x-this.points[0].x)*(this.points[1].x-this.points[0].x)+(this.points[1].y-this.points[0].y)*(this.points[1].y-this.points[0].y));
-	}
+  this.getLength = function getLength( p1, p2 )
+  {
+    p1 = p1 || this.points[0];
+    p2 = p2 || this.points[1];
+		return Math.sqrt( (p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y) );
+  }
 	this.calcBounds = function(){
 	    this.bounds = new BluVueSheet.Rect(0, 0, 0, 0);
 		this.bounds.left = this.points[0].x;
@@ -275,7 +281,7 @@ var drawFunctions = new Array();
         }
     }
 
-  	function updateMeasureRect() {
+  	function updateMeasureRectArea() {
   	    var w = Math.abs(this.points[0].x-this.points[1].x);
         var h = Math.abs(this.points[0].y-this.points[1].y);
         setMeasurement( this, w*h, true );
@@ -301,34 +307,37 @@ var drawFunctions = new Array();
 	      var h = (a - b) * (a - b) / (a + b) / (a + b);
 	      setMeasurement(this, Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h))), false );
     }
+
+    function updateMeasureLength() {
+        setMeasurement( this, this.getLength(), false );
+    }
+
+    function updateMeasurePolygonArea( tileView ) {
+    		var a = 0;
+    		for( var i=0; i<this.points.length; i++ ) {
+    		    a += this.points[i].x * this.points[(i + 1) % this.points.length].y;
+    		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
+    		}
+        setMeasurement( this, Math.abs(a)/2, true );
+    }
+
+    function updateMeasurePolygonPerimeter( tileView ) {
+    		var p = 0;
+    		for( var i=0; i<this.points.length; i++ ) {
+    		    p += this.getLength( this.points[i], this.points[ (i + 1) % this.points.length ] );
+    		}
+        setMeasurement( this,p, false );
+    }
+
+    function updateMeasurePolylineLength( tileView ) {
+    		var p = 0;
+    		for( var i=1; i<this.points.length; i++ ) {
+    		    p += this.getLength( this.points[i-1], this.points[i] );
+    		}
+        setMeasurement( this, p, false );
+    }
 }
 
-function updateMeasureLength() {
-    if (this.measurement === null) { return; }
-
-	if(this.tileView.annotationManager.scaleAnnotation!=null){
-		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
-		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
-		this.measurement.setAmount(m.amount*(this.getLength()/l), m.unit);
-	}
-}
-function updateMeasurePoly(tileView) {
-    if (this.measurement === null) { return; }
-
-	if(this.tileView.annotationManager.scaleAnnotation!=null){
-		var m = this.tileView.annotationManager.scaleAnnotation.measurement;
-		var l = this.tileView.annotationManager.scaleAnnotation.getLength();
-		var a = 0;
-		for(var i=0; i<this.points.length; i++) {
-		    a += this.points[i].x * this.points[(i + 1) % this.points.length].y;
-		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
-		}
-
-	    a = Math.abs(a)/2;
-
-		this.measurement.setAmount(m.amount * m.amount * a / (l * l), BluVueSheet.Measurement.toArea(m.unit));
-	}
-}
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){
 	var centerX = (x1+x2)/2;
 	var centerY = (y1+y2)/2;
