@@ -24,7 +24,7 @@ BluVueSheet.MouseControls = function(tileView) {
     }
 
     this.onmousewheel = function(e) {
-        var mouse = locationInTileview(e.clientX, e.clientY);
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
 
         var delta = wheelDistance(e);
         var newScale = tileView.scale * (1.0 + (delta / 15));
@@ -33,7 +33,7 @@ BluVueSheet.MouseControls = function(tileView) {
             tileView.scale = newScale;
         }
 
-        var mouse2 = locationInTileview(e.clientX, e.clientY);
+        var mouse2 = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
 
         var nx = mouse2.x - mouse.x;
         var ny = mouse2.y - mouse.y;
@@ -44,13 +44,15 @@ BluVueSheet.MouseControls = function(tileView) {
 
         tileView.updateRes();
 
+        tileView.annotationManager.updateTextEditorIfPresent();
+
         preventDefault(e);
     };
 
     this.onmousedown = function(e) {
         tileView.sheet.hideOptionMenus();
 
-        var mouse = locationInTileview(e.clientX, e.clientY);
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         var windowX = e.clientX;
         var windowY = e.clientY;
 
@@ -71,13 +73,13 @@ BluVueSheet.MouseControls = function(tileView) {
     };
 
     this.onmouseup = function(e) {
-        var mouse = locationInTileview(e.clientX, e.clientY);
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         tileView.annotationManager.onmouseup(mouse.x, mouse.y);
         dragging = false;
     };
 
-    this.onmousemove = function(e) {
-        var mouse = locationInTileview(e.clientX, e.clientY);
+    this.onmousemove = function (e) {
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         var window_x = e.clientX;
         var window_y = e.clientY;
         tileView.annotationManager.onmousemove(mouse.x, mouse.y);
@@ -89,12 +91,12 @@ BluVueSheet.MouseControls = function(tileView) {
     };
 
     this.onclick = function (e) {
-        var mouse = locationInTileview(e.clientX, e.clientY);
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         tileView.annotationManager.onclick(mouse.x, mouse.y);
     };
 
     this.ondblclick = function(e) {
-        var mouse = locationInTileview(e.clientX, e.clientY);
+        var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         tileView.annotationManager.ondblclick(mouse.x, mouse.y);
     };
 
@@ -111,26 +113,7 @@ BluVueSheet.MouseControls = function(tileView) {
             return w / 120;
         }
     };
-
-    function locationInTileview(x, y) {
-        var centerX = tileView.tileLoader.width / 2;
-        var centerY = tileView.tileLoader.height / 2;
-
-        var x1 = x / tileView.scale - tileView.scrollX - (tileView.canvas.width / tileView.scale - tileView.tileLoader.width) / 2;
-        var y1 = y / tileView.scale - tileView.scrollY - (tileView.canvas.height / tileView.scale - tileView.tileLoader.height) / 2;
-
-        // rotate
-        var angle = tileView.sheet.rotation * Math.PI / 180 * -1;
-        var newX = centerX + (x1 - centerX) * Math.cos(angle) - (y1 - centerY) * Math.sin(angle);
-        var newY = centerY + (x1 - centerX) * Math.sin(angle) + (y1 - centerY) * Math.cos(angle);
-
-        var p = new BluVueSheet.Point(newX, newY);
-
-        console.log(p);
-
-        return p;
-    }
-
+    
     //#region Touch Events
     this.ontouchstart = function (e) {
         dragging = false;
@@ -144,7 +127,7 @@ BluVueSheet.MouseControls = function(tileView) {
             tileviewStartX = tileView.scrollX;
             tileviewStartY = tileView.scrollY;
 
-            var loc = locationInTileview(e.touches[0].clientX, e.touches[0].clientY);
+            var loc = tileView.sheetCoordinatesFromScreenCoordinates(e.touches[0].clientX, e.touches[0].clientY);
             tileView.annotationManager.onmousedown(loc.x, loc.y);
             dragging = !tileView.annotationManager.captureMouse;
 
@@ -158,7 +141,7 @@ BluVueSheet.MouseControls = function(tileView) {
 
     this.ontouchmove = function (e) {
         if (e.touches.length === 1) {
-            var loc = locationInTileview(e.touches[0].clientX, e.touches[0].clientY);
+            var loc = tileView.sheetCoordinatesFromScreenCoordinates(e.touches[0].clientX, e.touches[0].clientY);
             tileView.annotationManager.onmousemove(loc.x, loc.y);
             if (dragging) {
                 tileView.scrollX = tileviewStartX + (e.touches[0].clientX - touchCenter.x) / tileView.scale;
@@ -186,7 +169,7 @@ BluVueSheet.MouseControls = function(tileView) {
     this.ontouchend = function (e) {
         if (e.changedTouches.length === 1) {
             var touch = e.changedTouches[0];
-            var loc = locationInTileview(touch.clientX, touch.clientY);
+            var loc = tileView.sheetCoordinatesFromScreenCoordinates(touch.clientX, touch.clientY);
             var now = new Date().getTime();
             var deltaTime = now - latestTapTime;
             var deltaDistance = distance(latestTapPosition, { x: touch.clientX, y: touch.clientY });

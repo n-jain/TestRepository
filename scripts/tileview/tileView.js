@@ -129,11 +129,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         context.translate(this.scrollX, this.scrollY);
         context.translate(canvas.width / this.scale / 2, canvas.height / this.scale / 2);
 
-        context.rotate(this.sheet.rotation / 180 * Math.PI);
+        context.rotate(scope.sheet.rotation / 180 * Math.PI);
 
-        BluVueSheet.TileView.OffsetTop = -this.tileLoader.height / 2;
-        BluVueSheet.TileView.OffsetLeft = -this.tileLoader.width / 2;
-        context.translate(BluVueSheet.TileView.OffsetLeft, BluVueSheet.TileView.OffsetTop);
+        context.translate(-this.tileLoader.width / 2, -this.tileLoader.height / 2);
         
         var visibleLeft = this.scrollX < 0 ? this.scrollX * -1 : 0;
 		var visibleTop = this.scrollY < 0 ? this.scrollY * -1 : 0;
@@ -199,6 +197,11 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	this.getTool = function(){
 		return tool;
 	}
+
+    this.getRotation = function() {
+        return scope.sheet.rotation;
+    }
+
 	this.optionChosen = function (option) {
         switch (option) {
         case BluVueSheet.Constants.OptionButtons.Delete.id:
@@ -236,7 +239,36 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    else if (this.scale > 0.09375 || !this.tileLoader.levelAvailable[4]) { this.tileLoader.setTileRes(3); }
 	    else { this.tileLoader.setTileRes(4); }
 	}
-}
 
-BluVueSheet.TileView.OffsetLeft = 0;
-BluVueSheet.TileView.OffsetTop = 0;
+	this.sheetCoordinatesFromScreenCoordinates = function(x, y) {
+	    var centerX = this.tileLoader.width / 2;
+	    var centerY = this.tileLoader.height / 2;
+
+	    var x1 = x / this.scale - this.scrollX - (this.canvas.width / this.scale - this.tileLoader.width) / 2;
+	    var y1 = y / this.scale - this.scrollY - (this.canvas.height / this.scale - this.tileLoader.height) / 2;
+
+	    // rotate
+	    var angle = this.getRotation() * Math.PI / 180 * -1;
+	    var newX = centerX + (x1 - centerX) * Math.cos(angle) - (y1 - centerY) * Math.sin(angle);
+	    var newY = centerY + (x1 - centerX) * Math.sin(angle) + (y1 - centerY) * Math.cos(angle);
+
+	    var p = new BluVueSheet.Point(newX, newY);
+
+	    return p;
+	}
+
+	this.screenCoordinatesFromSheetCoordinates = function (x, y) {
+	    var centerX = this.tileLoader.width / 2;
+	    var centerY = this.tileLoader.height / 2;
+
+	    // rotate back
+	    var angle = this.getRotation() * Math.PI / 180;
+	    var newX = centerX + (x - centerX) * Math.cos(angle) - (y - centerY) * Math.sin(angle);
+	    var newY = centerY + (x - centerX) * Math.sin(angle) + (y - centerY) * Math.cos(angle);
+
+	    var x1 = newX * this.scale + this.scrollX * this.scale + (this.canvas.width - this.tileLoader.width * this.scale) / 2;
+	    var y1 = newY * this.scale + this.scrollY * this.scale + (this.canvas.height - this.tileLoader.height * this.scale) / 2;
+
+	    return new BluVueSheet.Point(x1, y1);
+    }
+}
