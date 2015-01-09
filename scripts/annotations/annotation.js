@@ -313,12 +313,20 @@ var drawFunctions = new Array();
     }
 
     function updateMeasurePolygonArea( tileView ) {
-    		var a = 0;
-    		for( var i=0; i<this.points.length; i++ ) {
-    		    a += this.points[i].x * this.points[(i + 1) % this.points.length].y;
-    		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
-    		}
-        setMeasurement( this, Math.abs(a)/2, true );
+        // Bail if the area is self intersecting
+        if( isSelfIntersecting( this ) )
+        {
+            setMeasurement( this, 0, true );
+        }
+        else
+        {
+        		var a = 0;
+        		for( var i=0; i<this.points.length; i++ ) {
+        		    a += this.points[i].x * this.points[(i + 1) % this.points.length].y;
+        		    a -= this.points[(i + 1) % this.points.length].x * this.points[i].y;
+        		}
+            setMeasurement( this, Math.abs(a)/2, true );
+        }
     }
 
     function updateMeasurePolygonPerimeter( tileView ) {
@@ -335,6 +343,64 @@ var drawFunctions = new Array();
     		    p += this.getLength( this.points[i-1], this.points[i] );
     		}
         setMeasurement( this, p, false );
+    }
+
+    function isSelfIntersecting( annotation )
+    {
+        if( annotation.points.length > 3 )
+        {
+        		for( var i=0; i<annotation.points.length; i++ )
+        		{
+        		    var a1 = annotation.points[i];
+        		    var a2 = annotation.points[ (i + 1) % annotation.points.length ];
+                if( !pointsEqual( a1, a2 ) )
+                {
+                    for( var j=0; j < annotation.points.length; j++)
+                    {
+                		    var b1 = annotation.points[j];
+                		    var b2 = annotation.points[ (j + 1) % annotation.points.length ];
+
+                        if( !( pointsEqual(a1, b1) || pointsEqual(a1, b2) ||
+                               pointsEqual(a2, b1) || pointsEqual(a2, b2) ||
+                               pointsEqual(b1, b2) ) )
+                        {
+
+                            if( linesIntersect( a1.x, a1.y, a2.x, a2.y, b1.x, b1.y, b2.x, b2.y ) )
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    var EPSILON = .001;
+    function pointsEqual( p1, p2 )
+    {
+        return (Math.abs( p1.x-p2.x ) < EPSILON) &&
+               (Math.abs( p1.y-p2.y ) < EPSILON);
+    }
+
+    function linesIntersect( x1, y1, x2, y2, x3, y3, x4, y4 )
+    {
+        var denom = (y4-y3) * (x2-x1) - (x4-x3) * (y2-y1);
+        var numera = (x4-x3) * (y1-y3) - (y4-y3) * (x1-x3);
+        var numerb = (x2-x1) * (y1-y3) - (y2-y1) * (x1-x3);
+
+        // Are the line parallel
+        if( Math.abs(denom) < EPSILON ) {
+            return false;
+        }
+
+        // Is the intersection along the the segments
+        var mua = numera / denom;
+        var mub = numerb / denom;
+        if( mua < 0 || mua > 1 || mub < 0 || mub > 1 ) {
+            return false;
+        }
+
+        return true;
     }
 }
 
