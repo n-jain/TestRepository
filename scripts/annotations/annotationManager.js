@@ -552,9 +552,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           }
       }
 	}
-	this.updateMeasurement = function( annotation, onSuccess ) {
+	this.updateCalibration = function( annotation, onSuccess ) {
 	    var mgr = this;
-      var measurement;
+	    annotation = annotation || selectedAnnotations[0];
 
 			var dialog = new BluVueSheet.Dialog();
       var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
@@ -606,7 +606,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           if( currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION )
           {
               if( currentAnnotation.type==SCALE_ANNOTATION )
-                  this.updateMeasurement( currentAnnotation, doSave );
+                  this.updateCalibration( currentAnnotation, doSave );
               else
                   doSave( currentAnnotation );
           }
