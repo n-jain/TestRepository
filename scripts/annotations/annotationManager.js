@@ -437,6 +437,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			this.saveAnnotation(copies[i]);
 			annotations[annotations.length] = copies[i];
 		}
+		this.deselectAllAnnotations();
+		for(var i=0; i<copies.length; i++){
+		  this.selectAnnotation( copies[i] );
+		}
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;
