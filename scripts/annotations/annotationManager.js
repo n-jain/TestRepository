@@ -105,18 +105,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if (save) {
 		    this.saveSelectedAnnotations();
 
-            for (var i = 0; i < selectedAnnotations.length; i++) {
-                if (selectedAnnotations[i].type === SCALE_ANNOTATION) {
-                    // change made to scale annotation, update all measurement type annotations.
-                    for (var j = 0; j < annotations.length; j++) {
-                        if (annotations[j].measurement !== null && annotations[j].type !== SCALE_ANNOTATION) {
-                            this.saveAnnotation(annotations[j]);
-                        }
-                    }
-                    break;
-                }
+        for (var i = 0; i < selectedAnnotations.length; i++) {
+            if (selectedAnnotations[i].type === SCALE_ANNOTATION) {
+                this.recalculateMeasurements();
+                break;
             }
         }
+    }
 	}
 	this.onmousemove = function (x, y) {
         // new annotation
@@ -547,43 +542,81 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			currentAnnotation.drawMe(context);
 		}
 	}
-	this.finishAnnotation = function(){
-		if(currentAnnotation!=null){
-			this.deselectAllAnnotations();
-			if(currentAnnotation.points.length>1&&currentAnnotation.type!=LASSO_ANNOTATION){
-				var del = false;
-				if(currentAnnotation.type==SCALE_ANNOTATION){
-					var measureString;
-					var cancel=false;
-					var measurement;
-					while(!cancel&&measurement==null){
-						measureString=window.prompt("Enter Scale with Units\n(5\' 2\", 3m, etc.)");
-						if(measureString==null){
-							cancel=true;
-							del=true;
-						} else {
-						    measurement = BluVueSheet.Measurement.createMeasurement(measureString);
-							currentAnnotation.measurement=measurement;
-						}
-					}
-					if(!del)this.scaleAnnotation=currentAnnotation;
-				}
-				if(!del){
-					currentAnnotation.calcBounds();
-					annotations[annotations.length] = currentAnnotation;
-					if (currentAnnotation.type != TEXT_ANNOTATION) {
-					    currentAnnotation.added = true;
-					    this.saveAnnotation(currentAnnotation);
-					}
-				}
-			}
-			if(currentAnnotation.type==TEXT_ANNOTATION){
-				this.selectSingleAnnotation(currentAnnotation);
-			}
-			cancelClick=true;
-		}
-		currentAnnotation=null;
+	this.recalculateMeasurements = function() {
+	    for (var j = 0; j < annotations.length; j++)
+	    {
+          if( annotations[j].measurement !== null && annotations[j].type !== SCALE_ANNOTATION )
+          {
+              this.saveAnnotation( annotations[j] );
+              annotations[j].updateMeasure();
+          }
+      }
 	}
+	this.updateMeasurement = function( annotation, onSuccess ) {
+	    var mgr = this;
+      var measurement;
+
+			var dialog = new BluVueSheet.Dialog();
+      var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+      var editor = angular.element( "<input class='bluvue-scale-edit'></input>" );
+      holder.append( editor );
+      // Allow user to click input field
+      editor.on( 'click', function(e){ e.stopPropagation(); } );
+      // Spoof BluVueSheet.KeyboardControls to make it not eat our keypresses
+      var oldKeyCapture = this.captureKeyboard;
+      this.captureKeyboard=true;
+      dialog.showConfirmDialog( {
+          title: 'Calibrate Scale',
+          //message: 'Enter Scale with Units',
+          message: "Enter Scale with Units<br>(5' 2\", 3m, etc.)",
+          bodyElement: holder,
+          okLabel:'Set',
+          okAction: function saveScaleCalibrationAction() {
+            	annotation.measurement = BluVueSheet.Measurement.createMeasurement( editor.val() );
+  						mgr.scaleAnnotation=annotation;
+  						if( onSuccess )
+  						    onSuccess( annotation );
+  						else
+  						    mgr.saveAnnotation( annotation );
+  						mgr.recalculateMeasurements();
+          },
+          cancelAction: function hideAction(){
+              this.captureKeyboard=oldKeyCapture;
+              dialog.hide();
+          }
+      });
+	}
+
+	this.finishAnnotation = function()
+	{
+	    var mgr = this;
+  	  var doSave = function doSave( annotation ) {
+  	      annotation.calcBounds();
+  				annotations.push( annotation );
+  				if( annotation.type != TEXT_ANNOTATION )
+  				{
+  					 annotation.added = true;
+  					 mgr.saveAnnotation( annotation );
+  				}
+  	  };
+
+  		if( currentAnnotation!=null )
+  		{
+          this.deselectAllAnnotations();
+          if( currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION )
+          {
+              if( currentAnnotation.type==SCALE_ANNOTATION )
+                  this.updateMeasurement( currentAnnotation, doSave );
+              else
+                  doSave( currentAnnotation );
+          }
+          if(currentAnnotation.type==TEXT_ANNOTATION)
+              this.selectSingleAnnotation(currentAnnotation);
+
+          cancelClick=true;
+      }
+      currentAnnotation=null;
+  }
 	this.updateOptionsMenu = function(){
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	}
