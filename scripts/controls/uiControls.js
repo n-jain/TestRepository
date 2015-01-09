@@ -477,7 +477,8 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	}
 	this.textEditorElement.appendChild(textBox);
 
-	this.show = function(loc){
+	this.show = function (loc) {
+	    this.textEditorElement.style.width = BluVueSheet.TextEditor.Width + "px";
 	    this.textEditorElement.style.left = loc.x + "px";
 	    this.textEditorElement.style.top = loc.y + "px";
 	    this.textEditorElement.style.display = "block";
@@ -495,12 +496,14 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	    textBox.focus();
 	}
     this.getWidth = function(){
-        return this.textEditorElement.offsetWidth;
+        return BluVueSheet.TextEditor.Width;
     }
     this.getHeight = function(){
         return this.textEditorElement.offsetHeight;
     }
 }
+
+BluVueSheet.TextEditor.Width = 300;
 
 BluVueSheet.UnitConverter = function (type, convertToUnit) {
     this.unitConverterElement = document.createElement("div");

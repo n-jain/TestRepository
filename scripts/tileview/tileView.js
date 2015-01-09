@@ -156,15 +156,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight - footerHeight) ? canvas.width : canvas.height - headerHeight - footerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
 	    this.scale = 0.8 * canvasDim / sheetDim;
-
-	    console.log(canvas.width, this.tileLoader.height * this.scale, this.tileLoader.width * this.scale);
-
-        
-	    //this.scrollX = this.tileLoader.height / 2;
-	    //this.scrollY = this.tileLoader.width / 2;
-        
-	    //this.scrollX = (canvas.width - (this.tileLoader.width * this.scale)) / (2 * this.scale);
-	    //this.scrollY = (canvas.height + headerHeight - footerHeight - (this.tileLoader.height * this.scale)) / (2 * this.scale);
 	    this.updateRes();
 	}
 
