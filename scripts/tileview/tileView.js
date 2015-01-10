@@ -156,7 +156,42 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight - footerHeight) ? canvas.width : canvas.height - headerHeight - footerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
 	    this.setScale( 0.8 * canvasDim / sheetDim );
+	    this.setScroll( 0,0 );
 	    this.updateRes();
+	}
+
+	/**
+	 * Updates scrollX and scrollY, honoring any scroll clamps that may exist (e.g., edge of screen)
+	 **/
+	this.setScroll = function updateScrollWithClamps( x, y ) {
+	  var y1 = y;
+  	  var margin = Math.max( BluVueSheet.Constants.HeaderHeight, BluVueSheet.Constants.FooterHeight )/this.scale;
+
+  	  var sw = this.tileLoader.width;
+  	  var sh = this.tileLoader.height;
+
+      var cw = (this.canvas.width/this.scale);
+      var ch = (this.canvas.height/this.scale);
+
+  	  var w2 = sw/2 - cw/2 + margin;
+  	  var h2 = sh/2 - ch/2 + margin;
+
+      if( cw > (sw + margin) )   // canvas wider than a sheet, use center
+          x = 0;
+      else if( x > w2 )          // narrower, enforce left clamp
+          x = w2;
+      else if( x < -w2 )         // narrower, enforce right clamp
+          x = -w2;
+
+      if( ch > sh + margin )   // canvas taller than a sheet, use middle
+          y = h2/2;
+      else if( y > h2 )               //  shorter, enforce top clamp
+          y = h2;
+      else if( y < -h2 )         // shorter, enforce bottom clamp
+          y = -h2;
+
+	    this.scrollX = x;
+	    this.scrollY = y;
 	}
 
 	this.setScale = function( newScale ) {

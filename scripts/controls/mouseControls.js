@@ -35,8 +35,7 @@ BluVueSheet.MouseControls = function(tileView) {
         var ny = mouse2.y - mouse.y;
 
         //centers zoom around mouse
-        tileView.scrollX += nx;
-        tileView.scrollY += ny;
+        tileView.setScroll( tileView.scrollX + nx, tileView.scrollY + ny );
 
         tileView.updateRes();
 
@@ -80,8 +79,8 @@ BluVueSheet.MouseControls = function(tileView) {
         var window_y = e.clientY;
         tileView.annotationManager.onmousemove(mouse.x, mouse.y);
         if (dragging) {
-            tileView.scrollX = tileviewStartX + (window_x - mouseStartX) / tileView.scale;
-            tileView.scrollY = tileviewStartY + (window_y - mouseStartY) / tileView.scale;
+            tileView.setScroll( tileviewStartX + (window_x - mouseStartX) / tileView.scale,
+                                tileviewStartY + (window_y - mouseStartY) / tileView.scale );
             tileView.annotationManager.updateTextEditorIfPresent();
         }
     };
@@ -140,8 +139,8 @@ BluVueSheet.MouseControls = function(tileView) {
             var loc = tileView.sheetCoordinatesFromScreenCoordinates(e.touches[0].clientX, e.touches[0].clientY);
             tileView.annotationManager.onmousemove(loc.x, loc.y);
             if (dragging) {
-                tileView.scrollX = tileviewStartX + (e.touches[0].clientX - touchCenter.x) / tileView.scale;
-                tileView.scrollY = tileviewStartY + (e.touches[0].clientY - touchCenter.y) / tileView.scale;
+                tileView.setScroll( tileviewStartX + (e.touches[0].clientX - touchCenter.x) / tileView.scale,
+                                    tileviewStartY + (e.touches[0].clientY - touchCenter.y) / tileView.scale );
             }
 
         } else if (e.touches.length === 2) {
@@ -149,8 +148,7 @@ BluVueSheet.MouseControls = function(tileView) {
             newScale = tileView.setScale( newScale );
             var dx = touchCenter.x / newScale - touchCenter.x / tileView.scale;
             var dy = touchCenter.y / newScale - touchCenter.y / tileView.scale;
-            tileView.scrollX += dx;
-            tileView.scrollY += dy;
+            tileView.setScroll( tileView.scrollX + dx, tileView.scrollY + dy );
             tileView.updateRes();
         }
         preventDefault(e);
