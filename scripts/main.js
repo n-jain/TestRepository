@@ -67,7 +67,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.selectTool = function(tool) {
-                    if (tool === scope.selectedTool && scope.selectedTool != null) {
+                    if (tool === scope.selectedTool && scope.selectedTool != null && !scope.alwaysShowToolHelp()) {
                         scope.selectedTool = null;
                     } else {
                         if( tool )
@@ -94,7 +94,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                             }
 
                             // Todo: Also check the options to see if tooltips are displayed 100% of the time
-                            if( !tool.visited )
+                            if( !tool.visited || scope.alwaysShowToolHelp() )
                             {
                                 toolipDialog.showTooltip( {
                                    title: tool.label||tool.name,
@@ -297,6 +297,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     }
 
                     scope.moreMenuToggle(true);
+                }
+
+                scope.alwaysShowToolHelp = function() {
+                    return document.getElementById('toggle_tool_help_button').getElementsByTagName('span')[0].innerHTML != 'Show Tool Help';
+                };
+
+                scope.toggleToolHelp = function() {
+                    var button = document.getElementById('toggle_tool_help_button').getElementsByTagName('span')[0];
+                    var isShow = !scope.alwaysShowToolHelp();
+
+                    if(isShow) {
+                        button.innerHTML = 'Don\'t Show Tool Help';
+                    } else {
+                        button.innerHTML = 'Show Tool Help';
+                    }
                 }
             }
         }

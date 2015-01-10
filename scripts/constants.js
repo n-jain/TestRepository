@@ -133,10 +133,10 @@ BluVueSheet.Constants = {
         { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
     ],
     MoreMenu: [
-        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
-        { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
-        { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
-        { id: 3, func: "toggleToolHelp", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png"},
+        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png", idAttr: ""},
+        { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png", idAttr: ""},
+        { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png", idAttr: ""},
+        { id: 3, func: "toggleToolHelp", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
         //{ id: 4, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };
