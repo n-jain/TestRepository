@@ -39,6 +39,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
 			}
+
+      if( currentAnnotation.type==FREE_FORM_ANNOTATION )
+          currentAnnotation.closed = true;
+
 			this.captureMouse = true;
 		    return;
 		}
@@ -97,7 +101,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
 		  var tool = tileView.getTool();
 			this.finishAnnotation();
-	    if( tool != BluVueSheet.Constants.Tools.Freeform && tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
+	    if( tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
   	      tileView.deselectTool();
 		}
 		if(lasso!=null){
@@ -740,8 +744,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
-                  if( currentAnnotation.type==FREE_FORM_ANNOTATION )
-                      currentAnnotation.closed = true;
                   doSave( currentAnnotation );
               }
           }
