@@ -105,15 +105,29 @@
             $scope.closeSheet = function() {
                 console.log("close sheet");
             };
-            
+
             $scope.nextSheet = function () {
                 if (currentSheetIndex === sheets.length - 1) { return; }
+
+                // Hide right arrow if nextSheet isn't exists
+                document.getElementById('previous-sheet-arrow').style.display = 'block';
+                if (currentSheetIndex === sheets.length - 2) {
+                    document.getElementById('next-sheet-arrow').style.display = 'none';
+                }
+
                 currentSheetIndex++;
                 $scope.sheet = sheets[currentSheetIndex];
             };
 
             $scope.previousSheet = function () {
                 if (currentSheetIndex === 0) { return; }
+
+                // Hide right arrow if nextSheet isn't exists
+                document.getElementById('next-sheet-arrow').style.display = 'block';
+                if (currentSheetIndex == 1) {
+                    document.getElementById('previous-sheet-arrow').style.display = 'none';
+                }
+
                 currentSheetIndex--;
                 $scope.sheet = sheets[currentSheetIndex];
             };
@@ -174,5 +188,19 @@
                 }, 1000);
                 return deferred.promise;
             }
+
+            // Init show prev/next buttons
+            setTimeout(function() {
+                if ($scope.getCurrentIndex() == 0) {
+                    document.getElementById('previous-sheet-arrow').style.display = 'none';
+                }
+
+                if ($scope.length == 1) {
+                    document.getElementById('next-sheet-arrow').style.display = 'none';
+                }
+            }, 20);
         }
     ]);
+
+
+
