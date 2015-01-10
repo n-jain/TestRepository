@@ -67,6 +67,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.selectTool = function(tool) {
+                    if(scope.selectedTool == null) {
+                        angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
+                            angular.element(value).removeClass('active-child-tool');
+                        });
+                    }
+
                     if (tool === scope.selectedTool && scope.selectedTool != null && !scope.alwaysShowToolHelp()) {
                         scope.selectedTool = null;
                     } else {
@@ -115,13 +121,34 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
+                    // If need un-expand expanded tool item
+                    if(scope.selectedToolMenu != null && scope.selectedToolMenu.id == toolMenuButton.id && toolMenuButton.buttons.length > 1) {
+                        try {
+                            scope.selectTool(null);
+                        } catch(e) {}
+
+                        return;
+                    }
+
+                    if(toolMenuButton.name == 'hide-button') {
+                        document.getElementsByClassName('bluvue-sheet-tool-menu')[0].style.display = 'none';
+                        document.getElementById('show-toolbar').style.display = 'block';
+                        return;
+                    }
+
                     if(toolMenuButton.buttons.length == 1){
                         scope.selectTool(toolMenuButton.buttons[0]);
                         scope.selectedToolMenu = null;
                     } else {
                         scope.selectedToolMenu = toolMenuButton;
                     }
+
                     scope.currentSheet.toolMenuExtension.updateLocation(toolMenuButton);
+                }
+
+                scope.showToolbar = function() {
+                    document.getElementsByClassName('bluvue-sheet-tool-menu')[0].style.display = 'block';
+                    document.getElementById('show-toolbar').style.display = 'none';
                 }
 
                 scope.resetZoom = function () {

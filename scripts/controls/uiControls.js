@@ -546,6 +546,14 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
     this.updateLocation = function(toolMenuButton){
         var button = document.getElementsByClassName("bv-toolbar-"+toolMenuButton.name)[0];
         this.toolMenuExtensionElement.style.left = (61*toolMenuButton.id)+"px";
+
+        angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
+            angular.element(value).removeClass('active-child-tool');
+        });
+
+        if(toolMenuButton.buttons.length > 1) {
+            angular.element(document.querySelector(".bv-toolbar-"+toolMenuButton.name)).addClass('active-child-tool');
+        }
     }
 }
 
