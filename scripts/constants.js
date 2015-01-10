@@ -148,7 +148,7 @@ BluVueSheet.Constants = {
         { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
         { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
         { id: 2, func: "rotate_sheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
-        { id: 2, func: "rotate_sheet", text: "Show Tool Help", imageURL: "images/update/icon_tool_help.png"},
+        { id: 2, func: "rotate_sheet", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png"},
         //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };

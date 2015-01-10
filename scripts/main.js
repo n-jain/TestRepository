@@ -292,6 +292,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     catch(err) {
                         console.log('Function "' + menuItem.func + '" don\'t exists');
                     }
+
+                    scope.moreMenuToggle(true);
                 }
             }
         }
