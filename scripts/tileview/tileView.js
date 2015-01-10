@@ -166,9 +166,10 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	this.setScroll = function updateScrollWithClamps( x, y ) {
 	  var y1 = y;
   	  var margin = Math.max( BluVueSheet.Constants.HeaderHeight, BluVueSheet.Constants.FooterHeight )/this.scale;
+      var sheetSize = this.getSheetSize();
 
-  	  var sw = this.tileLoader.width;
-  	  var sh = this.tileLoader.height;
+  	  var sw = sheetSize.width;
+  	  var sh = sheetSize.height;
 
       var cw = (this.canvas.width/this.scale);
       var ch = (this.canvas.height/this.scale);
@@ -195,9 +196,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	}
 
 	this.setScale = function( newScale ) {
-
-      var minScale = Math.min( (window.innerWidth)/this.tileLoader.width,
-                               (window.innerHeight-180)/this.tileLoader.height );
+      var sheetSize = this.getSheetSize();
+      var minScale = Math.min( (window.innerWidth)/sheetSize.width,
+                               (window.innerHeight-180)/sheetSize.height );
 
       if( newScale < minScale )
           newScale = minScale;
@@ -206,6 +207,15 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
       this.scale = newScale;
       return newScale;
+	}
+
+	this.getSheetSize = function() {
+	    var theta = -this.getRotation() * Math.PI / 180;
+
+	    return {
+   	      width: Math.abs( this.tileLoader.width * Math.cos( theta ) - this.tileLoader.height * Math.sin( theta ) ),
+   	      height: Math.abs( this.tileLoader.width * Math.sin( theta ) + this.tileLoader.height * Math.cos( theta ) )
+	    };
 	}
 
     this.mainLoopKeyboardControls = function() {
