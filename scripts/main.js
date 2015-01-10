@@ -266,6 +266,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     } else {
                         scope.options.currentSheetPinned = false;
                     }
+                    if( scope.getCurrentIndex() == 0 ) {
+                        document.getElementById('previous-sheet-arrow').style.display = 'none';
+                    }
+
+                    if( scope.getTotalSheets() == 1 ) {
+                        document.getElementById('next-sheet-arrow').style.display = 'none';
+                    }
                 });
 
                 scope.$on('$destroy', function () {
@@ -340,6 +347,26 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         button.innerHTML = 'Show Tool Help';
                     }
                 }
+
+                scope.selectNextSheet = function () {
+                    scope.nextSheet();
+
+                    // Hide right arrow if nextSheet isn't exists
+                    document.getElementById('previous-sheet-arrow').style.display = 'block';
+                    if( scope.getCurrentIndex() === scope.getTotalSheets()-1 ) {
+                        document.getElementById('next-sheet-arrow').style.display = 'none';
+                    }
+                };
+
+                scope.selectPreviousSheet = function () {
+                    scope.previousSheet();
+
+                    // Hide right arrow if nextSheet isn't exists
+                    document.getElementById('next-sheet-arrow').style.display = 'block';
+                    if( scope.getCurrentIndex() == 0 ) {
+                        document.getElementById('previous-sheet-arrow').style.display = 'none';
+                    }
+                };
             }
         }
     }
