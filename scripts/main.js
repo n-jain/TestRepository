@@ -220,6 +220,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                   });
                 }
 
+                scope.rotateSheet = function rotateSheet() {
+                    scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
+                }
+
                 scope.$watch('sheet', function (newValue) {
                     if (scope.currentSheet != null) {
                         scope.currentSheet.dispose();
