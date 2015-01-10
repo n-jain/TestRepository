@@ -630,3 +630,7 @@ input.bluvue-sheetname-edit {
 #previous-sheet-arrow:hover, #next-sheet-arrow:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
+
+button:focus {
+    outline: none;
+}
