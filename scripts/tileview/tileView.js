@@ -205,6 +205,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
           newScale = MAX_SCALE;
 
       this.scale = newScale;
+      return newScale;
 	}
 
     this.mainLoopKeyboardControls = function() {
