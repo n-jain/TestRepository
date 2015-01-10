@@ -2,7 +2,6 @@ var BluVueSheet = {};
 
 var MAIN_LOOP_TIMEOUT = 1000 / 60;
 
-var MIN_SCALE = 0.05;
 var MAX_SCALE = 3;
 
 //change these to match the JSON ones

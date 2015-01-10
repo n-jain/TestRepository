@@ -155,8 +155,21 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    var footerHeight = BluVueSheet.Constants.FooterHeight;
 	    var canvasDim = this.tileLoader.width / canvas.width > this.tileLoader.height / (canvas.height - headerHeight - footerHeight) ? canvas.width : canvas.height - headerHeight - footerHeight;
 	    var sheetDim = this.tileLoader.width / canvas.width > this.tileLoader.height / canvas.height ? this.tileLoader.width : this.tileLoader.height;
-	    this.scale = 0.8 * canvasDim / sheetDim;
+	    this.setScale( 0.8 * canvasDim / sheetDim );
 	    this.updateRes();
+	}
+
+	this.setScale = function( newScale ) {
+
+      var minScale = Math.min( (window.innerWidth)/this.tileLoader.width,
+                               (window.innerHeight-180)/this.tileLoader.height );
+
+      if( newScale < minScale )
+          newScale = minScale;
+      if( newScale > MAX_SCALE )
+          newScale = MAX_SCALE;
+
+      this.scale = newScale;
 	}
 
     this.mainLoopKeyboardControls = function() {

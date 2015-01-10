@@ -27,11 +27,7 @@ BluVueSheet.MouseControls = function(tileView) {
         var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
 
         var delta = wheelDistance(e);
-        var newScale = tileView.scale * (1.0 + (delta / 15));
-
-        if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
-            tileView.scale = newScale;
-        }
+        var newScale = tileView.setScale( tileView.scale * (1.0 + (delta / 15)) );
 
         var mouse2 = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
 
@@ -150,14 +146,12 @@ BluVueSheet.MouseControls = function(tileView) {
 
         } else if (e.touches.length === 2) {
             var newScale = initialScale * e.scale;
-            if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
-                var dx = touchCenter.x / newScale - touchCenter.x / tileView.scale;
-                var dy = touchCenter.y / newScale - touchCenter.y / tileView.scale;
-                tileView.scale = newScale;
-                tileView.scrollX += dx;
-                tileView.scrollY += dy;
-                tileView.updateRes();
-            }
+            newScale = tileView.setScale( newScale );
+            var dx = touchCenter.x / newScale - touchCenter.x / tileView.scale;
+            var dy = touchCenter.y / newScale - touchCenter.y / tileView.scale;
+            tileView.scrollX += dx;
+            tileView.scrollY += dy;
+            tileView.updateRes();
         }
         preventDefault(e);
     };
