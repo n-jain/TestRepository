@@ -408,7 +408,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		        return tileView.screenCoordinatesFromSheetCoordinates(maxX - BOUND_DIST / tileView.scale, (minY + maxY - w) / 2);
 		    default:
 		        return tileView.screenCoordinatesFromSheetCoordinates((minX + maxX - w) / 2, maxY + BOUND_DIST / tileView.scale);
-        }    
+        }
 	}
 
 	this.setTextSize = function(textSize){
@@ -418,6 +418,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				this.saveSelectedAnnotations();
 			}
 	}
+
+	/**
+	 * Selects a single annotation, clearing any previous selection, and surfacing
+	 * the editor controls.
+	 **/
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		var valid = this.selectAnnotation(annotation);
@@ -430,6 +435,27 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
 		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 	}
+
+	/**
+	 * Selects an array of annotations, clearing any previous selection, and
+	 * surfacing the editor controls.
+	 **/
+	this.setSelectedAnnotations = function( annotations ) {
+	  this.deselectAllAnnotations();
+		for(var i=0; i<annotations.length; i++){
+		  this.selectAnnotation( annotations[i] );
+		}
+		tileView.sheet.floatingToolsMenu.show( calcFloatingToolsMenuLocation(selectedAnnotations) );
+		tileView.sheet.floatingOptionsMenu.show( calcFloatingOptionsMenuLocation(selectedAnnotations) );
+	}
+
+	/**
+	 * Adds a single annotations to the selection group without surfacing the
+	 * annotation editor.
+	 *
+	 * Implementor note:  This is probably not what you want - try using
+	 * setSelectedAnnotations() or selectSingleAnnotation(), as appropriate.
+	 **/
 	this.selectAnnotation = function(annotation){
 		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
 		selectedAnnotations[selectedAnnotations.length]=annotation;
@@ -438,6 +464,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		return true;
 	}
+
 	this.deselectAllAnnotations = function(){
 		if(selectedAnnotations.length==1){
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
@@ -535,10 +562,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			this.saveAnnotation(copies[i]);
 			annotations[annotations.length] = copies[i];
 		}
-		this.deselectAllAnnotations();
-		for(var i=0; i<copies.length; i++){
-		  this.selectAnnotation( copies[i] );
-		}
+		this.setSelectedAnnotations( copies );
 	}
 	this.fillSelectedAnnotations = function(){
 		var totalFilled=0;
