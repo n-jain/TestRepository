@@ -95,8 +95,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.captureMouse = false;
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
+		  var tool = tileView.getTool();
 			this.finishAnnotation();
-		    if (tileView.getTool() != BluVueSheet.Constants.Tools.Pen && tileView.getTool() != BluVueSheet.Constants.Tools.Highlighter) tileView.deselectTool();
+	    if( tool != BluVueSheet.Constants.Tools.Freeform && tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
+  	      tileView.deselectTool();
 		}
 		if(lasso!=null){
 			this.selectAllInLasso();
@@ -116,7 +118,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.onmousemove = function (x, y) {
         // new annotation
 		if(currentAnnotation!=null){
-			if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
+			if(currentAnnotation.type==FREE_FORM_ANNOTATION||currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			} else if (currentAnnotation.type != POLYGON_ANNOTATION) {
                 if (currentAnnotation.rectType) {
@@ -733,9 +735,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           if( currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION )
           {
               if( currentAnnotation.type==SCALE_ANNOTATION )
+              {
                   this.updateCalibration( currentAnnotation, doSave );
+              }
               else
+              {
+                  if( currentAnnotation.type==FREE_FORM_ANNOTATION )
+                      currentAnnotation.closed = true;
                   doSave( currentAnnotation );
+              }
           }
           if(currentAnnotation.type==TEXT_ANNOTATION)
               this.selectSingleAnnotation(currentAnnotation);
