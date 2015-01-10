@@ -144,6 +144,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         document.getElementById("fullscreen_floating_block").style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "none";
                         document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "none";
+
+                        scope.moreMenuToggle(true);
                     } else {
                         if (document.exitFullscreen) {
                             document.exitFullscreen();
