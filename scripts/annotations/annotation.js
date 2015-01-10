@@ -73,12 +73,8 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
       case MEASURE_ANNOTATION: initMeasurement( this, updateMeasureLength, undefined ); break;
       case SQUARE_ANNOTATION: initMeasurement( this, updateMeasureRectPerimeter, updateMeasureRectArea ); break;
       case POLYGON_ANNOTATION: initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea ); break;
-      case PEN_ANNOTATION:
-          if( this.closed )
-              initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea );
-          else
-              initMeasurement( this, updateMeasurePolylineLength, null );
-          break;
+      case FREE_FORM_ANNOTATION: initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea ); break;
+      case PEN_ANNOTATION: initMeasurement( this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea ); break;
       case CIRCLE_ANNOTATION: initMeasurement( this, updateMeasureEllipsePerimeter, updateMeasureEllipseArea ); break;
 
       // Unimplemented cases fall through to the default case
@@ -262,6 +258,7 @@ var drawFunctions = new Array();
 	drawFunctions[LINE_ANNOTATION] = drawLine;
 	drawFunctions[ARROW_ANNOTATION] = drawArrow;
 	drawFunctions[PEN_ANNOTATION] = drawPoints;
+	drawFunctions[FREE_FORM_ANNOTATION] = drawPoints;
 	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawPoints;
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
@@ -815,7 +812,8 @@ function createUUID() {
 }
 function AnnotationJSON(annotation) {
     var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
-					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
+					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||
+					 annotation.type==FREE_FORM_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
 	this.points;
 	this.x;
 	this.y;
@@ -863,7 +861,7 @@ function AnnotationJSON(annotation) {
 	if(annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION){
 		this.distance=annotation.measurement.amount;
 	}
-	if(annotation.type==POLYGON_ANNOTATION){
+	if(annotation.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
 		this.closed=annotation.closed;
 	}
 }
@@ -892,7 +890,7 @@ function loadAnnotationJSON(json,tileView){
 		}
 	}
 	var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
-					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
+					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
 	if(rectType){
 	    annotation.points = [new BluVueSheet.Point(json.x, json.y), new BluVueSheet.Point(json.x + json.width, json.y + json.height)];
 	} else {
@@ -902,7 +900,7 @@ function loadAnnotationJSON(json,tileView){
 		annotation.text=json.text;
 		annotation.textSize=json.textSize;
 	}
-	if(json.type==POLYGON_ANNOTATION){
+	if(json.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
 		annotation.closed=json.closed;
 	}
 	annotation.calcBounds();

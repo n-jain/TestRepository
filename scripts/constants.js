@@ -2,7 +2,6 @@ var BluVueSheet = {};
 
 var MAIN_LOOP_TIMEOUT = 1000 / 60;
 
-var MIN_SCALE = 0.05;
 var MAX_SCALE = 3;
 
 //change these to match the JSON ones
@@ -20,35 +19,24 @@ var PEN_ANNOTATION=8;
 var HIGHLIGHTER_ANNOTATION=9;
 var SCALE_ANNOTATION=10;
 var MEASURE_ANNOTATION=11;
+var FREE_FORM_ANNOTATION=15;
 
 function toolToAnnotation(tool){
 	switch(tool){
-		case BluVueSheet.Constants.Tools.Lasso:
-			return LASSO_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Square:
-			return SQUARE_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.X:
-			return X_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Circle:
-			return CIRCLE_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Cloud:
-			return CLOUD_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Polygon:
-			return POLYGON_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Text:
-			return TEXT_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Line:
-			return LINE_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Arrow:
-			return ARROW_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Pen:
-			return PEN_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Highlighter:
-			return HIGHLIGHTER_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Ruler:
-			return MEASURE_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Calibration:
-			return SCALE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Lasso:       return LASSO_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Square:      return SQUARE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.X:           return X_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Circle:      return CIRCLE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Cloud:       return CLOUD_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Polygon:     return POLYGON_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Text:        return TEXT_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Line:        return LINE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Arrow:       return ARROW_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Pen:         return PEN_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Highlighter: return HIGHLIGHTER_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Ruler:       return MEASURE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Calibration: return SCALE_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Freeform:    return FREE_FORM_ANNOTATION;
 	}
 	return NO_ANNOTATION;
 }
@@ -121,7 +109,7 @@ BluVueSheet.Constants = {
         Pen: { id: 9, name: "pen", menuId: 3, menuIndex: 0, description:"Click and drag to draw a line on the drawing.", heroImage:"images/update/icon_toolbars_pencil_white.png" },
         Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1, description:"Click and drag to highlight part of the drawing.", heroImage:"images/update/icon_toolbars_highlighter_white.png" },
         Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" },
-        //Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" },
+        Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" },
         Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
     },
     ToolMenuButtons: {
@@ -147,9 +135,9 @@ BluVueSheet.Constants = {
     MoreMenu: [
         { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png"},
         { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png"},
-        { id: 2, func: "rotate_sheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
-        { id: 2, func: "rotate_sheet", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png"},
-        //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
+        { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png"},
+        { id: 3, func: "toggleToolHelp", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png"},
+        //{ id: 4, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
     ]
 };
 //Define the items in the button menus
@@ -157,7 +145,8 @@ BluVueSheet.Constants.ToolMenuButtons.Lasso.buttons = [BluVueSheet.Constants.Too
 BluVueSheet.Constants.ToolMenuButtons.ClosedAnnotations.buttons = [BluVueSheet.Constants.Tools.Circle,
                                                                 BluVueSheet.Constants.Tools.Square,
                                                                 BluVueSheet.Constants.Tools.Cloud,
-                                                                BluVueSheet.Constants.Tools.Polygon];
+                                                                BluVueSheet.Constants.Tools.Polygon,
+                                                                BluVueSheet.Constants.Tools.Freeform];
 BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Constants.Tools.Line,
                                                                 BluVueSheet.Constants.Tools.Arrow,
                                                                 BluVueSheet.Constants.Tools.X];

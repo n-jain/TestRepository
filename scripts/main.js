@@ -212,15 +212,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     message: 'Choose revision from history list',
                     bodyElement: holder,
                     okLabel:'Change',
-                    okAction: function saveSheetNameAction() {
-                      scope.sheet = revisions[ editor[0].value ];
-
-                      // not sure why $watch() didn't catch this edit, so force it through
-                      scope.currentSheet = new BluVueSheet.Sheet();
-                      scope.currentSheet.loadSheet(scope.sheet, scope, elem);
-                      scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
+                    okAction: function () {
+                        scope.$apply(function () {
+                            scope.sheet = revisions[editor[0].value];
+                        });
                     }
                   });
+                }
+
+                scope.rotateSheet = function rotateSheet() {
+                    scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
                 }
 
                 scope.$watch('sheet', function (newValue) {

@@ -481,7 +481,8 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	}
 	this.textEditorElement.appendChild(textBox);
 
-	this.show = function(loc){
+	this.show = function (loc) {
+	    this.textEditorElement.style.width = BluVueSheet.TextEditor.Width + "px";
 	    this.textEditorElement.style.left = loc.x + "px";
 	    this.textEditorElement.style.top = loc.y + "px";
 	    this.textEditorElement.style.display = "block";
@@ -499,12 +500,14 @@ BluVueSheet.TextEditor = function(textUpdate, setTextSize){
 	    textBox.focus();
 	}
     this.getWidth = function(){
-        return this.textEditorElement.offsetWidth;
+        return BluVueSheet.TextEditor.Width;
     }
     this.getHeight = function(){
         return this.textEditorElement.offsetHeight;
     }
 }
+
+BluVueSheet.TextEditor.Width = 300;
 
 BluVueSheet.UnitConverter = function (type, convertToUnit) {
     this.unitConverterElement = document.createElement("div");
@@ -607,15 +610,15 @@ BluVueSheet.Dialog = function() {
   }
 
   this.showDialog = function showConfirmDialog( options ) {
-    var content = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
+    var bodyContent = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
     if( options.image )
-      content.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
+      bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
     if( options.title )
-      content.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
+      bodyContent.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
     if( options.message )
-      content.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
+      bodyContent.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
     if( options.bodyElement )
-      content.append( options.bodyElement );
+      bodyContent.append( options.bodyElement );
     if( options.buttons )
     {
       var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
@@ -626,9 +629,9 @@ BluVueSheet.Dialog = function() {
         button.on( 'click', spec.action );
         buttonHolder.append( button );
       } );
-      content.append( buttonHolder );
+      bodyContent.append( buttonHolder );
     }
-    return dialog.show( content, options.dialogClass );
+    return dialog.show( bodyContent, options.dialogClass );
   }
 
   this.show = function( body, dialogClass )
@@ -648,7 +651,7 @@ BluVueSheet.Dialog = function() {
     holder.css( { display: "none" } );
     holder.off( 'click', cancelAction );
     content.removeClass();
-    content.addClass( 'bluvue-dialog-holder' );
+    content.addClass( 'bluvue-dialog-content' );
     content.empty();
   }
 
