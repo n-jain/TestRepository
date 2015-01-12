@@ -255,6 +255,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
 
                 scope.rotateSheet = function rotateSheet() {
                     scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
+                    scope.currentSheet.tileView.setScale(0);
+                    scope.currentSheet.tileView.setScroll(0,0);
                 }
 
                 scope.$watch('sheet', function (newValue) {
@@ -334,7 +336,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         scope[f]();
                     }
                     catch(err) {
-                        console.log('Function "' + menuItem.func + '" don\'t exists');
+                        console.log('Exception while clicking "' + menuItem.func + '"', err );
                     }
 
                     scope.moreMenuToggle(true);
