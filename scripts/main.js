@@ -44,6 +44,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     });
                 }
 
+                var windowResizeObserver = function windowResizeObserver() {
+                    var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
+
+                    if(!checkFullscreen) {
+                        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
+                        document.getElementById("fullscreen_floating_block").style.display = "none";
+                        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
+                        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
+                    }
+                };
+                angular.element($window).on( 'resize', windowResizeObserver );
+
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -287,6 +299,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
 
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
+                    angular.element($window).off( 'resize', scope.windowResizeObserver );
                 });
 
                 //#region Pin Sheets
@@ -388,21 +401,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                             return true;
                     }
                     return false;
-                }
+                };
             }
         }
     }
 ]);
-
-
-
-angular.element(window).on('resize', function(){ //when the browser size change
-    var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
-
-    if(!checkFullscreen) {
-        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
-        document.getElementById("fullscreen_floating_block").style.display = "none";
-        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
-        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
-    }
-});
