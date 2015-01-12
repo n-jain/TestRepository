@@ -65,32 +65,36 @@
                 annotations: []
             }];
 
-            $scope.revisionsForSheet = function (sheet) {
+            $scope.revisionsForCurrentSheet = function () {
                 // for testing this always returns the same thing
                 return [
-                    sheets[0],
+                    {
+                        name: sheets[0].name,
+                        id: sheets[0].id
+                    },
                     {
                         name: 'Revision 1',
-                        slicesUrl: "sheet2/slices.zip",
-                        previewUrl: "sheet2/preview.png",
-                        projectId: "guid",
-                        id: "sheet001-r1",
-                        userId: "guid",
-                        rotation: 0,
-                        annotations: []
+                        id: "sheet001-r1"
                     },
                     {
                         name: 'Revision 2',
-                        slicesUrl: "sheet3/slices.zip",
-                        previewUrl: "sheet3/preview.png",
-                        projectId: "guid",
-                        id: "sheet001-r2",
-                        userId: "guid",
-                        rotation: 0,
-                        annotations: []
+                        id: "sheet001-r2"
                     }
                 ];
             };
+
+            $scope.openSheetById = function(sheetId) {
+                $scope.sheet = {
+                    name: 'Sheet 2!',
+                    slicesUrl: "sheet2/slices.zip",
+                    previewUrl: "sheet2/preview.png",
+                    projectId: "guid",
+                    id: sheetId,
+                    userId: "guid",
+                    rotation: 0,
+                    annotations: []
+                }
+            }
 
             var currentSheetIndex = 0;
 
