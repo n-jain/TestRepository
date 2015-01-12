@@ -18,7 +18,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 getCurrentIndex: "=",
                 getTotalSheets: "=",
                 revisionsForCurrentSheet: "=",
-                openSheetById: "="
+                openSheetById: "=",
+                saveSheet: "="
             },
             restrict: "E",
             replace: true,
@@ -229,6 +230,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         if( val.length > 50 )
                           val = val.substring( 0, 50 );
                         scope.sheet.name = val;
+                        scope.saveSheet(scope.sheet);
                       });
                     },
                     cancelAction: function hideAction(){

@@ -110,6 +110,23 @@
                 console.log("close sheet");
             };
 
+            $scope.saveSheet = function(sheet) {
+                var s = $scope.getSheetById(sheet.id);
+                if (s === null) { return; }
+                // this is only for testing ... i know it's just setting it's own name
+                s.name = sheet.name;
+            }
+
+            $scope.getSheetById = function(sheetId) {
+                for (var i = 0; i < sheets.length; i++) {
+                    if (sheets[i].id === sheetId) {
+                        return sheets[i];
+                    }
+                }
+
+                return null;
+            }
+
             $scope.nextSheet = function () {
                 if (currentSheetIndex === sheets.length - 1) { return; }
 
