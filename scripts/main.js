@@ -166,7 +166,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         } else if (document.documentElement.webkitRequestFullscreen) {
                             document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
                         }
-                        console.log(document.getElementById("fullscreen_button"));
                         document.getElementById("fullscreen_button").innerHTML = "Exit Full Screen";
                         document.getElementById("fullscreen_floating_block").style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "none";
