@@ -67,54 +67,57 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.selectTool = function(tool) {
-                    if(scope.selectedTool == null) {
+
+                    if( tool && scope.selectedTool && tool.id === scope.selectedTool.id ) {
+                        scope.selectedTool = null;
+                        tool = null;
+                    }
+
+                    if( tool )
+                    {
+                        if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
+                        {
+                            var mgr = scope.currentSheet.tileView.annotationManager;
+                            if( mgr.scaleAnnotation )
+                            {
+                                // Avoid the toolip - we're selecting the annotation instead of changing mode
+                                mgr.selectSingleAnnotation( mgr.scaleAnnotation );
+                                scope.selectedToolMenu = null;
+                                return;
+                            }
+                        }
+                        else if( tool.id == BluVueSheet.Constants.Tools.Ruler.id )
+                        {
+                            var mgr = scope.currentSheet.tileView.annotationManager;
+                            if( !mgr.scaleAnnotation )
+                            {
+                                // There's no calibration, so enforce one!
+                                tool = BluVueSheet.Constants.Tools.Calibration;
+                            }
+                        }
+
+                        // Todo: Also check the options to see if tooltips are displayed 100% of the time
+                        if( !tool.visited || scope.alwaysShowToolHelp() )
+                        {
+                            toolipDialog.showTooltip( {
+                               title: tool.label||tool.name,
+                               message:tool.description,
+                               image: tool.heroImage
+                            });
+                        }
+                        tool.visited = true;
+
+                        scope.selectedTool = tool;
+                        if(tool!=null) scope.toolMenuButtonTools[tool.menuId] = tool.menuIndex;
+                    }
+
+                    if( scope.selectedTool == null ) {
                         angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
                             angular.element(value).removeClass('active-child-tool');
                         });
                     }
 
-                    if (tool === scope.selectedTool && scope.selectedTool != null && !scope.alwaysShowToolHelp()) {
-                        scope.selectedTool = null;
-                    } else {
-                        if( tool )
-                        {
-                            if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
-                            {
-                                var mgr = scope.currentSheet.tileView.annotationManager;
-                                if( mgr.scaleAnnotation )
-                                {
-                                    // Avoid the toolip - we're selecting the annotation instead of changing mode
-                                    mgr.selectSingleAnnotation( mgr.scaleAnnotation );
-                                    scope.selectedToolMenu = null;
-                                    return;
-                                }
-                            }
-                            else if( tool.id == BluVueSheet.Constants.Tools.Ruler.id )
-                            {
-                                var mgr = scope.currentSheet.tileView.annotationManager;
-                                if( !mgr.scaleAnnotation )
-                                {
-                                    // There's no calibration, so enforce one!
-                                    tool = BluVueSheet.Constants.Tools.Calibration;
-                                }
-                            }
-
-                            // Todo: Also check the options to see if tooltips are displayed 100% of the time
-                            if( !tool.visited || scope.alwaysShowToolHelp() )
-                            {
-                                toolipDialog.showTooltip( {
-                                   title: tool.label||tool.name,
-                                   message:tool.description,
-                                   image: tool.heroImage
-                                });
-                            }
-                            tool.visited = true;
-                        }
-
-                        scope.selectedTool = tool;
-                        if(tool!=null) scope.toolMenuButtonTools[tool.menuId] = tool.menuIndex;
-                    }
-                    scope.currentSheet.setTool(scope.selectedTool);
+                    scope.currentSheet.setTool( scope.selectedTool );
 
                     //update tool menu
                     scope.selectedToolMenu = null;
