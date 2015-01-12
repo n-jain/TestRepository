@@ -665,17 +665,19 @@ input.bluvue-sheetname-edit {
 
 #show-toolbar {
     background: url(images/update/icon_toolbars_show_white.png) no-repeat 0 34%;
+    background-size: contain;
     background-color: rgba(96, 96, 96, 0.7);
     border: none;
     cursor: pointer;
     display: none;
     text-indent: -9999px;
     margin-top: 7px;
-    height: 38px;
+    position: fixed;
     position: fixed;
     bottom: 0px;
     right: 0px;
-    width: 114px;
+    width: 60px;
+    height: 23px;
 }
 
 #show-toolbar:hover {
