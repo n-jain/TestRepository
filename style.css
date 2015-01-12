@@ -685,3 +685,7 @@ input.bluvue-sheetname-edit {
 button:focus {
     outline: none;
 }
+
+canvas.change {
+    /*background:url(images/update/old-sheet.png)!important;*/
+}
