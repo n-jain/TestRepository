@@ -133,18 +133,16 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
         context.translate(-this.tileLoader.width / 2, -this.tileLoader.height / 2);
         
-        var visibleLeft = this.scrollX < 0 ? this.scrollX * -1 : 0;
-		var visibleTop = this.scrollY < 0 ? this.scrollY * -1 : 0;
-		var visibleWidth = canvas.width / this.scale;
-		var visibleHeight = canvas.height / this.scale;
 
-		this.tileLoader.drawAllTiles(context, {
-		    x: visibleLeft,
-		    y: visibleTop,
-		    x2: visibleLeft + visibleWidth,
-		    y2: visibleTop + visibleHeight
+		var upperLeft = this.sheetCoordinatesFromScreenCoordinates( 0,0 );
+		var lowerRight = this.sheetCoordinatesFromScreenCoordinates( canvas.width, canvas.height );
+
+		this.tileLoader.drawAllTiles( context, {
+  		  x:upperLeft.x,
+  		  y: upperLeft.y,
+  		  x2: lowerRight.x,
+  		  y2: lowerRight.y
 		});
-
 		this.annotationManager.drawAllAnnotations(context);
 		
 		context.restore();
