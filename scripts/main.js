@@ -254,6 +254,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.rotateSheet = function rotateSheet() {
+                    scope.currentSheet.tileView.annotationManager.deselectAllAnnotations();
                     scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
                     scope.currentSheet.tileView.setScale(0);
                     scope.currentSheet.tileView.setScroll(0,0);
