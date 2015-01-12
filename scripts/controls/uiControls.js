@@ -253,7 +253,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
             if(  (tileView.annotationManager.scaleAnnotation != null) )
             {
-                if( selectedAnnotations[0].hasPerimeter )
+                if( selectedAnnotations[0].hasPerimeter && a.type != MEASURE_ANNOTATION )
                 {
                     var button = addButton( BluVueSheet.Constants.OptionButtons.Perimeter, selectCallback );
                     if( a.measurement && a.perimeterMeasured )
@@ -268,12 +268,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 }
             }
 
-            /*
-            if (type == MEASURE_ANNOTATION)
-                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
-            */
-
-            if( a.measurement && (a.areaMeasured || a.perimeterMeasured) )
+            if( a.measurement && (a.areaMeasured || a.perimeterMeasured || a.type==MEASURE_ANNOTATION) )
             {
               var m = selectedAnnotations[0].measurement;
               var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
