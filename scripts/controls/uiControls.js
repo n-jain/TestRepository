@@ -601,6 +601,7 @@ BluVueSheet.Dialog = function() {
         },
         {
           label: options.okLabel||"Ok",
+          validatorFactory: options.validatorFactory,
           action: options.okAction||defaultHideAction
         }
       ]
@@ -634,6 +635,10 @@ BluVueSheet.Dialog = function() {
         var button = angular.element( "<div class='dialog-button'>" + spec.label + "</div>" );
         if( spec.buttonClass )
           button.addClass( spec.buttonClass );
+        if( spec.validatorFactory )
+        {
+          spec.validatorFactory( button );
+        }
         button.on( 'click', spec.action );
         buttonHolder.append( button );
       } );
