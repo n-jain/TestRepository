@@ -273,6 +273,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     if( scope.getTotalSheets() == 1 ) {
                         document.getElementById('next-sheet-arrow').style.display = 'none';
                     }
+
+                    var overlay = angular.element( document.querySelector( '.overlay' ) );
+                    overlay.toggleClass( 'bluvue-replaced-revision', scope.isReplacement() );
                 });
 
                 scope.$on('$destroy', function () {
@@ -367,6 +370,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         document.getElementById('previous-sheet-arrow').style.display = 'none';
                     }
                 };
+
+                scope.isReplacement = function isReplacement() {
+                    var revisions = scope.revisionsForSheet( scope.sheet ) || [];
+
+                    // starts at 1, not a replacement if i==0 matches
+                    for( var i=1; i<revisions.length; i++ )
+                    {
+                        if( revisions[i].id == scope.sheet.id )
+                            return true;
+                    }
+                    return false;
+                }
             }
         }
     }

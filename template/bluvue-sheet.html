@@ -37,6 +37,7 @@
     <div class="bluvue-sheet-textsize-menu">
         <div ng-repeat="textSize in textSizes" class="bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text" ng-class="{selected: currentSheet.tileView.textSize === textSize}" ng-click="currentSheet.setTextSize(textSize)"></div>
     </div>
+    <div class='overlay'></div>
     <canvas>Canvas is not supported</canvas>
 
     <footer class="bluvue-sheet-footer" ng-show="false">
