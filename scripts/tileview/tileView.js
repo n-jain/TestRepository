@@ -225,6 +225,10 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
       else if( y < -h2 )         // shorter, enforce bottom clamp
           y = -h2;
 
+       if(cw < ch) {
+          y /= 3.5;
+       }
+
 	    this.scrollX = x;
 	    this.scrollY = y;
 	}
