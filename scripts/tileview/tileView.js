@@ -114,16 +114,16 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     };
 
     this.drawAll = function () {
-	    canvas.width=window.innerWidth;
-		canvas.height=window.innerHeight;
-		context.clearRect(0,0,canvas.width,canvas.height);
-		
-		if (!this.canDraw) {
-		    this.drawProgressIndicator();
-		    return;
-		}
+        canvas.width=window.innerWidth;
+        canvas.height=window.innerHeight;
+        context.clearRect(0,0,canvas.width,canvas.height);
 
-		context.save();
+        if( !this.canDraw ) {
+            this.drawProgressIndicator();
+            return;
+        }
+
+        context.save();
 
         context.scale(this.scale, this.scale);
         context.translate(this.scrollX, this.scrollY);
@@ -132,21 +132,58 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         context.rotate(scope.sheet.rotation / 180 * Math.PI);
 
         context.translate(-this.tileLoader.width / 2, -this.tileLoader.height / 2);
-        
+        /*
+        // This logic seems to be broken -- the conversions don't seem to be 100%
+        // accurate in the rotated cases when trying to find the global bounds, or
+        // else I'm just confused.
+    		var p1 = this.sheetCoordinatesFromScreenCoordinates( 0,0 );
+    		var p2 = this.sheetCoordinatesFromScreenCoordinates( canvas.width, canvas.height );
 
-		var upperLeft = this.sheetCoordinatesFromScreenCoordinates( 0,0 );
-		var lowerRight = this.sheetCoordinatesFromScreenCoordinates( canvas.width, canvas.height );
+        // clamp to sheet bounds
+        p1.x = Math.max( p1.x, 0 );
+        p1.y = Math.max( p1.y, 0 );
+        p2.x = Math.min( p2.x, this.tileLoader.width );
+        p2.y = Math.min( p2.y, this.tileLoader.height );
 
-		this.tileLoader.drawAllTiles( context, {
-  		  x:upperLeft.x,
-  		  y: upperLeft.y,
-  		  x2: lowerRight.x,
-  		  y2: lowerRight.y
-		});
-		this.annotationManager.drawAllAnnotations(context);
-		
-		context.restore();
-	}
+        var drawRect = {
+      		  x: p1.x,
+      		  y: p1.y,
+      		  x2: p2.x,
+      		  y2: p2.y
+        };
+        */
+
+        // A default clip is applied to match the viewport, so there's no need to
+        // downsample the draw rectangle to the canvas's view area.
+        var drawRect = {
+          x:0, y:0,
+          x2:this.tileLoader.width, y2:this.tileLoader.height
+        }
+
+    		this.tileLoader.drawAllTiles( context, drawRect );
+    		//debugDraw( context, drawRect );
+    		this.annotationManager.drawAllAnnotations(context);
+
+    		context.restore();
+  	}
+
+    function debugDraw( context, r ){
+        context.save();
+        //console.log( "drawRect", r.x, r.y, r.x2, r.y2 );
+        context.beginPath();
+        context.rect( r.x, r.y, r.x2, r.y2 );
+        context.fillStyle = 'rgba(225,0,0,0.25)';
+        context.fill();
+        context.lineWidth = 3;
+        context.strokeStyle = 'red';
+        context.stroke();
+
+        context.font = '400pt Times';
+        context.fillStyle = 'rgba(0,0,0,0.5)';
+        context.fillText('1', r.x-150, r.y+200);
+        context.fillText('2', r.x2-150, r.y2+200);
+        context.restore();
+    }
 
     this.fitToScreen = function () {
 	    var headerHeight = BluVueSheet.Constants.HeaderHeight;
@@ -162,7 +199,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	 * Updates scrollX and scrollY, honoring any scroll clamps that may exist (e.g., edge of screen)
 	 **/
 	this.setScroll = function updateScrollWithClamps( x, y ) {
-	  var y1 = y;
   	  var margin = Math.max( BluVueSheet.Constants.HeaderHeight, BluVueSheet.Constants.FooterHeight )/this.scale;
       var sheetSize = this.getSheetSize();
 
