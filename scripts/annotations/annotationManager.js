@@ -726,7 +726,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       dialog.showConfirmDialog( {
           title: 'Calibrate Scale',
           //message: 'Enter Scale with Units',
-          message: "Enter Scale with Units<br>(5' 2\", 3m, etc.)",
+          message: "Enter Scale with Units",
           bodyElement: holder,
           okLabel:'Set',
           validatorFactory: function createValidator( okButton ) {
