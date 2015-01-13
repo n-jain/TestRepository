@@ -181,6 +181,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 	}
 	this.onclick = function(x,y){
+
+        if(scope.selectedTool != null && scope.selectedTool.name == 'polygon') {
+            return;
+        }
+
 	    if (cancelClick) {
 	        cancelClick = false;
 	        return;
