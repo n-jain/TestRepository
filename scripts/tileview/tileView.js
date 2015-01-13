@@ -226,7 +226,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
           y = -h2;
 
        if(cw < ch) {
-          y /= 3.5;
+          y /= 3.5 - y/7;
        }
 
 	    this.scrollX = x;
