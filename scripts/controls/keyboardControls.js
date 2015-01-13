@@ -27,9 +27,6 @@ BluVueSheet.KeyboardControls = function(tileView, closeSheet){
 	}
 
 	this.onKeyDown = function (event) {
-
-        console.log(event.keyCode);
-
 		switch(event.keyCode){
 			case 65://A
 				scrollLeft=true;

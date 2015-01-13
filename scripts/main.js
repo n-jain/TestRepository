@@ -17,7 +17,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 pinnedSheets: "=",
                 getCurrentIndex: "=",
                 getTotalSheets: "=",
-                revisionsForSheet: "="
+                revisionsForCurrentSheet: "=",
+                openSheetById: "=",
+                saveSheet: "="
             },
             restrict: "E",
             replace: true,
@@ -228,6 +230,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         if( val.length > 50 )
                           val = val.substring( 0, 50 );
                         scope.sheet.name = val;
+                        scope.saveSheet(scope.sheet);
                       });
                     },
                     cancelAction: function hideAction(){
@@ -241,7 +244,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                   var dialog = new BluVueSheet.Dialog();
                   var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
-                  var revisions = scope.revisionsForSheet( scope.currentSheet );
+                  var revisions = scope.revisionsForCurrentSheet( scope.currentSheet );
                   var editor = angular.element( "<select class='bluvue-revision-edit'></select>" );
 
                   revisions.forEach( function( rev, index ) {
@@ -259,7 +262,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     okLabel:'Change',
                     okAction: function () {
                         scope.$apply(function () {
-                            scope.sheet = revisions[editor[0].value];
+                            scope.openSheetById(revisions[editor[0].value].id);
                         });
                     }
                   });
@@ -392,7 +395,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 };
 
                 scope.isReplacement = function isReplacement() {
-                    var revisions = scope.revisionsForSheet( scope.sheet ) || [];
+                    var revisions = scope.revisionsForCurrentSheet( ) || [];
 
                     // starts at 1, not a replacement if i==0 matches
                     for( var i=1; i<revisions.length; i++ )

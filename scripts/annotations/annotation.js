@@ -164,12 +164,15 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		}
 	}
 	this.drawMeasurement = function(context){
+	  var theta = this.tileView.getRotation()/-180*Math.PI;
+	  var drawWidth = Math.abs( this.bounds.width()*Math.cos(theta) - this.bounds.height()*Math.sin(theta) );
+
 		var textSize=32*this.lineWidth;
 		var text = htmlDecode( this.measurement.toString() );
 
-		context.font = textSize+"px Verdana";
+	  context.font = textSize+"px Verdana";
 
-		while(context.measureText(text).width>this.bounds.width()&&textSize>8*this.lineWidth){
+		while(context.measureText(text).width>drawWidth&&textSize>8*this.lineWidth){
 			textSize-=8*this.lineWidth;
 			context.font = textSize+"px Verdana";
 		}
@@ -177,6 +180,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 
 		context.save();
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
+		context.rotate( theta );
 		context.fillStyle = this.color;
 		context.textAlign = "center";
 		context.fillText(text,0,textSize/3);
@@ -668,30 +672,32 @@ function drawScale(context){
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta-angle2)*endLength), y2+(Math.sin(theta-angle2)*endLength));
 
-		//draw text
-		if(this.measurement!=null){
-			var cx = (x2+x1)/2;
-			var cy = (y2+y1)/2;
-
-			context.save();
-
-			context.translate(cx,cy);
-			context.rotate(theta);
-			if(x1>x2){
-				context.rotate(Math.PI);
-			}
-			context.fillStyle = this.color;
-			context.textAlign = "center";
-
-			context.fillText( text,0,textSize/3);
-
-			context.restore();
-		}
+    drawLinearText( context, text, textSize, this.color, x1, y1, x2, y2, theta, this.tileView.getRotation() );
 
 		context.restore();
 		context.stroke();
 	}
 }
+function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, rotation )
+{
+		var cx = (x2+x1)/2;
+		var cy = (y2+y1)/2;
+
+		context.save();
+		context.translate(cx,cy);
+		context.rotate(theta);
+		if( ( x1>x2 && rotation == 0) ||
+		    ( y1<y2 && rotation == 90 ) ||
+		    ( x1<x2 && rotation == 180) ||
+		    ( y1>y2 && rotation == 270 ) ) {
+			context.rotate(Math.PI);
+		}
+		context.fillStyle = color;
+		context.textAlign = "center";
+		context.fillText( text ,0,textSize/3);
+		context.restore();
+}
+
 function drawMeasure(context){
 	if(this.points.length==2){
 		var x1 = this.points[0].x;
@@ -752,25 +758,7 @@ function drawMeasure(context){
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta-Math.PI/2)*endLength), y2+(Math.sin(theta-Math.PI/2)*endLength));
 
-		//draw text
-		if(this.measurement!=null){
-			var cx = (x2+x1)/2;
-			var cy = (y2+y1)/2;
-
-			context.save();
-
-			context.translate(cx,cy);
-			context.rotate(theta);
-			if(x1>x2){
-				context.rotate(Math.PI);
-			}
-			context.fillStyle = this.color;
-			context.textAlign = "center";
-
-			context.fillText( text ,0,textSize/3);
-
-			context.restore();
-		}
+    drawLinearText( context, text, textSize, this.color, x1, y1, x2, y2, theta, this.tileView.getRotation() );
 
 		context.restore();
 		context.stroke();

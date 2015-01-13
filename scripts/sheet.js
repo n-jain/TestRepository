@@ -137,7 +137,6 @@
     };
 
     this.setTextSize = function (textSize) {
-        console.log(textSize);
         t.tileView.annotationManager.setTextSize(textSize);
         t.tileView.textSize = textSize;
     };
