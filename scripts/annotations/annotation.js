@@ -164,12 +164,15 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 		}
 	}
 	this.drawMeasurement = function(context){
+	  var theta = this.tileView.getRotation()/-180*Math.PI;
+	  var drawWidth = Math.abs( this.bounds.width()*Math.cos(theta) - this.bounds.height()*Math.sin(theta) );
+
 		var textSize=32*this.lineWidth;
 		var text = htmlDecode( this.measurement.toString() );
 
-		context.font = textSize+"px Verdana";
+	  context.font = textSize+"px Verdana";
 
-		while(context.measureText(text).width>this.bounds.width()&&textSize>8*this.lineWidth){
+		while(context.measureText(text).width>drawWidth&&textSize>8*this.lineWidth){
 			textSize-=8*this.lineWidth;
 			context.font = textSize+"px Verdana";
 		}
@@ -177,6 +180,7 @@ BluVueSheet.Annotation = function(type, tileView, userId, projectId, sheetId){
 
 		context.save();
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
+		context.rotate( theta );
 		context.fillStyle = this.color;
 		context.textAlign = "center";
 		context.fillText(text,0,textSize/3);
