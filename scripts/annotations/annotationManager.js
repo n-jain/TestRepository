@@ -39,6 +39,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			if(currentAnnotation.type==MEASURE_ANNOTATION){
 			    currentAnnotation.measurement = new BluVueSheet.Measurement(0, this.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
 			}
+
+      if( currentAnnotation.type==FREE_FORM_ANNOTATION )
+          currentAnnotation.closed = true;
+
 			this.captureMouse = true;
 		    return;
 		}
@@ -97,7 +101,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
 		  var tool = tileView.getTool();
 			this.finishAnnotation();
-	    if( tool != BluVueSheet.Constants.Tools.Freeform && tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
+	    if( tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
   	      tileView.deselectTool();
 		}
 		if(lasso!=null){
@@ -681,16 +685,41 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           }
       }
 	}
+
 	this.updateCalibration = function( annotation, onSuccess ) {
 	    var mgr = this;
 	    annotation = annotation || selectedAnnotations[0];
 
 			var dialog = new BluVueSheet.Dialog();
       var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
-      var editor = angular.element( "<input class='bluvue-scale-edit'></input>" );
-      holder.append( editor );
-      // Allow user to click input field
+      var defaultValue = annotation.measurement ? (" value='"+annotation.measurement.amount+"'") : "";
+      var editor = angular.element( "<input class='bluvue-scale-edit'"+defaultValue+"></input>" );
       editor.on( 'click', function(e){ e.stopPropagation(); } );
+      holder.append( editor );
+
+      var unitType = BluVueSheet.Constants.Length;
+      var units = BluVueSheet.Constants.UnitNames[ unitType ];
+      var displayNames = BluVueSheet.Constants.UnitDisplayNames[ unitType ];
+      var defaultUnit = annotation.measurement ? annotation.measurement.unit : 1;  // unit[1] is FT
+      var unitEditor = angular.element( "<select class='bluvue-annotation-unit-edit'></select>" );
+      for( var i=0; i<units.length; i++ )
+      {
+          if( units[i] != 'FTIN' )
+          {
+            // unit id is i, unit name is displayNames[i]
+              var selected = (i == defaultUnit) ? " selected" : "";
+              unitEditor.append( angular.element( "<option value='" + i + "'" + selected + ">"+ displayNames[i] +"</option>") );
+          }
+      }
+      unitEditor.on( 'click', function(e){ e.stopPropagation(); } );
+      holder.append( unitEditor );
+
+      var entryValidator = function entryValidator( okButton ){
+          var txtVal = editor.val();
+          var valid = txtVal && !isNaN( Number( txtVal ) );
+          okButton.css( 'visibility', valid?'visible':'hidden' );
+      }
+
       // Spoof BluVueSheet.KeyboardControls to make it not eat our keypresses
       var oldKeyCapture = this.captureKeyboard;
       this.captureKeyboard=true;
@@ -700,8 +729,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           message: "Enter Scale with Units<br>(5' 2\", 3m, etc.)",
           bodyElement: holder,
           okLabel:'Set',
+          validatorFactory: function createValidator( okButton ) {
+              editor.on( 'change keypress paste input', function(){
+                  entryValidator(okButton);
+              });
+
+              // Validate the initial condition too...
+              entryValidator( okButton );
+          },
           okAction: function saveScaleCalibrationAction() {
-            	annotation.measurement = BluVueSheet.Measurement.createMeasurement( editor.val() );
+              var amount = Number( editor.val() );
+              var unit = parseInt( unitEditor[0].value,10 );
+              annotation.measurement = new BluVueSheet.Measurement( amount, unit, unitType );
   						mgr.scaleAnnotation=annotation;
   						if( onSuccess )
   						    onSuccess( annotation );
@@ -740,8 +779,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
-                  if( currentAnnotation.type==FREE_FORM_ANNOTATION )
-                      currentAnnotation.closed = true;
                   doSave( currentAnnotation );
               }
           }

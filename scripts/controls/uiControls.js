@@ -253,7 +253,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
             if(  (tileView.annotationManager.scaleAnnotation != null) )
             {
-                if( selectedAnnotations[0].hasPerimeter )
+                if( selectedAnnotations[0].hasPerimeter && a.type != MEASURE_ANNOTATION )
                 {
                     var button = addButton( BluVueSheet.Constants.OptionButtons.Perimeter, selectCallback );
                     if( a.measurement && a.perimeterMeasured )
@@ -268,12 +268,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 }
             }
 
-            /*
-            if (type == MEASURE_ANNOTATION)
-                addButton(BluVueSheet.Constants.OptionButtons.UnitLength);
-            */
-
-            if( a.measurement && (a.areaMeasured || a.perimeterMeasured) )
+            if( a.measurement && (a.areaMeasured || a.perimeterMeasured || a.type==MEASURE_ANNOTATION) )
             {
               var m = selectedAnnotations[0].measurement;
               var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
@@ -601,6 +596,7 @@ BluVueSheet.Dialog = function() {
         },
         {
           label: options.okLabel||"Ok",
+          validatorFactory: options.validatorFactory,
           action: options.okAction||defaultHideAction
         }
       ]
@@ -634,6 +630,10 @@ BluVueSheet.Dialog = function() {
         var button = angular.element( "<div class='dialog-button'>" + spec.label + "</div>" );
         if( spec.buttonClass )
           button.addClass( spec.buttonClass );
+        if( spec.validatorFactory )
+        {
+          spec.validatorFactory( button );
+        }
         button.on( 'click', spec.action );
         buttonHolder.append( button );
       } );

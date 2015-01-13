@@ -12,8 +12,8 @@
         </nav>
     </header>
 
-    <button ng-click="previousSheet()" id="previous-sheet-arrow">< Previous</button>
-    <button ng-click="nextSheet()" id="next-sheet-arrow">Next ></button>
+    <button ng-click="selectPreviousSheet()" id="previous-sheet-arrow">< Previous</button>
+    <button ng-click="selectNextSheet()" id="next-sheet-arrow">Next ></button>
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
 
     <div id="fullscreen_floating_block">
@@ -23,7 +23,7 @@
 
     <div class="bluvue-sheet-more-menu">
         <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" id="{{ menuItem.idAttr }}" ng-click="moreMenuItemClicked(menuItem)">
-            <img src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
+            <img ng-src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
         </div>
     </div>
 
@@ -37,6 +37,7 @@
     <div class="bluvue-sheet-textsize-menu">
         <div ng-repeat="textSize in textSizes" class="bv-toolbar-image bv-toolbar-image-inline bv-toolbar-text" ng-class="{selected: currentSheet.tileView.textSize === textSize}" ng-click="currentSheet.setTextSize(textSize)"></div>
     </div>
+    <div class='overlay'></div>
     <canvas>Canvas is not supported</canvas>
 
     <footer class="bluvue-sheet-footer" ng-show="false">

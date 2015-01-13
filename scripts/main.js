@@ -44,6 +44,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     });
                 }
 
+                var windowResizeObserver = function windowResizeObserver() {
+                    var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
+
+                    if(!checkFullscreen) {
+                        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
+                        document.getElementById("fullscreen_floating_block").style.display = "none";
+                        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
+                        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
+                    }
+                };
+                angular.element($window).on( 'resize', windowResizeObserver );
+
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -67,54 +79,59 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.selectTool = function(tool) {
-                    if(scope.selectedTool == null) {
+                    if( !tool || (scope.selectedTool && tool.id === scope.selectedTool.id) ) {
+                        scope.selectedTool = null;
+                        tool = null;
+                    }
+
+                    if( tool )
+                    {
+                        if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
+                        {
+                            var mgr = scope.currentSheet.tileView.annotationManager;
+                            if( mgr.scaleAnnotation )
+                            {
+                                // Avoid the toolip - we're selecting the annotation instead of changing mode
+                                mgr.selectSingleAnnotation( mgr.scaleAnnotation );
+                                scope.selectedToolMenu = null;
+                                return;
+                            }
+                        }
+                        else if( tool.id == BluVueSheet.Constants.Tools.Ruler.id )
+                        {
+                            var mgr = scope.currentSheet.tileView.annotationManager;
+                            if( !mgr.scaleAnnotation )
+                            {
+                                // There's no calibration, so enforce one!
+                                tool = BluVueSheet.Constants.Tools.Calibration;
+                            }
+                        }
+
+                        if( !tool.visited || scope.alwaysShowToolHelp() )
+                        {
+                            toolipDialog.showTooltip( {
+                               title: tool.label||tool.name,
+                               message:tool.description,
+                               image: tool.heroImage
+                            });
+                        }
+                        tool.visited = true;
+
+                        scope.selectedTool = tool;
+                    }
+
+                    for( var i=0; i<scope.toolMenuButtonTools.length; i++ )
+                    {
+                        scope.toolMenuButtonTools[i] = (tool) ? ((tool.menuId==i) ? tool.menuIndex:0) : 0;
+                    }
+
+                    if( scope.selectedTool == null ) {
                         angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
                             angular.element(value).removeClass('active-child-tool');
                         });
                     }
 
-                    if (tool === scope.selectedTool && scope.selectedTool != null && !scope.alwaysShowToolHelp()) {
-                        scope.selectedTool = null;
-                    } else {
-                        if( tool )
-                        {
-                            if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
-                            {
-                                var mgr = scope.currentSheet.tileView.annotationManager;
-                                if( mgr.scaleAnnotation )
-                                {
-                                    // Avoid the toolip - we're selecting the annotation instead of changing mode
-                                    mgr.selectSingleAnnotation( mgr.scaleAnnotation );
-                                    scope.selectedToolMenu = null;
-                                    return;
-                                }
-                            }
-                            else if( tool.id == BluVueSheet.Constants.Tools.Ruler.id )
-                            {
-                                var mgr = scope.currentSheet.tileView.annotationManager;
-                                if( !mgr.scaleAnnotation )
-                                {
-                                    // There's no calibration, so enforce one!
-                                    tool = BluVueSheet.Constants.Tools.Calibration;
-                                }
-                            }
-
-                            // Todo: Also check the options to see if tooltips are displayed 100% of the time
-                            if( !tool.visited || scope.alwaysShowToolHelp() )
-                            {
-                                toolipDialog.showTooltip( {
-                                   title: tool.label||tool.name,
-                                   message:tool.description,
-                                   image: tool.heroImage
-                                });
-                            }
-                            tool.visited = true;
-                        }
-
-                        scope.selectedTool = tool;
-                        if(tool!=null) scope.toolMenuButtonTools[tool.menuId] = tool.menuIndex;
-                    }
-                    scope.currentSheet.setTool(scope.selectedTool);
+                    scope.currentSheet.setTool( scope.selectedTool );
 
                     //update tool menu
                     scope.selectedToolMenu = null;
@@ -166,7 +183,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         } else if (document.documentElement.webkitRequestFullscreen) {
                             document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
                         }
-                        console.log(document.getElementById("fullscreen_button"));
                         document.getElementById("fullscreen_button").innerHTML = "Exit Full Screen";
                         document.getElementById("fullscreen_floating_block").style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "none";
@@ -250,7 +266,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 }
 
                 scope.rotateSheet = function rotateSheet() {
+                    scope.currentSheet.tileView.annotationManager.deselectAllAnnotations();
                     scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
+                    scope.currentSheet.tileView.setScale(0);
+                    scope.currentSheet.tileView.setScroll(0,0);
                 }
 
                 scope.$watch('sheet', function (newValue) {
@@ -266,10 +285,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     } else {
                         scope.options.currentSheetPinned = false;
                     }
+                    if( scope.getCurrentIndex() == 0 ) {
+                        document.getElementById('previous-sheet-arrow').style.display = 'none';
+                    }
+
+                    if( scope.getTotalSheets() == 1 ) {
+                        document.getElementById('next-sheet-arrow').style.display = 'none';
+                    }
+
+                    var overlay = angular.element( document.querySelector( '.overlay' ) );
+                    overlay.toggleClass( 'bluvue-replaced-revision', scope.isReplacement() );
                 });
 
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
+                    angular.element($window).off( 'resize', scope.windowResizeObserver );
                 });
 
                 //#region Pin Sheets
@@ -320,7 +350,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         scope[f]();
                     }
                     catch(err) {
-                        console.log('Function "' + menuItem.func + '" don\'t exists');
+                        console.log('Exception while clicking "' + menuItem.func + '"', err );
                     }
 
                     scope.moreMenuToggle(true);
@@ -340,20 +370,39 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                         button.innerHTML = 'Show Tool Help';
                     }
                 }
+
+                scope.selectNextSheet = function () {
+                    scope.nextSheet();
+
+                    // Hide right arrow if nextSheet isn't exists
+                    document.getElementById('previous-sheet-arrow').style.display = 'block';
+                    if( scope.getCurrentIndex() === scope.getTotalSheets()-1 ) {
+                        document.getElementById('next-sheet-arrow').style.display = 'none';
+                    }
+                };
+
+                scope.selectPreviousSheet = function () {
+                    scope.previousSheet();
+
+                    // Hide right arrow if nextSheet isn't exists
+                    document.getElementById('next-sheet-arrow').style.display = 'block';
+                    if( scope.getCurrentIndex() == 0 ) {
+                        document.getElementById('previous-sheet-arrow').style.display = 'none';
+                    }
+                };
+
+                scope.isReplacement = function isReplacement() {
+                    var revisions = scope.revisionsForSheet( scope.sheet ) || [];
+
+                    // starts at 1, not a replacement if i==0 matches
+                    for( var i=1; i<revisions.length; i++ )
+                    {
+                        if( revisions[i].id == scope.sheet.id )
+                            return true;
+                    }
+                    return false;
+                };
             }
         }
     }
 ]);
-
-
-
-angular.element(window).on('resize', function(){ //when the browser size change
-    var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
-
-    if(!checkFullscreen) {
-        document.getElementById("fullscreen_button").innerHTML = "Full Screen";
-        document.getElementById("fullscreen_floating_block").style.display = "none";
-        document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
-        document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
-    }
-});
