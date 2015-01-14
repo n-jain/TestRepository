@@ -315,8 +315,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    var minY = -1;
 	    var maxY = -1;
 
-        console.log(annotations);
-
 	    for (var i = 0; i < annotations.length; i++) {
 	        var pmix = 0, pmax = 0, pmay = 0, pmiy = 0;
 
