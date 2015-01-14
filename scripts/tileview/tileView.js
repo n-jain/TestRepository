@@ -130,28 +130,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         context.translate(canvas.width / this.scale / 2, canvas.height / this.scale / 2);
 
         context.rotate(scope.sheet.rotation / 180 * Math.PI);
-
         context.translate(-this.tileLoader.width / 2, -this.tileLoader.height / 2);
-        /*
-        // This logic seems to be broken -- the conversions don't seem to be 100%
-        // accurate in the rotated cases when trying to find the global bounds, or
-        // else I'm just confused.
-    		var p1 = this.sheetCoordinatesFromScreenCoordinates( 0,0 );
-    		var p2 = this.sheetCoordinatesFromScreenCoordinates( canvas.width, canvas.height );
-
-        // clamp to sheet bounds
-        p1.x = Math.max( p1.x, 0 );
-        p1.y = Math.max( p1.y, 0 );
-        p2.x = Math.min( p2.x, this.tileLoader.width );
-        p2.y = Math.min( p2.y, this.tileLoader.height );
-
-        var drawRect = {
-      		  x: p1.x,
-      		  y: p1.y,
-      		  x2: p2.x,
-      		  y2: p2.y
-        };
-        */
 
         // A default clip is applied to match the viewport, so there's no need to
         // downsample the draw rectangle to the canvas's view area.
