@@ -314,6 +314,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    var maxX = -1;
 	    var minY = -1;
 	    var maxY = -1;
+
+        console.log(annotations);
+
 	    for (var i = 0; i < annotations.length; i++) {
 	        var pmix = 0, pmax = 0, pmay = 0, pmiy = 0;
 
@@ -515,8 +518,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		if(selectedAnnotations.length>0){
-		  tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(annotations));
-		  tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(annotations));
+		  tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
+		  tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 		}
 	}
 	this.deleteSelectedAnnotations = function(){
