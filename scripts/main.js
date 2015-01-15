@@ -424,8 +424,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                  **/
                 scope.scheduleAnnotationSync = function scheduleAnnotationSync( modifiedAnnotations, deleteIds, onComplete, forceSync )
                 {
-                  scope.syncBuffer.modifiedAnnotations.concat( modifiedAnnotations );
-                  scope.syncBuffer.deletedAnnotationIds.concat( deletedAnnotationIds );
+                  scope.syncBuffer.modifiedAnnotations.concat( modifiedAnnotations||[] );
+                  scope.syncBuffer.deletedAnnotationIds.concat( deletedAnnotationIds||[] );
 
                   if( onComplete )
                     scope.syncBuffer.finallyQueue.push( onComplete );
