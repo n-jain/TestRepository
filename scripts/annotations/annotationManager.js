@@ -840,7 +840,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	/**
 	 * Called by the system when an annotation is externally updated.  Updates
-	 * will be passed as an array of JSON annotation states.
+	 * will be passed as an array of annotation state objects (deserialized JSON
+	 * states).
 	 **/
 	this.onExternalAnnotationUpdate = function onExternalAnnotationUpdate( annotations ) {
 	  console.log( "TODO: Implement annotationManager.onExternalAnnotationUpdate()" );
