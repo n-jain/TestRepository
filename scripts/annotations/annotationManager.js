@@ -837,4 +837,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		});
 	}
+
+	/**
+	 * Called by the system when an annotation is externally updated.  Updates
+	 * will be passed as an array of JSON annotation states.
+	 **/
+	this.onExternalAnnotationUpdate = function onExternalAnnotationUpdate( annotations ) {
+	  console.log( "TODO: Implement annotationManager.onExternalAnnotationUpdate()" );
+	}
+
+
+	/**
+	 * Called by the system when an annotation is externally deleted.  Updates
+	 * will be passed as an array of annotation ids.
+	 **/
+	this.onExternalAnnotationDelete = function onExternalAnnotationDelete( annotations ) {
+	  console.log( "TODO: Implement annotationManager.onExternalAnnotationDelete()" );
+	}
 }

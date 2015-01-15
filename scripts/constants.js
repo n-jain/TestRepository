@@ -138,8 +138,10 @@ BluVueSheet.Constants = {
         { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png", idAttr: ""},
         { id: 3, func: "toggleToolHelp", text: "Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
         //{ id: 4, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
-    ]
+    ],
+    ANNOTATION_SYNC_INTERVAL: 1000
 };
+
 //Define the items in the button menus
 BluVueSheet.Constants.ToolMenuButtons.Lasso.buttons = [BluVueSheet.Constants.Tools.Lasso];
 BluVueSheet.Constants.ToolMenuButtons.ClosedAnnotations.buttons = [BluVueSheet.Constants.Tools.Circle,

@@ -1,7 +1,7 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
-    function sheetDirective($window, $location) {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval',
+    function sheetDirective($window, $location, $interval) {
         'use strict';
 
         return {
@@ -58,6 +58,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     }
                 };
                 angular.element($window).on( 'resize', windowResizeObserver );
+
+                console.log( "WARNING!  Using very slow sync for debug.  FIX ME FOR RELEASE!" )
+                //scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
+                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, 15*1000 );
 
                 scope.options = {
                     currentSheetPinned: false
@@ -304,6 +308,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
                     angular.element($window).off( 'resize', scope.windowResizeObserver );
+
+                    if( scope.annotationWatcher )
+                    {
+                      $interval.cancel( scope.annotationWatcher );
+                      delete scope.annotationWatcher;
+                    }
                 });
 
                 //#region Pin Sheets
@@ -406,6 +416,60 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location',
                     }
                     return false;
                 };
+
+                /**
+                 * Schedules an annotation update with the remainder of the system.
+                 * All updates must be routed though this implementation - clients
+                 * should never use call syncAnnotations directly.
+                 **/
+                scope.scheduleAnnotationSync = function scheduleAnnotationSync( modifiedAnnotations, deleteIds, onComplete, forceSync )
+                {
+                  scope.syncBuffer.modifiedAnnotations.concat( modifiedAnnotations );
+                  scope.syncBuffer.deletedAnnotationIds.concat( deletedAnnotationIds );
+
+                  if( onComplete )
+                    scope.syncBuffer.finallyQueue.push( onComplete );
+
+                  if( forceSync )
+                    scope.doAnnotationSync();
+                };
+
+                scope.syncBuffer = { modifiedAnnotations: [], deletedAnnotationIds: [], finallyQueue:[] };
+                scope.doAnnotationSync = function doAnnotationSync()
+                {
+                  var version = scope.sheet.annotationVersion;
+                  var mod = scope.syncBuffer.modifiedAnnotations;
+                  var del = scope.syncBuffer.deletedAnnotations;
+                  var finallyQueue = scope.syncBuffer.finallyQueue;
+
+                  // Empty the buffer as we're taking care of this now.
+                  scope.syncBuffer.modifiedAnnotations = [];
+                  scope.syncBuffer.deletedAnnotations = [];
+                  scope.syncBuffer.finallyQueue = [];
+
+                  scope.syncAnnotations( version, mod, del ).then( function( result ){
+                    scope.sheet.annotationVersion = result.data.version;
+                    var mgr = scope.currentSheet.tileView.annotationManager;
+
+                    if( result.data.annotations )
+                      mgr.onExternalAnnotationUpdate( result.data.annotations );
+                    if( result.data.annotationDeletes )
+                    	mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
+                  }).catch( function( err ) {
+                    console.error( "Annotation sync error", err );
+                  }).finally( function() {
+                    for( var i=0; i<finallyQueue.length; i++ )
+                    {
+                      var callback = finallyQueue[i];
+                      if( callback )
+                        callback();
+                    }
+                  });
+               };
+
+               // Force initial sync to occur at link time
+              scope.doAnnotationSync();
+
             }
         }
     }
