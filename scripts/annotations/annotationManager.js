@@ -852,7 +852,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * Called by the system when an annotation is externally deleted.  Updates
 	 * will be passed as an array of annotation ids.
 	 **/
-	this.onExternalAnnotationDelete = function onExternalAnnotationDelete( annotations ) {
+	this.onExternalAnnotationDelete = function onExternalAnnotationDelete( annotationIds ) {
 	  console.log( "TODO: Implement annotationManager.onExternalAnnotationDelete()" );
 	}
 }

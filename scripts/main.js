@@ -424,7 +424,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                  **/
                 scope.scheduleAnnotationSync = function scheduleAnnotationSync( modifiedAnnotations, deleteIds, onComplete, forceSync )
                 {
-                  scope.syncBuffer.modifiedAnnotations.concat( modifiedAnnotations||[] );
+                  if( modifiedAnnotations && modifiedAnnotations.length )
+                  {
+                    for( var i=0; i<modifiedAnnotations.length; i++ )
+                    {
+                      var annotation = modifiedAnnotations[ i ];
+                      scope.syncBuffer.modifiedAnnotations[ annotation.id ] = annotation;
+                    }
+                  }
                   scope.syncBuffer.deletedAnnotationIds.concat( deletedAnnotationIds||[] );
 
                   if( onComplete )
@@ -434,16 +441,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     scope.doAnnotationSync();
                 };
 
-                scope.syncBuffer = { modifiedAnnotations: [], deletedAnnotationIds: [], finallyQueue:[] };
+                scope.syncBuffer = { modifiedAnnotations: {}, deletedAnnotationIds: [], finallyQueue:[] };
                 scope.doAnnotationSync = function doAnnotationSync()
                 {
                   var version = scope.sheet.annotationVersion;
-                  var mod = scope.syncBuffer.modifiedAnnotations;
+
+                  var mod = [];
+                  var modKeys = Object.keys( scope.syncBuffer.modifiedAnnotations ) || [];
+                  for( var i=0; i<modKeys.length; i++ )
+                  {
+                    mod.push( scope.syncBuffer.modifiedAnnotations[ modKeys[i] ] );
+                  }
                   var del = scope.syncBuffer.deletedAnnotations;
                   var finallyQueue = scope.syncBuffer.finallyQueue;
 
                   // Empty the buffer as we're taking care of this now.
-                  scope.syncBuffer.modifiedAnnotations = [];
+                  scope.syncBuffer.modifiedAnnotations = {};
                   scope.syncBuffer.deletedAnnotations = [];
                   scope.syncBuffer.finallyQueue = [];
 
