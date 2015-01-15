@@ -124,13 +124,11 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
         }
 
         if (selectedAnnotations.length > 0) {
-            var canFill = false;
+            var canFill = false, colCanFill = 0;
             for (var i = 0; i < selectedAnnotations.length; i++) {
-                if (selectedAnnotations[i].type != TEXT_ANNOTATION && selectedAnnotations[i].type != HIGHLIGHTER_ANNOTATION &&
-                    selectedAnnotations[i].type != LINE_ANNOTATION && selectedAnnotations[i].type != ARROW_ANNOTATION &&
-                    selectedAnnotations[i].type != MEASURE_ANNOTATION && selectedAnnotations[i].type != SCALE_ANNOTATION) {
+                if (tileView.isFillableAnnotation(selectedAnnotations[i].type)) {
                     canFill = true;
-                    break;
+                    colCanFill++;
                 }
             }
 
@@ -138,11 +136,11 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
                 var totalFilled = 0;
                 addButton(BluVueSheet.Constants.OptionButtons.Fill);
                 for (var j = 0; j < selectedAnnotations.length; j++) {
-                    if (selectedAnnotations[j].fill)totalFilled++;
+                    if (selectedAnnotations[j].fill && tileView.isFillableAnnotation(selectedAnnotations[j].type))totalFilled++;
                 }
 
                 //highlight the fill button if all selected paths are filled
-                setButtonSelected(BluVueSheet.Constants.OptionButtons.Fill, totalFilled == selectedAnnotations.length);
+                setButtonSelected(BluVueSheet.Constants.OptionButtons.Fill, totalFilled == colCanFill);
             }
         }
 

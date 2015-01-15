@@ -577,14 +577,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		this.setSelectedAnnotations( copies );
 	}
 	this.fillSelectedAnnotations = function(){
-		var totalFilled=0;
+		var totalFilled= 0, totalCanFilled = 0;
 		var ret = false;
-		for(var i=0; i<selectedAnnotations.length; i++)
-			if(selectedAnnotations[i].fill)
-				totalFilled++;
+		for(var i=0; i<selectedAnnotations.length; i++) {
+            if(selectedAnnotations[i].fill && tileView.isFillableAnnotation(selectedAnnotations[i].type))
+                totalFilled++;
+
+            if(tileView.isFillableAnnotation(selectedAnnotations[i].type))
+                totalCanFilled++;
+        }
+
 		for(var i=0; i<selectedAnnotations.length; i++){
-			selectedAnnotations[i].fill=totalFilled<selectedAnnotations.length;
-			ret = selectedAnnotations[i].fill;
+            if(tileView.isFillableAnnotation(selectedAnnotations[i].type)) {
+                selectedAnnotations[i].fill=totalFilled<totalCanFilled;
+                ret = selectedAnnotations[i].fill;
+            }
 		}
 		this.saveSelectedAnnotations();
 		return ret;

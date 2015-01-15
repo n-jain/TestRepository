@@ -341,4 +341,10 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
 	    return new BluVueSheet.Point(x1, y1);
     }
+
+    this.isFillableAnnotation = function(type) {
+        return type != TEXT_ANNOTATION && type != HIGHLIGHTER_ANNOTATION &&
+            type != LINE_ANNOTATION && type != ARROW_ANNOTATION &&
+            type != MEASURE_ANNOTATION && type != SCALE_ANNOTATION;
+    }
 }
