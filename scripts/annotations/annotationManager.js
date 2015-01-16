@@ -545,13 +545,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     			var annotation = selectedAnnotations[i];
     			removeFromArray(annotations, annotation);
     			if(annotation.type==SCALE_ANNOTATION)self.scaleAnnotation=null;
-    			scope.deleteAnnotation(selectedAnnotations[i].id).then(function(){
-    				//succeeded, do nothing
-    			})["catch"](function(error){
-    				deleteFailed();
-    			})["finally"](function(){
-    				//nothing else is needed
-    			});
+                scope.scheduleAnnotationSync([], selectedAnnotations[i].id, null, false );
     		}
     		selectedAnnotations = new Array();
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
