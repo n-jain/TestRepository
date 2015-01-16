@@ -246,31 +246,33 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
 
                 scope.selectRevision = function selectRevision() {
-                  var dialog = new BluVueSheet.Dialog();
-                  var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+                    scope.scheduleAnnotationSync( null, null, function(){
+                        var dialog = new BluVueSheet.Dialog();
+                        var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
-                  var revisions = scope.revisionsForCurrentSheet( scope.currentSheet );
-                  var editor = angular.element( "<select class='bluvue-revision-edit'></select>" );
+                        var revisions = scope.revisionsForCurrentSheet( scope.currentSheet );
+                        var editor = angular.element( "<select class='bluvue-revision-edit'></select>" );
 
-                  revisions.forEach( function( rev, index ) {
-                    var selected = ( rev.id == scope.sheet.id) ? " selected" : "";
-                    editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ rev.name +"</option>") );
-                  });
-
-                  holder.append( editor );
-                  // Allow user to click input field
-                  editor.on( 'click', function(e){ e.stopPropagation(); } );
-                  dialog.showConfirmDialog( {
-                    title: 'Change Revision',
-                    message: 'Choose revision from history list',
-                    bodyElement: holder,
-                    okLabel:'Change',
-                    okAction: function () {
-                        scope.$apply(function () {
-                            scope.openSheetById(revisions[editor[0].value].id);
+                        revisions.forEach( function( rev, index ) {
+                            var selected = ( rev.id == scope.sheet.id) ? " selected" : "";
+                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ rev.name +"</option>") );
                         });
-                    }
-                  });
+
+                        holder.append( editor );
+                        // Allow user to click input field
+                        editor.on( 'click', function(e){ e.stopPropagation(); } );
+                        dialog.showConfirmDialog( {
+                            title: 'Change Revision',
+                            message: 'Choose revision from history list',
+                            bodyElement: holder,
+                            okLabel:'Change',
+                            okAction: function () {
+                                scope.$apply(function () {
+                                    scope.openSheetById(revisions[editor[0].value].id);
+                                });
+                            }
+                        });
+                    }, true );
                 }
 
                 scope.rotateSheet = function rotateSheet() {
@@ -386,23 +388,27 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
 
                 scope.selectNextSheet = function () {
-                    scope.nextSheet();
+                    scope.scheduleAnnotationSync( null, null, function(){
+                        scope.nextSheet();
 
-                    // Hide right arrow if nextSheet isn't exists
-                    document.getElementById('previous-sheet-arrow').style.display = 'block';
-                    if( scope.getCurrentIndex() === scope.getTotalSheets()-1 ) {
-                        document.getElementById('next-sheet-arrow').style.display = 'none';
-                    }
+                        // Hide right arrow if nextSheet isn't exists
+                        document.getElementById('previous-sheet-arrow').style.display = 'block';
+                        if( scope.getCurrentIndex() === scope.getTotalSheets()-1 ) {
+                            document.getElementById('next-sheet-arrow').style.display = 'none';
+                        }
+                    }, true );
                 };
 
                 scope.selectPreviousSheet = function () {
-                    scope.previousSheet();
+                    scope.scheduleAnnotationSync( null, null, function(){
+                        scope.previousSheet();
 
-                    // Hide right arrow if nextSheet isn't exists
-                    document.getElementById('next-sheet-arrow').style.display = 'block';
-                    if( scope.getCurrentIndex() == 0 ) {
-                        document.getElementById('previous-sheet-arrow').style.display = 'none';
-                    }
+                        // Hide right arrow if nextSheet isn't exists
+                        document.getElementById('next-sheet-arrow').style.display = 'block';
+                        if( scope.getCurrentIndex() == 0 ) {
+                            document.getElementById('previous-sheet-arrow').style.display = 'none';
+                        }
+                    }, true );
                 };
 
                 scope.isReplacement = function isReplacement() {
