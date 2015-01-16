@@ -17,7 +17,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	setInterval(function(){
 		for(var i=0; i<toSave.length; i++){
-			me.saveAnnotation(toSave[i]);
+            scope.scheduleAnnotationSync( [toSave[i]], null, null, false );
 		}
 	}, 15000);
 
@@ -571,7 +571,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			copies[i].offset_x = -25/tileView.scale;
 			copies[i].offset_y = -25/tileView.scale;
 			copies[i].applyOffset();
-			this.saveAnnotation(copies[i]);
+            scope.scheduleAnnotationSync( [copies[i]], null, null, false );
 			annotations[annotations.length] = copies[i];
 		}
 		this.setSelectedAnnotations( copies );
@@ -693,7 +693,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    {
           if( annotations[j].measurement !== null && annotations[j].type !== SCALE_ANNOTATION )
           {
-              this.saveAnnotation( annotations[j] );
+              scope.scheduleAnnotationSync( [annotations[j]], null, null, false );
               annotations[j].updateMeasure();
           }
       }
@@ -758,7 +758,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   						if( onSuccess )
   						    onSuccess( annotation );
   						else
-  						    mgr.saveAnnotation( annotation );
+                            scope.scheduleAnnotationSync( [annotation], null, null, false );
   						mgr.recalculateMeasurements();
           },
           cancelAction: function hideAction(){
@@ -777,7 +777,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   				if( annotation.type != TEXT_ANNOTATION )
   				{
   					 annotation.added = true;
-  					 mgr.saveAnnotation( annotation );
+                    scope.scheduleAnnotationSync( [annotation], null, null, false );
   				}
   	  };
 
@@ -825,18 +825,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             if (selectedAnnotations[i].type === TEXT_ANNOTATION && selectedAnnotations[i].text.length === 0) {
                 continue;
             }
-			this.saveAnnotation(selectedAnnotations[i]);
+            scope.scheduleAnnotationSync( [selectedAnnotations[i]], null, null, false );
 		}
 	}
-	this.saveAnnotation = function(annotation){
-	    scope.saveAnnotation(annotation.id, annotation.projectId, annotation.sheetId, annotation.userId === undefined ? null : annotation.userId, annotation.type, new AnnotationJSON(annotation)).then(function () {
-			removeFromArray(toSave, annotation);
-		})['catch'](function(error){
-			if(toSave.indexOf(annotation)==-1){
-				toSave[toSave.length]=annotation;
-			}
-		});
-	}
+
 
 	/**
 	 * Called by the system when an annotation is externally updated.  Updates

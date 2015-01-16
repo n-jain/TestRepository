@@ -432,7 +432,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       scope.syncBuffer.modifiedAnnotations[ annotation.id ] = annotation;
                     }
                   }
-                  scope.syncBuffer.deletedAnnotationIds.concat( deletedAnnotationIds||[] );
+                  scope.syncBuffer.deletedAnnotationIds.concat( scope.syncBuffer.deletedAnnotationIds||[] );
 
                   if( onComplete )
                     scope.syncBuffer.finallyQueue.push( onComplete );
