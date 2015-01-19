@@ -787,7 +787,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
-                  currentAnnotation.userId = null;
+                  currentAnnotation.userId = scope.userId;
                   doSave( currentAnnotation );
               }
           }
