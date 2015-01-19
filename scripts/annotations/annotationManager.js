@@ -767,6 +767,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	{
 	    var mgr = this;
   	  var doSave = function doSave( annotation ) {
+  	      //force annotation to be Personal
+          annotation.userId = scope.userId;
   	      annotation.calcBounds();
   				annotations.push( annotation );
   				if( annotation.type != TEXT_ANNOTATION )
@@ -787,8 +789,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
-                  currentAnnotation.userId = scope.userId;
-                  doSave( currentAnnotation );
+                doSave( currentAnnotation );
               }
           }
           if(currentAnnotation.type==TEXT_ANNOTATION)
