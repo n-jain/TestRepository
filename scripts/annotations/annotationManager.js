@@ -564,6 +564,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			copies[i].added = true;
 			copies[i].offset_x = -25/tileView.scale;
 			copies[i].offset_y = -25/tileView.scale;
+            copies[i].userId = scope.userId;
 			copies[i].applyOffset();
             scope.scheduleAnnotationSync( [copies[i]], null, null, false );
 			annotations[annotations.length] = copies[i];
@@ -786,6 +787,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
+                  currentAnnotation.userId = null;
                   doSave( currentAnnotation );
               }
           }
