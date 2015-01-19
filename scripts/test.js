@@ -1,10 +1,11 @@
-﻿angular.module('test', ['bluvueSheet'])
+angular.module('test', ['bluvueSheet'])
     .controller('testController', ['$scope', '$q',
         function ($scope, $q) {
             'use strict';
 
             var sheets = [{
                 name: 'Sheet 1!',
+                versionName: 'Latest s1',
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
@@ -53,6 +54,7 @@
             },
             {
                 name: 'Sheet 2!',
+                versionName: 'Latest s2',
                 slicesUrl: "sheet2/slices.zip",
                 previewUrl: "sheet2/preview.png",
                 projectId: "guid",
@@ -64,6 +66,7 @@
             },
             {
                 name: 'Sheet 3!',
+                versionName: 'Latest s3',
                 slicesUrl: "sheet3/slices.zip",
                 previewUrl: "sheet3/preview.png",
                 projectId: "guid",
@@ -79,14 +82,17 @@
                 return [
                     {
                         name: sheets[0].name,
+                        versionName: 'Latest s1',
                         id: sheets[0].id
                     },
                     {
                         name: 'Revision 1',
+                        versionName: 'History r1',
                         id: "sheet001-r1"
                     },
                     {
                         name: 'Revision 2',
+                        versionName: 'History r2',
                         id: "sheet001-r2"
                     }
                 ];
@@ -95,6 +101,7 @@
             $scope.openSheetById = function(sheetId) {
                 $scope.sheet = {
                     name: 'Sheet 2!',
+                   versionName: 'Latest s2a',
                     slicesUrl: "sheet2/slices.zip",
                     previewUrl: "sheet2/preview.png",
                     projectId: "guid",
@@ -162,7 +169,7 @@
             $scope.saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
                 /*
                  * returns a $q promise
-                 * 
+                 *
                  * usage:
                  * saveAnnotation(vars).then(function() {
                  *  // runs on success
@@ -173,7 +180,7 @@
                  * .finally(function() {
                  *  // runs at the end no matter what
                  * });
-                 * 
+                 *
                  */
 
                 var throwSaveError = false;
@@ -187,7 +194,7 @@
                     } else {
                         deferred.resolve('');
                     }
-                    
+
                 }, 1000);
 
                 return deferred.promise;
@@ -214,7 +221,7 @@
             $scope.syncAnnotations = function (version, modifiedAnnotations, deletedAnnotationIds) {
                 /*
                  * returns a $q promise
-                 * 
+                 *
                  * usage:
                  * syncAnnotations(vars).then(function(results) {
                  *  // runs on success
@@ -231,7 +238,7 @@
                  * .finally(function() {
                  *  // runs at the end no matter what
                  * });
-                 * 
+                 *
                  */
 
                 var throwSaveError = false;
