@@ -383,7 +383,7 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
             masterPersonalControl.addClass( 'personal' );
             applyState( annotations, 'personal' );
         } );
-        masterPersonalControl.append( masterButton ).append( personalButton );
+        masterPersonalControl.append( personalButton ).append( masterButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
 
         return masterPersonalControl;

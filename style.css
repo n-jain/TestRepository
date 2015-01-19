@@ -570,14 +570,14 @@ input.bluvue-sheetname-edit {
 }
 
 .bv-toggle-master {
-   border-top-left-radius: 20px;
-   border-bottom-left-radius: 20px;
+   border-top-right-radius: 20px;
+   border-bottom-right-radius: 20px;
    border-right: 2px solid white;
 }
 
 .bv-toggle-personal {
-   border-top-right-radius: 20px;
-   border-bottom-right-radius: 20px;
+   border-top-left-radius: 20px;
+   border-bottom-left-radius: 20px;
    border-left: 2px solid white;
 }
 
