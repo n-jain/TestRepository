@@ -1,7 +1,6 @@
 BluVueSheet.AnnotationManager = function(tileView, scope){
     var annotations = new Array();
 	var selectedAnnotations = new Array();
-	var toSave = new Array();
 	var currentAnnotation = null;
 	var lasso = null;
 	var touchedHandle=-1;
@@ -14,12 +13,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	var removeFromArray = function(array, element){
 	    array.splice(array.indexOf(element),1);
 	}
-
-	setInterval(function(){
-		for(var i=0; i<toSave.length; i++){
-            scope.scheduleAnnotationSync( [toSave[i]], null, null, false );
-		}
-	}, 15000);
 
 	this.onmousedown = function(x,y){
 		this.captureMouse = false;
