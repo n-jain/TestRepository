@@ -892,8 +892,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * will be passed as an array of annotation state objects (deserialized JSON
 	 * states).
 	 **/
-	this.onExternalAnnotationUpdate = function onExternalAnnotationUpdate( annotations ) {
-	  console.log( "TODO: Implement annotationManager.onExternalAnnotationUpdate()" );
+	this.onExternalAnnotationUpdate = function onExternalAnnotationUpdate( serializedAnnotations ) {
+   var mgr = this;
+	  if( serializedAnnotations && serializedAnnotations.length )
+	  {
+	    serializedAnnotations.forEach( function( serializedAnnotation ) {
+	      var annotation = loadAnnotationJSON( serializedAnnotation, tileView );
+	      var oldAnnotation = mgr.getAnnotation( annotation.id );
+	      mgr.deleteAnnotation( oldAnnotation, true );
+	      annotations.push( annotation );
+	    });
+	  }
+
 	}
 
 

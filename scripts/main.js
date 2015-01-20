@@ -435,11 +435,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     for( var i=0; i<modifiedAnnotations.length; i++ )
                     {
                       var annotation = modifiedAnnotations[ i ];
-                      scope.syncBuffer.modifiedAnnotations[ annotation.id ] = annotation;
+
+                      // Run the serializer if it's a native Annotation object.
+                      // Otherwise, trust that JSON.stringify will do the right
+                      // thing when it's eventually called.
+                      var serializable = (annotation.constructor.name=='Annotation') ? new AnnotationJSON( annotation ) : annotation;
+
+                      scope.syncBuffer.modifiedAnnotations[ annotation.id ] = serializable;
                     }
                   }
                   scope.syncBuffer.deletedAnnotationIds = scope.syncBuffer.deletedAnnotationIds.concat(deleteIds||[] );
-
 
                   if( onComplete )
                     scope.syncBuffer.finallyQueue.push( onComplete );

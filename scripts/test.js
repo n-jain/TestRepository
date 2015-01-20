@@ -218,6 +218,7 @@ angular.module('test', ['bluvueSheet'])
             }
 
 
+            var pendingUpdateAnnotations = [];
             var pendingDeleteAnnotationIds = [];
             $scope.syncAnnotations = function (version, modifiedAnnotations, deletedAnnotationIds) {
                 /*
@@ -245,28 +246,33 @@ angular.module('test', ['bluvueSheet'])
                 var throwSaveError = false;
                 var deferred = $q.defer();
                 var testVersionId = "3skjcwwud"; // returned version
-                var testAnnotationArray = [];
 
-                if( deletedAnnotationIds )
+                if( modifiedAnnotations && modifiedAnnotations.length )
                 {
-                  console.log( "Pending deletes", deletedAnnotationIds, pendingDeleteAnnotationIds );
-                  deletedAnnotationIds.forEach( function(id) {
-                    pendingDeleteAnnotationIds.push( id );
-                  })
+                  modifiedAnnotations.forEach( function( annotation ){
+                    pendingUpdateAnnotations.push( annotation );
+                  });
                 }
 
-                console.log("sync annotations");
+                if( deletedAnnotationIds && deletedAnnotationIds.length )
+                {
+                  deletedAnnotationIds.forEach( function(id) {
+                    pendingDeleteAnnotationIds.push( id );
+                  });
+                }
 
                 setTimeout(function () {
                     if (throwSaveError) {
                         deferred.reject('Reason the annotations could not be synced.');
                     } else {
+                        var modifiedAnnotations = pendingUpdateAnnotations;
                         var deletedAnnotationIds = pendingDeleteAnnotationIds;
+                        pendingUpdateAnnotations = [];
                         pendingDeleteAnnotationIds = [];
                         deferred.resolve({
                             data: {
                                 version: testVersionId,
-                                annotations: testAnnotationArray,
+                                annotations: modifiedAnnotations,
                                 annotationDeletes: deletedAnnotationIds
                             }
                         });
