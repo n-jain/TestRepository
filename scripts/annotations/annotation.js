@@ -403,6 +403,18 @@ var drawFunctions = new Array();
 
         return true;
     }
+
+    this.equals = function equals( that )
+    {
+        if( this == that )
+            return true;
+        if( this && that )
+        {
+            var j1 = JSON.stringify( new AnnotationJSON( this ) );
+            var j2 = JSON.stringify( new AnnotationJSON( that ) );
+            return j1.localeCompare( j2 ) === 0;
+        }
+    }
 }
 
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){

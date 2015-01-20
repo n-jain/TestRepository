@@ -461,12 +461,19 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * Implementor note:  This is probably not what you want - try using
 	 * setSelectedAnnotations() or selectSingleAnnotation(), as appropriate.
 	 **/
-	this.selectAnnotation = function(annotation){
+	this.selectAnnotation = function( annotation, updateUI ){
 		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
-		selectedAnnotations[selectedAnnotations.length]=annotation;
+		selectedAnnotations.push( annotation );
 		annotation.selected=true;
-		annotation.showHandles=true;
+		annotation.showHandles=(selectedAnnotations.length==1);
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+
+		if( updateUI )
+		{
+      tileView.sheet.floatingToolsMenu.show( calcFloatingToolsMenuLocation(selectedAnnotations) );
+      tileView.sheet.floatingOptionsMenu.show( calcFloatingOptionsMenuLocation(selectedAnnotations) );
+		}
+
 		return true;
 	}
 
@@ -827,7 +834,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   				if( annotation.type != TEXT_ANNOTATION )
   				{
   					 annotation.added = true;
-                    scope.scheduleAnnotationSync( [annotation], null, null, false );
+  					 scope.scheduleAnnotationSync( [annotation], null, null, false );
   				}
   	  };
 
@@ -892,11 +899,26 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    serializedAnnotations.forEach( function( serializedAnnotation ) {
 	      var annotation = loadAnnotationJSON( serializedAnnotation, tileView );
 	      var oldAnnotation = mgr.getAnnotation( annotation.id );
-	      mgr.deleteAnnotation( oldAnnotation, true );
-	      annotations.push( annotation );
+
+	      // TODO: Test to see if local annotation is dirty (i.e., with unapplied local edits)
+	      var isDirty = false;
+
+	      if( !isDirty && !annotation.equals( oldAnnotation ) )
+	      {
+  	      var isSelected = mgr.isSelected( annotation.id );
+  	      mgr.deleteAnnotation( oldAnnotation, true );
+  	      annotations.push( annotation );
+
+  	      if( isSelected )
+  	      {
+  	        if( selectedAnnotations.length === 0 )
+  	          mgr.selectSingleAnnotation( annotation );
+  	        else
+  	          mgr.selectAnnotation( annotation, true );
+  	      }
+	      }
 	    });
 	  }
-
 	}
 
 
@@ -912,6 +934,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	      mgr.deleteAnnotation( mgr.getAnnotation( id ), true );
 	    });
 	  }
+	}
+
+	this.isSelected = function isSelected( annotationId ) {
+	  for( var i=0; i<selectedAnnotations.length; i++ )
+	    if( selectedAnnotations[i].id == annotationId )
+	      return true;
+	  return false;
 	}
 
 	this.getAnnotation = function getAnnotation( annotationId ) {
