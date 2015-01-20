@@ -455,7 +455,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 
 	/**
-	 * Adds a single annotations to the selection group without surfacing the
+	 * Adds a single annotation to the selection group without surfacing the
 	 * annotation editor.
 	 *
 	 * Implementor note:  This is probably not what you want - try using
