@@ -218,6 +218,7 @@ angular.module('test', ['bluvueSheet'])
             }
 
 
+            var pendingDeleteAnnotationIds = [];
             $scope.syncAnnotations = function (version, modifiedAnnotations, deletedAnnotationIds) {
                 /*
                  * returns a $q promise
@@ -245,7 +246,14 @@ angular.module('test', ['bluvueSheet'])
                 var deferred = $q.defer();
                 var testVersionId = "3skjcwwud"; // returned version
                 var testAnnotationArray = [];
-                var testAnnotationDeletes = ["id1", "id2", "id3"];
+
+                if( deletedAnnotationIds )
+                {
+                  console.log( "Pending deletes", deletedAnnotationIds, pendingDeleteAnnotationIds );
+                  deletedAnnotationIds.forEach( function(id) {
+                    pendingDeleteAnnotationIds.push( id );
+                  })
+                }
 
                 console.log("sync annotations");
 
@@ -253,11 +261,13 @@ angular.module('test', ['bluvueSheet'])
                     if (throwSaveError) {
                         deferred.reject('Reason the annotations could not be synced.');
                     } else {
+                        var deletedAnnotationIds = pendingDeleteAnnotationIds;
+                        pendingDeleteAnnotationIds = [];
                         deferred.resolve({
                             data: {
                                 version: testVersionId,
                                 annotations: testAnnotationArray,
-                                annotationDeletes: testAnnotationDeletes
+                                annotationDeletes: deletedAnnotationIds
                             }
                         });
                     }

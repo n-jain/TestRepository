@@ -493,14 +493,57 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				toKill[toKill.length]=annotations[i];
 			}
 		}
-		this.captureKeyboard=false;
-		tileView.sheet.textEditor.hide();
-		tileView.sheet.floatingToolsMenu.hide();
-		tileView.sheet.floatingOptionsMenu.hide();
+
+    this.hideSelectionUI();
+
 		for(var i=0; i<toKill.length; i++){
 			removeFromArray(annotations,toKill[i]);
 		}
 	}
+
+	/**
+	 * Deselects a single annotation.  If deselecting ALL annotations, it's far
+	 * more efficient to call deselectAllAnnotations()
+	 **/
+	this.deselectAnnotation = function deselectAnnotation( annotation )
+	{
+	  if( !annotation )
+	    return;
+
+		if(selectedAnnotations.length==1){
+			if(selectedAnnotations[0].type==TEXT_ANNOTATION){
+				this.saveSelectedAnnotations();
+			}
+		}
+
+    var newSelection = []
+		for( var i=0; i<selectedAnnotations.length; i++)
+		{
+		  if( annotation.id !== selectedAnnotations[i].id )
+		    newSelection.push( selectedAnnotations[i] );
+		}
+		selectedAnnotations = newSelection;
+		tileView.setSelectedOptionsForAnnotations( [], tileView );
+		tileView.setSelectedOptionsForAnnotations( selectedAnnotations, tileView );
+
+		annotation.selected=false;
+		annotation.showHandles=false;
+		if( annotation.type==TEXT_ANNOTATION && annotation.text=="" && annotations[i].added )
+		{
+			removeFromArray( annotations, annotation );
+		}
+
+    if( selectedAnnotations.length === 0 )
+      this.hideSelectionUI();
+	}
+
+	this.hideSelectionUI = function hideSelectionUI() {
+		this.captureKeyboard=false;
+		tileView.sheet.textEditor.hide();
+		tileView.sheet.floatingToolsMenu.hide();
+		tileView.sheet.floatingOptionsMenu.hide();
+	}
+
 	this.selectAllInLasso = function(){
 		this.deselectAllAnnotations();
 		for(var i=0; i<annotations.length; i++){
@@ -520,6 +563,24 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		  tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 		}
 	}
+
+	/**
+	 * Deletes the given annotation.
+	 **/
+	this.deleteAnnotation = function deleteAnnotation( annotation, suppressSync ) {
+	  if( annotation )
+	  {
+  	  this.deselectAnnotation( annotation );
+  		removeFromArray( annotations, annotation );
+
+  		if(annotation.type==SCALE_ANNOTATION)
+  		  self.scaleAnnotation=null;
+
+  		if( !suppressSync )
+    		scope.scheduleAnnotationSync( null, [annotation.id], null, false );
+	  }
+	};
+
 	this.deleteSelectedAnnotations = function(){
 	  var self = this;
 	  var dialog = new BluVueSheet.Dialog();
@@ -541,12 +602,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     				reAdded=true;
     			}
     		}
+
     		for(var i=0; i<selectedAnnotations.length; i++){
-    			var annotation = selectedAnnotations[i];
-    			removeFromArray(annotations, annotation);
-    			if(annotation.type==SCALE_ANNOTATION)self.scaleAnnotation=null;
-                scope.scheduleAnnotationSync([], selectedAnnotations[i].id, null, false );
+    		  self.deleteAnnotation( selectedAnnotations[i] );
     		}
+
     		selectedAnnotations = new Array();
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     		self.captureKeyboard=false;
@@ -842,6 +902,20 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * will be passed as an array of annotation ids.
 	 **/
 	this.onExternalAnnotationDelete = function onExternalAnnotationDelete( annotationIds ) {
-	  console.log( "TODO: Implement annotationManager.onExternalAnnotationDelete()" );
+	  var mgr = this;
+	  if( annotationIds && annotationIds.length )
+	  {
+	    annotationIds.forEach( function( id ) {
+	      mgr.deleteAnnotation( mgr.getAnnotation( id ), true );
+	    });
+	  }
+	}
+
+	this.getAnnotation = function getAnnotation( annotationId ) {
+	  for( var i=0; i<annotations.length; i++ )
+	  {
+	    if( annotations[i].id == annotationId )
+	      return annotations[i];
+	  }
 	}
 }

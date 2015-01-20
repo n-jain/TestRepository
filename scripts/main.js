@@ -438,7 +438,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       scope.syncBuffer.modifiedAnnotations[ annotation.id ] = annotation;
                     }
                   }
-                    scope.syncBuffer.deletedAnnotationIds = scope.syncBuffer.deletedAnnotationIds.concat(deleteIds||[] );
+                  scope.syncBuffer.deletedAnnotationIds = scope.syncBuffer.deletedAnnotationIds.concat(deleteIds||[] );
+
 
                   if( onComplete )
                     scope.syncBuffer.finallyQueue.push( onComplete );
@@ -458,12 +459,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   {
                     mod.push( scope.syncBuffer.modifiedAnnotations[ modKeys[i] ] );
                   }
-                  var del = scope.syncBuffer.deletedAnnotations;
+                  var del = scope.syncBuffer.deletedAnnotationIds;
                   var finallyQueue = scope.syncBuffer.finallyQueue;
 
                   // Empty the buffer as we're taking care of this now.
                   scope.syncBuffer.modifiedAnnotations = {};
-                  scope.syncBuffer.deletedAnnotations = [];
+                  scope.syncBuffer.deletedAnnotationIds = [];
                   scope.syncBuffer.finallyQueue = [];
 
                   scope.syncAnnotations( version, mod, del ).then( function( result ){
