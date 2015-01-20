@@ -735,6 +735,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		return ir%2==1&&il%2==1;
 	}
+
 	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){
 			annotations[i].drawMe(context);
@@ -867,16 +868,22 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		return BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), handleLoc) < HANDLE_TOUCH_RADIUS / tileView.scale;
 	}
 	this.loadAnnotation = function(jsonString){
-		var annotation = loadAnnotationJSON(JSON.parse(jsonString), tileView);
+		this.addAnnotation( loadAnnotationJSON(JSON.parse(jsonString), tileView) );
+	}
+
+	this.addAnnotation = function addAnnotation( annotation ) {
 		annotation.added=true;
-		if(annotation.type==SCALE_ANNOTATION){
-			this.scaleAnnotation=annotation;
-			for(var i=0; i<annotations.length; i++){
+		if( annotation.type==SCALE_ANNOTATION )
+		{
+			this.scaleAnnotation = annotation;
+			for(var i=0; i<annotations.length; i++)
+			{
 				annotations[i].updateMeasure();
 			}
 		}
-		annotations[annotations.length] = annotation;
-	}
+		annotations.push( annotation );
+  }
+
 	this.saveSelectedAnnotations = function(){
 	    for (var i = 0; i < selectedAnnotations.length; i++) {
             if (selectedAnnotations[i].type === TEXT_ANNOTATION && selectedAnnotations[i].text.length === 0) {
@@ -907,7 +914,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	      {
   	      var isSelected = mgr.isSelected( annotation.id );
   	      mgr.deleteAnnotation( oldAnnotation, true );
-  	      annotations.push( annotation );
+  	      mgr.addAnnotation( annotation );
 
   	      if( isSelected )
   	      {
