@@ -95,16 +95,20 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		  var tool = tileView.getTool();
 
-		  if( !currentAnnotation.points )
-		  {
-		    console.log( "TODO:  Should we be creating a default annotation here?", tool );
-		  }
-		  else if( currentAnnotation.points.length < 2 )
-		  {
-  		  this.configureDefaultAnnotation( x, y );
-		  }
 
-			this.finishAnnotation( x, y );
+      if(currentAnnotation !== null) {
+        if( !currentAnnotation.points )
+        {
+          console.log( "TODO:  Should we be creating a default annotation here?", tool );
+        }
+        else if( currentAnnotation.points.length <= 2 )
+        {
+          this.configureDefaultAnnotation( x, y );
+        }
+
+        this.finishAnnotation( x, y );
+      }
+
 	    if( tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
   	      tileView.deselectTool();
 		}
@@ -212,8 +216,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 
     this.handleClick = function(x, y) {
-        this.addDefaultAnnotation(x, y);
-
         //get which annotations are touched
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
@@ -976,28 +978,35 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         var width = 75/tileView.scale;
         var height = 75/tileView.scale;
 
-/*
-var NO_ANNOTATION=-1;
-var LASSO_ANNOTATION=0;
-var SQUARE_ANNOTATION=1;
-var X_ANNOTATION=2;
-var CIRCLE_ANNOTATION=3;
-var CLOUD_ANNOTATION=5;
-var POLYGON_ANNOTATION=13;
-var TEXT_ANNOTATION=6;
-var LINE_ANNOTATION=7;
-var ARROW_ANNOTATION=4;
-var PEN_ANNOTATION=8;
-var HIGHLIGHTER_ANNOTATION=9;
-var SCALE_ANNOTATION=10;
-var MEASURE_ANNOTATION=11;
-var FREE_FORM_ANNOTATION=15;
-*/
+        /*
+        var NO_ANNOTATION=-1;
+        var LASSO_ANNOTATION=0;
+        var SQUARE_ANNOTATION=1;
+        var X_ANNOTATION=2;
+        var CIRCLE_ANNOTATION=3;
+        var CLOUD_ANNOTATION=5;
+        var POLYGON_ANNOTATION=13;
+        var TEXT_ANNOTATION=6;
+        var LINE_ANNOTATION=7;
+        var ARROW_ANNOTATION=4;
+        var PEN_ANNOTATION=8;
+        var HIGHLIGHTER_ANNOTATION=9;
+        var SCALE_ANNOTATION=10;
+        var MEASURE_ANNOTATION=11;
+        var FREE_FORM_ANNOTATION=15;
+        */
         switch( currentAnnotation.type )
         {
           case SQUARE_ANNOTATION:
           case CIRCLE_ANNOTATION:
+          case CLOUD_ANNOTATION:
+          case X_ANNOTATION:
+          case LINE_ANNOTATION:
             currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+            break;
+          case ARROW_ANNOTATION:
+            currentAnnotation.points[0] = new BluVueSheet.Point(x+width, y+height);
+            currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
             break;
 
           default:
