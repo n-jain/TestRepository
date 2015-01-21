@@ -201,6 +201,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 
     this.handleClick = function(x, y) {
+        this.addDefaultAnnotation(x, y);
+
         //get which annotations are touched
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
@@ -958,16 +960,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  }
 	}
 
-    this.drawPreviewAnnotation = function(tool) {
-
-        console.log(tool)
-
+    this.addDefaultAnnotation = function(x, y) {
         var currentAnnotation = new BluVueSheet.Annotation( SQUARE_ANNOTATION, scope.currentSheet.tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
 
         var width = 75/this.scale;
         var height = 75/this.scale;
-        var x = 0;
-        var y = 0;
 
         currentAnnotation.points[0] = new BluVueSheet.Point( x, y );
         currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
