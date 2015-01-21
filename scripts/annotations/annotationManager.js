@@ -92,8 +92,19 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.captureMouse = false;
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
+
 		  var tool = tileView.getTool();
-			this.finishAnnotation();
+
+		  if( !currentAnnotation.points )
+		  {
+		    console.log( "TODO:  Should we be creating a default annotation here?", tool );
+		  }
+		  else if( currentAnnotation.points.length < 2 )
+		  {
+  		  this.configureDefaultAnnotation( x, y );
+		  }
+
+			this.finishAnnotation( x, y );
 	    if( tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
   	      tileView.deselectTool();
 		}
@@ -960,17 +971,37 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  }
 	}
 
-    this.addDefaultAnnotation = function(x, y) {
-        var currentAnnotation = new BluVueSheet.Annotation( SQUARE_ANNOTATION, scope.currentSheet.tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
+    this.configureDefaultAnnotation = function( x, y ) {
 
-        var width = 75/this.scale;
-        var height = 75/this.scale;
+        var width = 75/tileView.scale;
+        var height = 75/tileView.scale;
 
-        currentAnnotation.points[0] = new BluVueSheet.Point( x, y );
-        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+/*
+var NO_ANNOTATION=-1;
+var LASSO_ANNOTATION=0;
+var SQUARE_ANNOTATION=1;
+var X_ANNOTATION=2;
+var CIRCLE_ANNOTATION=3;
+var CLOUD_ANNOTATION=5;
+var POLYGON_ANNOTATION=13;
+var TEXT_ANNOTATION=6;
+var LINE_ANNOTATION=7;
+var ARROW_ANNOTATION=4;
+var PEN_ANNOTATION=8;
+var HIGHLIGHTER_ANNOTATION=9;
+var SCALE_ANNOTATION=10;
+var MEASURE_ANNOTATION=11;
+var FREE_FORM_ANNOTATION=15;
+*/
+        switch( currentAnnotation.type )
+        {
+          case SQUARE_ANNOTATION:
+          case CIRCLE_ANNOTATION:
+            currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+            break;
 
-        console.log(currentAnnotation)
-
-        this.finishAnnotation();
+          default:
+            console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
+        }
     }
 }
