@@ -140,6 +140,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     scope.currentSheet.setTool( scope.selectedTool );
 
+                    scope.currentSheet.tileView.annotationManager.drawPreviewAnnotation(scope.selectedTool);
+
                     //update tool menu
                     scope.selectedToolMenu = null;
                 }

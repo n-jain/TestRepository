@@ -957,4 +957,23 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	      return annotations[i];
 	  }
 	}
+
+    this.drawPreviewAnnotation = function(tool) {
+
+        console.log(tool)
+
+        var currentAnnotation = new BluVueSheet.Annotation( SQUARE_ANNOTATION, scope.currentSheet.tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
+
+        var width = 75/this.scale;
+        var height = 75/this.scale;
+        var x = 0;
+        var y = 0;
+
+        currentAnnotation.points[0] = new BluVueSheet.Point( x, y );
+        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+
+        console.log(currentAnnotation)
+
+        this.finishAnnotation();
+    }
 }
