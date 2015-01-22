@@ -30,7 +30,7 @@ BluVueSheet.OptionsMenu = function(sheet, scope) {
                 menu.show();
             }
             if (btnInfo.id === BluVueSheet.Constants.OptionButtons.Color.id) {
-                toggleMenu(t.colorMenu)
+                toggleMenu(t.colorMenu);
             } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitLength.id) {
                 toggleMenu(t.lengthUnitConverter);
             } else if (btnInfo.id === BluVueSheet.Constants.OptionButtons.UnitArea.id) {
