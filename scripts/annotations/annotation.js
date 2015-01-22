@@ -163,7 +163,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		  drawHandle( context, this.points[i], tileView.scale );
 		}
 	}
-	this.drawMeasurement = function(context){
+	this.drawMeasurement = function(context) {
+	  if( !this.measurement || !tileView.annotationManager.scaleAnnotation )
+	      return;
+
 	  var theta = this.tileView.getRotation()/-180*Math.PI;
 	  var drawWidth = Math.abs( this.bounds.width()*Math.cos(theta) - this.bounds.height()*Math.sin(theta) );
 
@@ -724,7 +727,9 @@ function drawMeasure(context){
 
 		var baseEndLength = 8;
 		var measureSpace;
-		if(this.measurement!=null){
+
+	  if( this.measurement && tileView.annotationManager.scaleAnnotation )
+	  {
 			var myLength = this.getLength();
 			var textSize = 22*this.lineWidth;
 			var text = htmlDecode( this.measurement.toString() );
