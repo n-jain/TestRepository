@@ -166,58 +166,6 @@ angular.module('test', ['bluvueSheet'])
                 return sheets.length;
             }
 
-            $scope.saveAnnotation = function(annotationId, projectId, sheetId, userId, annotationType, json) {
-                /*
-                 * returns a $q promise
-                 *
-                 * usage:
-                 * saveAnnotation(vars).then(function() {
-                 *  // runs on success
-                 * })
-                 * .catch(function(error) {
-                 *  // runs on error
-                 * })
-                 * .finally(function() {
-                 *  // runs at the end no matter what
-                 * });
-                 *
-                 */
-
-                var throwSaveError = false;
-                var deferred = $q.defer();
-
-                console.log("DEPRECATED: save annotation, use syncAnnotations instead");
-
-                setTimeout(function () {
-                    if (throwSaveError) {
-                        deferred.reject('Reason the annotation could not save.');
-                    } else {
-                        deferred.resolve('');
-                    }
-
-                }, 1000);
-
-                return deferred.promise;
-            }
-
-            $scope.deleteAnnotation = function (annotationId) {
-                var throwSaveError = false;
-                var deferred = $q.defer();
-
-                console.log("DEPRECATED: delete annotation, use syncAnnotations instead");
-
-                setTimeout(function () {
-                    if (throwSaveError) {
-                        deferred.reject('Reason the annotation could not be deleted.');
-                    } else {
-                        deferred.resolve('');
-                    }
-
-                }, 1000);
-                return deferred.promise;
-            }
-
-
             var pendingUpdateAnnotations = [];
             var pendingDeleteAnnotationIds = [];
             $scope.syncAnnotations = function (version, modifiedAnnotations, deletedAnnotationIds) {

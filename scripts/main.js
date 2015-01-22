@@ -10,8 +10,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 userId: "=",
                 isAdmin: "=",
                 syncAnnotations: "=",
-                saveAnnotation: "=",
-                deleteAnnotation: "=",
                 closeSheet: "=",
                 nextSheet: "=",
                 previousSheet: "=",
