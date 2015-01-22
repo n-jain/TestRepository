@@ -986,10 +986,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       case CIRCLE_ANNOTATION:
       case CLOUD_ANNOTATION:
       case X_ANNOTATION:
-        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
-        break;
       case ARROW_ANNOTATION:
       case LINE_ANNOTATION:
+        currentAnnotation.points[0] = new BluVueSheet.Point(x, y);
+        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+        break;
       case MEASURE_ANNOTATION:
       case SCALE_ANNOTATION:
         currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
