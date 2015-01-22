@@ -10,8 +10,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 userId: "=",
                 isAdmin: "=",
                 syncAnnotations: "=",
-                saveAnnotation: "=",
-                deleteAnnotation: "=",
                 closeSheet: "=",
                 nextSheet: "=",
                 previousSheet: "=",
@@ -477,18 +475,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     scope.sheet.annotationVersion = result.data.version;
                     var mgr = scope.currentSheet.tileView.annotationManager;
 
-                    if( result.data.annotations )
-                      mgr.onExternalAnnotationUpdate( result.data.annotations );
-                    if( result.data.annotationDeletes )
-                    	mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
-                  }).catch( function( err ) {
+                    if( result.data.annotations ) {
+                        mgr.onExternalAnnotationUpdate( result.data.annotations );
+                    }
+
+                    if( result.data.annotationDeletes ) {
+                        mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
+                    }
+
+                  })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
-                  }).finally( function() {
-                    for( var i=0; i<finallyQueue.length; i++ )
+                  })["finally"]( function() {
+                    for( var x=0; x<finallyQueue.length; x++ )
                     {
-                      var callback = finallyQueue[i];
-                      if( callback )
-                        callback();
+                      var callback = finallyQueue[x];
+                      if (callback) {
+                          callback();
+                      }
                     }
                   });
                };
