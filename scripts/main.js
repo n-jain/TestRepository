@@ -254,7 +254,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                         revisions.forEach( function( rev, index ) {
                             var selected = ( rev.id == scope.sheet.id) ? " selected" : "";
-                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ rev.versionName || rev.name +"</option>") );
+                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ (rev.versionName || rev.name) +"</option>") );
                         });
 
                         holder.append( editor );
