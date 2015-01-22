@@ -589,7 +589,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   		removeFromArray( annotations, annotation );
 
   		if(annotation.type==SCALE_ANNOTATION)
-  		  self.scaleAnnotation=null;
+  		{
+  		  this.scaleAnnotation=null;
+  		  this.recalculateMeasurements();
+  		}
 
   		if( !suppressSync )
     		scope.scheduleAnnotationSync( null, [annotation.id], null, false );
@@ -764,7 +767,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    {
           if( annotations[j].measurement !== null && annotations[j].type !== SCALE_ANNOTATION )
           {
-              scope.scheduleAnnotationSync( [annotations[j]], null, null, false );
               annotations[j].updateMeasure();
           }
       }
