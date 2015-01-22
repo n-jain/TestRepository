@@ -97,11 +97,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 
       if(currentAnnotation !== null) {
-        if( !currentAnnotation.points )
-        {
-          console.log( "TODO:  Should we be creating a default annotation here?", tool );
+        if(currentAnnotation.points.length == 2 && currentAnnotation.points[0].x == currentAnnotation.points[1].x && currentAnnotation.points[0].y == currentAnnotation.points[1].y) {
+          this.configureDefaultAnnotation( x, y );
         }
-        else if( currentAnnotation.points.length <= 2 )
+        else if( currentAnnotation.points.length == 1 )
         {
           this.configureDefaultAnnotation( x, y );
         }
@@ -973,44 +972,29 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  }
 	}
 
-    this.configureDefaultAnnotation = function( x, y ) {
+  this.configureDefaultAnnotation = function( x, y ) {
 
-        var width = 75/tileView.scale;
-        var height = 75/tileView.scale;
+    var width = 75/tileView.scale;
+    var height = 75/tileView.scale;
 
-        /*
-        var NO_ANNOTATION=-1;
-        var LASSO_ANNOTATION=0;
-        var SQUARE_ANNOTATION=1;
-        var X_ANNOTATION=2;
-        var CIRCLE_ANNOTATION=3;
-        var CLOUD_ANNOTATION=5;
-        var POLYGON_ANNOTATION=13;
-        var TEXT_ANNOTATION=6;
-        var LINE_ANNOTATION=7;
-        var ARROW_ANNOTATION=4;
-        var PEN_ANNOTATION=8;
-        var HIGHLIGHTER_ANNOTATION=9;
-        var SCALE_ANNOTATION=10;
-        var MEASURE_ANNOTATION=11;
-        var FREE_FORM_ANNOTATION=15;
-        */
-        switch( currentAnnotation.type )
-        {
-          case SQUARE_ANNOTATION:
-          case CIRCLE_ANNOTATION:
-          case CLOUD_ANNOTATION:
-          case X_ANNOTATION:
-          case LINE_ANNOTATION:
-            currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
-            break;
-          case ARROW_ANNOTATION:
-            currentAnnotation.points[0] = new BluVueSheet.Point(x+width, y+height);
-            currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
-            break;
+    switch( currentAnnotation.type )
+    {
+      case SQUARE_ANNOTATION:
+      case CIRCLE_ANNOTATION:
+      case CLOUD_ANNOTATION:
+      case X_ANNOTATION:
+        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+        break;
+      case ARROW_ANNOTATION:
+      case LINE_ANNOTATION:
+        currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
+        break;
+      case MEASURE_ANNOTATION:
+        currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
+        break;
 
-          default:
-            console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
-        }
+      default:
+        console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
     }
+  }
 }
