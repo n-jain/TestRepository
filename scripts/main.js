@@ -98,6 +98,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             var mgr = scope.currentSheet.tileView.annotationManager;
                             if( mgr.scaleAnnotation )
                             {
+                              console.log('scale');
                                 // Avoid the toolip - we're selecting the annotation instead of changing mode
                                 mgr.selectSingleAnnotation( mgr.scaleAnnotation );
                                 scope.selectedToolMenu = null;

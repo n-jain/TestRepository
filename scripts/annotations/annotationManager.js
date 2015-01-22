@@ -445,6 +445,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.selectSingleAnnotation = function(annotation){
 		this.deselectAllAnnotations();
 		var valid = this.selectAnnotation(annotation);
+
 		if(annotation.type==TEXT_ANNOTATION&&valid) {
 		    this.captureKeyboard = true;
 			tileView.sheet.textEditor.setText(annotation.text);
@@ -987,9 +988,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         break;
       case ARROW_ANNOTATION:
       case LINE_ANNOTATION:
-        currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
-        break;
       case MEASURE_ANNOTATION:
+      case SCALE_ANNOTATION:
         currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
         break;
 
