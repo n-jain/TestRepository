@@ -415,7 +415,7 @@ var drawFunctions = new Array();
             return j1.localeCompare( j2 ) === 0;
         }
     }
-}
+
 
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){
 	var centerX = (x1+x2)/2;
@@ -803,6 +803,8 @@ function drawHandle( context, point, scale )
   context.lineWidth = 2/scale;
   context.stroke();
 }
+
+}  // End of Annotation
 
 function createUUID() {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
