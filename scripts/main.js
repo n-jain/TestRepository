@@ -57,10 +57,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
                 angular.element($window).on( 'resize', windowResizeObserver );
 
-                console.log( "WARNING!  Using very slow sync for debug.  FIX ME FOR RELEASE!" )
-                //scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
-                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, 15*1000 );
-
+                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
+                
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -254,7 +252,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                         revisions.forEach( function( rev, index ) {
                             var selected = ( rev.id == scope.sheet.id) ? " selected" : "";
-                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ rev.versionName || rev.name +"</option>") );
+                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ (rev.versionName || rev.name) +"</option>") );
                         });
 
                         holder.append( editor );
