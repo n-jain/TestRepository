@@ -12,7 +12,6 @@
     this.disposed = false;
     this.canvas = null;
 
-    this.userId = null;
     this.projectId = null;
     this.sheetId = null;
     this.mainLoopTimeout = null;
@@ -30,7 +29,6 @@
     this.loadSheet = function (sheet, scope, elem) {
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
-        this.userId = sheet.userId;
         
         //make on screen controls
         this.userInterface = document.createElement("div");

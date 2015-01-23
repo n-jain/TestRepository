@@ -10,7 +10,6 @@ angular.module('test', ['bluvueSheet'])
                 previewUrl: "sheet/preview.png",
                 projectId: "guid",
                 id: "sheet001-r0",
-                userId: "guid",
                 rotation: 0,
                 annotationVersion: "usdfhasdf",
                 annotations: [
@@ -59,7 +58,6 @@ angular.module('test', ['bluvueSheet'])
                 previewUrl: "sheet2/preview.png",
                 projectId: "guid",
                 id: "sheet002-r0",
-                userId: "guid",
                 rotation: 0,
                 annotationVersion: "",
                 annotations: []
@@ -71,7 +69,6 @@ angular.module('test', ['bluvueSheet'])
                 previewUrl: "sheet3/preview.png",
                 projectId: "guid",
                 id: "sheet003-r0",
-                userId: "guid",
                 rotation: 0,
                 annotationVersion: "",
                 annotations: []
@@ -106,7 +103,6 @@ angular.module('test', ['bluvueSheet'])
                     previewUrl: "sheet2/preview.png",
                     projectId: "guid",
                     id: sheetId,
-                    userId: "guid",
                     rotation: 0,
                     annotationVersion: "",
                     annotations: []
