@@ -869,7 +869,7 @@ function AnnotationJSON(annotation) {
 		this.distance=annotation.measurement.amount;
 	}
 	if(annotation.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
-		this.closed=annotation.closed;
+		this.closed = annotation.closed ? 1 : 0;
 	}
 }
 function loadAnnotationJSON(json,tileView){
@@ -908,7 +908,7 @@ function loadAnnotationJSON(json,tileView){
 		annotation.textSize=json.textSize;
 	}
 	if(json.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
-		annotation.closed=json.closed;
+		annotation.closed=json.closed == 1;
 	}
 	annotation.calcBounds();
 	annotation.updateMeasure();
