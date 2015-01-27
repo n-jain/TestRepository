@@ -39,10 +39,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
                 $window.onpopstate = function () {
-                    scope.$apply(function () {
+                    scope.scheduleAnnotationSync( null, null, function(){
                         backPressed = true;
                         scope.close();
-                    });
+                    }, true );
                 }
 
                 var windowResizeObserver = function windowResizeObserver() {
