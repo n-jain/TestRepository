@@ -57,6 +57,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
                 angular.element($window).on( 'resize', windowResizeObserver );
 
+                var windowCloseObserver = function windowCloseObserver() {
+                    // Dispatch a sync to complete the shutdown
+                    scope.scheduleAnnotationSync( null, null, function(){
+                    }, true );
+                };
+                angular.element($window).on( 'unload', windowCloseObserver );
+
                 scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
                 
                 scope.options = {
@@ -307,6 +314,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
                     angular.element($window).off( 'resize', scope.windowResizeObserver );
+                    angular.element($window).off( 'unload', windowCloseObserver );
 
                     if( scope.annotationWatcher )
                     {
