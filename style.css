@@ -701,5 +701,8 @@ button:focus {
 }
 
 select.bluvue-annotation-unit-edit {
+    margin: 0;
     margin-left: 10px;
+    width: auto;
+    height: auto;
 }
