@@ -621,9 +621,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     			}
     		}
 
-    		for(var i=0; i<selectedAnnotations.length; i++){
-    		  self.deleteAnnotation( selectedAnnotations[i] );
+        // Make a shallow clone of the selections to avoid odditity of
+        // walking an array while it's being mutated.
+        var tmp = selectedAnnotations.slice();
+        var deleteList = [];
+    		for(var i=0; i<tmp.length; i++){
+    		  deleteList.push( tmp[i].id );
+    		  self.deleteAnnotation( tmp[i], true );
     		}
+    		scope.scheduleAnnotationSync( null, deleteList, null, false );
 
     		selectedAnnotations = new Array();
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
