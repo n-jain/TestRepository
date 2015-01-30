@@ -29,10 +29,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
                 scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
-                scope.toolMoreMenu = BluVueSheet.Constants.MoreMenu;
+                scope.toolMoreMenu = [];
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
+
+                for( var i=0; i<BluVueSheet.Constants.MoreMenu.length; i++ )
+                {
+                  var item = BluVueSheet.Constants.MoreMenu[i];
+                  if( !item.isAdmin || (item.isAdmin && scope.isAdmin) )
+                  {
+                    scope.toolMoreMenu.push( item );
+                  }
+                }
 
                 var toolipDialog = new BluVueSheet.Dialog();
 
