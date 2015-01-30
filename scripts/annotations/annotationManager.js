@@ -469,6 +469,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		tileView.sheet.floatingOptionsMenu.show( calcFloatingOptionsMenuLocation(selectedAnnotations) );
 	}
 
+	// Returns true if the annotation is personal or if the user is an admin.
+	this.isSelectable = function( annotation ) {
+	  return ( annotation.userId || scope.isAdmin );
+	}
+
 	/**
 	 * Adds a single annotation to the selection group without surfacing the
 	 * annotation editor.
@@ -477,7 +482,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * setSelectedAnnotations() or selectSingleAnnotation(), as appropriate.
 	 **/
 	this.selectAnnotation = function( annotation, updateUI ){
-		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
+		if( !this.isSelectable(annotation) ) return false;
 		selectedAnnotations.push( annotation );
 		annotation.selected=true;
 		annotation.showHandles=(selectedAnnotations.length==1);
@@ -564,7 +569,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		for(var i=0; i<annotations.length; i++){
 			var pointsInLasso = 0;
 			for(var j=0; j<8; j+=2)	if(pointInLasso(annotations[i].getPoint(j, false)))pointsInLasso++;
-			if(pointsInLasso>=3){
+			if(pointsInLasso>=3 && this.isSelectable( annotations[i] ) ) {
 				selectedAnnotations[selectedAnnotations.length]=annotations[i];
 				annotations[i].selected=true;
 			}
