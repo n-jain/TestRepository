@@ -441,10 +441,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     {
                       var annotation = modifiedAnnotations[ i ];
 
-                      // Run the serializer if it's a native Annotation object.
-                      // Otherwise, trust that JSON.stringify will do the right
-                      // thing when it's eventually called.
-                      var serializable = (annotation.constructor.name=='Annotation') ? new AnnotationJSON( annotation ) : annotation;
+                      var serializable = annotation;
+                      if( angular.isFunction( annotation.toSerializable ) )
+                          serializable = annotation.toSerializable();
 
                       scope.syncBuffer.modifiedAnnotations[ annotation.id ] = serializable;
                     }

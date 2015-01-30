@@ -53,6 +53,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
 
+  this.toSerializable = function toSerializable() {
+    return new AnnotationJSON( this );
+  }
+
   var initMeasurement = function( self, linearCalc, areaCalc )
   {
       self.hasPerimeter = (typeof(linearCalc) == 'function');
