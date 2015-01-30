@@ -877,8 +877,12 @@ function AnnotationJSON(annotation) {
 	}
 }
 function loadAnnotationJSON(json,tileView){
+  var normalizeGuid = function normalizeGuid( guid ) {
+    return guid.replace( /-/g, '' );
+  }
+
     var annotation = new BluVueSheet.Annotation(json.type, tileView);
-	annotation.id=json.id;
+	annotation.id=normalizeGuid(json.id);
 	annotation.projectId=json.projectId;
 	annotation.sheetId=json.sheetId;
 	annotation.userId=json.userId;
