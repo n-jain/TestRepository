@@ -124,6 +124,7 @@ footer.bluvue-sheet-footer {
 	position: fixed;
 	right:5px;
   bottom: 110px;
+  width: 198px;
 }
 .bluvue-color-button {
   cursor: pointer;
