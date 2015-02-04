@@ -514,6 +514,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
 		                panel.removeClass('blubue-attachments-panel-open');
 	                }
+
+	                scope.changeFilterAttachmentPanel = function(filter) {
+		                var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
+		                var all = angular.element(document.querySelector('#attachments-panel-filter-all'));
+		                if('all' == filter) {
+			                selected.removeClass('active');
+			                all.addClass('active');
+		                } else {
+			                selected.addClass('active');
+			                all.removeClass('active');
+		                }
+	                };
                };
 
                // Force initial sync to occur at link time
