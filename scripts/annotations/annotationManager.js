@@ -1011,4 +1011,22 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
     }
   }
+
+  this.getAttachments = function getAttachments( selectedOnly )
+  {
+    var attachments = [];
+    var items = selectedOnly ? selectedAnnotations : annotations;
+	  for( var i=0; i<items.length; i++ )
+	  {
+	    var item = items[i];
+	    if( item.attachments && item.attachments.length )
+	    {
+	      for( var j=0; j<item.attachments.length; j++ )
+	      {
+	        attachments.push( item.attachments[j] );
+	      }
+	    }
+	  }
+	  return attachments;
+  }
 }
