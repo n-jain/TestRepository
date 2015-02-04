@@ -517,6 +517,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       }
                     }
                   });
+
+	                scope.showAttachmentsPanel = function() {
+		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
+
+	                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
+	                  panel.addClass('blubue-attachments-panel-open');
+                  }
+
+	                scope.hideAttachmentsPanel = function() {
+		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
+
+		                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
+		                panel.removeClass('blubue-attachments-panel-open');
+	                }
                };
 
                // Force initial sync to occur at link time
