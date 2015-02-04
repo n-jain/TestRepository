@@ -703,3 +703,17 @@ button:focus {
 select.bluvue-annotation-unit-edit {
     margin-left: 10px;
 }
+
+#attachments-button {
+    background: url(images/update/icon-paperclip-white.png) no-repeat 10px center/16px #7e7e7e;
+    border: none;
+    border-radius: 15px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;Attachments button in upper left corner of UI
+    padding: 6px 10px 6px 26px;
+    position: fixed;
+    left: 15px;
+    top: 60px;
+
+}
