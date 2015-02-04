@@ -15,7 +15,7 @@
     <button ng-click="selectPreviousSheet()" id="previous-sheet-arrow">< Previous</button>
     <button ng-click="selectNextSheet()" id="next-sheet-arrow">Next ></button>
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
-	<button ng-click="" id="attachments-button">Attachments</button>
+	<button ng-click="showAttachmentsPanel()" id="attachments-button">Attachments</button>
 
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
@@ -27,6 +27,44 @@
             <img ng-src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
         </div>
     </div>
+
+	<div class="blubue-attachments-panel">
+		<div id="close-attachments-panel" ng-click="hideAttachmentsPanel()"></div>
+		<div class="attachments-panel-title">Attachments</div>
+		<ul id="attachments-panel-filter">
+			<li id="attachments-panel-filter-selected" class="active">Selected (<span>4</span>)</li>
+			<li id="attachments-panel-filter-all">View All (<span>13</span>)</li>
+		</ul>
+		<ul id="attachments-panel-controls">
+			<li id="attachments-panel-control-add">Add</li>
+			<li id="attachments-panel-control-edit">Edit</li>
+		</ul>
+		<!--<ul id="attachments-panel-files">-->
+			<!--<li>-->
+				<!--<div class="attachment-icon attachment-icon-audio"></div>-->
+				<!--<div class="attachment-file">-->
+					<!--<div class="attachment-file-name">Photo_1.png</div>-->
+					<!--<div class="attachment-file-attached-to">Attached to Shape</div>-->
+					<!--<div class="attachment-file-info">-->
+						<!--<div class="attachment-file-info-email">email@email.com</div>-->
+						<!--<div class="attachment-file-info-date">10/28/2014 4:30PM</div>-->
+					<!--</div>-->
+				<!--</div>-->
+			<!--</li>-->
+			<!--<li>-->
+				<!--<div class="attachment-icon attachment-icon-video"></div>-->
+				<!--<div class="attachment-file">-->
+					<!--<div class="attachment-file-name">Video_1.mpg</div>-->
+					<!--<div class="attachment-file-attached-to">Attached to Shape</div>-->
+					<!--<div class="attachment-file-info">-->
+						<!--<div class="attachment-file-info-email">email@email.com</div>-->
+						<!--<div class="attachment-file-info-date">10/28/2014 4:30PM</div>-->
+					<!--</div>-->
+				<!--</div>-->
+			<!--</li>-->
+		<!--</ul>-->
+	</div>
+	<div class="blubue-attachments-panel-holder"></div>
 
 
     <div class="bluvue-sheet-tool-menu">

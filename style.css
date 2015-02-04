@@ -498,7 +498,7 @@ footer.bluvue-sheet-footer {
     top: 64px;
     right: 10px;
     width: 310px;
-    z-index: 2;
+    z-index: 1002;
 }
 
 .bluvue-sheet-more-menu:before {
@@ -530,7 +530,6 @@ footer.bluvue-sheet-footer {
 .bluvue-sheet-more-menu div:hover {
     background-color: rgba(96, 96, 96, 0.7);
 }
-
 
 input.bluvue-sheetname-edit {
     width: 80%;
@@ -715,5 +714,165 @@ select.bluvue-annotation-unit-edit {
     position: fixed;
     left: 15px;
     top: 60px;
+}
 
+.blubue-attachments-panel-holder {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin-top: 46px;
+    height: calc(100% - 46px);
+    right: 0;
+    background: rgba(64,64,64,0.5);
+    z-index: 1000;
+}
+
+.blubue-attachments-panel {
+    background: rgba(0,0,0, 0.72);
+    color: #fff;
+    position: fixed;
+    left: -30%;
+    height: calc(100% - 46px);
+    margin-top: 46px;
+    width: 30%;
+    z-index: 1001;
+
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.blubue-attachments-panel-open {
+    left: 0;
+}
+
+#close-attachments-panel {
+    background: url(images/update/icon-close.png) no-repeat;
+    cursor: pointer;
+    float: right;
+    margin: 20px 20px 0 0;
+    height: 24px;
+    width: 24px;
+}
+
+.attachments-panel-title {
+    clear: both;
+    font-size: 26px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#attachments-panel-filter {
+    border: 1px solid #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 25px 10% 0;
+    overflow: hidden;
+}
+
+#attachments-panel-filter li {
+    cursor: pointer;
+    float: left;
+    padding: 6px 0;
+    text-align: center;
+    width: 50%;
+}
+
+#attachments-panel-filter li.active {
+    background: #fff;
+    color: #000;
+}
+
+#attachments-panel-controls {
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+#attachments-panel-controls li {
+    background: rgba(0,0,0, 0.2);
+    cursor: pointer;
+    font-size: 18px;
+    float: left;
+    text-align: center;
+    padding: 12px 0;
+    width: 49.5%;
+}
+
+#attachments-panel-controls li:last-child {
+    float: right;
+}
+
+#attachments-panel-files {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 208px);
+}
+
+#attachments-panel-files li {
+    border-bottom: 2px solid #323232;
+    cursor: default;
+    padding: 20px 10%;
+    overflow: hidden;
+}
+
+#attachments-panel-files li:hover {
+    background: rgba(96, 96, 96, 0.7);
+}
+
+.attachment-icon {
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 25px;
+    float: left;
+    height: 50px;
+    width: 15%;
+}
+
+.attachment-icon-audio {
+    background-image: url(images/update/icon-audio.png);
+}
+
+.attachment-icon-video {
+    background-image: url(images/update/icon-video.png);
+}
+
+.attachment-icon-photo {
+    background-image: url(images/update/icon-photo.png);
+}
+
+.attachment-icon-document {
+    background-image: url(images/update/icon-document.png);
+}
+
+.attachment-file {
+    float: left;
+    width: 85%;
+}
+
+.attachment-file-name {
+    font-size: 18px;
+}
+
+.attachment-file-attached-to {
+    font-size: 12px;
+    line-height: 2.5;
+}
+
+.attachment-file-info {
+    overflow: hidden;
+}
+
+.attachment-file-info-email {
+    font-size: 12px;
+    float: left;
+    width: 50%;
+}
+
+.attachment-file-info-date {
+    font-size: 14px;
+    float: left;
+    text-align: right;
+    width: 50%;
 }
