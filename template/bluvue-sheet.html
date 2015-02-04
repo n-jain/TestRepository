@@ -32,13 +32,13 @@
 		<div id="close-attachments-panel" ng-click="hideAttachmentsPanel()"></div>
 		<div class="attachments-panel-title">Attachments</div>
 		<ul id="attachments-panel-filter">
-			<li id="attachments-panel-filter-selected" class="active">Selected (<span>4</span>)</li>
-			<li id="attachments-panel-filter-all">View All (<span>13</span>)</li>
+			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected')">Selected (<span>4</span>)</li>
+			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all')">View All (<span>13</span>)</li>
 		</ul>
-		<ul id="attachments-panel-controls">
-			<li id="attachments-panel-control-add">Add</li>
-			<li id="attachments-panel-control-edit">Edit</li>
-		</ul>
+		<!--<ul id="attachments-panel-controls">-->
+			<!--<li id="attachments-panel-control-add">Add</li>-->
+			<!--<li id="attachments-panel-control-edit">Edit</li>-->
+		<!--</ul>-->
 		<!--<ul id="attachments-panel-files">-->
 			<!--<li>-->
 				<!--<div class="attachment-icon attachment-icon-audio"></div>-->

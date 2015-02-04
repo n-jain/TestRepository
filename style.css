@@ -734,6 +734,7 @@ select.bluvue-annotation-unit-edit {
 .blubue-attachments-panel {
     background: rgba(0,0,0, 0.72);
     color: #fff;
+    font-family: "Helvetica Neue",Helvetica,sans-serif;
     position: fixed;
     left: -30%;
     height: calc(100% - 46px);
@@ -751,7 +752,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 #close-attachments-panel {
-    background: url(images/update/icon-close.png) no-repeat;
+    background: url(images/update/icon-close.png) no-repeat center/16px;
     cursor: pointer;
     float: right;
     margin: 20px 20px 0 0;
