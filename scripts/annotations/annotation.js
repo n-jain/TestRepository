@@ -24,6 +24,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.textSize=tileView.textSize;
 
 	this.closed=false;
+	this.attachments = [];
 
 	this.tileView=tileView;
 	this.offset_x=0;
@@ -856,6 +857,8 @@ function AnnotationJSON(annotation) {
 		this.unitOfMeasure = "na";
 	}
 
+	this.attachments = annotation.attachments;
+
 	//SPECIFIC
 	if(!rectType)
 		this.points = annotation.points;
@@ -895,6 +898,7 @@ function loadAnnotationJSON(json,tileView){
 	annotation.areaMeasured = json.areaVisible==1;
 	annotation.perimeterMeasured = json.perimeterVisible==1;
 	annotation.lineWidth = json.lineWidth;
+	annotation.attachments = json.attachments;
 
 	if(json.unitOfMeasure!="na"){
 	    var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);
