@@ -39,30 +39,19 @@
 			<!--<li id="attachments-panel-control-add">Add</li>-->
 			<!--<li id="attachments-panel-control-edit">Edit</li>-->
 		<!--</ul>-->
-		<!--<ul id="attachments-panel-files">-->
-			<!--<li>-->
-				<!--<div class="attachment-icon attachment-icon-audio"></div>-->
-				<!--<div class="attachment-file">-->
-					<!--<div class="attachment-file-name">Photo_1.png</div>-->
-					<!--<div class="attachment-file-attached-to">Attached to Shape</div>-->
-					<!--<div class="attachment-file-info">-->
-						<!--<div class="attachment-file-info-email">email@email.com</div>-->
-						<!--<div class="attachment-file-info-date">10/28/2014 4:30PM</div>-->
-					<!--</div>-->
-				<!--</div>-->
-			<!--</li>-->
-			<!--<li>-->
-				<!--<div class="attachment-icon attachment-icon-video"></div>-->
-				<!--<div class="attachment-file">-->
-					<!--<div class="attachment-file-name">Video_1.mpg</div>-->
-					<!--<div class="attachment-file-attached-to">Attached to Shape</div>-->
-					<!--<div class="attachment-file-info">-->
-						<!--<div class="attachment-file-info-email">email@email.com</div>-->
-						<!--<div class="attachment-file-info-date">10/28/2014 4:30PM</div>-->
-					<!--</div>-->
-				<!--</div>-->
-			<!--</li>-->
-		<!--</ul>-->
+		<ul id="attachments-panel-files">
+			<li ng-repeat="fileItem in attachmentFiles">
+				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
+				<div class="attachment-file">
+					<div class="attachment-file-name">{{ fileItem.name }}</div>
+					<div class="attachment-file-attached-to">Attached to ...</div>
+					<div class="attachment-file-info">
+						<div class="attachment-file-info-email">{{ fileItem.email }}</div>
+						<div class="attachment-file-info-date">{{ fileItem.createdDate }}</div>
+					</div>
+				</div>
+			</li>
+		</ul>
 	</div>
 	<div class="blubue-attachments-panel-holder"></div>
 

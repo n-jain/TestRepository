@@ -519,11 +519,67 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   });
 
 	                scope.showAttachmentsPanel = function() {
-		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
+		                scope.generateAttachmentFilesList();
 
+		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
 	                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
 	                  panel.addClass('blubue-attachments-panel-open');
                   }
+
+	                scope.generateAttachmentFilesList = function() {
+		                var mgr = scope.currentSheet.tileView.annotationManager,
+			                ann_all = mgr.getAttachments(false),
+			                ann_sel = mgr.getAttachments(true),
+			                el_count_selected = angular.element(document.querySelector('#attachments-panel-filter-selected span')),
+			                el_count_all      = angular.element(document.querySelector('#attachments-panel-filter-all span'));
+
+		                el_count_selected.text(ann_sel.length);
+		                el_count_all.text(ann_all.length);
+
+		                if('all' == scope.activeFilterAttachmentPanel()) {
+			                scope.attachmentFiles = ann_all;
+		                } else {
+			                scope.attachmentFiles = ann_sel;
+		                }
+
+		                for(var i in scope.attachmentFiles) {
+			                switch(scope.attachmentFiles[i].mimeType) {
+				                case 'image/bmp':
+				                case 'image/gif':
+				                case 'image/jpeg':
+				                case 'image/png':
+				                case 'image/svg+xml':
+				                case 'image/tiff':
+					                scope.attachmentFiles[i].icon = 'photo';
+					                break;
+				                case 'text/csv':
+				                case 'text/html':
+				                case 'text/plain':
+				                case 'text/rtf':
+				                case 'application/pdf':
+				                case 'application/vnd.ms-excel':
+				                case 'application/msword':
+				                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+				                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+				                case 'application/vnd.ms-powerpoint':
+				                case 'message/rfc822':
+					                scope.attachmentFiles[i].icon = 'document';
+					                break;
+				                case 'video/avi':
+				                case 'video/mpeg':
+				                case 'video/mp4':
+					                scope.attachmentFiles[i].icon = 'video';
+					                break;
+				                case 'audio/mp4':
+				                case 'audio/mpeg':
+				                case 'audio/webm':
+					                scope.attachmentFiles[i].icon = 'audio';
+			                }
+		                }
+
+		                console.log(scope.attachmentFiles)
+
+	                }
 
 	                scope.hideAttachmentsPanel = function() {
 		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
@@ -542,6 +598,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                selected.addClass('active');
 			                all.removeClass('active');
 		                }
+
+		                scope.generateAttachmentFilesList();
+	                };
+
+	                scope.activeFilterAttachmentPanel = function() {
+		                var is_all = angular.element(document.querySelector('#attachments-panel-filter-all')).hasClass('active');
+		                return is_all ? 'all' : 'selected';
 	                };
                };
 

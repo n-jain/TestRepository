@@ -811,6 +811,7 @@ select.bluvue-annotation-unit-edit {
     overflow-y: auto;
     overflow-x: hidden;
     height: calc(100% - 208px);
+    margin-top: 75px;
 }
 
 #attachments-panel-files li {
@@ -821,7 +822,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 #attachments-panel-files li:hover {
-    background: rgba(96, 96, 96, 0.7);
+    background: rgba(32, 32, 32, 0.7);
 }
 
 .attachment-icon {
