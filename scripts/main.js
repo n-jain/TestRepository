@@ -575,9 +575,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				                case 'audio/webm':
 					                scope.attachmentFiles[i].icon = 'audio';
 			                }
-		                }
 
-		                console.log(scope.attachmentFiles)
+			                switch(scope.attachmentFiles[i].annotation.type) {
+				                case 1: scope.attachmentFiles[i].type_label = 'Square'; break;
+				                case 2: scope.attachmentFiles[i].type_label = 'X'; break;
+				                case 3: scope.attachmentFiles[i].type_label = 'Circle'; break;
+				                case 4: scope.attachmentFiles[i].type_label = 'Arrow'; break;
+				                case 5: scope.attachmentFiles[i].type_label = 'Cloud'; break;
+				                case 6: scope.attachmentFiles[i].type_label = 'Text'; break;
+				                case 7: scope.attachmentFiles[i].type_label = 'Line'; break;
+				                case 8: scope.attachmentFiles[i].type_label = 'Pen'; break;
+				                case 9: scope.attachmentFiles[i].type_label = 'Pencil'; break;
+				                case 10: scope.attachmentFiles[i].type_label = 'Calibration'; break;
+				                case 11: scope.attachmentFiles[i].type_label = 'Distance'; break;
+				                case 13: scope.attachmentFiles[i].type_label = 'Polygon'; break;
+				                case 15: scope.attachmentFiles[i].type_label = 'Free-form'; break;
+			                }
+		                }
 
 	                }
 
