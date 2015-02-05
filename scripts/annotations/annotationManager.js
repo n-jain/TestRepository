@@ -469,6 +469,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		tileView.sheet.floatingOptionsMenu.show( calcFloatingOptionsMenuLocation(selectedAnnotations) );
 	}
 
+	// Returns true if the annotation is personal or if the user is an admin.
+	this.isSelectable = function( annotation ) {
+	  return ( annotation.userId || scope.isAdmin );
+	}
+
 	/**
 	 * Adds a single annotation to the selection group without surfacing the
 	 * annotation editor.
@@ -477,7 +482,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	 * setSelectedAnnotations() or selectSingleAnnotation(), as appropriate.
 	 **/
 	this.selectAnnotation = function( annotation, updateUI ){
-		if(!scope.isAdmin&&(annotation.userId==undefined||annotation.userId==""))return false;
+		if( !this.isSelectable(annotation) ) return false;
 		selectedAnnotations.push( annotation );
 		annotation.selected=true;
 		annotation.showHandles=(selectedAnnotations.length==1);
@@ -564,7 +569,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		for(var i=0; i<annotations.length; i++){
 			var pointsInLasso = 0;
 			for(var j=0; j<8; j+=2)	if(pointInLasso(annotations[i].getPoint(j, false)))pointsInLasso++;
-			if(pointsInLasso>=3){
+			if(pointsInLasso>=3 && this.isSelectable( annotations[i] ) ) {
 				selectedAnnotations[selectedAnnotations.length]=annotations[i];
 				annotations[i].selected=true;
 			}
@@ -621,9 +626,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     			}
     		}
 
-    		for(var i=0; i<selectedAnnotations.length; i++){
-    		  self.deleteAnnotation( selectedAnnotations[i] );
+        // Make a shallow clone of the selections to avoid odditity of
+        // walking an array while it's being mutated.
+        var tmp = selectedAnnotations.slice();
+        var deleteList = [];
+    		for(var i=0; i<tmp.length; i++){
+    		  deleteList.push( tmp[i].id );
+    		  self.deleteAnnotation( tmp[i], true );
     		}
+    		scope.scheduleAnnotationSync( null, deleteList, null, false );
 
     		selectedAnnotations = new Array();
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
@@ -986,10 +997,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       case CIRCLE_ANNOTATION:
       case CLOUD_ANNOTATION:
       case X_ANNOTATION:
-        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
-        break;
       case ARROW_ANNOTATION:
       case LINE_ANNOTATION:
+        currentAnnotation.points[0] = new BluVueSheet.Point(x, y);
+        currentAnnotation.points[1] = new BluVueSheet.Point(x+width, y+height);
+        break;
       case MEASURE_ANNOTATION:
       case SCALE_ANNOTATION:
         currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
@@ -998,5 +1010,23 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       default:
         console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
     }
+  }
+
+  this.getAttachments = function getAttachments( selectedOnly )
+  {
+    var attachments = [];
+    var items = selectedOnly ? selectedAnnotations : annotations;
+	  for( var i=0; i<items.length; i++ )
+	  {
+	    var item = items[i];
+	    if( item.attachments && item.attachments.length )
+	    {
+	      for( var j=0; j<item.attachments.length; j++ )
+	      {
+	        attachments.push( item.attachments[j] );
+	      }
+	    }
+	  }
+	  return attachments;
   }
 }

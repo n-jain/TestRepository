@@ -24,6 +24,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.textSize=tileView.textSize;
 
 	this.closed=false;
+	this.attachments = [];
 
 	this.tileView=tileView;
 	this.offset_x=0;
@@ -52,6 +53,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.lineWidth=(type==HIGHLIGHTER_ANNOTATION?LINE_WIDTH_HIGHLIGHTER:LINE_WIDTH)/tileView.scale;
 	if(type!=HIGHLIGHTER_ANNOTATION)if(this.lineWidth>7.5)this.lineWidth=7.5;
 	if(type==HIGHLIGHTER_ANNOTATION)if(this.lineWidth>75)this.lineWidth=75;
+
+  this.toSerializable = function toSerializable() {
+    return new AnnotationJSON( this );
+  }
 
   var initMeasurement = function( self, linearCalc, areaCalc )
   {
@@ -852,6 +857,8 @@ function AnnotationJSON(annotation) {
 		this.unitOfMeasure = "na";
 	}
 
+	this.attachments = annotation.attachments;
+
 	//SPECIFIC
 	if(!rectType)
 		this.points = annotation.points;
@@ -869,12 +876,16 @@ function AnnotationJSON(annotation) {
 		this.distance=annotation.measurement.amount;
 	}
 	if(annotation.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
-		this.closed=annotation.closed;
+		this.closed = annotation.closed ? 1 : 0;
 	}
 }
 function loadAnnotationJSON(json,tileView){
+  var normalizeGuid = function normalizeGuid( guid ) {
+    return guid.replace( /-/g, '' );
+  }
+
     var annotation = new BluVueSheet.Annotation(json.type, tileView);
-	annotation.id=json.id;
+	annotation.id=normalizeGuid(json.id);
 	annotation.projectId=json.projectId;
 	annotation.sheetId=json.sheetId;
 	annotation.userId=json.userId;
@@ -887,6 +898,7 @@ function loadAnnotationJSON(json,tileView){
 	annotation.areaMeasured = json.areaVisible==1;
 	annotation.perimeterMeasured = json.perimeterVisible==1;
 	annotation.lineWidth = json.lineWidth;
+	annotation.attachments = json.attachments;
 
 	if(json.unitOfMeasure!="na"){
 	    var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);
@@ -908,7 +920,7 @@ function loadAnnotationJSON(json,tileView){
 		annotation.textSize=json.textSize;
 	}
 	if(json.type==POLYGON_ANNOTATION||annotation.type==FREE_FORM_ANNOTATION){
-		annotation.closed=json.closed;
+		annotation.closed=json.closed == 1;
 	}
 	annotation.calcBounds();
 	annotation.updateMeasure();

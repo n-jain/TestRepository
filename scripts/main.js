@@ -10,8 +10,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 userId: "=",
                 isAdmin: "=",
                 syncAnnotations: "=",
-                saveAnnotation: "=",
-                deleteAnnotation: "=",
                 closeSheet: "=",
                 nextSheet: "=",
                 previousSheet: "=",
@@ -31,20 +29,29 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
                 scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
-                scope.toolMoreMenu = BluVueSheet.Constants.MoreMenu;
+                scope.toolMoreMenu = [];
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
+
+                for( var i=0; i<BluVueSheet.Constants.MoreMenu.length; i++ )
+                {
+                  var item = BluVueSheet.Constants.MoreMenu[i];
+                  if( !item.isAdmin || (item.isAdmin && scope.isAdmin) )
+                  {
+                    scope.toolMoreMenu.push( item );
+                  }
+                }
 
                 var toolipDialog = new BluVueSheet.Dialog();
 
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
                 $window.onpopstate = function () {
-                    scope.$apply(function () {
+                    scope.scheduleAnnotationSync( null, null, function(){
                         backPressed = true;
                         scope.close();
-                    });
+                    }, true );
                 }
 
                 var windowResizeObserver = function windowResizeObserver() {
@@ -59,10 +66,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
                 angular.element($window).on( 'resize', windowResizeObserver );
 
-                console.log( "WARNING!  Using very slow sync for debug.  FIX ME FOR RELEASE!" )
-                //scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
-                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, 15*1000 );
+                var windowCloseObserver = function windowCloseObserver() {
+                    // Dispatch a sync to complete the shutdown
+                    scope.scheduleAnnotationSync( null, null, function(){
+                    }, true );
+                };
+                angular.element($window).on( 'unload', windowCloseObserver );
 
+                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
+                
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -256,7 +268,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                         revisions.forEach( function( rev, index ) {
                             var selected = ( rev.id == scope.sheet.id) ? " selected" : "";
-                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ rev.versionName || rev.name +"</option>") );
+                            editor.append( angular.element( "<option value='" + index + "'" + selected +">"+ (rev.versionName || rev.name) +"</option>") );
                         });
 
                         holder.append( editor );
@@ -311,6 +323,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.$on('$destroy', function () {
                     $window.onpopstate = null;
                     angular.element($window).off( 'resize', scope.windowResizeObserver );
+                    angular.element($window).off( 'unload', windowCloseObserver );
 
                     if( scope.annotationWatcher )
                     {
@@ -437,10 +450,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     {
                       var annotation = modifiedAnnotations[ i ];
 
-                      // Run the serializer if it's a native Annotation object.
-                      // Otherwise, trust that JSON.stringify will do the right
-                      // thing when it's eventually called.
-                      var serializable = (annotation.constructor.name=='Annotation') ? new AnnotationJSON( annotation ) : annotation;
+                      var serializable = annotation;
+                      if( angular.isFunction( annotation.toSerializable ) )
+                          serializable = annotation.toSerializable();
 
                       scope.syncBuffer.modifiedAnnotations[ annotation.id ] = serializable;
                     }
@@ -486,18 +498,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     scope.sheet.annotationVersion = result.data.version;
                     var mgr = scope.currentSheet.tileView.annotationManager;
 
-                    if( result.data.annotations )
-                      mgr.onExternalAnnotationUpdate( result.data.annotations );
-                    if( result.data.annotationDeletes )
-                    	mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
-                  }).catch( function( err ) {
+                    if( result.data.annotations ) {
+                        mgr.onExternalAnnotationUpdate( result.data.annotations );
+                    }
+
+                    if( result.data.annotationDeletes ) {
+                        mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
+                    }
+
+                  })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
-                  }).finally( function() {
-                    for( var i=0; i<finallyQueue.length; i++ )
+                  })["finally"]( function() {
+                    for( var x=0; x<finallyQueue.length; x++ )
                     {
-                      var callback = finallyQueue[i];
-                      if( callback )
-                        callback();
+                      var callback = finallyQueue[x];
+                      if (callback) {
+                          callback();
+                      }
                     }
                   });
 
