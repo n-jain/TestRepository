@@ -857,7 +857,26 @@ function AnnotationJSON(annotation) {
 		this.unitOfMeasure = "na";
 	}
 
-	this.attachments = annotation.attachments;
+	this.attachments = [];
+	if( annotation.attachments )
+	{
+  	annotation.attachments.forEach( function(attachment) {
+  	  var serializable = {
+  	    createdDate: attachment.createdDate,
+        id: attachment.id,
+        name: attachment.name,
+        mimeType: attachment.mimeType,
+        url: attachment.url,
+        userId: attachment.userId,
+        email: attachment.email
+  	  };
+  	  if( attachment.location )
+  	  {
+  	    serializable.location = JSON.parse( JSON.stringify( attachment.location ) );
+  	  }
+      this.attachments.push( serializable );
+  	});
+	}
 
 	//SPECIFIC
 	if(!rectType)
@@ -898,7 +917,10 @@ function loadAnnotationJSON(json,tileView){
 	annotation.areaMeasured = json.areaVisible==1;
 	annotation.perimeterMeasured = json.perimeterVisible==1;
 	annotation.lineWidth = json.lineWidth;
-	annotation.attachments = json.attachments;
+	annotation.attachments = json.attachments || [];
+	annotation.attachments.forEach( function( attachment ) {
+	  attachment.annotation = annotation;
+	});
 
 	if(json.unitOfMeasure!="na"){
 	    var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);
