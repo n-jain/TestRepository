@@ -738,7 +738,7 @@ select.bluvue-annotation-unit-edit {
 .blubue-attachments-panel {
     background: rgba(0,0,0, 0.72);
     color: #fff;
-    font-family: "Helvetica Neue",Helvetica,sans-serif;
+    font-family: Verdana;
     position: fixed;
     left: -30%;
     height: calc(100% - 46px);
