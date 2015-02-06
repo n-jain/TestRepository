@@ -518,15 +518,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     }
                   });
 
-	                scope.showAttachmentsPanel = function() {
-		                scope.generateAttachmentFilesList();
+	                scope.showAttachmentsPanel = function(need_apply) {
+		                need_apply = need_apply || false;
 
-		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
+		                scope.generateAttachmentFilesList(need_apply);
+
+		                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+			                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 	                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
 	                  panel.addClass('blubue-attachments-panel-open');
+
+		                attachment_icon.addClass('another-status');
                   }
 
-	                scope.generateAttachmentFilesList = function() {
+	                scope.generateAttachmentFilesList = function(need_apply) {
 		                var mgr = scope.currentSheet.tileView.annotationManager,
 			                ann_all = mgr.getAttachments(false),
 			                ann_sel = mgr.getAttachments(true),
@@ -593,13 +598,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                }
 		                }
 
+		                if(need_apply) {
+			                scope.$apply();
+		                }
 	                }
 
 	                scope.hideAttachmentsPanel = function() {
-		                var panel = angular.element(document.querySelector('.blubue-attachments-panel'));
+		                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+			                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 
 		                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
 		                panel.removeClass('blubue-attachments-panel-open');
+
+		                attachment_icon.removeClass('another-status');
 	                }
 
 	                scope.changeFilterAttachmentPanel = function(filter) {

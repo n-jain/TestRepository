@@ -92,7 +92,8 @@ BluVueSheet.Constants = {
         Master: { id: 7, className: "master" },
         Copy: {id: 8, className: "copy"},
         Perimeter: { id: 9, className: "ruler" },
-        Calibrate: { id: 10, className: "calibrate" }
+        Calibrate: { id: 10, className: "calibrate" },
+        Attachments: { id: 11, className: "attachments" }
     },
     Tools: {
         //menuId is the id of the menuButton it is part of

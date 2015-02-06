@@ -236,9 +236,27 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         }
         this.width = 0;
 
-        if( selectedAnnotations.length > 0 )
-        {
-            addButton(BluVueSheet.Constants.OptionButtons.Delete);
+	      if (selectedAnnotations.length == 1) {
+		      addButton( BluVueSheet.Constants.OptionButtons.Attachments, function() {
+			      scope.changeFilterAttachmentPanel('selected');
+			      scope.showAttachmentsPanel(true);
+		      } );
+		      var attachment_button = angular.element(document.querySelector('.bv-options-attachments')),
+			      len = selectedAnnotations[0].attachments.length;
+
+		      if(len >= 10) {
+						attachment_button.addClass('bv-options-attachments-2digits');
+		      }
+
+		      if(len) {
+			      attachment_button.text(len);
+		      } else {
+			      attachment_button.addClass('bv-options-attachments-zero');
+		      }
+	      }
+
+        if( selectedAnnotations.length > 0 ) {
+          addButton(BluVueSheet.Constants.OptionButtons.Delete);
         }
 
         if (selectedAnnotations.length == 1) {
