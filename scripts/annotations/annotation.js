@@ -134,8 +134,90 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		if( this.areaMeasured || this.perimeterMeasured ){
 			this.drawMeasurement(context);
 		}
+
+		if(!this.selected){
+			this.drawAttachments.call(this, context);
+		}
+
 		context.restore();
 	}
+
+	this.drawAttachments = function(context) {
+		var x, y, scale = tileView.scale;
+
+		if(scale > 0.125) {
+			scale = 0.125;
+		}
+
+		if(!this.added) {
+			return;
+		}
+
+		switch(this.type) {
+			case SQUARE_ANNOTATION:
+			case TEXT_ANNOTATION:
+			case X_ANNOTATION:
+			case CLOUD_ANNOTATION:
+				x = this.points[1].x - 1300 * scale;
+				y = this.points[0].y - 550 * scale;
+				break;
+			case CIRCLE_ANNOTATION:
+				x = this.points[0].x + Math.abs(this.points[1].x - this.points[0].x) / 2 + 0.25 * Math.abs(this.points[1].x - this.points[0].x);
+				y = this.points[0].y + Math.abs(this.points[1].y - this.points[0].y) / 2 - 0.433 * Math.abs(this.points[1].y - this.points[0].y);
+				break;
+			default:
+				var max_x = this.points[0].x;
+				var max_y = this.points[0].y;
+				for(var i in this.points) {
+					if(this.points[i].x >= max_x && this.points[i].y <= max_y) {
+						max_x = this.points[i].x;
+						max_y = this.points[i].y;
+					}
+				}
+
+				x = max_x + 300 * scale;
+				y = max_y - 700 * scale;
+		}
+
+		context.strokeStyle="#e52b2e";
+		context.fillStyle="#e52b2e";
+		this.roundRect(context, x, y, 2700 * scale, 1400 * scale, 600 * scale, true);
+
+		context.font = (60 * 15 * scale) + 'pt Verdana';
+		context.fillStyle="#fff";
+		context.fillText(this.attachments.length, x + 1350 * scale, y + 1150 * scale);
+
+		var attach_icon = new Image();
+		attach_icon.src = "images/update/icon-paperclip-dark.png";
+		context.drawImage(attach_icon, x + 150 * scale, y + 200 * scale, 1000 * scale, 1000 * scale);
+	};
+
+	this.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
+		if (typeof stroke == "undefined" ) {
+			stroke = true;
+		}
+		if (typeof radius === "undefined") {
+			radius = 5;
+		}
+		ctx.beginPath();
+		ctx.moveTo(x + radius, y);
+		ctx.lineTo(x + width - radius, y);
+		ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+		ctx.lineTo(x + width, y + height - radius);
+		ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+		ctx.lineTo(x + radius, y + height);
+		ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+		ctx.lineTo(x, y + radius);
+		ctx.quadraticCurveTo(x, y, x + radius, y);
+		ctx.closePath();
+		if (stroke) {
+			ctx.stroke();
+		}
+		if (fill) {
+			ctx.fill();
+		}
+	}
+
 	this.drawSelected = function(context){
 	  context.save();
 		if(this.rectType||!this.showHandles)this.drawBoundsRect(context);
