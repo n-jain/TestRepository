@@ -229,8 +229,10 @@ angular.module('test', ['bluvueSheet'])
                     }
                 }, 1000);
                 return deferred.promise;
-            }
+            };
 
+            $scope.filepickerApiKey = 'AoqLChA0tQG2uRy1QiwjEz';
+            $scope.attachmentsBucketName = 'attachments.test.bluvueplans.com';
         }
     ]);
 

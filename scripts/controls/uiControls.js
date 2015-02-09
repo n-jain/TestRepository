@@ -691,3 +691,106 @@ BluVueSheet.Dialog = function() {
 
   parent.append( holder );
 }
+
+
+BluVueSheet.FileChooser = function( scope ) {
+  var fileChooser = this;
+
+  console.log( "Initializing FilePicker.io", scope.filepickerApiKey, scope.attachmentsBucketName );
+  filepicker.setKey( scope.filepickerApiKey );
+
+  var createPickerOptions = function createPickerOptions( extensions ) {
+    var options = {
+      multiple: true,
+      services: ['COMPUTER', 'BOX', 'DROPBOX', 'FTP', 'GOOGLE_DRIVE', 'SKYDRIVE', 'WEBDAV', 'GMAIL']
+    };
+
+    if( extensions )
+      options.extensions = extensions;
+
+    return options;
+  };
+
+  var errorCodes = {
+    111: "Your browser doesn't support reading from DOM File objects",
+    115: "File not found",
+    118: "General read error",
+    151: "The file store couldn't be reached",
+    default: "Could not save file."
+  };
+
+  this.generateUUID = function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid.replace( /-/g, '' );
+  };
+
+  var getExtension = function getExtension( filename, mimeType )
+  {
+    var a = filename.split(".");
+    if( a.length === 1 || ( a[0] === "" && a.length === 2 ) ) {
+        return mimeType;
+    }
+    return a.pop().toLowerCase();
+  }
+
+  var createStorageInfo = function createStorageInfo( inkBlob )
+  {
+    var guid = fileChooser.generateUUID();
+    var filename = guid + "." + getExtension( inkBlob.filename );
+
+    return {
+      container: scope.attachmentsBucketName,
+      filename: filename,
+      mimetype: inkBlob.mimetype,
+      path: '/' + scope.currentSheet.projectId +'/' + filename
+    };
+  }
+
+  var typeMap = {
+    document: ['.pdf'],
+    image: [ '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.tif', '.tiff' ]
+  }
+
+  this.chooseDocument = function chooseDocument( onSuccess, onError ) {
+    this.openFileChooser( typeMap.document, onSuccess, onError );
+  }
+
+  this.chooseImage = function chooseImage( onSuccess, onError ) {
+    this.openFileChooser( typeMap.image, onSuccess, onError );
+  }
+
+  this.openFileChooser = function openFileChooser( fileTypes, onSuccess, onError ) {
+
+    onSuccess = onSuccess || function( file ) {
+      console.log( "Opened", file );
+    };
+
+    onError = onError || function( message ) {
+      console.error( "File Chooser Error:", message );
+    };
+
+    filepicker.pickMultiple( createPickerOptions( fileTypes ), function pickMultipleSuccess( InkBlobs )
+    {
+      InkBlobs.forEach( function( inkBlob ) {
+        filepicker.store( inkBlob, createStorageInfo( inkBlob ),
+          function storeSuccess( inkBlobStored ) {
+            onSuccess( inkBlockStored );
+          },
+          function storeError( FPError ) {
+            onError( errorCodes[ FPError.code ] || errorCodes[ 'default' ] );
+          }
+        );
+      });
+    },
+    function pickMultipleError( FPError ){
+      if( FPError.code !== 101 ) {
+        console.log( "General error during upload" );
+      }
+    });
+  }
+}

@@ -18,7 +18,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 getTotalSheets: "=",
                 revisionsForCurrentSheet: "=",
                 openSheetById: "=",
-                saveSheet: "="
+                saveSheet: "=",
+                filepickerApiKey: "=",
+                attachmentsBucketName: "="
             },
             restrict: "E",
             replace: true,
@@ -517,121 +519,122 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       }
                     }
                   });
+                };
+                scope.showAttachmentsPanel = function(need_apply) {
+	                need_apply = need_apply || false;
 
-	                scope.showAttachmentsPanel = function(need_apply) {
-		                need_apply = need_apply || false;
+	                scope.generateAttachmentFilesList(need_apply);
 
-		                scope.generateAttachmentFilesList(need_apply);
+	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
+                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
+                  panel.addClass('blubue-attachments-panel-open');
 
-		                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
-			                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
-	                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
-	                  panel.addClass('blubue-attachments-panel-open');
+	                attachment_icon.addClass('another-status');
+                }
 
-		                attachment_icon.addClass('another-status');
-                  }
+                scope.generateAttachmentFilesList = function(need_apply) {
+	                var mgr = scope.currentSheet.tileView.annotationManager,
+		                ann_all = mgr.getAttachments(false),
+		                ann_sel = mgr.getAttachments(true),
+		                el_count_selected = angular.element(document.querySelector('#attachments-panel-filter-selected span')),
+		                el_count_all      = angular.element(document.querySelector('#attachments-panel-filter-all span'));
 
-	                scope.generateAttachmentFilesList = function(need_apply) {
-		                var mgr = scope.currentSheet.tileView.annotationManager,
-			                ann_all = mgr.getAttachments(false),
-			                ann_sel = mgr.getAttachments(true),
-			                el_count_selected = angular.element(document.querySelector('#attachments-panel-filter-selected span')),
-			                el_count_all      = angular.element(document.querySelector('#attachments-panel-filter-all span'));
+	                el_count_selected.text(ann_sel.length);
+	                el_count_all.text(ann_all.length);
 
-		                el_count_selected.text(ann_sel.length);
-		                el_count_all.text(ann_all.length);
+	                if('all' == scope.activeFilterAttachmentPanel()) {
+		                scope.attachmentFiles = ann_all;
+	                } else {
+		                scope.attachmentFiles = ann_sel;
+	                }
 
-		                if('all' == scope.activeFilterAttachmentPanel()) {
-			                scope.attachmentFiles = ann_all;
-		                } else {
-			                scope.attachmentFiles = ann_sel;
+	                for(var i in scope.attachmentFiles) {
+		                switch(scope.attachmentFiles[i].mimeType) {
+			                case 'image/bmp':
+			                case 'image/gif':
+			                case 'image/jpeg':
+			                case 'image/png':
+			                case 'image/svg+xml':
+			                case 'image/tiff':
+				                scope.attachmentFiles[i].icon = 'photo';
+				                break;
+			                case 'text/csv':
+			                case 'text/html':
+			                case 'text/plain':
+			                case 'text/rtf':
+			                case 'application/pdf':
+			                case 'application/vnd.ms-excel':
+			                case 'application/msword':
+			                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+			                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+			                case 'application/vnd.ms-powerpoint':
+			                case 'message/rfc822':
+				                scope.attachmentFiles[i].icon = 'document';
+				                break;
+			                case 'video/avi':
+			                case 'video/mpeg':
+			                case 'video/mp4':
+				                scope.attachmentFiles[i].icon = 'video';
+				                break;
+			                case 'audio/mp4':
+			                case 'audio/mpeg':
+			                case 'audio/webm':
+				                scope.attachmentFiles[i].icon = 'audio';
 		                }
 
-		                for(var i in scope.attachmentFiles) {
-			                switch(scope.attachmentFiles[i].mimeType) {
-				                case 'image/bmp':
-				                case 'image/gif':
-				                case 'image/jpeg':
-				                case 'image/png':
-				                case 'image/svg+xml':
-				                case 'image/tiff':
-					                scope.attachmentFiles[i].icon = 'photo';
-					                break;
-				                case 'text/csv':
-				                case 'text/html':
-				                case 'text/plain':
-				                case 'text/rtf':
-				                case 'application/pdf':
-				                case 'application/vnd.ms-excel':
-				                case 'application/msword':
-				                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-				                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-				                case 'application/vnd.ms-powerpoint':
-				                case 'message/rfc822':
-					                scope.attachmentFiles[i].icon = 'document';
-					                break;
-				                case 'video/avi':
-				                case 'video/mpeg':
-				                case 'video/mp4':
-					                scope.attachmentFiles[i].icon = 'video';
-					                break;
-				                case 'audio/mp4':
-				                case 'audio/mpeg':
-				                case 'audio/webm':
-					                scope.attachmentFiles[i].icon = 'audio';
-			                }
-
-			                switch(scope.attachmentFiles[i].annotation.type) {
-				                case SQUARE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Square'; break;
-				                case X_ANNOTATION: scope.attachmentFiles[i].type_label = 'X'; break;
-				                case CIRCLE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Circle'; break;
-				                case ARROW_ANNOTATION: scope.attachmentFiles[i].type_label = 'Arrow'; break;
-				                case CLOUD_ANNOTATION: scope.attachmentFiles[i].type_label = 'Cloud'; break;
-				                case TEXT_ANNOTATION: scope.attachmentFiles[i].type_label = 'Text'; break;
-				                case LINE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Line'; break;
-				                case PEN_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pen'; break;
-				                case HIGHLIGHTER_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pencil'; break;
-				                case SCALE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Calibration'; break;
-				                case MEASURE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Distance'; break;
-				                case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
-				                case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
-			                }
-		                }
-
-		                if(need_apply) {
-			                scope.$apply();
+		                switch(scope.attachmentFiles[i].annotation.type) {
+			                case SQUARE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Square'; break;
+			                case X_ANNOTATION: scope.attachmentFiles[i].type_label = 'X'; break;
+			                case CIRCLE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Circle'; break;
+			                case ARROW_ANNOTATION: scope.attachmentFiles[i].type_label = 'Arrow'; break;
+			                case CLOUD_ANNOTATION: scope.attachmentFiles[i].type_label = 'Cloud'; break;
+			                case TEXT_ANNOTATION: scope.attachmentFiles[i].type_label = 'Text'; break;
+			                case LINE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Line'; break;
+			                case PEN_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pen'; break;
+			                case HIGHLIGHTER_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pencil'; break;
+			                case SCALE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Calibration'; break;
+			                case MEASURE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Distance'; break;
+			                case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
+			                case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
 		                }
 	                }
 
-	                scope.hideAttachmentsPanel = function() {
-		                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
-			                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
+	                if(need_apply) {
+		                scope.$apply();
+	                }
+                }
 
-		                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
-		                panel.removeClass('blubue-attachments-panel-open');
+                scope.hideAttachmentsPanel = function() {
+	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 
-		                attachment_icon.removeClass('another-status');
+	                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
+	                panel.removeClass('blubue-attachments-panel-open');
+
+	                attachment_icon.removeClass('another-status');
+                }
+
+                scope.changeFilterAttachmentPanel = function(filter) {
+	                var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
+	                var all = angular.element(document.querySelector('#attachments-panel-filter-all'));
+	                if('all' == filter) {
+		                selected.removeClass('active');
+		                all.addClass('active');
+	                } else {
+		                selected.addClass('active');
+		                all.removeClass('active');
 	                }
 
-	                scope.changeFilterAttachmentPanel = function(filter) {
-		                var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
-		                var all = angular.element(document.querySelector('#attachments-panel-filter-all'));
-		                if('all' == filter) {
-			                selected.removeClass('active');
-			                all.addClass('active');
-		                } else {
-			                selected.addClass('active');
-			                all.removeClass('active');
-		                }
+	                scope.generateAttachmentFilesList();
+                };
 
-		                scope.generateAttachmentFilesList();
-	                };
+                scope.activeFilterAttachmentPanel = function() {
+	                var is_all = angular.element(document.querySelector('#attachments-panel-filter-all')).hasClass('active');
+	                return is_all ? 'all' : 'selected';
+                };
 
-	                scope.activeFilterAttachmentPanel = function() {
-		                var is_all = angular.element(document.querySelector('#attachments-panel-filter-all')).hasClass('active');
-		                return is_all ? 'all' : 'selected';
-	                };
-               };
+                scope.fileChooser = new BluVueSheet.FileChooser( scope );
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
