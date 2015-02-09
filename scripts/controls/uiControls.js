@@ -779,10 +779,10 @@ BluVueSheet.FileChooser = function( scope ) {
       InkBlobs.forEach( function( inkBlob ) {
         filepicker.store( inkBlob, createStorageInfo( inkBlob ),
           function storeSuccess( inkBlobStored ) {
-            onSuccess( inkBlockStored );
+            onSuccess( inkBlobStored );
           },
           function storeError( FPError ) {
-            onError( errorCodes[ FPError.code ] || errorCodes[ 'default' ] );
+            onError( errorCodes[ FPError.code ] || ( errorCodes[ 'default' ] + " (" + FPError + ")" ) );
           }
         );
       });
