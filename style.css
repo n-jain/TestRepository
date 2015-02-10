@@ -862,6 +862,7 @@ select.bluvue-annotation-unit-edit {
 .attachment-file-name {
     cursor: pointer;
     font-size: 18px;
+    float: left;
 }
 
 .attachment-file-attached-to {
@@ -886,4 +887,26 @@ select.bluvue-annotation-unit-edit {
     width: 50%;
     width: auto;
     height: auto;
+}
+
+.attachment-file-remove {
+    background: url(images/update/icon_annotation_delete.png) no-repeat 0 0/100%;
+    cursor: pointer;
+    float: right;
+    height: 24px;
+    width: 24px;
+}
+
+.attachment-file-info-block {
+    overflow: hidden;
+}
+
+#attachments-panel-control-cancel {
+    background: #fc3d38;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 15px 0;
+    margin-top: 30px;
+    text-align: center;
+    width: 100%;
 }

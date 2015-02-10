@@ -529,7 +529,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
                   document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
                   panel.addClass('blubue-attachments-panel-open');
-
 	                attachment_icon.addClass('another-status');
                 }
 
@@ -543,18 +542,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                el_count_selected.text(att_sel.length);
 	                el_count_all.text(att_all.length);
 
-	                scope.isHideAttachmentsPanelControls = true;
+	                scope.editModeAttachmentsAction('hide');
 
 	                if('all' == scope.activeFilterAttachmentPanel()) {
 		                scope.attachmentFiles = att_all;
 	                } else {
 		                scope.attachmentFiles = att_sel;
 
-
 		                var ann_sel = mgr.getSelectedAnnotation();
 
 		                if(ann_sel.length == 1 && (ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
-			               scope.isHideAttachmentsPanelControls = false;
+			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
 
@@ -643,9 +641,40 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                return is_all ? 'all' : 'selected';
                 };
 
-	              scope.openInPopup = function(url) {
-									window.open(url, url, 'width=500,height=500');
+	              scope.editModeAttachmentsAction = function(action) {
+									switch(action) {
+										case 'open':
+											scope.isHideAttachmentsPanelCancelControls = false;
+											scope.isHideAttachmentsPanelControls = true;
+											break;
+										case 'close':
+											scope.isHideAttachmentsPanelCancelControls = true;
+											scope.isHideAttachmentsPanelControls = false;
+											break;
+										case 'hide':
+											scope.isHideAttachmentsPanelCancelControls = true;
+											scope.isHideAttachmentsPanelControls = true;
+											break;
+									}
 	              };
+
+	            scope.removeAttachment = function(attachment_id) {
+		            var mgr = scope.currentSheet.tileView.annotationManager;
+
+		            mgr.removeAttachment(mgr.getSelectedAnnotation()[0], attachment_id);
+		            scope.generateAttachmentFilesList();
+
+		            if(scope.attachmentFiles.length) {
+			            scope.editModeAttachmentsAction('open');
+		            } else {
+			            scope.editModeAttachmentsAction('close');
+		            }
+
+	            };
+
+	            scope.openInPopup = function(url) {
+		            window.open(url, url, 'width=500,height=500');
+	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
 

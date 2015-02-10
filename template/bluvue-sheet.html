@@ -37,13 +37,19 @@
 		</ul>
 		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls" class="ng-hide">
 			<li id="attachments-panel-control-add">Add</li>
-			<li id="attachments-panel-control-edit">Edit</li>
+			<li id="attachments-panel-control-edit" ng-click="editModeAttachmentsAction('open')">Edit</li>
+		</ul>
+		<ul id="attachments-panel-controls-cancel" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide">
+			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
 		<ul id="attachments-panel-files">
 			<li ng-repeat="fileItem in attachmentFiles">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
-					<div class="attachment-file-name" ng-click="openInPopup(fileItem.url)">{{ fileItem.name }}</div>
+					<div class="attachment-file-info-block">
+						<div class="attachment-file-name" ng-click="openInPopup(fileItem.url)">{{ fileItem.name }}</div>
+						<div class="attachment-file-remove" ng-click="removeAttachment(fileItem.id)" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide"></div>
+					</div>
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
 					<div class="attachment-file-info">
 						<div class="attachment-file-info-email">{{ fileItem.email }}</div>
