@@ -860,6 +860,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 .attachment-file-name {
+    cursor: pointer;
     font-size: 18px;
 }
 

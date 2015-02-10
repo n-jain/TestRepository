@@ -43,7 +43,7 @@
 			<li ng-repeat="fileItem in attachmentFiles">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
-					<div class="attachment-file-name">{{ fileItem.name }}</div>
+					<div class="attachment-file-name" ng-click="openInPopup(fileItem.url)">{{ fileItem.name }}</div>
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
 					<div class="attachment-file-info">
 						<div class="attachment-file-info-email">{{ fileItem.email }}</div>

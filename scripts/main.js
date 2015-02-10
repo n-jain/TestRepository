@@ -643,6 +643,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                return is_all ? 'all' : 'selected';
                 };
 
+	              scope.openInPopup = function(url) {
+									window.open(url, url, 'width=500,height=500');
+	              };
+
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
 
                // Force initial sync to occur at link time
