@@ -940,6 +940,7 @@ function AnnotationJSON(annotation) {
 	}
 
 	this.attachments = [];
+	var context = this;
 	if( annotation.attachments )
 	{
   	annotation.attachments.forEach( function(attachment) {
@@ -956,7 +957,7 @@ function AnnotationJSON(annotation) {
   	  {
   	    serializable.location = JSON.parse( JSON.stringify( attachment.location ) );
   	  }
-      this.attachments.push( serializable );
+		  context.attachments.push( serializable );
   	});
 	}
 

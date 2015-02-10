@@ -535,18 +535,27 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                 scope.generateAttachmentFilesList = function(need_apply) {
 	                var mgr = scope.currentSheet.tileView.annotationManager,
-		                ann_all = mgr.getAttachments(false),
-		                ann_sel = mgr.getAttachments(true),
+		                att_all = mgr.getAttachments(false),
+		                att_sel = mgr.getAttachments(true),
 		                el_count_selected = angular.element(document.querySelector('#attachments-panel-filter-selected span')),
 		                el_count_all      = angular.element(document.querySelector('#attachments-panel-filter-all span'));
 
-	                el_count_selected.text(ann_sel.length);
-	                el_count_all.text(ann_all.length);
+	                el_count_selected.text(att_sel.length);
+	                el_count_all.text(att_all.length);
+
+	                scope.isHideAttachmentsPanelControls = true;
 
 	                if('all' == scope.activeFilterAttachmentPanel()) {
-		                scope.attachmentFiles = ann_all;
+		                scope.attachmentFiles = att_all;
 	                } else {
-		                scope.attachmentFiles = ann_sel;
+		                scope.attachmentFiles = att_sel;
+
+
+		                var ann_sel = mgr.getSelectedAnnotation();
+
+		                if(ann_sel.length == 1 && (ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
+			               scope.isHideAttachmentsPanelControls = false;
+		                }
 	                }
 
 	                for(var i in scope.attachmentFiles) {

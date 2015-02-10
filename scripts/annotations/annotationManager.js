@@ -978,6 +978,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  return false;
 	}
 
+	this.getSelectedAnnotation = function getSelectedAnnotation() {
+		return selectedAnnotations;
+	}
+
 	this.getAnnotation = function getAnnotation( annotationId ) {
 	  for( var i=0; i<annotations.length; i++ )
 	  {
