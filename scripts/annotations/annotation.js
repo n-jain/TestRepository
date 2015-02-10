@@ -135,7 +135,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			this.drawMeasurement(context);
 		}
 
-		if(!this.selected){
+		if(!this.selected && this.attachments.length){
 			this.drawAttachments.call(this, context);
 		}
 
@@ -181,15 +181,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
-		this.roundRect(context, x, y, 2700 * scale, 1400 * scale, 600 * scale, true);
+		this.roundRect(context, x, y, 2700 * scale, 1400 * scale, 850 * scale, true);
 
-		context.font = (60 * 15 * scale) + 'pt Verdana';
+		context.font = (60 * 15 * scale) + 'pt Helvetica';
 		context.fillStyle="#fff";
-		context.fillText(this.attachments.length, x + 1350 * scale, y + 1150 * scale);
+		context.fillText(this.attachments.length, x + 1350 * scale, y + 1100 * scale);
 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
-		context.drawImage(attach_icon, x + 150 * scale, y + 200 * scale, 1000 * scale, 1000 * scale);
+		context.drawImage(attach_icon, x + 250 * scale, y + 200 * scale, 1000 * scale, 1000 * scale);
 	};
 
 	this.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
