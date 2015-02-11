@@ -893,8 +893,8 @@ select.bluvue-annotation-unit-edit {
     background: url(images/update/icon_annotation_delete.png) no-repeat 0 0/100%;
     cursor: pointer;
     float: right;
-    height: 24px;
-    width: 24px;
+    height: 22px;
+    width: 22px;
 }
 
 .attachment-file-info-block {
@@ -905,7 +905,7 @@ select.bluvue-annotation-unit-edit {
     background: #fc3d38;
     cursor: pointer;
     font-size: 18px;
-    padding: 15px 0;
+    padding: 12px 0;
     margin-top: 30px;
     text-align: center;
     width: 100%;
