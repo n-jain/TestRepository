@@ -153,6 +153,11 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			return;
 		}
 
+
+
+		var theta = this.tileView.getRotation()/-180*Math.PI;
+		context.save();
+
 		switch(this.type) {
 			case SQUARE_ANNOTATION:
 			case TEXT_ANNOTATION:
@@ -162,8 +167,21 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				y = this.points[0].y - 550 * scale;
 				break;
 			case CIRCLE_ANNOTATION:
-				x = this.points[0].x + Math.abs(this.points[1].x - this.points[0].x) / 2 + 0.25 * Math.abs(this.points[1].x - this.points[0].x);
-				y = this.points[0].y + Math.abs(this.points[1].y - this.points[0].y) / 2 - 0.433 * Math.abs(this.points[1].y - this.points[0].y);
+				var x0 = this.points[0].x,
+						x1 = this.points[1].x,
+						y0 = this.points[0].y,
+						y1 = this.points[1].y;
+
+				x = x0 + 0.75 * Math.abs(x1 - x0);
+				y = y0 + 0.067 * Math.abs(y1 - y0);
+
+				var nx = x * Math.cos(theta) - y * Math.sin(theta);
+				var ny = x * Math.sin(theta) + y * Math.cos(theta);
+
+				context.translate(x - nx, y - ny);
+
+
+				context.rotate(theta);
 				break;
 			default:
 				var max_x = this.points[0].x;
@@ -178,6 +196,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				x = max_x + 300 * scale;
 				y = max_y - 700 * scale;
 		}
+
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
@@ -199,6 +218,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		if (typeof radius === "undefined") {
 			radius = 5;
 		}
+
 		ctx.beginPath();
 		ctx.moveTo(x + radius, y);
 		ctx.lineTo(x + width - radius, y);
@@ -210,6 +230,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		ctx.lineTo(x, y + radius);
 		ctx.quadraticCurveTo(x, y, x + radius, y);
 		ctx.closePath();
+
 		if (stroke) {
 			ctx.stroke();
 		}
