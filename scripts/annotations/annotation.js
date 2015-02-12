@@ -135,9 +135,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			this.drawMeasurement(context);
 		}
 
-		if(!this.selected && this.attachments.length){
+		//if(!this.selected && this.attachments.length){
 			this.drawAttachments.call(this, context);
-		}
+		//}
 
 		context.restore();
 	}
@@ -173,7 +173,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
       case X_ANNOTATION:
       case CLOUD_ANNOTATION:
         var dx = width/2 - 1300*scale;
-        var dy = -(height/2 - 550*scale);
+        var dy = -(height/2 + 650*scale);
         context.translate( dx, dy );
         break;
 
@@ -202,6 +202,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
         var dx = (isFlipped ? this.points[bestIndex].y-y : this.points[bestIndex].x-x) + 300 * scale;
         var dy = (isFlipped ? this.points[bestIndex].x-x : this.points[bestIndex].y-y) - 700 * scale;
+
         context.translate( dx, dy );
         break;
     }
