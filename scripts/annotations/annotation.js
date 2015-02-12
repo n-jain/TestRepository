@@ -135,9 +135,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			this.drawMeasurement(context);
 		}
 
-		//if(!this.selected && this.attachments.length){
+		if(!this.selected && this.attachments.length){
 			this.drawAttachments.call(this, context);
-		//}
+		}
 
 		context.restore();
 	}
