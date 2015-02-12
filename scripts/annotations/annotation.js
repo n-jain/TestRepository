@@ -153,50 +153,58 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			return;
 		}
 
-
-
 		var theta = this.tileView.getRotation()/-180*Math.PI;
+		var isFlipped = (this.tileView.getRotation()==90 || this.tileView.getRotation()==270)
 		context.save();
 
+	  x = this.bounds.left + (this.bounds.width() / 2);
+    y = this.bounds.top + (this.bounds.height() / 2);
+
+	  context.translate( x, y );
+	  context.rotate( theta );
+    context.translate( -x, -y );
+
+    var width = isFlipped ? this.bounds.height() : this.bounds.width();
+    var height = isFlipped ? this.bounds.width() : this.bounds.height();
+
 		switch(this.type) {
-			case SQUARE_ANNOTATION:
-			case TEXT_ANNOTATION:
-			case X_ANNOTATION:
-			case CLOUD_ANNOTATION:
-				x = this.points[1].x - 1300 * scale;
-				y = this.points[0].y - 550 * scale;
-				break;
-			case CIRCLE_ANNOTATION:
-				var x0 = this.points[0].x,
-						x1 = this.points[1].x,
-						y0 = this.points[0].y,
-						y1 = this.points[1].y;
+      case SQUARE_ANNOTATION:
+      case TEXT_ANNOTATION:
+      case X_ANNOTATION:
+      case CLOUD_ANNOTATION:
+        var dx = width/2 - 1300*scale;
+        var dy = -(height/2 - 550*scale);
+        context.translate( dx, dy );
+        break;
 
-				x = x0 + 0.75 * Math.abs(x1 - x0);
-				y = y0 + 0.067 * Math.abs(y1 - y0);
+      case CIRCLE_ANNOTATION:
+        var dx = (0.25 * width );
+        var dy = -(0.433 * height );
+        context.translate( dx, dy );
+        break;
 
-				var nx = x * Math.cos(theta) - y * Math.sin(theta);
-				var ny = x * Math.sin(theta) + y * Math.cos(theta);
-
-				context.translate(x - nx, y - ny);
-
-
-				context.rotate(theta);
-				break;
 			default:
-				var max_x = this.points[0].x;
-				var max_y = this.points[0].y;
-				for(var i in this.points) {
-					if(this.points[i].x >= max_x && this.points[i].y <= max_y) {
-						max_x = this.points[i].x;
-						max_y = this.points[i].y;
-					}
-				}
+        var bestIndex = 0;
+        var bestAngle;
+        var perfectAngle = (this.tileView.getRotation()+30) * Math.PI / 180;
+        for( var i in this.points )
+        {
+          var ix = (isFlipped ? this.points[i].y-y : this.points[i].x-x);
+          var iy = (isFlipped ? this.points[i].y-y : this.points[i].x-x);
 
-				x = max_x + 300 * scale;
-				y = max_y - 700 * scale;
-		}
+          var angle = Math.abs( perfectAngle - Math.atan2( ix, iy ) );
+          if( !bestAngle || ( angle > bestAngle ) )
+          {
+            bestAngle = angle;
+            bestIndex = i;
+          }
+        }
 
+        var dx = (isFlipped ? this.points[bestIndex].y-y : this.points[bestIndex].x-x) + 300 * scale;
+        var dy = (isFlipped ? this.points[bestIndex].x-x : this.points[bestIndex].y-y) - 700 * scale;
+        context.translate( dx, dy );
+        break;
+    }
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
@@ -209,6 +217,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
 		context.drawImage(attach_icon, x + 250 * scale, y + 200 * scale, 1000 * scale, 1000 * scale);
+		context.restore();
 	};
 
 	this.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
