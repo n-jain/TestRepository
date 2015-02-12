@@ -77,12 +77,15 @@ BluVueSheet.MouseControls = function(tileView) {
         var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
         var window_x = e.clientX;
         var window_y = e.clientY;
-        tileView.annotationManager.onmousemove(mouse.x, mouse.y);
-        if (dragging) {
-            tileView.setScroll( tileviewStartX + (window_x - mouseStartX) / tileView.scale,
-                                tileviewStartY + (window_y - mouseStartY) / tileView.scale );
-            tileView.annotationManager.updateTextEditorIfPresent();
-        }
+
+	      if(tileView.annotationManager.isAllowMovedAnnotations(mouse.x, mouse.y)) {
+		      tileView.annotationManager.onmousemove(mouse.x, mouse.y);
+		      if (dragging) {
+			      tileView.setScroll(tileviewStartX + (window_x - mouseStartX) / tileView.scale,
+				      tileviewStartY + (window_y - mouseStartY) / tileView.scale);
+			      tileView.annotationManager.updateTextEditorIfPresent();
+		      }
+	      }
     };
 
     this.onclick = function (e) {

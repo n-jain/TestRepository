@@ -116,6 +116,10 @@ footer.bluvue-sheet-footer {
     display: none;
 }
 
+.bluvue-sheet-floating-options-menu {
+    min-width: 356px;
+}
+
 .bluvue-sheet-color-menu {
 	background: #333333;
   display: none;

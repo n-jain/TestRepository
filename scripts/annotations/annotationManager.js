@@ -5,9 +5,14 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	var lasso = null;
 	var touchedHandle=-1;
 	var cancelClick=false;
+
+	var movePrevX = null;
+	var movePrevY = null;
+
 	this.captureMouse=false;
 	this.captureKeyboard=false;
 	this.scaleAnnotation = null;
+
 	var me = this;
 
 	var removeFromArray = function(array, element){
@@ -262,6 +267,95 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             }
         }
     }
+
+	this.isAllowMovedAnnotations = function(x, y) {
+
+		if(!selectedAnnotations.length) {
+			return true;
+		}
+
+		var minX = selectedAnnotations[0].points[0].x,
+			maxX = selectedAnnotations[0].points[0].x,
+			minY = selectedAnnotations[0].points[0].y,
+			maxY = selectedAnnotations[0].points[0].y;
+
+		for(var i in selectedAnnotations) {
+			for(var j in selectedAnnotations[i].points) {
+				if (selectedAnnotations[i].points[j].x < minX) {
+					minX = selectedAnnotations[i].points[j].x;
+				}
+
+				if (selectedAnnotations[i].points[j].x > maxX) {
+					maxX = selectedAnnotations[i].points[j].x;
+				}
+
+				if (selectedAnnotations[i].points[j].y < minY) {
+					minY = selectedAnnotations[i].points[j].y;
+				}
+
+				if (selectedAnnotations[i].points[j].y > maxY) {
+					maxY = selectedAnnotations[i].points[j].y;
+				}
+			}
+		}
+
+		if(!tileView.getRotation() || 180 == tileView.getRotation()) {
+			var realMinX = tileView.screenCoordinatesFromSheetCoordinates(minX, 0).x,
+					realMaxX = tileView.screenCoordinatesFromSheetCoordinates(maxX, 0).x,
+					realMinY = tileView.screenCoordinatesFromSheetCoordinates(0, minY).y,
+					realMaxY = tileView.screenCoordinatesFromSheetCoordinates(0, maxY).y;
+		} else {
+			var realMinX = tileView.screenCoordinatesFromSheetCoordinates(minX, 0).y,
+					realMaxX = tileView.screenCoordinatesFromSheetCoordinates(maxX, 0).y,
+					realMinY = tileView.screenCoordinatesFromSheetCoordinates(0, minY).x,
+					realMaxY = tileView.screenCoordinatesFromSheetCoordinates(0, maxY).x;
+		}
+		var canvas_size = document.getElementsByTagName('canvas')[0],
+				padding = 35;
+
+		//console.log('minX: ' + parseInt(realMinX), 'maxX: ' + parseInt(realMaxX), 'minY: ' + parseInt(realMinY), 'maxY: ' + parseInt(realMaxY), 'x: ' + parseInt(x), 'y: ' + parseInt(y), 'movePrevY: ' + parseInt(movePrevY));
+
+		if(!tileView.getRotation() &&
+			((realMinX < padding && movePrevX > x) ||
+			(realMaxX > canvas_size.width - padding && movePrevX < x) ||
+			(realMinY < padding && movePrevY > y) ||
+			(realMaxY > canvas_size.height - padding && movePrevY < y))) {
+			return false;
+		}
+
+		if(180 == tileView.getRotation() &&
+			((realMaxY < padding && movePrevY < y) ||
+			(realMinY > canvas_size.height - padding && movePrevY > y) ||
+			(realMaxX < padding && movePrevX < x) ||
+			(realMinX > canvas_size.width - padding && movePrevX > x))) {
+			return false;
+		}
+
+		if(90 == tileView.getRotation() &&
+			((realMaxY < padding && movePrevY < y) ||
+			(realMinY > canvas_size.width - padding && movePrevY > y) ||
+			(realMinX < padding && movePrevX > x) ||
+			(realMaxX > canvas_size.height - padding && movePrevX < x))) {
+			return false;
+		}
+
+		if(270 == tileView.getRotation() &&
+			((realMaxX < padding && movePrevX < x) ||
+			(realMinX > canvas_size.height - padding && movePrevX > x) ||
+			(realMinY < padding && movePrevY > y) ||
+			(realMaxY > canvas_size.width - padding && movePrevY < y))) {
+			return false;
+		}
+
+		movePrevX = x;
+		movePrevY = y;
+
+		for(var i in selectedAnnotations) {
+			selectedAnnotations[i].applyOffset();
+		}
+
+		return true;
+	}
 
 	this.textUpdate = function (text) {
 		if(selectedAnnotations.length==1)

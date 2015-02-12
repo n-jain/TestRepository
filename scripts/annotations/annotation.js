@@ -331,6 +331,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		this.offset_y=y-this.y_handle-this.bounds.centerY();
 	}
 	this.applyOffset = function(){
+		if(isNaN(this.offset_x) || isNaN(this.offset_y)) {
+			return false;
+		}
+
 		if(this.offset_y!=0||this.offset_x!=0){
 			for(var i=0; i<this.points.length; i++){
 				this.points[i].x+=this.offset_x;
