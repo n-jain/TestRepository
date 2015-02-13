@@ -676,6 +676,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       amazonKeyPath: fileInfo.key
                     });
 
+	                  scope.changeFilterAttachmentPanel('selected');
+	                  scope.generateAttachmentFilesList(true);
+
                   }, function attachmentCanceled() {
                   });
                 };
