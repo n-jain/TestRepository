@@ -269,7 +269,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     }
 
 	this.isAllowMovedAnnotations = function(x, y) {
-
 		if(!selectedAnnotations.length) {
 			return true;
 		}
@@ -310,10 +309,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 					realMinY = tileView.screenCoordinatesFromSheetCoordinates(0, minY).x,
 					realMaxY = tileView.screenCoordinatesFromSheetCoordinates(0, maxY).x;
 		}
-		var canvas_size = document.getElementsByTagName('canvas')[0],
-				padding = 35;
 
-		//console.log('minX: ' + parseInt(realMinX), 'maxX: ' + parseInt(realMaxX), 'minY: ' + parseInt(realMinY), 'maxY: ' + parseInt(realMaxY), 'x: ' + parseInt(x), 'y: ' + parseInt(y), 'movePrevY: ' + parseInt(movePrevY));
+		var canvas_size = document.getElementsByTagName('canvas')[0],
+				padding = 25;
 
 		if(!tileView.getRotation() &&
 			((realMinX < padding && movePrevX > x) ||
@@ -351,7 +349,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		movePrevY = y;
 
 		for(var i in selectedAnnotations) {
-			selectedAnnotations[i].applyOffset();
+			selectedAnnotations[i].applyMoveOffset();
 		}
 
 		return true;

@@ -761,6 +761,8 @@ BluVueSheet.FileChooser = function( scope ) {
         filepicker.store( inkBlob, createStorageInfo( inkBlob ),
           function storeSuccess( inkBlobStored ) {
             onSuccess( inkBlobStored );
+	          scope.changeFilterAttachmentPanel('selected');
+	          scope.generateAttachmentFilesList(true);
           },
           function storeError( FPError ) {
             onError( errorCodes[ FPError.code ] || ( errorCodes[ 'default' ] + " (" + FPError + ")" ) );
