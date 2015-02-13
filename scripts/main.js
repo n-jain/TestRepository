@@ -1,13 +1,14 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval',
-    function sheetDirective($window, $location, $interval) {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter',
+    function sheetDirective($window, $location, $interval, $filter) {
         'use strict';
 
         return {
             scope: {
                 sheet: "=",
                 userId: "=",
+                email: "=",
                 isAdmin: "=",
                 syncAnnotations: "=",
                 closeSheet: "=",
@@ -658,6 +659,27 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 									}
 	              };
 
+	              scope.addAttachmentAction = function() {
+                  var mgr = scope.currentSheet.tileView.annotationManager;
+                  var annotation = mgr.getSelectedAnnotation()[0];
+
+                  scope.fileChooser.chooseImage( function attachmentAdded( fileInfo ) {
+
+                    mgr.addAttachment( annotation, {
+                      createdDate: $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' ),
+                      id: scope.generateUUID(),
+                      name: fileInfo.filename,
+                      mimeType: fileInfo.mimetype,
+                      url: fileInfo.url,
+                      userId: scope.userId,
+                      email: scope.email,
+                      amazonKeyPath: fileInfo.key
+                    });
+
+                  }, function attachmentCanceled() {
+                  });
+                };
+
 	            scope.removeAttachment = function(attachment_id) {
 		            var mgr = scope.currentSheet.tileView.annotationManager;
 
@@ -677,6 +699,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
+
+                scope.generateUUID = function generateUUID() {
+                  var d = new Date().getTime();
+                  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                      var r = (d + Math.random()*16)%16 | 0;
+                      d = Math.floor(d/16);
+                      return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+                  });
+                  return uuid.replace( /-/g, '' );
+                };
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();

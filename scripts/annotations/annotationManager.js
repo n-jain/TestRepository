@@ -1128,12 +1128,24 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  return attachments;
   }
 
+  this.addAttachment = function addAttachment( annotation, attachment ) {
+    attachment.annotation = annotation;
+    attachment.annotationId = annotation.id;
+
+    annotation.attachments.push( attachment );
+    scope.scheduleAnnotationSync( [annotation], null, null, false );
+
+		this.selectSingleAnnotation(annotation);
+		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
+	}
+
 	this.removeAttachment = function removeAttachment( annotation, attachment_id ) {
 		for(var i in annotation.attachments) {
 			if(annotation.attachments[i].id == attachment_id) {
 				annotation.attachments.splice(i, 1);
 			}
 		}
+    scope.scheduleAnnotationSync( [annotation], null, null, false );
 
 		this.selectSingleAnnotation(annotation);
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');

@@ -986,7 +986,9 @@ function AnnotationJSON(annotation) {
         mimeType: attachment.mimeType,
         url: attachment.url,
         userId: attachment.userId,
-        email: attachment.email
+        email: attachment.email,
+        amazonKeyPath: attachment.amazonKeyPath,
+        annotationId: attachment.annotation.id
   	  };
   	  if( attachment.location )
   	  {

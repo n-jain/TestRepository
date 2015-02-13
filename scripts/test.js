@@ -123,6 +123,8 @@ angular.module('test', ['bluvueSheet'])
 
             $scope.userId = "guid";
 
+            $scope.email = $scope.userId + "@bluvuesheets.com";
+
             $scope.isAdmin = true;
 
             $scope.closeSheet = function() {
