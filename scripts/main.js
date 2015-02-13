@@ -663,7 +663,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   var mgr = scope.currentSheet.tileView.annotationManager;
                   var annotation = mgr.getSelectedAnnotation()[0];
 
-                  scope.fileChooser.chooseImage( function attachmentAdded( fileInfo ) {
+                  scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
 
                     mgr.addAttachment( annotation, {
                       createdDate: $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' ),

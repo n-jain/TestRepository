@@ -696,17 +696,16 @@ BluVueSheet.Dialog = function() {
 BluVueSheet.FileChooser = function( scope ) {
   var fileChooser = this;
 
-  console.log( "Initializing FilePicker.io", scope.filepickerApiKey, scope.attachmentsBucketName );
   filepicker.setKey( scope.filepickerApiKey );
 
-  var createPickerOptions = function createPickerOptions( extensions ) {
+  var createPickerOptions = function createPickerOptions( mimetypes ) {
     var options = {
       multiple: true,
       services: ['COMPUTER', 'BOX', 'DROPBOX', 'FTP', 'GOOGLE_DRIVE', 'SKYDRIVE', 'WEBDAV', 'GMAIL']
     };
 
-    if( extensions )
-      options.extensions = extensions;
+    if( mimetypes )
+      options.mimetypes = mimetypes;
 
     return options;
   };
@@ -741,17 +740,9 @@ BluVueSheet.FileChooser = function( scope ) {
     };
   }
 
-  var typeMap = {
-    document: ['.pdf'],
-    image: [ '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.tif', '.tiff' ]
-  }
-
-  this.chooseDocument = function chooseDocument( onSuccess, onError ) {
-    this.openFileChooser( typeMap.document, onSuccess, onError );
-  }
-
-  this.chooseImage = function chooseImage( onSuccess, onError ) {
-    this.openFileChooser( typeMap.image, onSuccess, onError );
+  this.chooseAttachment = function chooseAttachment( onSuccess, onError ) {
+    var mimeTypes = Object.keys( BluVueSheet.Constants.MIME );
+    this.openFileChooser( mimeTypes, onSuccess, onError );
   }
 
   this.openFileChooser = function openFileChooser( fileTypes, onSuccess, onError ) {
