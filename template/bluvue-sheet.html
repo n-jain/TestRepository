@@ -31,9 +31,9 @@
 	<div class="blubue-attachments-panel">
 		<div id="close-attachments-panel" ng-click="hideAttachmentsPanel()"></div>
 		<div class="attachments-panel-title">Attachments</div>
-		<ul id="attachments-panel-filter">
-			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected')">Selected (<span>4</span>)</li>
-			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all')">View All (<span>13</span>)</li>
+		<ul id="attachments-panel-filter" ng-hide="isHideAttachmentsPanelFilterControls" class="ng-hide">
+			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected', true)">Selected (<span>4</span>)</li>
+			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all', true)">View All (<span>13</span>)</li>
 		</ul>
 		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls" class="ng-hide">
 			<li id="attachments-panel-control-add" ng-click="addAttachmentAction()">Add</li>

@@ -524,6 +524,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.showAttachmentsPanel = function(need_apply) {
 	                need_apply = need_apply || false;
 
+	                if(!need_apply) {
+		                scope.changeFilterAttachmentPanel('all');
+	                }
+
 	                scope.generateAttachmentFilesList(need_apply);
 
 	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
@@ -533,7 +537,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                attachment_icon.addClass('another-status');
                 }
 
-                scope.generateAttachmentFilesList = function(need_apply) {
+                scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
+	                required_show_filters = required_show_filters || false;
+
 	                var mgr = scope.currentSheet.tileView.annotationManager,
 		                att_all = mgr.getAttachments(false),
 		                att_sel = mgr.getAttachments(true),
@@ -543,10 +549,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                el_count_selected.text(att_sel.length);
 	                el_count_all.text(att_all.length);
 
-	                scope.editModeAttachmentsAction('hide');
+	                scope.editModeAttachmentsAction('hide-all');
 
 	                if('all' == scope.activeFilterAttachmentPanel()) {
 		                scope.attachmentFiles = att_all;
+
+		                if(required_show_filters) {
+			                scope.editModeAttachmentsAction('hide');
+		                }
+
 	                } else {
 		                scope.attachmentFiles = att_sel;
 
@@ -623,7 +634,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                attachment_icon.removeClass('another-status');
                 }
 
-                scope.changeFilterAttachmentPanel = function(filter) {
+                scope.changeFilterAttachmentPanel = function(filter, need_apply) {
 	                var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
 	                var all = angular.element(document.querySelector('#attachments-panel-filter-all'));
 	                if('all' == filter) {
@@ -634,7 +645,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                all.removeClass('active');
 	                }
 
-	                scope.generateAttachmentFilesList();
+	                scope.generateAttachmentFilesList(false, true);
                 };
 
                 scope.activeFilterAttachmentPanel = function() {
@@ -647,15 +658,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 										case 'open':
 											scope.isHideAttachmentsPanelCancelControls = false;
 											scope.isHideAttachmentsPanelControls = true;
+											scope.isHideAttachmentsPanelFilterControls = false;
 											break;
 										case 'close':
 											scope.isHideAttachmentsPanelCancelControls = true;
 											scope.isHideAttachmentsPanelControls = false;
+											scope.isHideAttachmentsPanelFilterControls = false;
 											break;
 										case 'hide':
 											scope.isHideAttachmentsPanelCancelControls = true;
 											scope.isHideAttachmentsPanelControls = true;
+											scope.isHideAttachmentsPanelFilterControls = false;
 											break;
+										case 'hide-all':
+											scope.isHideAttachmentsPanelCancelControls = true;
+											scope.isHideAttachmentsPanelControls = true;
+											scope.isHideAttachmentsPanelFilterControls = true;
 									}
 	              };
 
