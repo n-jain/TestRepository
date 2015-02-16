@@ -885,7 +885,9 @@ select.bluvue-annotation-unit-edit {
 }
 
 .attachment-file-info-date {
-    font-size: 14px;
+    font-family: "helvetica neue", helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 12px;
     float: left;
     text-align: right;
     width: 50%;
