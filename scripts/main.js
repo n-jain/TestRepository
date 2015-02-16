@@ -740,8 +740,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            angular.element(document.querySelector('#viewer-audio')).empty().append('<source src="' + url + '">');
 				            break;
 		            }
-
-		            console.log(url)
 	            };
 
 	            scope.hideViewer = function(url) {
