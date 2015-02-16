@@ -726,7 +726,8 @@ select.bluvue-annotation-unit-edit {
     top: 60px;
 }
 
-.blubue-attachments-panel-holder {
+.blubue-attachments-panel-holder,
+.bluvue-viewer-panel-holder {
     display: none;
     position: absolute;
     top: 0;
@@ -737,6 +738,10 @@ select.bluvue-annotation-unit-edit {
     right: 0;
     background: rgba(64,64,64,0.5);
     z-index: 1000;
+}
+
+.bluvue-viewer-panel-holder {
+    display: block;
 }
 
 .blubue-attachments-panel {
@@ -759,7 +764,7 @@ select.bluvue-annotation-unit-edit {
     left: 0;
 }
 
-#close-attachments-panel {
+#close-attachments-panel{
     background: url(images/update/icon-close.png) no-repeat center/16px;
     cursor: pointer;
     float: right;
@@ -915,4 +920,74 @@ select.bluvue-annotation-unit-edit {
     margin-top: 30px;
     text-align: center;
     width: 100%;
+}
+
+.bluvue-viewer-panel-title {
+    background: #000;
+    position: absolute;
+    height: 46px;
+    left: 0;
+    top: 46px;
+    padding: 4px 20px;
+    z-index: 1001;
+    width: calc(100% - 40px);
+}
+
+.bluvue-viewer-panel-title .attachment-icon {
+    background-position: left center;
+    height: 44px;
+    min-width: 50px;
+    width: 3%;
+}
+
+.bluvue-viewer-filename {
+    color: #fff;
+    font-family: "helvetica neue", helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 46px;
+    width: 50%;
+}
+
+#bluvue-viewer-close {
+    background: url(images/update/icon-close.png) no-repeat center/16px;
+    cursor: pointer;
+    float: right;
+    margin: 12px 0 0 0;
+    height: 24px;
+    width: 24px;
+}
+
+.bluvue-viewer-panel-title > div {
+    float: left;
+}
+
+.bluvue-viewer-panel-content {
+    background: #fff;
+    left: 50%;
+    position: absolute;
+    top: calc(100px + 4%);
+    height: calc(98% - 204px);
+    margin-left: -48%;
+    padding: 2%;
+    text-align: center;
+    width: 92%;
+    z-index: 1001;
+}
+
+.bluvue-viewer-panel-content-inline {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.bluvue-viewer-panel-content-inline img,
+.bluvue-viewer-panel-content-inline video {
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
 }

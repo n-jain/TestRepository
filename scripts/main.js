@@ -719,6 +719,36 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, url, 'width=500,height=500');
 	            };
 
+	            scope.openInViewer = function(url, type, name) {
+		            scope.hideAttachmentsPanel();
+		            scope.isShowViewerPlaceholder = true;
+
+		            scope.viewerData = {
+			            icon: type,
+			            url: url,
+			            filename: name
+		            };
+
+		            switch(type) {
+			            case 'photo':
+				            angular.element(document.querySelector('#viewer-photo')).attr('src', url);
+				            break;
+			            case 'video':
+			              angular.element(document.querySelector('#viewer-video')).empty().append('<source src="' + url + '">');
+				            break;
+			            case 'audio':
+				            angular.element(document.querySelector('#viewer-audio')).empty().append('<source src="' + url + '">');
+				            break;
+		            }
+
+		            console.log(url)
+	            };
+
+	            scope.hideViewer = function(url) {
+		            scope.showAttachmentsPanel();
+		            scope.isShowViewerPlaceholder = false;
+	            };
+
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
 
                 scope.generateUUID = function generateUUID() {

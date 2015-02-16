@@ -47,7 +47,7 @@
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
-						<div class="attachment-file-name" ng-click="openInPopup(fileItem.url)">{{ fileItem.name }}</div>
+						<div class="attachment-file-name" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">{{ fileItem.name }}</div>
 						<div class="attachment-file-remove" ng-click="removeAttachment(fileItem.id)" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide"></div>
 					</div>
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
@@ -60,6 +60,20 @@
 		</ul>
 	</div>
 	<div class="blubue-attachments-panel-holder" ng-click="hideAttachmentsPanel()"></div>
+
+	<div class="bluvue-viewer-panel-title ng-show" ng-show="isShowViewerPlaceholder">
+		<div class="attachment-icon attachment-icon-{{ viewerData.icon }}"></div>
+		<div class="bluvue-viewer-filename">{{ viewerData.filename }}</div>
+		<div id="bluvue-viewer-close" ng-click="hideViewer()"></div>
+	</div>
+	<div class="bluvue-viewer-panel-content ng-show" ng-show="isShowViewerPlaceholder">
+		<div class="bluvue-viewer-panel-content-inline">
+			<img ng-show="viewerData.icon == 'photo'" id="viewer-photo">
+			<video ng-show="viewerData.icon == 'video'" controls="controls" id="viewer-video"></video>
+			<audio ng-show="viewerData.icon == 'audio'" controls="controls" id="viewer-audio"></audio>
+		</div>
+	</div>
+	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
 
 
     <div class="bluvue-sheet-tool-menu">
