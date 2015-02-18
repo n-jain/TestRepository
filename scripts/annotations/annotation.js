@@ -184,27 +184,44 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
         break;
 
 			default:
-        var bestIndex = 0;
-        var bestAngle;
-        var perfectAngle = (this.tileView.getRotation()+30) * Math.PI / 180;
-        for( var i in this.points )
-        {
-          var ix = (isFlipped ? this.points[i].y-y : this.points[i].x-x);
-          var iy = (isFlipped ? this.points[i].y-y : this.points[i].x-x);
+				var max_x = this.points[0].x,
+						min_x = this.points[0].x,
+						max_y = this.points[0].y,
+						min_y = this.points[0].y,
+						dx = 0,
+						dy = 0;
 
-          var angle = Math.abs( perfectAngle - Math.atan2( ix, iy ) );
-          if( !bestAngle || ( angle > bestAngle ) )
-          {
-            bestAngle = angle;
-            bestIndex = i;
-          }
-        }
+				for(var i in this.points) {
+					if(!this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y <= min_y) {
+						max_x = this.points[i].x;
+						min_y = this.points[i].y;
+						dx = this.points[i].x - x;
+						dy = this.points[i].y - y;
+					}
 
-        var dx = (isFlipped ? this.points[bestIndex].y-y : this.points[bestIndex].x-x) + 300 * scale;
-        var dy = (isFlipped ? this.points[bestIndex].x-x : this.points[bestIndex].y-y) - 700 * scale;
+					if(90 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y <= min_y) {
+						min_x = this.points[i].x;
+						min_y = this.points[i].y;
+						dx = y - this.points[i].y;
+						dy = this.points[i].x - x;
+					}
 
-        context.translate( dx, dy );
-        break;
+					if(180 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y >= max_y) {
+						min_x = this.points[i].x;
+						max_y = this.points[i].y;
+						dx = x - this.points[i].x;
+						dy = y - this.points[i].y;
+					}
+
+					if(270 == this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y >= max_y) {
+						max_x = this.points[i].x;
+						max_y = this.points[i].y;
+						dx = this.points[i].y - y;
+						dy = x - this.points[i].x;
+					}
+				}
+
+				context.translate(dx + 300 * scale, dy - 700 * scale);
     }
 
 		context.strokeStyle="#e52b2e";
