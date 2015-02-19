@@ -29,7 +29,9 @@
     this.loadSheet = function (sheet, scope, elem) {
         this.sheetId = sheet.sheetId;
         this.projectId = sheet.projectId;
-        
+        this.name = sheet.name;
+        this.notes = sheet.notes;
+
         //make on screen controls
         this.userInterface = document.createElement("div");
 

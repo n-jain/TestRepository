@@ -5,6 +5,7 @@ angular.module('test', ['bluvueSheet'])
 
             var sheets = [{
                 name: 'Sheet 1!',
+                notes: 'Bacon ipsum dolor amet sunt anim chuck in ham hock pastrami. Shank fugiat hamburger meatball. Corned beef nostrud kevin non pork chop capicola beef ribs pastrami.',
                 versionName: 'Latest s1',
                 slicesUrl: "sheet/slices.zip",
                 previewUrl: "sheet/preview.png",
@@ -59,6 +60,7 @@ angular.module('test', ['bluvueSheet'])
             },
             {
                 name: 'Sheet 2!',
+                notes: null,
                 versionName: 'Latest s2',
                 slicesUrl: "sheet2/slices.zip",
                 previewUrl: "sheet2/preview.png",
@@ -70,6 +72,7 @@ angular.module('test', ['bluvueSheet'])
             },
             {
                 name: 'Sheet 3!',
+                notes: null,
                 versionName: 'Latest s3',
                 slicesUrl: "sheet3/slices.zip",
                 previewUrl: "sheet3/preview.png",
@@ -85,16 +88,19 @@ angular.module('test', ['bluvueSheet'])
                 return [
                     {
                         name: sheets[0].name,
+                        notes: "Bacon ipsum dolor amet sunt anim chuck in ham hock pastrami.",
                         versionName: 'Latest s1',
                         id: sheets[0].id
                     },
                     {
                         name: 'Revision 1',
+                        notes: "Shank fugiat hamburger meatball. Corned beef nostrud kevin non pork chop capicola beef ribs pastrami.",
                         versionName: 'History r1',
                         id: "sheet001-r1"
                     },
                     {
                         name: 'Revision 2',
+                        notes: "Corned beef nostrud kevin non pork chop capicola beef ribs pastrami.",
                         versionName: 'History r2',
                         id: "sheet001-r2"
                     }
@@ -136,6 +142,7 @@ angular.module('test', ['bluvueSheet'])
                 if (s === null) { return; }
                 // this is only for testing ... i know it's just setting it's own name
                 s.name = sheet.name;
+                s.notes = sheet.notes;
             }
 
             $scope.getSheetById = function(sheetId) {
