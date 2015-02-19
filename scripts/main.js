@@ -779,7 +779,57 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              }
 
 	            scope.notesDialog = function() {
-		            console.log('open notes dialog');
+		            var dialog = new BluVueSheet.Dialog();
+		            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+		            if(scope.sheet.notes == null) {
+			            scope.notesEditDialog();
+			            return;
+		            }
+
+		            dialog.showConfirmDialog( {
+			            title: 'Notes',
+			            message: '',
+			            bodyElement: '<div class="notes-body">' + scope.sheet.notes + '</div>',
+			            cancelLabel:'Close',
+			            okLabel:'Edit',
+			            okAction: function () {
+				            scope.$apply(function () {
+					            scope.notesEditDialog();
+				            });
+			            }
+		            });
+	            }
+
+	            scope.notesEditDialog = function() {
+		            var dialog = new BluVueSheet.Dialog();
+		            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+		            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
+
+		            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
+
+		            holder.append( editor );
+		            // Allow user to click input field
+		            editor.on( 'click', function(e){ e.stopPropagation(); } );
+		            dialog.showConfirmDialog( {
+			            title: 'Notes',
+			            message: '',
+			            bodyElement: editor,
+			            okLabel:'Save',
+			            okAction: function () {
+				            scope.$apply(function() {
+					            var notes = document.getElementById('notes-editor').value;
+
+					            if(!notes.length) {
+						            notes = null;
+					            }
+					            console.log(notes);
+
+					            scope.sheet.notes = notes;
+					            scope.saveSheet(scope.sheet);
+				            });
+			            }
+		            });
 	            }
 
                // Force initial sync to occur at link time

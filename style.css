@@ -1005,3 +1005,13 @@ select.bluvue-annotation-unit-edit {
     height: 32px;
     width: 60px;
 }
+
+.notes-body {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.notes-editor {
+    height: 120px;
+    width: 100%;
+}
