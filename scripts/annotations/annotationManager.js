@@ -737,17 +737,43 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    }
 	  });
 	}
+
+	/**
+	 * Clones the given annotation, making sure that ID and user fields are
+	 * reset appropriately
+	 **/
+	this.cloneAnnotation = function( annotation ) {
+
+	  var clone = loadAnnotationJSON( JSON.parse( JSON.stringify( annotation.toSerializable() ) ), tileView );
+		clone.id = scope.generateUUID();
+		clone.added = true;
+		clone.userId = scope.userId;
+
+		clone.attachments = clone.attachments || {};
+		for( var i=0; i<clone.attachments.length; i++ )
+		{
+		  var attachment = clone.attachments[i];
+		  attachment.id = scope.generateUUID();
+		  attachment.annotationId = clone.id;
+		  attachment.annotation = clone;
+		  attachment.createdDate = scope.generateTimestamp();
+		  attachment.userId = scope.userId;
+		  attachment.email = scope.email;
+		}
+
+		return clone;
+	}
+
 	this.copySelectedAnnotations = function(){
 		var copies = new Array();
-		for(var i=0; i<selectedAnnotations.length; i++){
-			copies[i] = loadAnnotationJSON(JSON.parse(JSON.stringify(new AnnotationJSON(selectedAnnotations[i]))), tileView);
-			copies[i].id = createUUID();
-			copies[i].added = true;
-			copies[i].offset_x = -25/tileView.scale;
-			copies[i].offset_y = -25/tileView.scale;
-            copies[i].userId = scope.userId;
-			copies[i].applyOffset();
-            scope.scheduleAnnotationSync( [copies[i]], null, null, false );
+		for(var i=0; i<selectedAnnotations.length; i++) {
+      copies[i] = this.cloneAnnotation( selectedAnnotations[i] );
+
+      copies[i].offset_x = -25/tileView.scale;
+      copies[i].offset_y = -25/tileView.scale;
+      copies[i].applyOffset();
+
+      scope.scheduleAnnotationSync( [copies[i]], null, null, false );
 			annotations[annotations.length] = copies[i];
 		}
 		this.setSelectedAnnotations( copies );

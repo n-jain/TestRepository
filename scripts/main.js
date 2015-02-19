@@ -77,7 +77,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 angular.element($window).on( 'unload', windowCloseObserver );
 
                 scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
-                
+
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -684,7 +684,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
 
                     mgr.addAttachment( annotation, {
-                      createdDate: $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' ),
+                      createdDate: scope.generateTimestamp(),
                       id: scope.generateUUID(),
                       name: fileInfo.filename,
                       mimeType: fileInfo.mimetype,
@@ -757,6 +757,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       return (c=='x' ? r : (r&0x3|0x8)).toString(16);
                   });
                   return uuid.replace( /-/g, '' );
+                };
+
+                scope.generateTimestamp = function generateTimestamp() {
+                  return $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' );
                 };
 
                // Force initial sync to occur at link time
