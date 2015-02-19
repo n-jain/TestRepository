@@ -23,7 +23,7 @@
 
 
     <div class="bluvue-sheet-more-menu">
-        <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" id="{{ menuItem.idAttr }}" ng-click="moreMenuItemClicked(menuItem)">
+        <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" id="{{ menuItem.idAttr }}" ng-click="moreMenuItemClicked(menuItem)" ng-if="checkMenuItemShowCondition(menuItem)">
             <img ng-src="{{ menuItem.imageURL }}"> <span>{{ menuItem.text }}</span>
         </div>
     </div>

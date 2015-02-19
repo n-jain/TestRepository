@@ -764,6 +764,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   return $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' );
                 };
 
+	              scope.checkMenuItemShowCondition = function(menuItem) {
+		                switch(menuItem.func) {
+			                case 'notesDialog':
+												return scope.canEditNotes || null != scope.sheet.notes;
+				                break;
+		                }
+
+		              return true;
+	              };
+
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
 
