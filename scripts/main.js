@@ -21,7 +21,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 openSheetById: "=",
                 saveSheet: "=",
                 filepickerApiKey: "=",
-                attachmentsBucketName: "="
+                attachmentsBucketName: "=",
+	              canEditNotes: "="
             },
             restrict: "E",
             replace: true,

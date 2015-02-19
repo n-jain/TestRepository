@@ -133,6 +133,8 @@ angular.module('test', ['bluvueSheet'])
 
             $scope.isAdmin = true;
 
+	          $scope.canEditNotes = true;
+
             $scope.closeSheet = function() {
                 console.log("close sheet");
             };
