@@ -21,6 +21,8 @@
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
     </div>
 
+	<div id="notes-floating-indicator" ng-show="sheetHasNotes()" ng-click="notesDialog()">Sheet has notes</div>
+
 
     <div class="bluvue-sheet-more-menu">
         <div ng-repeat="menuItem in toolMoreMenu | orderObjectBy:'id'" id="{{ menuItem.idAttr }}" ng-click="moreMenuItemClicked(menuItem)" ng-if="checkMenuItemShowCondition(menuItem)">

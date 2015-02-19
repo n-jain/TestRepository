@@ -767,12 +767,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.checkMenuItemShowCondition = function(menuItem) {
 		                switch(menuItem.func) {
 			                case 'notesDialog':
-												return scope.canEditNotes || null != scope.sheet.notes;
+												return scope.canEditNotes || scope.sheetHasNotes();
 				                break;
 		                }
 
 		              return true;
 	              };
+
+	              scope.sheetHasNotes = function() {
+		              return null != scope.sheet.notes;
+	              }
+
+	            scope.notesDialog = function() {
+		            console.log('open notes dialog');
+	            }
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
