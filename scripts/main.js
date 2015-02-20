@@ -528,7 +528,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                scope.changeFilterAttachmentPanel('all');
 	                }
 
-	                scope.generateAttachmentFilesList(need_apply);
+	                scope.generateAttachmentFilesList(need_apply, true);
 
 	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
@@ -554,7 +554,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                if('all' == scope.activeFilterAttachmentPanel()) {
 		                scope.attachmentFiles = att_all;
 
-		                if(required_show_filters) {
+		                if(required_show_filters && mgr.getSelectedAnnotation().length) {
 			                scope.editModeAttachmentsAction('hide');
 		                }
 
