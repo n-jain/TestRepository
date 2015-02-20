@@ -521,10 +521,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     }
                   });
                 };
-                scope.showAttachmentsPanel = function(need_apply) {
+                scope.showAttachmentsPanel = function(need_apply, dont_change_filter) {
 	                need_apply = need_apply || false;
+	                dont_change_filter = dont_change_filter || false;
 
-	                if(!need_apply) {
+	                if(!need_apply && !dont_change_filter) {
 		                scope.changeFilterAttachmentPanel('all');
 	                }
 
@@ -729,21 +730,42 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            filename: name
 		            };
 
+		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
+
 		            switch(type) {
 			            case 'photo':
-				            angular.element(document.querySelector('#viewer-photo')).attr('src', url);
+				            var image = document.getElementById('viewer-photo');
+				            image.src =  url;
+				            image.style.display = 'none';
+				            image.onload = function () {
+					            image.style.display = 'block';
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+						            left: 'calc(50% - ' +  panel_inline.clientWidth + 'px/2)',
+						            top: 'calc(50% - ' +  panel_inline.clientHeight + 'px/2)'
+					            });
+				            };
+
 				            break;
 			            case 'video':
-			              angular.element(document.querySelector('#viewer-video')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('#viewer-video')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+					            left: 'calc(50% - 240px)',
+					            top: 'calc(50% - 135px)'
+				            });
 				            break;
 			            case 'audio':
 				            angular.element(document.querySelector('#viewer-audio')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+					            left: 'calc(50% - 150px)',
+					            top: 'calc(50% - 15px)'
+				            });
 				            break;
 		            }
+
 	            };
 
-	            scope.hideViewer = function(url) {
-		            scope.showAttachmentsPanel();
+	            scope.hideViewer = function() {
+		            scope.showAttachmentsPanel(false, true);
 		            scope.isShowViewerPlaceholder = false;
 	            };
 

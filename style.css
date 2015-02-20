@@ -760,6 +760,17 @@ select.bluvue-annotation-unit-edit {
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }
 
+#viewer-video {
+    height: 270px;
+    width: 480px;
+}
+
+#viewer-audio {
+    height: 30px;
+    width: 300px;
+}
+
+
 .blubue-attachments-panel-open {
     left: 0;
 }
@@ -963,24 +974,13 @@ select.bluvue-annotation-unit-edit {
 }
 
 .bluvue-viewer-panel-content {
-    background: #fff;
-    left: 50%;
+    display: inline-block;
     position: absolute;
-    top: calc(100px + 4%);
-    height: calc(98% - 204px);
-    margin-left: -48%;
-    padding: 2%;
-    text-align: center;
-    width: 92%;
     z-index: 1001;
 }
 
 .bluvue-viewer-panel-content-inline {
     position: relative;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
     max-width: 100%;
     max-height: 100%;
 }
