@@ -715,7 +715,7 @@ BluVueSheet.FileChooser = function( scope ) {
     115: "File not found",
     118: "General read error",
     151: "The file store couldn't be reached",
-    default: "Could not save file."
+    "default": "Could not save file."
   };
 
   var getExtension = function getExtension( filename, mimeType )
