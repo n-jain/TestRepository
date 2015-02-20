@@ -143,11 +143,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	}
 
 	this.drawAttachments = function(context) {
-		var x, y, scale = tileView.scale;
-
-		if(scale > 0.125) {
-			scale = 0.125;
-		}
+		var x, y;
 
 		if(!this.added) {
 			return;
@@ -166,6 +162,14 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
     var width = isFlipped ? this.bounds.height() : this.bounds.width();
     var height = isFlipped ? this.bounds.width() : this.bounds.height();
+
+
+		// Calculate attachment icon zoom
+		var canvas_size = document.getElementsByTagName('canvas')[0],
+				sheetMinCoord = isFlipped ? tileView.sheetCoordinatesFromScreenCoordinates(0, 0).y : tileView.sheetCoordinatesFromScreenCoordinates(0, 0).x,
+				sheetMaxCoord = isFlipped ? tileView.sheetCoordinatesFromScreenCoordinates(canvas_size.width, 0).y : tileView.sheetCoordinatesFromScreenCoordinates(canvas_size.width, 0).x;
+
+		var scale = (sheetMaxCoord + sheetMinCoord) / 90000;
 
 		switch(this.type) {
       case SQUARE_ANNOTATION:
