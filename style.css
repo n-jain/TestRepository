@@ -834,8 +834,12 @@ select.bluvue-annotation-unit-edit {
 #attachments-panel-files {
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(100% - 153px);
+    height: calc(100% - 229px);
     margin-top: 20px;
+}
+
+#attachments-panel-files.large-attachment-panel {
+    height: calc(100% - 153px);
 }
 
 #attachments-panel-files li {
