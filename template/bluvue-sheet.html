@@ -45,11 +45,11 @@
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
 		<ul id="attachments-panel-files">
-			<li ng-repeat="fileItem in attachmentFiles">
+			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
-						<div class="attachment-file-name" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">{{ fileItem.name }}</div>
+						<div class="attachment-file-name">{{ fileItem.name }}</div>
 						<div class="attachment-file-remove" ng-click="removeAttachment(fileItem.id)" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide"></div>
 					</div>
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>

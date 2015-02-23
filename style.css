@@ -840,7 +840,7 @@ select.bluvue-annotation-unit-edit {
 
 #attachments-panel-files li {
     border-bottom: 2px solid #323232;
-    cursor: default;
+    cursor: pointer;
     padding: 20px 10%;
     overflow: hidden;
 }
@@ -880,7 +880,6 @@ select.bluvue-annotation-unit-edit {
 }
 
 .attachment-file-name {
-    cursor: pointer;
     font-size: 18px;
     float: left;
 }
