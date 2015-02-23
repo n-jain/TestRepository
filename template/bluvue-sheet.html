@@ -15,7 +15,7 @@
     <button ng-click="selectPreviousSheet()" id="previous-sheet-arrow">< Previous</button>
     <button ng-click="selectNextSheet()" id="next-sheet-arrow">Next ></button>
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
-	<button ng-click="showAttachmentsPanel()" id="attachments-button">Attachments</button>
+	<button ng-click="showAttachmentsPanel()" id="attachments-button" class="ng-show"  ng-show="isShowAttachmentsButton">Attachments</button>
 
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
@@ -32,8 +32,8 @@
 		<div id="close-attachments-panel" ng-click="hideAttachmentsPanel()"></div>
 		<div class="attachments-panel-title">Attachments</div>
 		<ul id="attachments-panel-filter" ng-hide="isHideAttachmentsPanelFilterControls" class="ng-hide">
-			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected', true)">Selected (<span>4</span>)</li>
-			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all', true)">View All (<span>13</span>)</li>
+			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected', true)">Selected (<span>0</span>)</li>
+			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all', true)">View All (<span>0</span>)</li>
 		</ul>
 		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls" class="ng-hide">
 			<li id="attachments-panel-control-add" ng-click="addAttachmentAction()">Add</li>
