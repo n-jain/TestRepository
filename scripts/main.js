@@ -782,7 +782,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.generateTimestamp = function generateTimestamp() {
-                  return $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' );
+                  return $filter('date')( new Date(), 'MM/dd/yyyy h:mma' );
                 };
 
                // Force initial sync to occur at link time
