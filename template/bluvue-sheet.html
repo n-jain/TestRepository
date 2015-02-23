@@ -42,7 +42,7 @@
 		<ul id="attachments-panel-controls-cancel" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide">
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
-		<ul id="attachments-panel-files">
+		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls ? 'large-attachment-panel' : '' }}">
 			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
