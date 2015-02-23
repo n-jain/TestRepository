@@ -842,6 +842,10 @@ select.bluvue-annotation-unit-edit {
     height: calc(100% - 153px);
 }
 
+#attachments-panel-files.full-large-attachment-panel {
+    height: calc(100% - 98px);
+}
+
 #attachments-panel-files li {
     border-bottom: 2px solid #323232;
     cursor: pointer;
@@ -900,18 +904,14 @@ select.bluvue-annotation-unit-edit {
 .attachment-file-info-email {
     font-size: 12px;
     float: left;
-    width: 50%;
+    width: 45%;
 }
 
 .attachment-file-info-date {
-    font-family: "helvetica neue", helvetica, sans-serif;
-    font-weight: 300;
-    font-size: 12px;
     float: left;
+    font-size: 12px;
     text-align: right;
-    width: 50%;
-    width: auto;
-    height: auto;
+    width: 55%;
 }
 
 .attachment-file-remove {
