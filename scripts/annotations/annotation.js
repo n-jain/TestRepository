@@ -165,11 +165,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 
 		// Calculate attachment icon zoom
-		var canvas_size = document.getElementsByTagName('canvas')[0],
-				sheetMinCoord = isFlipped ? tileView.sheetCoordinatesFromScreenCoordinates(0, 0).y : tileView.sheetCoordinatesFromScreenCoordinates(0, 0).x,
-				sheetMaxCoord = isFlipped ? tileView.sheetCoordinatesFromScreenCoordinates(canvas_size.width, 0).y : tileView.sheetCoordinatesFromScreenCoordinates(canvas_size.width, 0).x;
-
-		var scale = (sheetMaxCoord + sheetMinCoord) / 90000;
+		var scale = 0.08;
 
 		switch(this.type) {
       case SQUARE_ANNOTATION:
