@@ -322,6 +322,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     var overlay = angular.element( document.querySelector( '.overlay' ) );
                     overlay.toggleClass( 'bluvue-replaced-revision', scope.isReplacement() );
+
+	                  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
                 });
 
                 scope.$on('$destroy', function () {
@@ -468,6 +470,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                   if( forceSync )
                     scope.doAnnotationSync();
+
+	                if(undefined != scope.currentSheet) {
+		                scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
+	                }
                 };
 
                 scope.syncBuffer = { modifiedAnnotations: {}, deletedAnnotationIds: [], finallyQueue:[] };
@@ -714,7 +720,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            } else {
 			            scope.editModeAttachmentsAction('close');
 		            }
-
 	            };
 
 	            scope.openInPopup = function(url) {
