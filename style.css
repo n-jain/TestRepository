@@ -749,7 +749,7 @@ select.bluvue-annotation-unit-edit {
     color: #fff;
     font-family: Verdana;
     position: fixed;
-    left: -30%;
+    left: -400px;
     height: calc(100% - 46px);
     margin-top: 46px;
     width: 400px;
@@ -991,18 +991,33 @@ select.bluvue-annotation-unit-edit {
     max-width: 100%;
 }
 
+#floating-indicators-panel {
+    font-size: 12px;
+    text-align: center;
+    position: absolute;
+    top: 50px;
+    right: 12px;
+}
+
+#floating-indicators-panel > div {
+    cursor: pointer;
+    margin-top: 10px;
+    height: 40px;
+    width: 40px;
+}
+
 #notes-floating-indicator {
     background: #ccc;
     border-radius: 5px;
     cursor: pointer;
     font-family: "helvetica neue", helvetica, sans-serif;
     font-size: 12px;
-    text-align: center;
-    position: absolute;
-    top: 60px;
-    right: 60px;
-    height: 32px;
+    height: 50px!important;
     width: 60px;
+}
+
+#revisions-floating-indicator {
+    background: url(images/update/icon-revisions.png) no-repeat;
 }
 
 .notes-body {
@@ -1013,4 +1028,15 @@ select.bluvue-annotation-unit-edit {
 .notes-editor {
     height: 120px;
     width: 100%;
+}
+
+.fullscreen-mode #floating-indicators-panel {
+    right: 10px;
+    top: 36px;
+}
+
+.fullscreen-mode #floating-indicators-panel > div {
+    background-size: cover;
+    height: 25px;
+    width: 25px;
 }

@@ -212,6 +212,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "none";
                         document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "none";
 
+	                      angular.element(document.querySelector('body')).addClass('fullscreen-mode');
+
                         scope.moreMenuToggle(true);
                     } else {
                         if (document.exitFullscreen) {
@@ -227,6 +229,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         document.getElementById("fullscreen_floating_block").style.display = "none";
                         document.getElementsByClassName("bluvue-sheet-header")[0].style.display = "block";
                         document.getElementsByClassName("bluvue-sheet-tool-menu")[0].style.display = "block";
+
+	                      angular.element(document.querySelector('body')).removeClass('fullscreen-mode');
                     }
                 };
 
@@ -805,59 +809,63 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		              return null != scope.sheet.notes;
 	              }
 
-	            scope.notesDialog = function() {
-		            var dialog = new BluVueSheet.Dialog();
-		            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
-
-		            if(scope.sheet.notes == null) {
-			            scope.notesEditDialog();
-			            return;
+		            scope.sheetHasRevisions = function() {
+			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
 		            }
 
-		            dialog.showConfirmDialog( {
-			            title: 'Notes',
-			            message: '',
-			            bodyElement: '<div class="notes-body">' + scope.sheet.notes + '</div>',
-			            cancelLabel:'Close',
-			            okLabel:'Edit',
-			            okAction: function () {
-				            scope.$apply(function () {
-					            scope.notesEditDialog();
-				            });
+	              scope.notesDialog = function() {
+			            var dialog = new BluVueSheet.Dialog();
+			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+			            if(scope.sheet.notes == null) {
+				            scope.notesEditDialog();
+				            return;
 			            }
-		            });
-	            }
 
-	            scope.notesEditDialog = function() {
-		            var dialog = new BluVueSheet.Dialog();
-		            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
-		            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
+			            dialog.showConfirmDialog( {
+				            title: 'Notes',
+				            message: '',
+				            bodyElement: '<div class="notes-body">' + scope.sheet.notes + '</div>',
+				            cancelLabel:'Close',
+				            okLabel:'Edit',
+				            okAction: function () {
+					            scope.$apply(function () {
+						            scope.notesEditDialog();
+					            });
+				            }
+			            });
+		            }
 
-		            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
+		            scope.notesEditDialog = function() {
+			            var dialog = new BluVueSheet.Dialog();
+			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
 
-		            holder.append( editor );
-		            // Allow user to click input field
-		            editor.on( 'click', function(e){ e.stopPropagation(); } );
-		            dialog.showConfirmDialog( {
-			            title: 'Notes',
-			            message: '',
-			            bodyElement: editor,
-			            okLabel:'Save',
-			            okAction: function () {
-				            scope.$apply(function() {
-					            var notes = document.getElementById('notes-editor').value;
+			            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
 
-					            if(!notes.length) {
-						            notes = null;
-					            }
-					            console.log(notes);
+			            holder.append( editor );
+			            // Allow user to click input field
+			            editor.on( 'click', function(e){ e.stopPropagation(); } );
+			            dialog.showConfirmDialog( {
+				            title: 'Notes',
+				            message: '',
+				            bodyElement: editor,
+				            okLabel:'Save',
+				            okAction: function () {
+					            scope.$apply(function() {
+						            var notes = document.getElementById('notes-editor').value;
 
-					            scope.sheet.notes = notes;
-					            scope.saveSheet(scope.sheet);
-				            });
-			            }
-		            });
-	            }
+						            if(!notes.length) {
+							            notes = null;
+						            }
+						            console.log(notes);
+
+						            scope.sheet.notes = notes;
+						            scope.saveSheet(scope.sheet);
+					            });
+				            }
+			            });
+		            }
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
