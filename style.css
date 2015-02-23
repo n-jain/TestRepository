@@ -752,7 +752,7 @@ select.bluvue-annotation-unit-edit {
     left: -30%;
     height: calc(100% - 46px);
     margin-top: 46px;
-    width: 30%;
+    width: 400px;
     z-index: 1001;
 
     transition-property: all;
