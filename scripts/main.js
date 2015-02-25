@@ -798,7 +798,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.checkMenuItemShowCondition = function(menuItem) {
 		                switch(menuItem.func) {
 			                case 'notesDialog':
-												return scope.isCanEditNotes() || scope.sheetHasNotes();
+												return scope.userCanEditNotes() || scope.sheetHasNotes();
 				                break;
 		                }
 
@@ -818,7 +818,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            }
 
 	              scope.notesDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel'});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
 			            if(scope.sheet.notes == null) {
@@ -841,11 +841,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            }
 
 		            scope.notesEditDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel'});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
 
-			            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
+			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div>" );
 
 			            holder.append( editor );
 			            // Allow user to click input field
@@ -862,7 +862,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            if(!notes.length) {
 							            notes = null;
 						            }
-						            console.log(notes);
 
 						            scope.sheet.notes = notes;
 						            scope.saveSheet(scope.sheet);
