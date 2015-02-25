@@ -1005,19 +1005,20 @@ select.bluvue-annotation-unit-edit {
 
 #floating-indicators-panel > div {
     cursor: pointer;
+    display: inline-block;
     margin-top: 10px;
     height: 40px;
     width: 40px;
 }
 
 #notes-floating-indicator {
-    background: #ccc;
+    background-repeat: no-repeat;
     border-radius: 5px;
     cursor: pointer;
     font-family: "helvetica neue", helvetica, sans-serif;
     font-size: 12px;
-    height: 50px!important;
-    width: 60px;
+    height: 40px!important;
+    width: 40px;
 }
 
 #revisions-floating-indicator {
@@ -1043,4 +1044,12 @@ select.bluvue-annotation-unit-edit {
     background-size: cover;
     height: 25px;
     width: 25px;
+}
+
+.notes-on-floating-indicator {
+    background: url(images/update/icons-notes-on.png) no-repeat;
+}
+
+.notes-off-floating-indicator {
+    background: url(images/update/icons-notes-off.png) no-repeat;
 }

@@ -798,7 +798,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.checkMenuItemShowCondition = function(menuItem) {
 		                switch(menuItem.func) {
 			                case 'notesDialog':
-												return scope.canEditNotes || scope.sheetHasNotes();
+												return scope.isCanEditNotes() || scope.sheetHasNotes();
 				                break;
 		                }
 
@@ -808,6 +808,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.sheetHasNotes = function() {
 		              return null != scope.sheet.notes;
 	              }
+
+		            scope.userCanEditNotes = function() {
+			            return scope.canEditNotes;
+		            }
 
 		            scope.sheetHasRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
