@@ -542,10 +542,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                scope.generateAttachmentFilesList(need_apply, true);
 
-	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
-                  document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'block';
-                  panel.addClass('blubue-attachments-panel-open');
+                  document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
+                  panel.addClass('bluvue-attachments-panel-open');
 	                attachment_icon.addClass('another-status');
                 }
 
@@ -637,11 +637,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
 
                 scope.hideAttachmentsPanel = function() {
-	                var panel = angular.element(document.querySelector('.blubue-attachments-panel')),
+	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 
-	                document.getElementsByClassName('blubue-attachments-panel-holder')[0].style.display = 'none';
-	                panel.removeClass('blubue-attachments-panel-open');
+	                document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'none';
+	                panel.removeClass('bluvue-attachments-panel-open');
 
 	                attachment_icon.removeClass('another-status');
                 }
