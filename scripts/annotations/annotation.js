@@ -158,23 +158,16 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 	  context.translate( x, y );
 	  context.rotate( theta );
-    context.translate( -x, -y );
 
     var width = isFlipped ? this.bounds.height() : this.bounds.width();
     var height = isFlipped ? this.bounds.width() : this.bounds.height();
-
-
-		// Calculate attachment icon zoom
-		var scale = 0.08;
 
 		switch(this.type) {
       case SQUARE_ANNOTATION:
       case TEXT_ANNOTATION:
       case X_ANNOTATION:
       case CLOUD_ANNOTATION:
-        var dx = width/2 - 1300*scale;
-        var dy = -(height/2 + 650*scale);
-        context.translate( dx, dy );
+        context.translate( width/2, -height/2 );
         break;
 
       case CIRCLE_ANNOTATION:
@@ -220,21 +213,24 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 						dy = x - this.points[i].x;
 					}
 				}
-
-				context.translate(dx + 300 * scale, dy - 700 * scale);
+				context.translate(dx, dy);
     }
+
+    // Reset canvas to SCREEN coordinates instead of SHEET coordinates
+    context.scale( 1/tileView.scale, 1/tileView.scale );
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
-		this.roundRect(context, x, y, 2700 * scale, 1400 * scale, 850 * scale, true);
+		this.roundRect( context, 0, 0, 30, 16, 8.50 , true );
 
-		context.font = (60 * 15 * scale) + 'pt Helvetica';
+		context.font = (12) + 'pt Helvetica';
 		context.fillStyle="#fff";
-		context.fillText(this.attachments.length, x + 1350 * scale, y + 1100 * scale);
+		context.fillText(this.attachments.length, 16, 13 );
 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
-		context.drawImage(attach_icon, x + 250 * scale, y + 200 * scale, 1000 * scale, 1000 * scale);
+		context.drawImage( attach_icon, 0, 0, 16, 16 );
+
 		context.restore();
 	};
 
