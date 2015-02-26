@@ -1083,14 +1083,13 @@ select.bluvue-annotation-unit-edit {
 
 .fullscreen-mode #floating-indicators-panel {
     display: flex;
-    right: 10px;
-    top: 36px;
+    right: 40px;
+    top: 0px;
 }
 
 .fullscreen-mode #floating-indicators-panel > div {
     background-size: cover;
-    height: 25px;
-    width: 25px;
+    margin-right: 10px;
 }
 
 .notes-on-floating-indicator {
