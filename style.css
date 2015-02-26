@@ -469,10 +469,18 @@ footer.bluvue-sheet-footer {
     display: block;
     left: auto;
     right: 0;
-    top: 0!important;
+    top: -150%!important;
     margin-top: 0;
     height: calc(100% - 42px);
     padding: 20px 0;
+
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.bluvue-dialog-type-panel .bluvue-dialog-content-open {
+    top: 0!important;
 }
 
 .bluvue-dialog-type-panel .dialog-button-holder {

@@ -834,6 +834,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okLabel:'Edit',
 				            okAction: function () {
 					            scope.$apply(function () {
+						            dialog.destroy();
 						            scope.notesEditDialog();
 					            });
 				            }

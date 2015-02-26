@@ -678,16 +678,43 @@ BluVueSheet.Dialog = function(params) {
     holder.on( 'click', cancelAction );
     holder.css( { display: "block" } );
     window.addEventListener( 'resize', resizeListener );
+
+	  switch(params.showType) {
+		  case 'panel':
+			  setTimeout(function() {
+				  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content')).addClass('bluvue-dialog-content-open');
+			  }, 100);
+			  break;
+	  }
+
     onResize(); // Initialize the height logic
   }
 
+	this.hideHolder = function() {
+		holder.css( { display: "none" } );
+	}
+
   this.hide = function() {
-    window.removeEventListener( 'resize', resizeListener );
-    holder.css( { display: "none" } );
-    holder.off( 'click', cancelAction );
-    content.removeClass();
-    content.addClass( 'bluvue-dialog-content' );
-    content.empty();
+	  var el = this;
+	  var hideEvent = function() {
+		  window.removeEventListener( 'resize', resizeListener );
+		  holder.off( 'click', cancelAction );
+		  el.hideHolder();
+		  content.removeClass();
+		  content.addClass( 'bluvue-dialog-content' );
+		  content.empty();
+		  el.destroy();
+	  };
+
+	  switch(params.showType) {
+		  case 'panel':
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content')).removeClass('bluvue-dialog-content-open');
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel')).css({background: 'inherit'});
+			  setTimeout(function() { hideEvent(); }, 800);
+			  break;
+		  default:
+			  hideEvent();
+	  }
   }
 
   this.destroy = function() {
@@ -699,7 +726,7 @@ BluVueSheet.Dialog = function(params) {
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
 
   holder.append( content );
-  this.hide();
+  this.hideHolder();
 
   parent.append( holder );
 }
