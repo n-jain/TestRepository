@@ -570,6 +570,8 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
 
 BluVueSheet.Dialog = function(params) {
 	params = params || {};
+	params.openAnimate = params.openAnimate != undefined ? params.openAnimate : true;
+	params.hideAnimate = params.hideAnimate != undefined ? params.hideAnimate : true;
 
 	var typeClass = '';
 	switch(params.showType) {
@@ -681,9 +683,17 @@ BluVueSheet.Dialog = function(params) {
 
 	  switch(params.showType) {
 		  case 'panel':
-			  setTimeout(function() {
-				  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content')).addClass('bluvue-dialog-content-open');
-			  }, 100);
+			  if(params.openAnimate) {
+				  setTimeout(function() {
+					  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+						  .addClass('bluvue-dialog-content-open');
+				  }, 100);
+			  } else {
+				  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+					  .addClass('bluvue-dialog-content-open')
+					  .addClass('bluvue-dialog-content-no-animate');
+			  }
+
 			  break;
 	  }
 
@@ -708,9 +718,18 @@ BluVueSheet.Dialog = function(params) {
 
 	  switch(params.showType) {
 		  case 'panel':
-			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content')).removeClass('bluvue-dialog-content-open');
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+				  .removeClass('bluvue-dialog-content-open')
+				  .removeClass('bluvue-dialog-content-no-animate');
+
 			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel')).css({background: 'inherit'});
-			  setTimeout(function() { hideEvent(); }, 800);
+
+			  if(params.hideAnimate) {
+				  setTimeout(function() { hideEvent(); }, 800);
+			  } else {
+				  hideEvent();
+			  }
+
 			  break;
 		  default:
 			  hideEvent();

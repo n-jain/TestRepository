@@ -468,8 +468,8 @@ footer.bluvue-sheet-footer {
     border-radius: 0;
     display: block;
     left: auto;
-    right: 0;
-    top: -150%!important;
+    right: -400px!important;
+    top: 0!important;
     margin-top: 0;
     height: calc(100% - 42px);
     padding: 20px 0;
@@ -480,7 +480,11 @@ footer.bluvue-sheet-footer {
 }
 
 .bluvue-dialog-type-panel .bluvue-dialog-content-open {
-    top: 0!important;
+    right: 0!important;
+}
+
+.bluvue-dialog-type-panel  .bluvue-dialog-content-no-animate {
+    transition-property: none;
 }
 
 .bluvue-dialog-type-panel .dialog-button-holder {
