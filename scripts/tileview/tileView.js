@@ -27,10 +27,16 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    setLoading();
 	}
 	this.setLoaded = function () {
-        if (!this.canDraw) {
-	        this.canDraw = true;
+setTimeout( function() {
+console.log( "loaded" );
+
+        if (!t.canDraw) {
+	        t.canDraw = true;
 	        setLoaded();
         }
+
+}, 10000);
+console.log( "Deferring load" );
     }
 
 	this.create = function(sheetObj){
