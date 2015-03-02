@@ -20,10 +20,12 @@
 
     this.setLoaded = function () {
         t.userInterface.style.display = "block";
+	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'none';
     }
 
     this.setLoading = function () {
         t.userInterface.style.display = "none";
+	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'block';
     }
 
     this.loadSheet = function (sheet, scope, elem) {

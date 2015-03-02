@@ -82,6 +82,8 @@
 	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
 
 
+	<div id="bluvue-sheet-tool-menu-disabled"></div>
+
     <div class="bluvue-sheet-tool-menu">
         <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
     </div>
