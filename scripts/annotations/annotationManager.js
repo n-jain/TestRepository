@@ -1100,6 +1100,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		return selectedAnnotations;
 	}
 
+	this.getAnnotations = function getAnnotations() {
+		return annotations;
+	}
+
 	this.getAnnotation = function getAnnotation( annotationId ) {
 	  for( var i=0; i<annotations.length; i++ )
 	  {
