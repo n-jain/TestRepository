@@ -568,7 +568,16 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
     }
 }
 
-BluVueSheet.Dialog = function() {
+BluVueSheet.Dialog = function(params) {
+	params = params || {};
+
+	var typeClass = '';
+	switch(params.showType) {
+		case 'panel':
+			typeClass = 'bluvue-dialog-type-panel';
+			break;
+	}
+
   var dialog = this;
 
   var defaultHideAction = function defaultHideAction(){
@@ -625,7 +634,7 @@ BluVueSheet.Dialog = function() {
           title: options.title||"Tip",
           dialogClass: 'bluvue-tooltip',
           bodyClass: 'bluvue-dialog-tooltipBody',
-          message: options.message,
+          message: options.message
       });
   }
 
@@ -633,6 +642,8 @@ BluVueSheet.Dialog = function() {
     var bodyContent = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
     if( options.image )
       bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
+	  if('panel' == params.showType)
+		  bodyContent.append(angular.element("<div style=\"text-align: right;\"></div>").append(angular.element('<a href="#" class="dialog-close"></a>').on('click', defaultHideAction)));
     if( options.title )
       bodyContent.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
     if( options.message )
@@ -684,8 +695,9 @@ BluVueSheet.Dialog = function() {
   }
 
   var parent = angular.element( document.querySelector('.bluvue-sheet') );
-  var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
+  var holder = angular.element( '<div class="bluvue-dialog-holder ' + typeClass + '"></div>' );
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
+
   holder.append( content );
   this.hide();
 

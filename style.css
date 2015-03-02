@@ -460,6 +460,53 @@ footer.bluvue-sheet-footer {
   width: 160px;
 }
 
+.bluvue-dialog-type-panel {
+    top: 46px;
+}
+
+.bluvue-dialog-type-panel .bluvue-dialog-content {
+    border-radius: 0;
+    display: block;
+    left: auto;
+    right: 0;
+    top: 0!important;
+    margin-top: 0;
+    height: calc(100% - 42px);
+    padding: 20px 0;
+}
+
+.bluvue-dialog-type-panel .dialog-button-holder {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    width: 100%;
+    margin-left: -50%;
+}
+
+.bluvue-dialog-type-panel .dialog-title + * {
+    margin: 20px;
+    height: calc(100% - 180px);
+}
+
+.bluvue-dialog-type-panel .dialog-title {
+    border-bottom: 1px solid #c8cedc;
+    font-weight: normal;
+    padding-bottom: 12px;
+}
+
+.bluvue-dialog-type-panel .bluvue-dialog-body {
+    height: 100%;
+}
+
+.dialog-close {
+    background: url(images/update/icon-grayclose.png);
+    background-size: cover;
+    display: inline-block;
+    margin-right: 20px;
+    height: 20px;
+    width: 20px;
+}
+
 #fullscreen_floating_block {
     display: none;
     position: fixed;
@@ -1005,19 +1052,20 @@ select.bluvue-annotation-unit-edit {
 
 #floating-indicators-panel > div {
     cursor: pointer;
+    display: inline-block;
     margin-top: 10px;
     height: 40px;
     width: 40px;
 }
 
 #notes-floating-indicator {
-    background: #ccc;
+    background-repeat: no-repeat;
     border-radius: 5px;
     cursor: pointer;
     font-family: "helvetica neue", helvetica, sans-serif;
     font-size: 12px;
-    height: 50px!important;
-    width: 60px;
+    height: 40px!important;
+    width: 40px;
 }
 
 #revisions-floating-indicator {
@@ -1026,22 +1074,29 @@ select.bluvue-annotation-unit-edit {
 }
 
 .notes-body {
-    max-height: 200px;
     overflow-y: auto;
 }
 
 .notes-editor {
-    height: 120px;
-    width: 100%;
+    height: 97%;
+    width: 98%;
 }
 
 .fullscreen-mode #floating-indicators-panel {
-    right: 10px;
-    top: 36px;
+    display: flex;
+    right: 40px;
+    top: 0px;
 }
 
 .fullscreen-mode #floating-indicators-panel > div {
     background-size: cover;
-    height: 25px;
-    width: 25px;
+    margin-right: 10px;
+}
+
+.notes-on-floating-indicator {
+    background: url(images/update/icons-notes-on.png) no-repeat;
+}
+
+.notes-off-floating-indicator {
+    background: url(images/update/icons-notes-off.png) no-repeat;
 }
