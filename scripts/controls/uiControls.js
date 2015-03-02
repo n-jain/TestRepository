@@ -729,7 +729,7 @@ BluVueSheet.FileChooser = function( scope ) {
 
   var createStorageInfo = function createStorageInfo( inkBlob )
   {
-    var guid = scope.generateUUID();
+    var guid = scope.generateUUID( true );
     var amazonKeyPath = guid + "." + getExtension( inkBlob.filename );
 
     return {
