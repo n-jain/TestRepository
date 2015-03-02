@@ -446,6 +446,30 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         masterPersonalControl.append( personalButton ).append( masterButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
 
+	      var allAnnotations =  sheet.tileView.annotationManager.getAnnotations(),
+		        existsMasterRuler = false,
+		        colSelectedMasterRuler = 0,
+		        colAllMasterRuler = 0;
+
+		    for(var i in annotations) {
+			    if(annotations[i].type == MEASURE_ANNOTATION && annotations[i].userId == null) {
+				    colSelectedMasterRuler++;
+			    }
+		    }
+
+	      for(var i in allAnnotations) {
+		      if(allAnnotations[i].type == MEASURE_ANNOTATION && allAnnotations[i].userId == null) {
+			      existsMasterRuler = true;
+			      colAllMasterRuler++;
+		      }
+	      }
+
+	      for(var i in annotations) {
+		      if(annotations[i].type == SCALE_ANNOTATION && existsMasterRuler && colAllMasterRuler > colSelectedMasterRuler) {
+						return '';
+		      }
+	      }
+
         return masterPersonalControl;
     }
 

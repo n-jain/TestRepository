@@ -848,11 +848,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  this.setAnnotationContextMaster( !this.isAnnotationContextMaster() );
 	}
 	this.setAnnotationContextMaster = function( isMaster ) {
-		if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == MEASURE_ANNOTATION && isMaster) {
-			for(var i in annotations) {
-				if(annotations[i].type == SCALE_ANNOTATION) {
-					annotations[i].userId = null;
-					scope.scheduleAnnotationSync( [annotations[i]], null, null, false );
+		for(var i in selectedAnnotations) {
+			if(selectedAnnotations[i].type == MEASURE_ANNOTATION && isMaster) {
+				for(var j in annotations) {
+					if(annotations[j].type == SCALE_ANNOTATION) {
+						annotations[j].userId = null;
+						scope.scheduleAnnotationSync( [annotations[j]], null, null, false );
+					}
 				}
 			}
 		}
