@@ -79,6 +79,17 @@ footer.bluvue-sheet-footer {
     height: 45px;
 }
 
+#bluvue-sheet-tool-menu-disabled {
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    background-color: #333;
+    opacity: 0.6;
+    width: 100%;
+    height: 45px;
+    z-index: 2;
+}
+
 .bluvue-sheet-tool-menu-extension {
     bottom: 45px;
     position:fixed;
