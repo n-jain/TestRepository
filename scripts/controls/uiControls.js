@@ -255,7 +255,49 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		      }
 	      }
 
-        if( selectedAnnotations.length > 0 ) {
+	      var allAnnotations = scope.currentSheet.tileView.annotationManager.getAnnotations(),
+		        appendDeleteButton = true,
+	          existsRuler = false,
+		        existsCalibration = false,
+		        selectedAllRulersAndScale = true;
+
+	      for(var i in allAnnotations) {
+		      if(allAnnotations[i].type == MEASURE_ANNOTATION) {
+			      existsRuler = true;
+
+			      var selectedCurrentAnnotation = false;
+			      for(var j in selectedAnnotations) {
+				      if(selectedAnnotations[j].id == allAnnotations[i].id) {
+					      selectedCurrentAnnotation = true;
+				      }
+			      }
+
+			      if(!selectedCurrentAnnotation) {
+				      selectedAllRulersAndScale = false;
+			      }
+		      }
+
+		      if(allAnnotations[i].type == SCALE_ANNOTATION) {
+			      existsCalibration = true;
+		      }
+	      }
+
+	      if(selectedAllRulersAndScale && !existsCalibration) {
+		      selectedAllRulersAndScale = false;
+	      }
+
+	      // If selected only calibration annotation
+	      if(existsRuler && existsCalibration && selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION) {
+		      appendDeleteButton = false;
+	      }
+
+	      // If selected all ruler and calibration annotations
+	      if(existsCalibration && !selectedAllRulersAndScale && selectedAnnotations.length > 1) {
+		      appendDeleteButton = false;
+	      }
+
+
+        if( selectedAnnotations.length > 0 && appendDeleteButton) {
           addButton(BluVueSheet.Constants.OptionButtons.Delete);
         }
 
@@ -403,6 +445,30 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         } );
         masterPersonalControl.append( personalButton ).append( masterButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
+
+	      var allAnnotations =  sheet.tileView.annotationManager.getAnnotations(),
+		        existsMasterRuler = false,
+		        colSelectedMasterRuler = 0,
+		        colAllMasterRuler = 0;
+
+		    for(var i in annotations) {
+			    if(annotations[i].type == MEASURE_ANNOTATION && annotations[i].userId == null) {
+				    colSelectedMasterRuler++;
+			    }
+		    }
+
+	      for(var i in allAnnotations) {
+		      if(allAnnotations[i].type == MEASURE_ANNOTATION && allAnnotations[i].userId == null) {
+			      existsMasterRuler = true;
+			      colAllMasterRuler++;
+		      }
+	      }
+
+	      for(var i in annotations) {
+		      if(annotations[i].type == SCALE_ANNOTATION && existsMasterRuler && colAllMasterRuler > colSelectedMasterRuler) {
+						return '';
+		      }
+	      }
 
         return masterPersonalControl;
     }
