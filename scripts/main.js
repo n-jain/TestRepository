@@ -822,7 +822,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
 			            if(scope.sheet.notes == null) {
-				            scope.notesEditDialog();
+				            scope.notesEditDialog(true);
 				            return;
 			            }
 
@@ -834,14 +834,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okLabel:'Edit',
 				            okAction: function () {
 					            scope.$apply(function () {
-						            scope.notesEditDialog();
+						            dialog.destroy();
+						            scope.notesEditDialog(false, true);
 					            });
 				            }
 			            });
 		            }
 
-		            scope.notesEditDialog = function() {
-			            var dialog = new BluVueSheet.Dialog({showType: 'panel'});
+		            scope.notesEditDialog = function(openAnimate, hideAnimate) {
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
 

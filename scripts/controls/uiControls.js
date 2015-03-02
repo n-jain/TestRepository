@@ -570,6 +570,8 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
 
 BluVueSheet.Dialog = function(params) {
 	params = params || {};
+	params.openAnimate = params.openAnimate != undefined ? params.openAnimate : true;
+	params.hideAnimate = params.hideAnimate != undefined ? params.hideAnimate : true;
 
 	var typeClass = '';
 	switch(params.showType) {
@@ -678,16 +680,60 @@ BluVueSheet.Dialog = function(params) {
     holder.on( 'click', cancelAction );
     holder.css( { display: "block" } );
     window.addEventListener( 'resize', resizeListener );
+
+	  switch(params.showType) {
+		  case 'panel':
+			  if(params.openAnimate) {
+				  setTimeout(function() {
+					  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+						  .addClass('bluvue-dialog-content-open');
+				  }, 100);
+			  } else {
+				  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+					  .addClass('bluvue-dialog-content-open')
+					  .addClass('bluvue-dialog-content-no-animate');
+			  }
+
+			  break;
+	  }
+
     onResize(); // Initialize the height logic
   }
 
+	this.hideHolder = function() {
+		holder.css( { display: "none" } );
+	}
+
   this.hide = function() {
-    window.removeEventListener( 'resize', resizeListener );
-    holder.css( { display: "none" } );
-    holder.off( 'click', cancelAction );
-    content.removeClass();
-    content.addClass( 'bluvue-dialog-content' );
-    content.empty();
+	  var el = this;
+	  var hideEvent = function() {
+		  window.removeEventListener( 'resize', resizeListener );
+		  holder.off( 'click', cancelAction );
+		  el.hideHolder();
+		  content.removeClass();
+		  content.addClass( 'bluvue-dialog-content' );
+		  content.empty();
+		  el.destroy();
+	  };
+
+	  switch(params.showType) {
+		  case 'panel':
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+				  .removeClass('bluvue-dialog-content-open')
+				  .removeClass('bluvue-dialog-content-no-animate');
+
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel')).css({background: 'inherit'});
+
+			  if(params.hideAnimate) {
+				  setTimeout(function() { hideEvent(); }, 800);
+			  } else {
+				  hideEvent();
+			  }
+
+			  break;
+		  default:
+			  hideEvent();
+	  }
   }
 
   this.destroy = function() {
@@ -699,7 +745,7 @@ BluVueSheet.Dialog = function(params) {
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
 
   holder.append( content );
-  this.hide();
+  this.hideHolder();
 
   parent.append( holder );
 }
