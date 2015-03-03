@@ -898,6 +898,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 						            scope.sheet.notes = notes;
 						            scope.saveSheet(scope.sheet);
+
+						            dialog.hide();
 					            });
 				            }
 			            });

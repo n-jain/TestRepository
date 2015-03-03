@@ -377,6 +377,13 @@ footer.bluvue-sheet-footer {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8a6039', endColorstr='#6e4a28',GradientType=0 ); /* IE6-9 */
 }
 
+.bluvue-dialog-wrapper {
+    left: 50%;
+    margin-left: -200px;
+    position: fixed;
+    top: 0;
+    z-index: 1001;
+}
 
 .bluvue-dialog-holder {
     position: absolute;
@@ -472,7 +479,11 @@ footer.bluvue-sheet-footer {
 }
 
 .bluvue-dialog-type-panel {
-    top: 46px;
+    top: 0;
+    right: 0;
+    height: 100%;
+    margin-left: 0;
+    left: auto;
 }
 
 .bluvue-dialog-type-panel .bluvue-dialog-content {
@@ -1098,6 +1109,7 @@ select.bluvue-annotation-unit-edit {
 
 .notes-body {
     overflow-y: auto;
+    white-space: pre-wrap;
 }
 
 .notes-editor {
