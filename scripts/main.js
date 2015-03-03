@@ -849,8 +849,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
 		            }
 
-	              scope.notesDialog = function() {
-			            var dialog = new BluVueSheet.Dialog({showType: 'panel'});
+	              scope.notesDialog = function(openAnimate, hideAnimate) {
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
 			            if(scope.sheet.notes == null) {
@@ -867,13 +867,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okAction: function () {
 					            scope.$apply(function () {
 						            dialog.destroy();
-						            scope.notesEditDialog(false, true);
+						            scope.notesEditDialog(false, true, true);
 					            });
 				            }
 			            });
 		            }
 
-		            scope.notesEditDialog = function(openAnimate, hideAnimate) {
+		            scope.notesEditDialog = function(openAnimate, hideAnimate, fromShowDialog) {
+			            fromShowDialog = fromShowDialog || false;
+
 			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
@@ -883,26 +885,49 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            holder.append( editor );
 			            // Allow user to click input field
 			            editor.on( 'click', function(e){ e.stopPropagation(); } );
-			            dialog.showConfirmDialog( {
+
+			            var options = {
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
-				            okLabel:'Save',
-				            okAction: function () {
-					            scope.$apply(function() {
-						            var notes = document.getElementById('notes-editor').value;
+				            okLabel:'Save'
+			            };
 
-						            if(!notes.length) {
-							            notes = null;
-						            }
+			            var save = function() {
+				            scope.$apply(function() {
+					            var notes = document.getElementById('notes-editor').value;
 
-						            scope.sheet.notes = notes;
-						            scope.saveSheet(scope.sheet);
+					            if(!notes.length) {
+						            notes = null;
+					            }
 
-						            dialog.hide();
-					            });
-				            }
-			            });
+					            scope.sheet.notes = notes;
+					            scope.saveSheet(scope.sheet);
+
+					            dialog.hide();
+				            });
+			            }
+
+			            if(fromShowDialog) {
+				            options.cancelAction = function() {
+					            scope.notesDialog(false, true);
+				            };
+
+				            options.okAction = (function (save) {
+					            return function() {
+						            save();
+						            scope.notesDialog(false, true);
+					            }
+				            })(save);
+			            } else {
+				            options.okAction = (function (save) {
+					            return function() {
+						            save();
+					            }
+				            })(save);
+			            }
+
+			            dialog.showConfirmDialog(options);
 		            }
 
                // Force initial sync to occur at link time

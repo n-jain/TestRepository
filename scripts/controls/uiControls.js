@@ -808,6 +808,10 @@ BluVueSheet.Dialog = function(params) {
     wrapper.remove();
   }
 
+	// Remove old holders
+	angular.element(document.querySelector('.bluvue-dialog-holder')).remove();
+	angular.element(document.querySelector('.bluvue-dialog-wrapper')).remove();
+
   var parent = angular.element( document.querySelector('.bluvue-sheet') );
   var wrapper = angular.element( '<div class="bluvue-dialog-wrapper ' + typeClass + '"></div>' );
 	var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
