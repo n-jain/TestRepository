@@ -792,7 +792,7 @@ BluVueSheet.Dialog = function(params) {
 				  .removeClass('bluvue-dialog-content-no-animate');
 
 			  if(params.hideAnimate) {
-				  setTimeout(function() { hideEvent(); el.destroy(); }, 800);
+				  setTimeout(function() { hideEvent(); el.destroy(); }, 500);
 			  } else {
 				  hideEvent();
 			  }

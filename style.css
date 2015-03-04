@@ -497,8 +497,8 @@ footer.bluvue-sheet-footer {
     padding: 20px 0;
 
     transition-property: all;
-    transition-duration: 1s;
-    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(.02, .01, .47, 1);
 }
 
 .bluvue-dialog-type-panel .bluvue-dialog-content-open {
@@ -835,7 +835,6 @@ select.bluvue-annotation-unit-edit {
     margin-top: 46px;
     width: 400px;
     z-index: 1001;
-
     transition-property: all;
     transition-duration: 300ms;
     transition-timing-function: cubic-bezier(.02, .01, .47, 1);
