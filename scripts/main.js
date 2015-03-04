@@ -197,7 +197,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
                 scope.enterFullscreen = function() {
                     if (!document.fullscreenElement && !document.mozFullScreenElement &&
-                        !document.webkitFullscreenElement && !document.msFullscreenElement ){
+                        !document.webkitFullscreenElement && !document.msFullscreenElement &&
+	                    !angular.element(document.querySelector('body')).hasClass('fullscreen-mode') ){
                         if (document.documentElement.requestFullscreen) {
                             document.documentElement.requestFullscreen();
                         } else if (document.documentElement.msRequestFullscreen) {
