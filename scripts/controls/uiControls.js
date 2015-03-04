@@ -743,8 +743,10 @@ BluVueSheet.Dialog = function(params) {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
-    holder.on( 'click', cancelAction );
+	  holder.on( 'click', cancelAction );
+	  content.on( 'click', function() {return false;} );
     holder.css( { display: "block" } );
+    wrapper.css( { display: "block" } );
     window.addEventListener( 'resize', resizeListener );
 
 	  switch(params.showType) {
@@ -768,6 +770,7 @@ BluVueSheet.Dialog = function(params) {
 
 	this.hideHolder = function() {
 		holder.css( { display: "none" } );
+		wrapper.css( { display: "none" } );
 	}
 
   this.hide = function() {
@@ -788,10 +791,8 @@ BluVueSheet.Dialog = function(params) {
 				  .removeClass('bluvue-dialog-content-open')
 				  .removeClass('bluvue-dialog-content-no-animate');
 
-			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel')).css({background: 'inherit'});
-
 			  if(params.hideAnimate) {
-				  setTimeout(function() { hideEvent(); }, 800);
+				  setTimeout(function() { hideEvent(); el.destroy(); }, 800);
 			  } else {
 				  hideEvent();
 			  }
@@ -804,16 +805,23 @@ BluVueSheet.Dialog = function(params) {
 
   this.destroy = function() {
     holder.remove();
+    wrapper.remove();
   }
 
+	// Remove old holders
+	angular.element(document.querySelector('.bluvue-dialog-holder')).remove();
+	angular.element(document.querySelector('.bluvue-dialog-wrapper')).remove();
+
   var parent = angular.element( document.querySelector('.bluvue-sheet') );
-  var holder = angular.element( '<div class="bluvue-dialog-holder ' + typeClass + '"></div>' );
+  var wrapper = angular.element( '<div class="bluvue-dialog-wrapper ' + typeClass + '"></div>' );
+	var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
   var content = angular.element( '<div class="bluvue-dialog-content"></div>');
 
-  holder.append( content );
+  wrapper.append(content);
   this.hideHolder();
 
-  parent.append( holder );
+  parent.append( wrapper );
+	parent.append(holder);
 }
 
 
