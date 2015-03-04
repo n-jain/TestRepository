@@ -826,8 +826,8 @@ select.bluvue-annotation-unit-edit {
     z-index: 1001;
 
     transition-property: all;
-    transition-duration: 1s;
-    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(.02, .01, .47, 1);
 }
 
 #viewer-video {
