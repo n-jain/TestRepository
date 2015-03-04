@@ -109,9 +109,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     if( tool )
                     {
+	                      var mgr = scope.currentSheet.tileView.annotationManager;
+
+	                      if('lasso' != tool.name) {
+		                      mgr.deselectAllAnnotations();
+	                      }
+
                         if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
                         {
-                            var mgr = scope.currentSheet.tileView.annotationManager;
+
                             if( mgr.scaleAnnotation )
                             {
                               console.log('scale');
