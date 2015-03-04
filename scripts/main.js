@@ -547,6 +547,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
                   panel.addClass('bluvue-attachments-panel-open');
 	                attachment_icon.addClass('another-status');
+
+	                var onKeyUp = function(event) {
+		                switch(event.keyCode){
+			                case 27: //esc
+				                scope.hideAttachmentsPanel();
+				                break;
+		                }
+
+		                window.removeEventListener('keyup', onKeyUp);
+	                }
+
+	                window.addEventListener("keyup", onKeyUp);
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
@@ -636,7 +648,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
                 }
 
-                scope.hideAttachmentsPanel = function() {
+                scope.hideAttachmentsPanel = function() {console.log('hide');
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 

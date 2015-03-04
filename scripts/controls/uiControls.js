@@ -766,6 +766,18 @@ BluVueSheet.Dialog = function(params) {
 	  }
 
     onResize(); // Initialize the height logic
+
+	  var onKeyUp = function(event) {
+		  switch(event.keyCode){
+			  case 27: //esc
+				  dialog.hide();
+				  break;
+		  }
+
+		  window.removeEventListener('keyup', onKeyUp);
+	  }
+
+	  window.addEventListener('keyup', onKeyUp, true);
   }
 
 	this.hideHolder = function() {
