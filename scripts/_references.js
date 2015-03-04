@@ -11,7 +11,6 @@
 /// <reference path="annotations/annotationManager.js" />
 /// <reference path="annotations/math.js" />
 /// <reference path="annotations/measurement.js" />
-/// <reference path="controls/keyboardControls.js" />
 /// <reference path="controls/mouseControls.js" />
 /// <reference path="controls/uiControls.js" />
 /// <reference path="tileview/tile.js" />
