@@ -3,3 +3,4 @@ bluvue-sheet.js
 bluvue-sheet.min.js
 bin/
 .DS_STORE
+.idea/*

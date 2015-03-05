@@ -109,9 +109,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     if( tool )
                     {
+	                      var mgr = scope.currentSheet.tileView.annotationManager;
+
+	                      if('lasso' != tool.name) {
+		                      mgr.deselectAllAnnotations();
+	                      }
+
                         if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
                         {
-                            var mgr = scope.currentSheet.tileView.annotationManager;
+
                             if( mgr.scaleAnnotation )
                             {
                               console.log('scale');
@@ -197,7 +203,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
                 scope.enterFullscreen = function() {
                     if (!document.fullscreenElement && !document.mozFullScreenElement &&
-                        !document.webkitFullscreenElement && !document.msFullscreenElement ){
+                        !document.webkitFullscreenElement && !document.msFullscreenElement &&
+	                    !angular.element(document.querySelector('body')).hasClass('fullscreen-mode') ){
                         if (document.documentElement.requestFullscreen) {
                             document.documentElement.requestFullscreen();
                         } else if (document.documentElement.msRequestFullscreen) {
@@ -547,6 +554,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
                   panel.addClass('bluvue-attachments-panel-open');
 	                attachment_icon.addClass('another-status');
+
+	                var onKeyUp = function(event) {
+		                switch(event.keyCode){
+			                case 27: //esc
+				                scope.hideAttachmentsPanel();
+				                break;
+		                }
+
+		                window.removeEventListener('keyup', onKeyUp);
+	                }
+
+	                window.addEventListener("keyup", onKeyUp);
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
@@ -575,7 +594,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		                var ann_sel = mgr.getSelectedAnnotation();
 
-		                if(ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
+		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId.replace(/-/g, "") || ann_sel[0].userId == null && scope.isAdmin)) {
 			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
@@ -636,7 +655,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
                 }
 
-                scope.hideAttachmentsPanel = function() {
+                scope.hideAttachmentsPanel = function() {console.log('hide');
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 
@@ -781,14 +800,46 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
 
-                scope.generateUUID = function generateUUID() {
+                scope.generateUUID = function generateUUID( base64 ) {
                   var d = new Date().getTime();
                   var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                       var r = (d + Math.random()*16)%16 | 0;
                       d = Math.floor(d/16);
                       return (c=='x' ? r : (r&0x3|0x8)).toString(16);
                   });
-                  return uuid.replace( /-/g, '' );
+                  uuid = uuid.replace( /-/g, '' );
+                  return base64 ? scope.uuidToBase64( uuid ) : uuid;
+                };
+
+                var hexlist = '0123456789abcdef';
+                var b64list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+
+                scope.uuidToBase64 = function uuidToBase64( g )
+                {
+                  var s = g.replace(/[^0-9a-f]/ig,'').toLowerCase();
+                  if (s.length != 32) return '';
+
+                  s = s.slice(6,8) + s.slice(4,6) + s.slice(2,4) + s.slice(0,2) +
+                        s.slice(10,12) + s.slice(8,10) +
+                        s.slice(14,16) + s.slice(12,14) +
+                        s.slice(16);
+                  s += '0';
+
+                  var a, p, q;
+                  var r = '';
+                  var i = 0;
+                  while (i < 33) {
+                   a =  (hexlist.indexOf(s.charAt(i++)) << 8) |
+                        (hexlist.indexOf(s.charAt(i++)) << 4) |
+                        (hexlist.indexOf(s.charAt(i++)));
+
+                   p = a >> 6;
+                   q = a & 63;
+
+                   r += b64list.charAt(p) + b64list.charAt(q);
+                  }
+
+                  return r;
                 };
 
                 scope.generateTimestamp = function generateTimestamp() {
@@ -798,7 +849,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.checkMenuItemShowCondition = function(menuItem) {
 		                switch(menuItem.func) {
 			                case 'notesDialog':
-												return scope.canEditNotes || scope.sheetHasNotes();
+												return scope.userCanEditNotes() || scope.sheetHasNotes();
 				                break;
 		                }
 
@@ -809,16 +860,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		              return null != scope.sheet.notes;
 	              }
 
+		            scope.userCanEditNotes = function() {
+			            return scope.canEditNotes;
+		            }
+
 		            scope.sheetHasRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
 		            }
 
-	              scope.notesDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+	              scope.notesDialog = function(openAnimate, hideAnimate) {
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
 			            if(scope.sheet.notes == null) {
-				            scope.notesEditDialog();
+				            scope.notesEditDialog(true);
 				            return;
 			            }
 
@@ -830,41 +885,68 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okLabel:'Edit',
 				            okAction: function () {
 					            scope.$apply(function () {
-						            scope.notesEditDialog();
+						            dialog.destroy();
+						            scope.notesEditDialog(false, true, true);
 					            });
 				            }
 			            });
 		            }
 
-		            scope.notesEditDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+		            scope.notesEditDialog = function(openAnimate, hideAnimate, fromShowDialog) {
+			            fromShowDialog = fromShowDialog || false;
+
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
 
-			            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
+			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div>" );
 
 			            holder.append( editor );
 			            // Allow user to click input field
 			            editor.on( 'click', function(e){ e.stopPropagation(); } );
-			            dialog.showConfirmDialog( {
+
+			            var options = {
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
-				            okLabel:'Save',
-				            okAction: function () {
-					            scope.$apply(function() {
-						            var notes = document.getElementById('notes-editor').value;
+				            okLabel:'Save'
+			            };
 
-						            if(!notes.length) {
-							            notes = null;
-						            }
-						            console.log(notes);
+			            var save = function() {
+				            scope.$apply(function() {
+					            var notes = document.getElementById('notes-editor').value;
 
-						            scope.sheet.notes = notes;
-						            scope.saveSheet(scope.sheet);
-					            });
-				            }
-			            });
+					            if(!notes.length) {
+						            notes = null;
+					            }
+
+					            scope.sheet.notes = notes;
+					            scope.saveSheet(scope.sheet);
+
+					            dialog.hide();
+				            });
+			            }
+
+			            if(fromShowDialog) {
+				            options.cancelAction = function() {
+					            scope.notesDialog(false, true);
+				            };
+
+				            options.okAction = (function (save) {
+					            return function() {
+						            save();
+						            scope.notesDialog(false, true);
+					            }
+				            })(save);
+			            } else {
+				            options.okAction = (function (save) {
+					            return function() {
+						            save();
+					            }
+				            })(save);
+			            }
+
+			            dialog.showConfirmDialog(options);
 		            }
 
                // Force initial sync to occur at link time

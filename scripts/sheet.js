@@ -20,10 +20,12 @@
 
     this.setLoaded = function () {
         t.userInterface.style.display = "block";
+	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'none';
     }
 
     this.setLoading = function () {
         t.userInterface.style.display = "none";
+	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'block';
     }
 
     this.loadSheet = function (sheet, scope, elem) {
@@ -56,17 +58,6 @@
         this.tileView.create(sheet);
         this.tileView.render();
 
-        //create loop
-        var mainLoop = function () {
-            t.tileView.mainLoopKeyboardControls();
-            t.mainLoopTimeout = setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
-        }
-
-        this.mainLoopTimeout = setTimeout(mainLoop, MAIN_LOOP_TIMEOUT);
-
-        //setup key controls
-        window.addEventListener("keydown", this.tileView.keyboardControls.onKeyDown, true);
-        window.addEventListener("keyup", this.tileView.keyboardControls.onKeyUp, true);
         //setup mouse controls
 
         this.canvas.onmousedown = this.tileView.mouseControls.onmousedown;
@@ -96,8 +87,6 @@
         t.canvas.onclick = null;
         t.canvas.ondblclick = null;
 
-        this.canvas.removeEventListener("keydown", t.tileView.keyboardControls.onKeyDown, true);
-        this.canvas.removeEventListener("keyup", t.tileView.keyboardControls.onKeyUp, true);
         this.canvas.removeEventListener("mousewheel", t.tileView.mouseControls.onmousewheel, true);
         this.canvas.removeEventListener("DOMMouseScroll", t.tileView.mouseControls.onmousewheel, true);
         this.canvas.removeEventListener("touchstart", this.tileView.mouseControls.ontouchstart, true);

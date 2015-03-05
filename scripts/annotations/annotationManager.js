@@ -878,6 +878,17 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  this.setAnnotationContextMaster( !this.isAnnotationContextMaster() );
 	}
 	this.setAnnotationContextMaster = function( isMaster ) {
+		for(var i in selectedAnnotations) {
+			if(selectedAnnotations[i].type == MEASURE_ANNOTATION && isMaster) {
+				for(var j in annotations) {
+					if(annotations[j].type == SCALE_ANNOTATION) {
+						annotations[j].userId = null;
+						scope.scheduleAnnotationSync( [annotations[j]], null, null, false );
+					}
+				}
+			}
+		}
+
 		for( var i = 0; i < selectedAnnotations.length; i++) {
 			selectedAnnotations[i].userId = isMaster ? null : scope.userId;
 		}
@@ -1128,6 +1139,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	this.getSelectedAnnotation = function getSelectedAnnotation() {
 		return selectedAnnotations;
+	}
+
+	this.getAnnotations = function getAnnotations() {
+		return annotations;
 	}
 
 	this.getAnnotation = function getAnnotation( annotationId ) {
