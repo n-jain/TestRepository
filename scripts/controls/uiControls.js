@@ -676,6 +676,7 @@ BluVueSheet.Dialog = function(params) {
 
   this.showConfirmDialog = function showDialog( options ) {
     cancelAction = options.cancelAction || defaultHideAction;
+
     return dialog.showDialog( {
       title: options.title||"Confirm",
       bodyClass: 'bluvue-dialog-confirmBody',

@@ -264,6 +264,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                           val = val.substring( 0, 50 );
                         scope.sheet.name = val;
                         scope.saveSheet(scope.sheet);
+	                      dialog.hide();
                       });
                     },
                     cancelAction: function hideAction(){
@@ -297,6 +298,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             okAction: function () {
                                 scope.$apply(function () {
                                     scope.openSheetById(revisions[editor[0].value].id);
+	                                  dialog.hide();
                                 });
                             }
                         });
