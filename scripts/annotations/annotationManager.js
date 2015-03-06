@@ -298,33 +298,22 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 
+		var h = tileView.sheet.textEditor.getHeight() / tileView.scale;
 		if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == TEXT_ANNOTATION) {
-			if(!tileView.getRotation()) {
-				minX -= (tileView.sheet.textEditor.getWidth() + BOUND_DIST) / tileView.scale;
-
-				if(tileView.sheet.textEditor.getHeight() / tileView.scale > maxY - minY) {
-					maxY = minY + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
-				}
+			if(!tileView.getRotation() && h > maxY - minY) {
+				maxY = minY + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
 			}
 
-			if(90 == tileView.getRotation()) {
-				if(tileView.sheet.textEditor.getHeight() / tileView.scale > maxX - minX) {
-					maxX = minX + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
-				}
+			if(90 == tileView.getRotation() && h > maxX - minX) {
+				maxX = minX + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
 			}
 
-			if(180 == tileView.getRotation()) {
-				if(tileView.sheet.textEditor.getHeight() / tileView.scale > maxY - minY) {
-					minY = maxY - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
-				}
+			if(180 == tileView.getRotation() && h > maxY - minY) {
+				minY = maxY - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
 			}
 
-			if(270 == tileView.getRotation()) {
-				minY -= (tileView.sheet.textEditor.getWidth() + BOUND_DIST) / tileView.scale;
-
-				if(tileView.sheet.textEditor.getHeight() / tileView.scale > maxX - minX) {
-					minX = maxX - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
-				}
+			if(270 == tileView.getRotation() && h > maxX - minX) {
+				minX = maxX - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
 			}
 		}
 
@@ -428,7 +417,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	        default:
 	            x = annotation.getPoint(2, true).x + annotation.offset_x + padding;
 	            y = annotation.getPoint(2, true).y + annotation.offset_y;
-	            if (x + w > window.innerWidth) {
+	            if (x - w > window.innerWidth) {
 	                x = annotation.getPoint(0, true).x + annotation.offset_x - padding - w;
 	            }
 	            break;
