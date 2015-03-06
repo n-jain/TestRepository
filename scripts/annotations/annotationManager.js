@@ -512,7 +512,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		switch (scope.sheet.rotation) {
 		    case 90:
-                return tileView.screenCoordinatesFromSheetCoordinates(maxX + BOUND_DIST / tileView.scale, (minY + maxY + w) / 2);
+			      return tileView.screenCoordinatesFromSheetCoordinates(maxX + BOUND_DIST / tileView.scale, (minY + maxY + w) / 2);
 		    case 180:
 		        return tileView.screenCoordinatesFromSheetCoordinates((minX + maxX + w) / 2, maxY - BOUND_DIST / tileView.scale);
 		    case 270:

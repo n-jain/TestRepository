@@ -221,15 +221,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
-		this.roundRect( context, 0, 0, 30, 16, 8.50 , true );
+		this.roundRect( context, 0, 0, 34, 20, 8.50 , true, false );
 
 		context.font = (12) + 'pt Helvetica';
 		context.fillStyle="#fff";
-		context.fillText(this.attachments.length, 16, 13 );
+		context.fillText(this.attachments.length, 18, 16 );
 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
-		context.drawImage( attach_icon, 0, 0, 16, 16 );
+		context.drawImage( attach_icon, 2, 2, 16, 16 );
 
 		context.restore();
 	};
