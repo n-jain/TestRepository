@@ -751,6 +751,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, url, 'width=500,height=500');
 	            };
 
+	            scope.openInTab = function(url) {
+		            window.open(url, "_blank", "");
+	            };
+
 	            scope.openInViewer = function(url, type, name) {
 		            scope.hideAttachmentsPanel();
 		            scope.isShowViewerPlaceholder = true;
