@@ -766,15 +766,41 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
-				            image.src =  url;
 				            image.style.display = 'none';
-				            image.onload = function () {
-					            image.style.display = 'block';
-					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
-						            left: 'calc(50% - ' +  panel_inline.clientWidth + 'px/2)',
-						            top: 'calc(50% - ' +  panel_inline.clientHeight + 'px/2)'
-					            });
+				            image.src =  url;
+
+				            var viewerPhoto = function (blockMode) {
+					            if(blockMode == undefined) {
+						            blockMode = true;
+					            }
+
+					            if(blockMode) {
+						            image.style.display = 'block';
+					            }
+
+					            var css = {
+						            left: 'calc(50% - ' + panel_inline.clientWidth + 'px/2)'
+					            };
+
+					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
+						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
+					            } else {
+						            css.top = '100px';
+						            css.height = (window.innerHeight - 145) + 'px';
+					            }
+
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
 				            };
+
+				            image.onload = viewerPhoto;
+
+				            var onResize = function() {
+											viewerPhoto(false);
+					            window.removeEventListener('resize', onResize);
+					            window.addEventListener('resize', onResize, true);
+				            };
+
+				            onResize();
 
 				            break;
 			            case 'video':
@@ -798,6 +824,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            scope.hideViewer = function() {
 		            scope.showAttachmentsPanel(false, true);
 		            scope.isShowViewerPlaceholder = false;
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({height: 'auto', left: '-10000px'});
+
+		            var image = document.getElementById('viewer-photo');
+		            image.style.display = 'none';
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
