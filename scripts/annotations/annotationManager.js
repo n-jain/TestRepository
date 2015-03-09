@@ -1101,6 +1101,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   	      }
 	      }
 	    });
+
+		  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
 	  }
 	}
 
