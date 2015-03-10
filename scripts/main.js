@@ -529,6 +529,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
                     }
 
+	                  scope.currentSheet.tileView.setLoaded();
+
                   })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
                   })["finally"]( function() {
