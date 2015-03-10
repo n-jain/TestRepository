@@ -823,6 +823,10 @@ select.bluvue-annotation-unit-edit {
     z-index: 1000;
 }
 
+.bluvue-viewer-panel-holder-active {
+    background: #fff;
+}
+
 .bluvue-viewer-panel-holder {
     display: block;
 }
