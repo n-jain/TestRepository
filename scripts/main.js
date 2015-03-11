@@ -529,6 +529,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
                     }
 
+	                  scope.currentSheet.tileView.setLoaded();
+
                   })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
                   })["finally"]( function() {
@@ -765,6 +767,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            filename: name
 		            };
 
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).addClass('bluvue-viewer-panel-holder-active');
+
 		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
 
 		            switch(type) {
@@ -830,6 +834,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            scope.isShowViewerPlaceholder = false;
 
 		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({height: 'auto', left: '-10000px'});
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).removeClass('bluvue-viewer-panel-holder-active');
 
 		            var image = document.getElementById('viewer-photo');
 		            image.style.display = 'none';

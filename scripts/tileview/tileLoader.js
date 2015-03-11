@@ -74,9 +74,9 @@ BluVueSheet.TileLoader = function(slicePath, previewPath, tileView){
 		this.width = w;
 		this.height = h;
 
-	    //set zoom level
+	  //set zoom level
 		tileView.fitToScreen();
-		tileView.setLoaded();
+		//tileView.setLoaded();
 	}
 
 	this.zoomLevelIndex = function (level) {
