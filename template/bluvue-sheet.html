@@ -59,7 +59,7 @@
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
 					<div class="attachment-file-info">
 						<div class="attachment-file-info-email">{{ fileItem.email }}</div>
-						<div class="attachment-file-info-date">{{ fileItem.createdDate }}</div>
+					    <div class="attachment-file-info-date">{{ fileItem.createdDate | date : "short" }}</div>
 					</div>
 				</div>
 			</li>
