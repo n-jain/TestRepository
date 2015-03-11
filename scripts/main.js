@@ -598,7 +598,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		                var ann_sel = mgr.getSelectedAnnotation();
 
-		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId.replace(/-/g, "") || ann_sel[0].userId == null && scope.isAdmin)) {
+		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
 			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
