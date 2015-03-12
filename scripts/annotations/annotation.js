@@ -319,7 +319,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.save();
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
 		context.rotate( theta );
-		context.fillStyle = this.color;
+		context.fillStyle=this.color.toStyle();
+
 		context.textAlign = "center";
 		context.fillText(text,0,textSize/3);
 		context.restore();
@@ -855,7 +856,7 @@ function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, 
 		    ( y1>y2 && rotation == 270 ) ) {
 			context.rotate(Math.PI);
 		}
-		context.fillStyle = color;
+		context.fillStyle = color.toStyle();
 		context.textAlign = "center";
 		context.fillText( text ,0,textSize/3);
 		context.restore();
