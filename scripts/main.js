@@ -83,10 +83,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     currentSheetPinned: false
                 };
 
+                var backHistoryDepth = $window.history.length-1;
                 scope.close = function () {
                     if (!backPressed) {
                         setTimeout(function() {
-                            $window.history.back();
+                            scope.closeSheet();
+                            $window.history.go( backHistoryDepth - $window.history.length );
                         }, 0);
                         return;
                     }
