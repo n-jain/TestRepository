@@ -221,7 +221,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
-		this.roundRect( context, 0, 0, 34, 20, 8.50 , true, false );
+		this.roundRect( context, 0, 0, 34, 20, 12 , true, false );
 
 		context.font = (12) + 'pt Helvetica';
 		context.fillStyle="#fff";
