@@ -657,7 +657,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
                 }
 
-                scope.hideAttachmentsPanel = function() {console.log('hide');
+                scope.hideAttachmentsPanel = function() {
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
 

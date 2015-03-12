@@ -224,15 +224,29 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
             var bounds = annotations[i].bounds;
+            var attachmentLozenge = annotations[i].attachmentLozenge;
             if (bounds.width() * tileView.scale < 30)
                 bounds = bounds.inset(-(20 / tileView.scale), 0);
             if (bounds.height() * tileView.scale < 30)
                 bounds = bounds.inset(0, -(20 / tileView.scale));
 
-            if (bounds.contains(x, y)) {
+		        if (attachmentLozenge.width() * tileView.scale < 35)
+			        attachmentLozenge = attachmentLozenge.inset(-(8 / tileView.scale), 0);
+		        if (attachmentLozenge.height() * tileView.scale < 35)
+			        attachmentLozenge = attachmentLozenge.inset(0, -(8 / tileView.scale));
+
+            if (attachmentLozenge.contains(x, y) && annotations[i].attachments.length) {
                 touchedAnnotations[touchedAnnotations.length] = annotations[i];
-            }
+	              setTimeout(function() {
+		              if(selectedAnnotations.length) {
+			              scope.showAttachmentsPanel(true, true);
+		              }
+	              }, 300);
+            } else if (bounds.contains(x, y)) {
+			        touchedAnnotations[touchedAnnotations.length] = annotations[i];
+		        }
         }
+
         //get which are selected already
         var selected = new Array();
         var anySelected = false;
