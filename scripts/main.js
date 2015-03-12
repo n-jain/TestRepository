@@ -87,6 +87,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.close = function () {
                     if (!backPressed) {
                         setTimeout(function() {
+                            scope.currentSheet.dispose();
                             scope.closeSheet();
                             $window.history.go( backHistoryDepth - $window.history.length );
                         }, 0);
