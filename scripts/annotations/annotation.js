@@ -307,10 +307,14 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	  context.font = textSize+"px Verdana";
 
 		while(context.measureText(text).width>drawWidth&&textSize>8*this.lineWidth){
-			textSize-=8*this.lineWidth;
+			textSize-=2*this.lineWidth;
 			context.font = textSize+"px Verdana";
 		}
-		if(textSize<8*this.lineWidth)textSize=8*this.lineWidth;
+		if(textSize < 24*this.lineWidth)
+		{
+		  textSize=24*this.lineWidth;
+			context.font = textSize+"px Verdana";
+		}
 
 		context.save();
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
@@ -775,11 +779,11 @@ function drawScale(context){
 		var measureSpace;
 		if(this.measurement!=null){
 			var myLength = this.getLength();
-			var textSize = 22*this.lineWidth;
+			var textSize = 32*this.lineWidth;
 			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
-			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
-				textSize-=4*this.lineWidth;
+			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
+				textSize-=2*this.lineWidth;
 				context.font = textSize+"px Verdana";
 			}
 			measureSpace = context.measureText(text).width/myLength;
@@ -875,11 +879,11 @@ function drawMeasure(context){
 	  if( this.measurement && tileView.annotationManager.scaleAnnotation )
 	  {
 			var myLength = this.getLength();
-			var textSize = 22*this.lineWidth;
+			var textSize = 32*this.lineWidth;
 			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
-			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
-				textSize-=4*this.lineWidth;
+			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
+				textSize-=2*this.lineWidth;
 				context.font = textSize+"px Verdana";
 			}
 			measureSpace = context.measureText(text).width/myLength;
