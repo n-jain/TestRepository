@@ -389,35 +389,41 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	function calcTextEditorLocation(annotation) {
 	    var x;
 	    var y;
+			var condition;
 	    var padding = BOUND_DIST / tileView.scale;
 	    var w = tileView.sheet.textEditor.getWidth() / tileView.scale;
+
 
 	    switch (scope.sheet.rotation) {
 	        case 90:
 	            x = annotation.getPoint(0, true).x + annotation.offset_x;
 	            y = annotation.getPoint(0, true).y + annotation.offset_y - padding;
-	            if (y - w < 0) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(0, annotation.getPoint(6, true).y).x;
+	            if (condition > window.innerWidth / 2) {
 	                y = annotation.getPoint(6, true).y + annotation.offset_y + padding + w;
 	            }
 	            break;
 	        case 180:
 	            x = annotation.getPoint(6, true).x + annotation.offset_x - padding;
 	            y = annotation.getPoint(6, true).y + annotation.offset_y;
-	            if (x - w < 0) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(annotation.getPoint(2, true).x, 0).x;
+	            if (condition > window.innerWidth / 2) {
 	                x = annotation.getPoint(2, true).x + annotation.offset_x + padding + w;
 	            }
 	            break;
 	        case 270:
 	            x = annotation.getPoint(4, true).x + annotation.offset_x;
 	            y = annotation.getPoint(4, true).y + annotation.offset_y + padding;
-	            if (y + w > window.innerWidth) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(0, annotation.getPoint(0, true).y).x;
+	            if (condition > window.innerWidth / 2) {
 	                y = annotation.getPoint(0, true).y + annotation.offset_y - padding - w;
 	            }
 	            break;
-	        default:
+		      default:
 	            x = annotation.getPoint(2, true).x + annotation.offset_x + padding;
 	            y = annotation.getPoint(2, true).y + annotation.offset_y;
-	            if (x - w > window.innerWidth) {
+			        condition = tileView.screenCoordinatesFromSheetCoordinates(annotation.getPoint(0, true).x, 0).x;
+	            if (condition > window.innerWidth / 2) {
 	                x = annotation.getPoint(0, true).x + annotation.offset_x - padding - w;
 	            }
 	            break;
