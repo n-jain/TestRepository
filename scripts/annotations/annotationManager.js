@@ -889,35 +889,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.saveSelectedAnnotations();
 	}
-	var pointInLasso = function(point){
-		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
-		//find all intersections. count how many have an x value greater/less than. if both numbers are even, it is outside (ray goes through and comes out)
-		//if odd number, then at some point ray didn't enter, only came out, so point lies inside lasso
-		var intersections = new Array();
-		for(var i=0; i<lasso.points.length; i++){
-			var p1 = lasso.points[i];
-			var p2 = lasso.points[(i+1)%lasso.points.length];
-			var gx = p1.x>p2.x?p1.x:p2.x;//greater x
-			var lx = p1.x<p2.x?p1.x:p2.x;//lesser x
-			var gy = p1.y>p2.y?p1.y:p2.y;//""
-			var ly = p1.y<p2.y?p1.y:p2.y;//""
 
-			if(p1.x-p2.x==0){
-			    if (point.y > ly && point.y < gy) intersections[intersections.length] = new BluVueSheet.Point(p1.x, point.y);
-			}else{
-				var m = (p2.y-p1.y)/(p2.x-p1.x);
-				var xi = ((point.y-p1.y)/m) + p1.x;
-				if (xi > lx && xi < gx) intersections[intersections.length] = new BluVueSheet.Point(xi, point.y);
-			}
-		}
-		var il = 0;
-		var ir = 0;
-		for(var i=0; i<intersections.length; i++){
-			if(intersections[i].x>point.x)ir++;
-			else if(intersections[i].x<point.x)il++;
-		}
-		return ir%2==1&&il%2==1;
-	}
+  // Checks whether a point is inside a polygon.
+  // See:  http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+  // Credit:
+  //   Jonas Raoni Soares Silva  - http://jsfromhell.com/math/is-point-in-poly [rev. #0]
+  var isPointInPoly = function( poly, pt ) {
+    for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+      ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+      && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+      && (c = !c);
+    return c;
+  }
+  var pointInLasso = function( point ) {
+    return isPointInPoly( lasso.points, point );
+  }
 
 	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){
