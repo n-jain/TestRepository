@@ -753,6 +753,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     		tileView.sheet.textEditor.hide();
     		tileView.sheet.floatingToolsMenu.hide();
     		tileView.sheet.floatingOptionsMenu.hide();
+
+		    dialog.hide();
 	    }
 	  });
 	}
@@ -992,6 +994,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   						else
                             scope.scheduleAnnotationSync( [annotation], null, null, false );
   						mgr.recalculateMeasurements();
+
+	            dialog.hide();
           },
           cancelAction: function hideAction(){
               this.captureKeyboard=oldKeyCapture;
