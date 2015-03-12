@@ -846,8 +846,8 @@ BluVueSheet.FileChooser = function( scope ) {
   var createPickerOptions = function createPickerOptions( mimetypes ) {
     var options = {
       multiple: true,
-      services: ['COMPUTER', 'BOX', 'DROPBOX', 'FTP', 'GOOGLE_DRIVE', 'SKYDRIVE', 'WEBDAV', 'GMAIL']
-    };
+      services: ['BOX', 'COMPUTER', 'DROPBOX', 'EVERNOTE', 'FACEBOOK', 'GMAIL', 'IMAGE_SEARCH', 'FLICKR', 'FTP', 'GITHUB', 'GOOGLE_DRIVE', 'SKYDRIVE', 'PICASA', 'URL', 'INSTAGRAM', 'FLICKR', 'ALFRESCO', 'CLOUDDRIVE', 'WEBCAM']
+  };
 
     if( mimetypes )
       options.mimetypes = mimetypes;

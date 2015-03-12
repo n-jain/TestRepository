@@ -49,7 +49,7 @@
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
-			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">
+			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInTab(fileItem.url)">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
@@ -59,7 +59,7 @@
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
 					<div class="attachment-file-info">
 						<div class="attachment-file-info-email">{{ fileItem.email }}</div>
-						<div class="attachment-file-info-date">{{ fileItem.createdDate }}</div>
+					    <div class="attachment-file-info-date">{{ fileItem.createdDate | date : "short" }}</div>
 					</div>
 				</div>
 			</li>

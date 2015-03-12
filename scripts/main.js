@@ -83,10 +83,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     currentSheetPinned: false
                 };
 
+                var backHistoryDepth = $window.history.length-1;
                 scope.close = function () {
                     if (!backPressed) {
                         setTimeout(function() {
-                            $window.history.back();
+                            scope.currentSheet.dispose();
+                            scope.closeSheet();
+                            $window.history.go( backHistoryDepth - $window.history.length );
                         }, 0);
                         return;
                     }
@@ -529,6 +532,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
                     }
 
+	                  scope.currentSheet.tileView.setLoaded();
+
                   })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
                   })["finally"]( function() {
@@ -596,7 +601,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		                var ann_sel = mgr.getSelectedAnnotation();
 
-		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId.replace(/-/g, "") || ann_sel[0].userId == null && scope.isAdmin)) {
+		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
 			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
@@ -751,6 +756,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, url, 'width=500,height=500');
 	            };
 
+	            scope.openInTab = function(url) {
+		            window.open(url, "_blank", "");
+	            };
+
 	            scope.openInViewer = function(url, type, name) {
 		            scope.hideAttachmentsPanel();
 		            scope.isShowViewerPlaceholder = true;
@@ -761,20 +770,48 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            filename: name
 		            };
 
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).addClass('bluvue-viewer-panel-holder-active');
+
 		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
 
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
-				            image.src =  url;
 				            image.style.display = 'none';
-				            image.onload = function () {
-					            image.style.display = 'block';
-					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
-						            left: 'calc(50% - ' +  panel_inline.clientWidth + 'px/2)',
-						            top: 'calc(50% - ' +  panel_inline.clientHeight + 'px/2)'
-					            });
+				            image.src =  url;
+
+				            var viewerPhoto = function (blockMode) {
+					            if(blockMode == undefined) {
+						            blockMode = true;
+					            }
+
+					            if(blockMode) {
+						            image.style.display = 'block';
+					            }
+
+					            var css = {
+						            left: 'calc(50% - ' + panel_inline.clientWidth + 'px/2)'
+					            };
+
+					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
+						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
+					            } else {
+						            css.top = '100px';
+						            css.height = (window.innerHeight - 145) + 'px';
+					            }
+
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
 				            };
+
+				            image.onload = viewerPhoto;
+
+				            var onResize = function() {
+											viewerPhoto(false);
+					            window.removeEventListener('resize', onResize);
+					            window.addEventListener('resize', onResize, true);
+				            };
+
+				            onResize();
 
 				            break;
 			            case 'video':
@@ -798,6 +835,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            scope.hideViewer = function() {
 		            scope.showAttachmentsPanel(false, true);
 		            scope.isShowViewerPlaceholder = false;
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({height: 'auto', left: '-10000px'});
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).removeClass('bluvue-viewer-panel-holder-active');
+
+		            var image = document.getElementById('viewer-photo');
+		            image.style.display = 'none';
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
