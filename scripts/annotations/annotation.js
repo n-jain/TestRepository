@@ -135,45 +135,54 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			this.drawMeasurement(context);
 		}
 
-		var lozenge = this.calculateAttachemntsLozenge.call(this, context);
 		if(!this.selected && this.attachments.length){
-			this.drawAttachments.call(this, context, lozenge);
+			this.drawAttachments.call(this, context);
 		}
 
 		context.restore();
 	}
 
-	this.calculateAttachemntsLozenge = function(context) {
-		var x, y, dx, dy;
+	this.drawAttachments = function(context) {
+		var x, y;
+
+		if(!this.added) {
+			return;
+		}
+
+		var theta = this.tileView.getRotation()/-180*Math.PI;
 		var isFlipped = (this.tileView.getRotation()==90 || this.tileView.getRotation()==270)
+		context.save();
 
-		x = this.bounds.left + (this.bounds.width() / 2);
-		y = this.bounds.top + (this.bounds.height() / 2);
+	  x = this.bounds.left + (this.bounds.width() / 2);
+    y = this.bounds.top + (this.bounds.height() / 2);
 
-		var width = isFlipped ? this.bounds.height() : this.bounds.width();
-		var height = isFlipped ? this.bounds.width() : this.bounds.height();
+	  context.translate( x, y );
+	  context.rotate( theta );
+
+    var width = isFlipped ? this.bounds.height() : this.bounds.width();
+    var height = isFlipped ? this.bounds.width() : this.bounds.height();
 
 		switch(this.type) {
-			case SQUARE_ANNOTATION:
-			case TEXT_ANNOTATION:
-			case X_ANNOTATION:
-			case CLOUD_ANNOTATION:
-				dx = width/2;
-				dy = -height/2;
-				break;
+      case SQUARE_ANNOTATION:
+      case TEXT_ANNOTATION:
+      case X_ANNOTATION:
+      case CLOUD_ANNOTATION:
+        context.translate( width/2, -height/2 );
+        break;
 
-			case CIRCLE_ANNOTATION:
-				dx = (0.25 * width );
-				dy = -(0.433 * height );
-				break;
+      case CIRCLE_ANNOTATION:
+        var dx = (0.25 * width );
+        var dy = -(0.433 * height );
+        context.translate( dx, dy );
+        break;
 
 			default:
 				var max_x = this.points[0].x,
-					min_x = this.points[0].x,
-					max_y = this.points[0].y,
-					min_y = this.points[0].y,
-					dx = 0,
-					dy = 0;
+						min_x = this.points[0].x,
+						max_y = this.points[0].y,
+						min_y = this.points[0].y,
+						dx = 0,
+						dy = 0;
 
 				for(var i in this.points) {
 					if(!this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y <= min_y) {
@@ -204,33 +213,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 						dy = x - this.points[i].x;
 					}
 				}
-		}
-
-		var left, top, right, bottom;
-
-		switch(this.tileView.getRotation()) {
-			default:
-				left = x + dx;
-				top = y + dy;
-				right = x + dx + tileView.screenCoordinatesFromSheetCoordinates(34, 0).x;
-				bottom = y + dy + tileView.screenCoordinatesFromSheetCoordinates(0, 20).y;
-		}
-
-		this.attachmentLozenge = new BluVueSheet.Rect(left, top, right, bottom);
-
-		return {x: x, y: y, dx: dx, dy: dy};
-	}
-
-	this.drawAttachments = function(context, lozenge) {
-		if(!this.added) {
-			return;
-		}
-
-		var theta = this.tileView.getRotation()/-180*Math.PI;
-		context.save();
-	  context.translate( lozenge.x, lozenge.y );
-	  context.rotate( theta );
-		context.translate( lozenge.dx, lozenge.dy );
+				context.translate(dx, dy);
+    }
 
     // Reset canvas to SCREEN coordinates instead of SHEET coordinates
     context.scale( 1/tileView.scale, 1/tileView.scale );
