@@ -191,6 +191,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 			cancelClick=true;
 		}
+		else // test for rollover cursors
+		{
+	    var cursor = 'auto';
+		  for( var i=0; i<annotations.length; i++ )
+		  {
+		    if( annotations[i].attachmentIndicatorBounds && annotations[i].attachmentIndicatorBounds.contains(x,y) )
+		    {
+		      cursor='pointer';
+		    }
+		  }
+		  angular.element( scope.currentSheet.canvas ).css( 'cursor', cursor );
+		}
 	}
 	this.onclick = function(x,y){
 
