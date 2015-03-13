@@ -220,17 +220,28 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 
     this.handleClick = function(x, y) {
+        var showAttachments = false;
         //get which annotations are touched
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
-            var bounds = annotations[i].bounds;
-            if (bounds.width() * tileView.scale < 30)
-                bounds = bounds.inset(-(20 / tileView.scale), 0);
-            if (bounds.height() * tileView.scale < 30)
-                bounds = bounds.inset(0, -(20 / tileView.scale));
-
-            if (bounds.contains(x, y)) {
+            var attachmentIndicatorBounds = annotations[i].attachmentIndicatorBounds;
+            if( attachmentIndicatorBounds && attachmentIndicatorBounds.contains(x,y) )
+            {
                 touchedAnnotations[touchedAnnotations.length] = annotations[i];
+                showAttachments = true;
+            }
+            else
+            {
+                var bounds = annotations[i].bounds;
+
+                if (bounds.width() * tileView.scale < 30)
+                    bounds = bounds.inset(-(20 / tileView.scale), 0);
+                if (bounds.height() * tileView.scale < 30)
+                    bounds = bounds.inset(0, -(20 / tileView.scale));
+
+                if (bounds.contains(x, y)) {
+                    touchedAnnotations[touchedAnnotations.length] = annotations[i];
+                }
             }
         }
         //get which are selected already
@@ -265,6 +276,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             for (var i = 0; i < touchedAnnotations.length; i++) {
                 if (!anySelected) touchedAnnotations[i].selectIndex -= 1;
             }
+        }
+
+        if( showAttachments )
+        {
+		      scope.changeFilterAttachmentPanel('selected');
+		      scope.showAttachmentsPanel(true);
         }
     }
 
