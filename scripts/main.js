@@ -760,7 +760,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, "_blank", "");
 	            };
 
-	            scope.openInViewer = function(url, type, name) {
+	            scope.openInViewer = function(url, type, name, index) {
+		            scope.openAttachmentIndex = index;
+
 		            scope.hideAttachmentsPanel();
 		            scope.isShowViewerPlaceholder = true;
 
@@ -785,14 +787,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            blockMode = true;
 					            }
 
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({});
+
 					            if(blockMode) {
 						            image.style.display = 'block';
 					            }
 
-					            var css = {
-						            left: 'calc(50% - ' + panel_inline.clientWidth + 'px/2)'
-					            };
-
+					            var css = {};
 					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
 						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
 					            } else {
@@ -801,12 +802,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            }
 
 					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
+
+					            // Set left param after set real height
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+						            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
+					            });
 				            };
 
 				            image.onload = viewerPhoto;
 
 				            var onResize = function() {
-											viewerPhoto(false);
+											//viewerPhoto(false);
 					            window.removeEventListener('resize', onResize);
 					            window.addEventListener('resize', onResize, true);
 				            };
@@ -828,7 +834,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            top: 'calc(50% - 15px)'
 				            });
 				            break;
+			            case 'document':
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+					            cursor: 'pointer',
+					            left: 'calc(50% - 75px)',
+					            top: '50%',
+				              width: '150px',
+				              textAlign: 'center'
+				            });
+				            break;
 		            }
+
+		            scope.isShowAttachmentPreviousButton = true;
+		            scope.isShowAttachmentNextButton = true;
 
 	            };
 
@@ -842,6 +860,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var image = document.getElementById('viewer-photo');
 		            image.style.display = 'none';
+
+		            scope.isShowAttachmentPreviousButton = false;
+		            scope.isShowAttachmentNextButton = false;
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
@@ -994,6 +1015,39 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 			            dialog.showConfirmDialog(options);
 		            }
+
+	            scope.selectPreviousAttachment = function() {
+		            var attachments = angular.element(document.querySelectorAll('#attachments-panel-files li'));
+
+		            console.log(scope.openAttachmentIndex)
+
+		            if(scope.openAttachmentIndex == 1) {
+			            scope.isShowAttachmentPreviousButton = false;
+		            }
+
+		            scope.openAttachmentIndex--;
+
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+
+	            };
+
+	            scope.selectNextAttachment = function() {
+		            var attachments = angular.element(document.querySelectorAll('#attachments-panel-files li'));
+
+		            console.log(scope.openAttachmentIndex)
+
+		            if(attachments.length == scope.openAttachmentIndex + 2) {
+			            scope.isShowAttachmentNextButton = false;
+		            }
+
+		            scope.openAttachmentIndex++;
+
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+	            }
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();

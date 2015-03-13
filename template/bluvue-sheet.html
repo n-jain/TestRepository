@@ -17,6 +17,9 @@
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
 	<button ng-click="showAttachmentsPanel()" id="attachments-button" class="ng-show"  ng-show="isShowAttachmentsButton">Attachments</button>
 
+	<button ng-click="selectPreviousAttachment()" ng-show="isShowAttachmentPreviousButton" id="previous-attachment-arrow">< Previous</button>
+	<button ng-click="selectNextAttachment()" ng-show="isShowAttachmentNextButton" id="next-attachment-arrow">Next ></button>
+
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
     </div>
@@ -49,7 +52,7 @@
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
-			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInTab(fileItem.url)">
+			<li ng-repeat="fileItem in attachmentFiles" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
@@ -77,6 +80,10 @@
 			<img ng-show="viewerData.icon == 'photo'" id="viewer-photo">
 			<video ng-show="viewerData.icon == 'video'" controls="controls" id="viewer-video"></video>
 			<audio ng-show="viewerData.icon == 'audio'" controls="controls" id="viewer-audio"></audio>
+			<div ng-show="viewerData.icon == 'document'" ng-click="openInTab(viewerData.url, viewerData.icon, viewerData.filename)" id="viewer-document">
+				<div class="attachment-icon-document"></div>
+				<div>Open Document</div>
+			</div>
 		</div>
 	</div>
 	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
