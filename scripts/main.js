@@ -573,6 +573,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
 
 	                window.addEventListener("keyup", onKeyUp);
+
+	                scope.isShowAttachmentNextButton = true;
+	                scope.isShowAttachmentPreviousButton = true;
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
@@ -670,6 +673,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                panel.removeClass('bluvue-attachments-panel-open');
 
 	                attachment_icon.removeClass('another-status');
+
+	                scope.isShowAttachmentNextButton = true;
+	                scope.isShowAttachmentPreviousButton = true;
                 }
 
                 scope.changeFilterAttachmentPanel = function(filter, need_apply) {
@@ -776,6 +782,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
 
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({width: 'auto'});
+
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
@@ -845,9 +853,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            break;
 		            }
 
-		            scope.isShowAttachmentPreviousButton = true;
-		            scope.isShowAttachmentNextButton = true;
+		            var col_attachments = angular.element(document.querySelectorAll('#attachments-panel-files li')).length;
 
+		            if(!index) {
+			            scope.isShowAttachmentPreviousButton = false;
+		            }
+
+		            if(index + 1 == col_attachments) {
+			            scope.isShowAttachmentNextButton = false;
+		            }
 	            };
 
 	            scope.hideViewer = function() {
@@ -1017,14 +1031,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            }
 
 	            scope.selectPreviousAttachment = function() {
-		            var attachments = angular.element(document.querySelectorAll('#attachments-panel-files li'));
-
-		            console.log(scope.openAttachmentIndex)
-
-		            if(scope.openAttachmentIndex == 1) {
-			            scope.isShowAttachmentPreviousButton = false;
-		            }
-
 		            scope.openAttachmentIndex--;
 
 		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
@@ -1034,14 +1040,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            };
 
 	            scope.selectNextAttachment = function() {
-		            var attachments = angular.element(document.querySelectorAll('#attachments-panel-files li'));
-
-		            console.log(scope.openAttachmentIndex)
-
-		            if(attachments.length == scope.openAttachmentIndex + 2) {
-			            scope.isShowAttachmentNextButton = false;
-		            }
-
 		            scope.openAttachmentIndex++;
 
 		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
