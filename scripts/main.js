@@ -995,6 +995,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            dialog.showConfirmDialog(options);
 		            }
 
+	              scope.orderByDate = function(item) {
+									console.log(item.createdDate);
+		              var date_parts = item.createdDate.split(' ');
+
+		              var date = date_parts[0].split('/'),
+			                time = [date_parts[1].split(':')[0], date_parts[1].split(':')[1].substr(0, 2)],
+			                zone = date_parts[1].split(':')[1].substr(-2);
+
+		              return -(date[2] + date[0] + date[1] + (zone == 'PM' ? time[0] + 12 : time[0]) + time[1]);
+	              }
+
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
 
