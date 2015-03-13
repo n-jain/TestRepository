@@ -996,7 +996,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            }
 
 	              scope.orderByDate = function(item) {
-									console.log(item.createdDate);
 		              var date_parts = item.createdDate.split(' ');
 
 		              var date = date_parts[0].split('/'),
