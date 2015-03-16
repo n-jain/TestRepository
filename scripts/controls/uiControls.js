@@ -781,7 +781,7 @@ BluVueSheet.Dialog = function(params) {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
-	  holder.on( 'click', cancelAction );
+	  holder.on( 'click', defaultHideAction );
 	  content.on( 'click', function() {return false;} );
     holder.css( { display: "block" } );
     wrapper.css( { display: "block" } );
