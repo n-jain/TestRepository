@@ -955,7 +955,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
-				            okLabel:'Save'
+				            button2Label:'Save',
+				            showBottomButtons: false
 			            };
 
 			            var save = function() {
@@ -974,18 +975,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            }
 
 			            if(fromShowDialog) {
-				            options.cancelAction = function() {
+				            options.button1Action = function() {
 					            scope.notesDialog(false, true);
 				            };
 
-				            options.okAction = (function (save) {
+				            options.button2Action = (function (save) {
 					            return function() {
 						            save();
 						            scope.notesDialog(false, true);
 					            }
 				            })(save);
 			            } else {
-				            options.okAction = (function (save) {
+				            options.button1Action = function() {
+					            dialog.hide();
+				            };
+
+				            options.button2Action = (function (save) {
 					            return function() {
 						            save();
 					            }
