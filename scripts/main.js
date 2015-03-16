@@ -652,6 +652,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
 			                case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
 		                }
+
+		                var filename = scope.attachmentFiles[i].name;
+		                scope.attachmentFiles[i].filename = filename.substr(0, filename.lastIndexOf('.'));
+		                scope.attachmentFiles[i].fileextension = filename.substr(filename.lastIndexOf('.'));
 	                }
 
 	                if(need_apply) {

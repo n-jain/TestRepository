@@ -985,6 +985,15 @@ select.bluvue-annotation-unit-edit {
     float: left;
 }
 
+.attachment-file-name span {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 215px;
+    vertical-align: bottom;
+}
+
 .attachment-file-attached-to {
     font-size: 12px;
     line-height: 2.5;
