@@ -22,7 +22,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 saveSheet: "=",
                 filepickerApiKey: "=",
                 attachmentsBucketName: "=",
-	              canEditNotes: "="
+	              canEditNotes: "=",
+	              fullName: "="
             },
             restrict: "E",
             replace: true,
@@ -951,12 +952,59 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            // Allow user to click input field
 			            editor.on( 'click', function(e){ e.stopPropagation(); } );
 
+
+			            var insertAtCursor = function insertAtCursor(myField, myValue) {
+				            //IE support
+				            if (document.selection) {
+					            myField.focus();
+					            var sel = document.selection.createRange();
+					            sel.text = myValue;
+				            }
+				            //MOZILLA and others
+				            else if (myField.selectionStart || myField.selectionStart == '0') {
+					            var startPos = myField.selectionStart;
+					            var endPos = myField.selectionEnd;
+					            myField.value = myField.value.substring(0, startPos)
+					            + myValue
+					            + myField.value.substring(endPos, myField.value.length);
+				            } else {
+					            myField.value += myValue;
+				            }
+				            myField.focus();
+			            };
+
+			            var doGetCaretPosition = function doGetCaretPosition(ctrl) {
+				            var CaretPos = 0;	// IE Support
+				            if (document.selection) {
+					            ctrl.focus ();
+					            var Sel = document.selection.createRange ();
+					            Sel.moveStart ('character', -ctrl.value.length);
+					            CaretPos = Sel.text.length;
+				            }
+				            // Firefox support
+				            else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+					            CaretPos = ctrl.selectionStart;
+				            return (CaretPos);
+			            }
+
+
+
 			            var options = {
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
 				            button2Label:'Save',
-				            showBottomButtons: false
+				            cancelLabel: 'Add Name',
+				            okLabel: 'Add Date',
+				            buttonClass: 'button-with-border',
+				            okAction: function() {
+					            insertAtCursor(document.getElementById('notes-editor'), (doGetCaretPosition(document.getElementById('notes-editor')) ? "\n" : "") + $filter('date')(new Date(), 'MMM d, y h:mm a') + "\n");
+
+				            },
+				            cancelAction: function() {
+					            insertAtCursor(document.getElementById('notes-editor'), (doGetCaretPosition(document.getElementById('notes-editor')) ? "\n" : "") + scope.fullName + "\n");
+
+				            }
 			            };
 
 			            var save = function() {

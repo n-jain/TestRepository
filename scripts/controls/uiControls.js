@@ -686,12 +686,13 @@ BluVueSheet.Dialog = function(params) {
 			  {
 				  label: options.cancelLabel||"Cancel",
 				  action: cancelAction,
-				  buttonClass: 'cancel'
+				  buttonClass: options.buttonClass||'cancel'
 			  },
 			  {
 				  label: options.okLabel||"Ok",
 				  validatorFactory: options.validatorFactory,
-				  action: options.okAction||defaultHideAction
+				  action: options.okAction||defaultHideAction,
+				  buttonClass: options.buttonClass||''
 			  }
 		  ],
 		  topButtons: {},
