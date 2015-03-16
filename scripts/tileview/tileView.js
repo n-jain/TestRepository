@@ -121,6 +121,13 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
             return;
         }
 
+	      var tempIsShowAttachmentsButton = scope.isShowAttachmentsButton;
+	      scope.isShowAttachmentsButton = this.annotationManager.getAttachments(false).length;
+
+	      if(!tempIsShowAttachmentsButton && scope.isShowAttachmentsButton) {
+		      scope.$apply();
+	      }
+
         context.save();
 
         context.scale(this.scale, this.scale);

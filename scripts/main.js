@@ -29,6 +29,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             transclude: false,
             templateUrl: "template/bluvue-sheet.html?_=" + Math.random().toString(36).substring(7),
             link: function bvSheetLink(scope, elem) {
+	              scope.isShowAttachmentsButton = false;
                 scope.currentSheet = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
@@ -339,7 +340,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     var overlay = angular.element( document.querySelector( '.overlay' ) );
                     overlay.toggleClass( 'bluvue-replaced-revision', scope.isReplacement() );
 
-	                  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
+	                  scope.isShowAttachmentsButton = false;
                 });
 
                 scope.$on('$destroy', function () {
@@ -486,10 +487,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                   if( forceSync )
                     scope.doAnnotationSync();
-
-	                if(undefined != scope.currentSheet) {
-		                scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
-	                }
                 };
 
                 scope.syncBuffer = { modifiedAnnotations: {}, deletedAnnotationIds: [], finallyQueue:[] };
