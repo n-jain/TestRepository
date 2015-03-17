@@ -196,7 +196,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    var cursor = 'auto';
 		  for( var i=0; i<annotations.length; i++ )
 		  {
-		    if( annotations[i].attachmentIndicatorBounds && annotations[i].attachmentIndicatorBounds.contains(x,y) )
+		    if( annotations[i].attachmentIndicatorBounds && annotations[i].attachmentIndicatorBounds.contains(x,y) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin))
 		    {
 		      cursor='pointer';
 		    }
@@ -236,6 +236,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         //get which annotations are touched
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
+	          if(!scope.isAdmin && (annotations[i].userId == null || annotations[i].userId != scope.userId)) {
+		          continue;
+	          }
+
             var attachmentIndicatorBounds = annotations[i].attachmentIndicatorBounds;
             if( attachmentIndicatorBounds && attachmentIndicatorBounds.contains(x,y) )
             {

@@ -417,11 +417,23 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         var menu = angular.element( document.querySelector( '.bluvue-sheet-floating-tools-menu' ));
         menu.empty();
 
+	      var allSelectedAnnotationsPersonal = true;
+	      for(var i in selectedAnnotations) {
+		      if(selectedAnnotations[i].userId == null) {
+			      allSelectedAnnotationsPersonal = false;
+		      }
+	      }
+
         var userIsAdmin = scope.isAdmin;
-        if( userIsAdmin && selectedAnnotations.length >= 1 )
+        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 )
         {
             menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
                 sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
+
+	              if(!scope.isAdmin && newState == 'master') {
+		              sheet.tileView.annotationManager.deselectAllAnnotations();
+	              }
+
             }) );
         }
     }
