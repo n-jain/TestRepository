@@ -440,13 +440,28 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
 
     this.createMasterPersonalControl = function( annotations, applyState )
     {
-        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster();
+        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster(),
+		        allAnnotations = sheet.tileView.annotationManager.getAnnotations(),
+		        existsMasterRuler = false,
+		        colSelectedMasterRuler = 0,
+		        colAllMasterRuler = 0;
 
         var masterPersonalControl = angular.element( "<div></div>" ).addClass( 'bluvue-sheet-floating-tools-toggle');
         var masterButton = angular.element( "<div>Master</div>" ).addClass( 'bv-toggle-master');
         masterButton.on( 'click', function() {
             masterPersonalControl.addClass( 'master' );
             masterPersonalControl.removeClass( 'personal' );
+
+	          // Set calibration master state
+	          if(annotations.length == 1 && (annotations[0].type == MEASURE_ANNOTATION || annotations[0].type == FREE_FORM_ANNOTATION || annotations[0].type == POLYGON_ANNOTATION || annotations[0].type == SQUARE_ANNOTATION || annotations[0].type == CIRCLE_ANNOTATION)) {
+							for(var i in allAnnotations) {
+								if(allAnnotations[i].type == SCALE_ANNOTATION) {
+									allAnnotations[i].userId = null;
+									break;
+								}
+							}
+	          }
+
             applyState( annotations, 'master' );
         } );
         var personalButton = angular.element( "<div>Personal</div>" ).addClass( 'bv-toggle-personal');
@@ -457,11 +472,6 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         } );
         masterPersonalControl.append( personalButton ).append( masterButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
-
-	      var allAnnotations =  sheet.tileView.annotationManager.getAnnotations(),
-		        existsMasterRuler = false,
-		        colSelectedMasterRuler = 0,
-		        colAllMasterRuler = 0;
 
 		    for(var i in annotations) {
 			    if(annotations[i].type == MEASURE_ANNOTATION && annotations[i].userId == null) {
