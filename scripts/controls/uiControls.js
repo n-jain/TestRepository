@@ -262,7 +262,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		        selectedAllRulersAndScale = true;
 
 	      for(var i in allAnnotations) {
-		      if(allAnnotations[i].type == MEASURE_ANNOTATION) {
+		      if(allAnnotations[i].type == MEASURE_ANNOTATION || allAnnotations[i].type == FREE_FORM_ANNOTATION || allAnnotations[i].type == POLYGON_ANNOTATION || allAnnotations[i].type == SQUARE_ANNOTATION || allAnnotations[i].type == CIRCLE_ANNOTATION) {
 			      existsRuler = true;
 
 			      var selectedCurrentAnnotation = false;
