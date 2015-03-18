@@ -37,6 +37,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
+	              scope.loadingImagesList = [];
 
                 for( var i=0; i<BluVueSheet.Constants.MoreMenu.length; i++ )
                 {
@@ -819,8 +820,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				            image.onload = viewerPhoto;
 
+				            var imageWasLoading = false;
+				            for(var i in scope.loadingImagesList) {
+					            if(scope.loadingImagesList[i] == url) {
+						            imageWasLoading = true;
+					            }
+			              }
+
+				            if(!imageWasLoading) {
+					            scope.loadingImagesList.push(url);
+				            } else {
+					            viewerPhoto(true);
+				            }
+
 				            var onResize = function() {
-											//viewerPhoto(false);
+											viewerPhoto(false);
 					            window.removeEventListener('resize', onResize);
 					            window.addEventListener('resize', onResize, true);
 				            };
