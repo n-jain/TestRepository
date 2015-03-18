@@ -672,7 +672,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            setTimeout(function() {
 			            ael.removeClass('active-element');
-		            }, 500);
+		            }, 300);
 	            };
 
                 scope.hideAttachmentsPanel = function() {
@@ -747,7 +747,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                  scope.changeFilterAttachmentPanel('selected');
 	                  scope.generateAttachmentFilesList(true);
-	                  scope.selectAttachmentItem(mgr.getAttachments(true).length - 1);
+	                  scope.selectAttachmentItem(0);
 
                   }, function attachmentCanceled() {
                   });
