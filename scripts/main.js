@@ -663,6 +663,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
                 }
 
+	            scope.selectAttachmentItem = function(position) {
+		            var el = document.getElementById('attachments-panel-files').getElementsByTagName('li')[position],
+			            ael = angular.element(el);
+
+		            el.scrollIntoView({block: "end"});
+		            ael.addClass('active-element');
+
+		            setTimeout(function() {
+			            ael.removeClass('active-element');
+		            }, 500);
+	            };
+
                 scope.hideAttachmentsPanel = function() {
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
@@ -735,6 +747,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                  scope.changeFilterAttachmentPanel('selected');
 	                  scope.generateAttachmentFilesList(true);
+	                  scope.selectAttachmentItem(mgr.getAttachments(true).length - 1);
 
                   }, function attachmentCanceled() {
                   });
