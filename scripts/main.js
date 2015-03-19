@@ -675,8 +675,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                attachment_icon.removeClass('another-status');
 
-	                scope.isShowAttachmentNextButton = true;
-	                scope.isShowAttachmentPreviousButton = true;
+	                scope.isShowAttachmentNextButton = false;
+	                scope.isShowAttachmentPreviousButton = false;
                 }
 
                 scope.changeFilterAttachmentPanel = function(filter, need_apply) {
@@ -869,13 +869,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var col_attachments = angular.element(document.querySelectorAll('#attachments-panel-files li')).length;
 
-		            if(!index) {
-			            scope.isShowAttachmentPreviousButton = false;
-		            }
+		            scope.isShowAttachmentNextButton = index + 1 != col_attachments;
+		            scope.isShowAttachmentPreviousButton = index;
 
-		            if(index + 1 == col_attachments) {
-			            scope.isShowAttachmentNextButton = false;
-		            }
+		            //if(!index) {
+			           // scope.isShowAttachmentPreviousButton = false;
+		            //}
+
+		            //if(index + 1 == col_attachments) {
+			           // scope.isShowAttachmentNextButton = false;
+		            //}
 	            };
 
 	            scope.hideViewer = function() {
