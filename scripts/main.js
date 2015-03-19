@@ -765,8 +765,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					              };
 				              }
 
-				              console.log(options);
-
 				              mgr.addAttachment( annotation, options);
 
 				              scope.changeFilterAttachmentPanel('selected');
