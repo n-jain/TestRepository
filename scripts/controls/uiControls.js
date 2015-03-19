@@ -440,6 +440,10 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
 
     this.createMasterPersonalControl = function( annotations, applyState )
     {
+	      if(!scope.isAdmin) {
+		      return '';
+	      }
+
         var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster(),
 		        allAnnotations = sheet.tileView.annotationManager.getAnnotations(),
 		        existsMasterRuler = false,
