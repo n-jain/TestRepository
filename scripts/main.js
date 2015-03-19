@@ -38,6 +38,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
+	              scope.loadingImagesList = [];
 
                 for( var i=0; i<BluVueSheet.Constants.MoreMenu.length; i++ )
                 {
@@ -570,6 +571,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
 
 	                window.addEventListener("keyup", onKeyUp);
+
+	                scope.isShowAttachmentNextButton = true;
+	                scope.isShowAttachmentPreviousButton = true;
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
@@ -663,6 +667,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                }
                 }
 
+	            scope.selectAttachmentItem = function(position) {
+		            var el = document.getElementById('attachments-panel-files').getElementsByTagName('li')[position],
+			            ael = angular.element(el);
+
+		            el.scrollIntoView({block: "end"});
+		            ael.addClass('active-element');
+
+		            setTimeout(function() {
+			            ael.removeClass('active-element');
+		            }, 300);
+	            };
+
                 scope.hideAttachmentsPanel = function() {
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
 		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
@@ -671,6 +687,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                panel.removeClass('bluvue-attachments-panel-open');
 
 	                attachment_icon.removeClass('another-status');
+
+	                scope.isShowAttachmentNextButton = true;
+	                scope.isShowAttachmentPreviousButton = true;
                 }
 
                 scope.changeFilterAttachmentPanel = function(filter, need_apply) {
@@ -735,6 +754,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                  scope.changeFilterAttachmentPanel('selected');
 	                  scope.generateAttachmentFilesList(true);
+	                  scope.selectAttachmentItem(0);
 
                   }, function attachmentCanceled() {
                   });
@@ -761,7 +781,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, "_blank", "");
 	            };
 
-	            scope.openInViewer = function(url, type, name) {
+	            scope.openInViewer = function(url, type, name, index) {
+		            scope.openAttachmentIndex = index;
+
 		            scope.hideAttachmentsPanel();
 		            scope.isShowViewerPlaceholder = true;
 
@@ -775,6 +797,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
 
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({width: 'auto'});
+
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
@@ -786,14 +810,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            blockMode = true;
 					            }
 
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({});
+
 					            if(blockMode) {
 						            image.style.display = 'block';
 					            }
 
-					            var css = {
-						            left: 'calc(50% - ' + panel_inline.clientWidth + 'px/2)'
-					            };
-
+					            var css = {};
 					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
 						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
 					            } else {
@@ -802,9 +825,27 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            }
 
 					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
+
+					            // Set left param after set real height
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+						            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
+					            });
 				            };
 
 				            image.onload = viewerPhoto;
+
+				            var imageWasLoading = false;
+				            for(var i in scope.loadingImagesList) {
+					            if(scope.loadingImagesList[i] == url) {
+						            imageWasLoading = true;
+					            }
+			              }
+
+				            if(!imageWasLoading) {
+					            scope.loadingImagesList.push(url);
+				            } else {
+					            viewerPhoto(true);
+				            }
 
 				            var onResize = function() {
 											viewerPhoto(false);
@@ -829,8 +870,26 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            top: 'calc(50% - 15px)'
 				            });
 				            break;
+			            case 'document':
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+					            cursor: 'pointer',
+					            left: 'calc(50% - 75px)',
+					            top: '50%',
+				              width: '150px',
+				              textAlign: 'center'
+				            });
+				            break;
 		            }
 
+		            var col_attachments = angular.element(document.querySelectorAll('#attachments-panel-files li')).length;
+
+		            if(!index) {
+			            scope.isShowAttachmentPreviousButton = false;
+		            }
+
+		            if(index + 1 == col_attachments) {
+			            scope.isShowAttachmentNextButton = false;
+		            }
 	            };
 
 	            scope.hideViewer = function() {
@@ -843,6 +902,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var image = document.getElementById('viewer-photo');
 		            image.style.display = 'none';
+
+		            scope.isShowAttachmentPreviousButton = false;
+		            scope.isShowAttachmentNextButton = false;
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
@@ -996,14 +1058,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            dialog.showConfirmDialog(options);
 		            }
 
-	              scope.orderByDate = function(item) {
-		              var date_parts = item.createdDate.split(' ');
+		    scope.selectPreviousAttachment = function() {
+		            scope.openAttachmentIndex--;
 
-		              var date = date_parts[0].split('/'),
-			                time = [date_parts[1].split(':')[0], date_parts[1].split(':')[1].substr(0, 2)],
-			                zone = date_parts[1].split(':')[1].substr(-2);
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
 
-		              return -(date[2] + date[0] + date[1] + (zone == 'PM' ? time[0] + 12 : time[0]) + time[1]);
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+
+	            };
+
+	            scope.selectNextAttachment = function() {
+		            scope.openAttachmentIndex++;
+
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 	              }
 
                // Force initial sync to occur at link time
