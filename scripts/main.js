@@ -970,7 +970,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            } else {
 					            myField.value += myValue;
 				            }
-				            myField.focus();
+				            //myField.focus();
 			            };
 
 			            var doGetCaretPosition = function doGetCaretPosition(ctrl) {
@@ -987,7 +987,72 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            return (CaretPos);
 			            }
 
+			            var setCaretPosition = function (elem, caretPos) {
+				            if(elem != null) {
+					            if(elem.createTextRange) {
+						            var range = elem.createTextRange();
+						            range.move('character', caretPos);
+						            range.select();
+					            }
+					            else {
+						            if(elem.selectionStart) {
+							            elem.focus();
+							            elem.setSelectionRange(caretPos, caretPos);
+						            }
+						            else
+							            elem.focus();
+					            }
+				            }
+			            };
 
+			            var moveCaretToEnd = function (el) {
+				            if (typeof el.selectionStart == "number") {
+					            el.selectionStart = el.selectionEnd = el.value.length;
+				            } else if (typeof el.createTextRange != "undefined") {
+					            el.focus();
+					            var range = el.createTextRange();
+					            range.collapse(false);
+					            range.select();
+				            }
+			            };
+
+			            var addFocusChecker = function(el) {
+				            el.focused = false;
+				            el.hasFocus = function() {
+					            return this.focused;
+				            };
+				            el.onfocus=function() {
+					            var self = this;
+					            setTimeout(function() {
+						            self.focused=true;
+					            }, 10);
+				            };
+				            el.onblur=function() {
+					            var self = this;
+					            setTimeout(function() {
+						            self.focused=false;
+					            }, 10);
+				            };
+			            };
+
+			            var addText = function(text) {
+				            var el = document.getElementById('notes-editor'),
+					            pos = doGetCaretPosition(el),
+					            hasFocus = el.hasFocus();
+
+				            if(el.value[pos] == "\n") {
+					            setCaretPosition(el, pos + 1);
+					            pos++;
+				            }
+
+				            if(!hasFocus) {
+					            moveCaretToEnd(el);
+					            pos = doGetCaretPosition(el);
+				            }
+
+				            insertAtCursor(el, (el.value[pos-1] != "\n" && pos ? "\n" : "") + text + "\n");
+				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 1 : 0));
+			            };
 
 			            var options = {
 				            title: 'Notes',
@@ -998,12 +1063,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okLabel: 'Add Date',
 				            buttonClass: 'button-with-border',
 				            okAction: function() {
-					            insertAtCursor(document.getElementById('notes-editor'), (doGetCaretPosition(document.getElementById('notes-editor')) ? "\n" : "") + $filter('date')(new Date(), 'MMM d, y h:mm a') + "\n");
-
+											addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
 				            },
 				            cancelAction: function() {
-					            insertAtCursor(document.getElementById('notes-editor'), (doGetCaretPosition(document.getElementById('notes-editor')) ? "\n" : "") + scope.fullName + "\n");
-
+					            addText(scope.fullName);
 				            }
 			            };
 
@@ -1046,6 +1109,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            }
 
 			            dialog.showConfirmDialog(options);
+			            addFocusChecker(document.getElementById('notes-editor'));
 		            }
 
                // Force initial sync to occur at link time
