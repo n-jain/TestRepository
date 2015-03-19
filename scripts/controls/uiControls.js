@@ -397,7 +397,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
           message: 'Select the unit of measurement to convert to',
           bodyElement: holder,
           okLabel:'Convert',
-          okAction: function() { okAction( editor[0].value ); }
+          okAction: function() { okAction( editor[0].value ); dialog.hide(); }
         });
     }
 }
