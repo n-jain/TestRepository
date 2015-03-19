@@ -424,8 +424,21 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
 		      }
 	      }
 
-        var userIsAdmin = scope.isAdmin;
-        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 )
+        var userIsAdmin = scope.isAdmin,
+	          issetMasterMeasurement = false,
+	          selectedCalibration = false;
+
+				for(var i in selectedAnnotations) {
+					if(selectedAnnotations[i].type == SCALE_ANNOTATION) {
+						selectedCalibration = true;
+					}
+				}
+
+	      if(sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
+		      issetMasterMeasurement = true;
+	      }
+
+        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement )
         {
             menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
                 sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
