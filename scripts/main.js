@@ -739,25 +739,49 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   var mgr = scope.currentSheet.tileView.annotationManager;
                   var annotation = mgr.getSelectedAnnotation()[0];
 
-                  scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
+		              var appendFile = function(lat, lon) {
+			              scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
 
-                    mgr.addAttachment( annotation, {
-                      createdDate: scope.generateTimestamp(),
-                      id: scope.generateUUID(),
-                      name: fileInfo.filename,
-                      mimeType: fileInfo.mimetype,
-                      url: fileInfo.url,
-                      userId: scope.userId,
-                      email: scope.email,
-                      amazonKeyPath: fileInfo.key
-                    });
+				              var options = {
+					              createdDate: scope.generateTimestamp(),
+					              id: scope.generateUUID(),
+					              name: fileInfo.filename,
+					              mimeType: fileInfo.mimetype,
+					              url: fileInfo.url,
+					              userId: scope.userId,
+					              email: scope.email,
+					              amazonKeyPath: fileInfo.key
+				              };
 
-	                  scope.changeFilterAttachmentPanel('selected');
-	                  scope.generateAttachmentFilesList(true);
-	                  scope.selectAttachmentItem(0);
+				              if(lat != null && lon != null) {
+					              options.location = {
+						              "id": scope.generateUUID(),
+						              "horizontalAccuracy": 192,
+						              "longitude": lon,
+						              "verticalAccuracy": 192,
+						              "latitude": lat,
+						              "altitude": 0,
+						              "determinationDate": $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' )
+					              };
+				              }
 
-                  }, function attachmentCanceled() {
-                  });
+				              console.log(options);
+
+				              mgr.addAttachment( annotation, options);
+
+				              scope.changeFilterAttachmentPanel('selected');
+				              scope.generateAttachmentFilesList(true);
+				              scope.selectAttachmentItem(0);
+
+			              }, function attachmentCanceled() {
+			              });
+		              };
+
+		              navigator.geolocation.getCurrentPosition(function(position) {
+			              appendFile(position.coords.latitude, position.coords.longitude);
+		              }, function() {
+			              appendFile(null, null);
+		              });
                 };
 
 	            scope.removeAttachment = function(attachment_id) {
