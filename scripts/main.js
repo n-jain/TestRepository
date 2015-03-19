@@ -785,6 +785,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({width: 'auto'});
 
+		            scope.stopViewerMedia();
+
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
@@ -843,14 +845,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				            break;
 			            case 'video':
-				            angular.element(document.querySelector('#viewer-video')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('#viewer-video')).append('<source src="' + url + '">');
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            left: 'calc(50% - 240px)',
 					            top: 'calc(50% - 135px)'
 				            });
 				            break;
 			            case 'audio':
-				            angular.element(document.querySelector('#viewer-audio')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('#viewer-audio')).append('<source src="' + url + '">');
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            left: 'calc(50% - 150px)',
 					            top: 'calc(50% - 15px)'
@@ -871,14 +873,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            scope.isShowAttachmentNextButton = index + 1 != col_attachments;
 		            scope.isShowAttachmentPreviousButton = index;
-
-		            //if(!index) {
-			           // scope.isShowAttachmentPreviousButton = false;
-		            //}
-
-		            //if(index + 1 == col_attachments) {
-			           // scope.isShowAttachmentNextButton = false;
-		            //}
 	            };
 
 	            scope.hideViewer = function() {
@@ -892,8 +886,29 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            var image = document.getElementById('viewer-photo');
 		            image.style.display = 'none';
 
+		            scope.stopViewerMedia();
+
 		            scope.isShowAttachmentPreviousButton = false;
 		            scope.isShowAttachmentNextButton = false;
+	            };
+
+	            scope.stopViewerMedia = function() {
+		            var video = document.querySelector('#viewer-video'),
+		                audio = document.querySelector('#viewer-audio');
+
+		            audio.pause();
+		            video.pause();
+
+		            audio.addEventListener('pause', function () {
+			            this.currentTime = 0;
+		            }, false);
+
+		            video.addEventListener('pause', function () {
+			            this.currentTime = 0;
+		            }, false);
+
+		            angular.element(video).empty();
+		            angular.element(audio).empty();
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
