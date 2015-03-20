@@ -924,8 +924,15 @@ BluVueSheet.FileChooser = function( scope ) {
     };
   }
 
-  this.chooseAttachment = function chooseAttachment( onSuccess, onError ) {
-    var mimeTypes = Object.keys( BluVueSheet.Constants.MIME );
+  this.chooseAttachment = function chooseAttachment( onSuccess, onError, filetype ) {
+	  var mimeTypes = [];
+
+	  for(var i in BluVueSheet.Constants.MIME) {
+		  if(BluVueSheet.Constants.MIME[i].type == filetype) {
+			  mimeTypes.push(i);
+		  }
+	  }
+
     this.openFileChooser( mimeTypes, onSuccess, onError );
   }
 

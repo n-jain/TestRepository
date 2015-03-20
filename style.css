@@ -943,7 +943,8 @@ select.bluvue-annotation-unit-edit {
     float: right;
 }
 
-#attachments-panel-files {
+#attachments-panel-files,
+#attachments-panel-mimetypes {
     overflow-y: auto;
     overflow-x: hidden;
     height: calc(100% - 229px);
@@ -959,7 +960,8 @@ select.bluvue-annotation-unit-edit {
     height: calc(100% - 98px);
 }
 
-#attachments-panel-files li {
+#attachments-panel-files li,
+#attachments-panel-mimetypes li {
     border-bottom: 2px solid #323232;
     cursor: pointer;
     padding: 20px 10%;
@@ -1049,7 +1051,8 @@ select.bluvue-annotation-unit-edit {
     overflow: hidden;
 }
 
-#attachments-panel-control-cancel {
+#attachments-panel-control-cancel,
+#attachment-mimetypes-control-cancel {
     background: #fc3d38;
     cursor: pointer;
     font-size: 18px;
