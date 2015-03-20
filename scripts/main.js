@@ -1016,42 +1016,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            }
 			            };
 
-			            var addFocusChecker = function(el) {
-				            el.focused = false;
-				            el.hasFocus = function() {
-					            return this.focused;
-				            };
-				            el.onfocus=function() {
-					            var self = this;
-					            setTimeout(function() {
-						            self.focused=true;
-					            }, 10);
-				            };
-				            el.onblur=function() {
-					            var self = this;
-					            setTimeout(function() {
-						            self.focused=false;
-					            }, 10);
-				            };
-			            };
-
 			            var addText = function(text) {
 				            var el = document.getElementById('notes-editor'),
-					            pos = doGetCaretPosition(el),
-					            hasFocus = el.hasFocus();
-
-				            if(el.value[pos] == "\n") {
-					            setCaretPosition(el, pos + 1);
-					            pos++;
-				            }
-
-				            if(!hasFocus) {
-					            moveCaretToEnd(el);
 					            pos = doGetCaretPosition(el);
-				            }
 
 				            insertAtCursor(el, (el.value[pos-1] != "\n" && pos ? "\n" : "") + text + "\n");
-				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 1 : 0));
+				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 2 : 1));
 			            };
 
 			            var options = {
@@ -1109,7 +1079,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            }
 
 			            dialog.showConfirmDialog(options);
-			            addFocusChecker(document.getElementById('notes-editor'));
+			            moveCaretToEnd(document.getElementById('notes-editor'));
 		            }
 
                // Force initial sync to occur at link time
