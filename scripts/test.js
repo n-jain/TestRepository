@@ -90,7 +90,16 @@ angular.module('test', ['bluvueSheet'])
             }];
 
             $scope.revisionsForCurrentSheet = function () {
-                // for testing this always returns the same thing
+              if( currentSheetIndex != 0 )
+                return[
+                    {
+                        name: sheets[currentSheetIndex].name,
+                        notes: "Bacon ipsum dolor amet sunt anim chuck in ham hock pastrami.",
+                        versionName: 'Latest',
+                        id: sheets[currentSheetIndex].id
+                    },
+                ];
+              else
                 return [
                     {
                         name: sheets[0].name,
