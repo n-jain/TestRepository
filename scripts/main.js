@@ -86,7 +86,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 var backHistoryDepth = $window.history.length-1;
+
+                // There's a bug in the container for this webapp that causes
+                // the html element to have a scrollbar when we're displayed.
+                // This class, 'html.noScroll', disables that scroll bar.
+                // See also Jira - BWA-1211.
+                document.querySelector('html').classList.toggle( 'noScroll', true );
                 scope.close = function () {
+                    document.querySelector('html').classList.toggle( 'noScroll', false );
                     if (!backPressed) {
                         setTimeout(function() {
                             scope.currentSheet.dispose();

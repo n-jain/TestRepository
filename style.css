@@ -1,3 +1,5 @@
+html.noScroll { overflow: hidden; }
+
 div.bluvue-sheet {
     position: fixed;
     left: 0;
