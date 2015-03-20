@@ -26,7 +26,7 @@
 
 	<div id="floating-indicators-panel">
 		<div id="notes-floating-indicator" ng-click="notesDialog()" ng-show="sheetHasNotes() || userCanEditNotes()" class="{{ sheetHasNotes() ? 'notes-on-floating-indicator' : '' }} {{ !sheetHasNotes() && userCanEditNotes() ? 'notes-off-floating-indicator' : '' }}"></div>
-		<div id="revisions-floating-indicator" ng-show="sheetHasRevisions()" ng-click="selectRevision()"></div>
+		<div id="revisions-floating-indicator" ng-show="sheetCountRevisions() > 1" ng-click="selectRevision()"></div>
 	</div>
 
 

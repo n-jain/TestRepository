@@ -1007,6 +1007,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                case 'notesDialog':
 												return scope.userCanEditNotes() || scope.sheetHasNotes();
 				                break;
+			                case 'selectRevision':
+				                return scope.sheetCountRevisions() > 1;
+			                  break;
 		                }
 
 		              return true;
@@ -1022,6 +1025,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            scope.sheetHasRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
+		            }
+
+		            scope.sheetCountRevisions = function() {
+			            return scope.revisionsForCurrentSheet(scope.currentSheet).length;
 		            }
 
 	              scope.notesDialog = function(openAnimate, hideAnimate) {
