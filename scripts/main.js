@@ -781,7 +781,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						              "verticalAccuracy": 192,
 						              "latitude": lat,
 						              "altitude": 0,
-						              "determinationDate": $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' )
+						              "determinationDate": scope.generateTimestamp()
 					              };
 				              }
 
@@ -1012,7 +1012,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.generateTimestamp = function generateTimestamp() {
-                  return $filter('date')( new Date(), 'MM/dd/yyyy h:mma' );
+                  return (new Date()).toISOString();
                 };
 
 	              scope.checkMenuItemShowCondition = function(menuItem) {
