@@ -766,7 +766,10 @@ BluVueSheet.Dialog = function(params) {
   }
 
   this.showDialog = function showConfirmDialog( options ) {
+    options.topButtons = options.topButtons||[];
+
     var bodyContent = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
+
     if( options.image )
       bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
 	  if('panel' == params.showType)
