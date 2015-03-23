@@ -716,24 +716,43 @@ BluVueSheet.Dialog = function(params) {
   this.showConfirmDialog = function showDialog( options ) {
     cancelAction = options.cancelAction || defaultHideAction;
 
-    return dialog.showDialog( {
-      title: options.title||"Confirm",
-      bodyClass: 'bluvue-dialog-confirmBody',
-      message: options.message,
-      bodyElement: options.bodyElement,
-      buttons: [
-        {
-          label: options.cancelLabel||"Cancel",
-          action: cancelAction,
-          buttonClass: 'cancel'
-        },
-        {
-          label: options.okLabel||"Ok",
-          validatorFactory: options.validatorFactory,
-          action: options.okAction||defaultHideAction
-        }
-      ]
-    });
+	  var data = {
+		  title: options.title||"Confirm",
+		  bodyClass: 'bluvue-dialog-confirmBody',
+		  message: options.message,
+		  bodyElement: options.bodyElement,
+		  buttons: [
+			  {
+				  label: options.cancelLabel||"Cancel",
+				  action: cancelAction,
+				  buttonClass: options.buttonClass||'cancel'
+			  },
+			  {
+				  label: options.okLabel||"Ok",
+				  validatorFactory: options.validatorFactory,
+				  action: options.okAction||defaultHideAction,
+				  buttonClass: options.buttonClass||''
+			  }
+		  ],
+		  topButtons: {},
+		  showBottomButtons: options.showBottomButtons
+	  };
+
+	  if(options.button1Action != undefined) {
+		  data.topButtons[1] = {
+			  label: options.button1Label || "Cancel",
+			  action: options.button1Action
+		  };
+	  }
+
+	  if(options.button2Action != undefined) {
+		  data.topButtons[2] = {
+			  label: options.button2Label||"Ok",
+			  action: options.button2Action
+		  };
+	  }
+
+    return dialog.showDialog( data );
   }
 
   this.showTooltip = function showTooltip( options ) {
@@ -752,13 +771,31 @@ BluVueSheet.Dialog = function(params) {
       bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
 	  if('panel' == params.showType)
 		  bodyContent.append(angular.element("<div style=\"text-align: right;\"></div>").append(angular.element('<a href="#" class="dialog-close"></a>').on('click', defaultHideAction)));
+
+	  var titleContent = angular.element("<div class='dialog-title'></div>");
+
+	  if(options.topButtons[1] != undefined) {
+		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[1].label + "</div>" );
+		 button.on( 'click', options.topButtons[1].action );
+		 titleContent.append( button );
+	  }
+
     if( options.title )
-      bodyContent.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
+	    titleContent.append( options.title );
+
+	  if(options.topButtons[2] != undefined) {
+		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[2].label + "</div>" );
+		 button.on( 'click', options.topButtons[2].action );
+		 titleContent.append( button );
+	  }
+
+	  bodyContent.append(titleContent);
+
     if( options.message )
       bodyContent.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
     if( options.bodyElement )
       bodyContent.append( options.bodyElement );
-    if( options.buttons )
+    if( options.buttons && options.showBottomButtons != false )
     {
       var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
       options.buttons.forEach( function( spec ) {
@@ -783,7 +820,7 @@ BluVueSheet.Dialog = function(params) {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
-	  holder.on( 'click', cancelAction );
+	  holder.on( 'click', defaultHideAction );
 	  content.on( 'click', function() {return false;} );
     holder.css( { display: "block" } );
     wrapper.css( { display: "block" } );

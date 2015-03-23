@@ -150,6 +150,8 @@ angular.module('test', ['bluvueSheet'])
 
 	          $scope.canEditNotes = true;
 
+	          $scope.fullName = 'Tester Name';
+
             $scope.closeSheet = function() {
                 console.log("close sheet");
             };

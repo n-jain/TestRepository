@@ -432,6 +432,26 @@ footer.bluvue-sheet-footer {
   letter-spacing: 1px;
   cursor: pointer;
 }
+.dialog-top-button {
+    cursor: pointer;
+    display: inline-block;
+    float: left;
+    font-size: 14px;
+    color: #4397fb;
+    vertical-align: middle;
+    padding-top: 12px;
+}
+.button-with-border {
+    border: 2px solid #157dfa;
+    background: #fff;
+    color: #157dfa;
+}
+.button-with-border:hover {
+    background: #fff!important;
+}
+.dialog-top-button:nth-child(2) {
+    float: right;
+}
 .dialog-button:hover {
   background-color: #4397fb;
 }
@@ -529,7 +549,7 @@ footer.bluvue-sheet-footer {
 .bluvue-dialog-type-panel .dialog-title {
     border-bottom: 1px solid #c8cedc;
     font-weight: normal;
-    padding-bottom: 12px;
+    padding: 0 4% 12px;
 }
 
 .bluvue-dialog-type-panel .bluvue-dialog-body {

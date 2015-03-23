@@ -22,7 +22,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 saveSheet: "=",
                 filepickerApiKey: "=",
                 attachmentsBucketName: "=",
-	              canEditNotes: "="
+	              canEditNotes: "=",
+	              fullName: "="
             },
             restrict: "E",
             replace: true,
@@ -1068,11 +1069,92 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            // Allow user to click input field
 			            editor.on( 'click', function(e){ e.stopPropagation(); } );
 
+
+			            var insertAtCursor = function insertAtCursor(myField, myValue) {
+				            //IE support
+				            if (document.selection) {
+					            myField.focus();
+					            var sel = document.selection.createRange();
+					            sel.text = myValue;
+				            }
+				            //MOZILLA and others
+				            else if (myField.selectionStart || myField.selectionStart == '0') {
+					            var startPos = myField.selectionStart;
+					            var endPos = myField.selectionEnd;
+					            myField.value = myField.value.substring(0, startPos)
+					            + myValue
+					            + myField.value.substring(endPos, myField.value.length);
+				            } else {
+					            myField.value += myValue;
+				            }
+				            //myField.focus();
+			            };
+
+			            var doGetCaretPosition = function doGetCaretPosition(ctrl) {
+				            var CaretPos = 0;	// IE Support
+				            if (document.selection) {
+					            ctrl.focus ();
+					            var Sel = document.selection.createRange ();
+					            Sel.moveStart ('character', -ctrl.value.length);
+					            CaretPos = Sel.text.length;
+				            }
+				            // Firefox support
+				            else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+					            CaretPos = ctrl.selectionStart;
+				            return (CaretPos);
+			            }
+
+			            var setCaretPosition = function (elem, caretPos) {
+				            if(elem != null) {
+					            if(elem.createTextRange) {
+						            var range = elem.createTextRange();
+						            range.move('character', caretPos);
+						            range.select();
+					            }
+					            else {
+						            if(elem.selectionStart) {
+							            elem.focus();
+							            elem.setSelectionRange(caretPos, caretPos);
+						            }
+						            else
+							            elem.focus();
+					            }
+				            }
+			            };
+
+			            var moveCaretToEnd = function (el) {
+				            if (typeof el.selectionStart == "number") {
+					            el.selectionStart = el.selectionEnd = el.value.length;
+				            } else if (typeof el.createTextRange != "undefined") {
+					            el.focus();
+					            var range = el.createTextRange();
+					            range.collapse(false);
+					            range.select();
+				            }
+			            };
+
+			            var addText = function(text) {
+				            var el = document.getElementById('notes-editor'),
+					            pos = doGetCaretPosition(el);
+
+				            insertAtCursor(el, (el.value[pos-1] != "\n" && pos ? "\n" : "") + text + "\n");
+				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 2 : 1));
+			            };
+
 			            var options = {
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
-				            okLabel:'Save'
+				            button2Label:'Save',
+				            cancelLabel: 'Add Name',
+				            okLabel: 'Add Date',
+				            buttonClass: 'button-with-border',
+				            okAction: function() {
+											addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
+				            },
+				            cancelAction: function() {
+					            addText(scope.fullName);
+				            }
 			            };
 
 			            var save = function() {
@@ -1091,18 +1173,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            }
 
 			            if(fromShowDialog) {
-				            options.cancelAction = function() {
+				            options.button1Action = function() {
 					            scope.notesDialog(false, true);
 				            };
 
-				            options.okAction = (function (save) {
+				            options.button2Action = (function (save) {
 					            return function() {
 						            save();
 						            scope.notesDialog(false, true);
 					            }
 				            })(save);
 			            } else {
-				            options.okAction = (function (save) {
+				            options.button1Action = function() {
+					            dialog.hide();
+				            };
+
+				            options.button2Action = (function (save) {
 					            return function() {
 						            save();
 					            }
@@ -1110,6 +1196,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            }
 
 			            dialog.showConfirmDialog(options);
+			            moveCaretToEnd(document.getElementById('notes-editor'));
 		            }
 
 		    scope.selectPreviousAttachment = function() {
