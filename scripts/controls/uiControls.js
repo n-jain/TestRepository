@@ -327,7 +327,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
                 }
             }
 
-            if( a.measurement && (a.areaMeasured || a.perimeterMeasured || a.type==MEASURE_ANNOTATION) )
+            if( a.measurement && (a.areaMeasured || a.perimeterMeasured || a.type==MEASURE_ANNOTATION) && existsCalibration)
             {
               var m = selectedAnnotations[0].measurement;
               var unitName = BluVueSheet.Constants.UnitDisplayNames[ m.type ][ m.unit ];
