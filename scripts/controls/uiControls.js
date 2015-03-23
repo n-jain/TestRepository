@@ -257,17 +257,18 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
 	      var allAnnotations = scope.currentSheet.tileView.annotationManager.getAnnotations(),
 		        appendDeleteButton = true,
-	          existsRuler = false,
+		        isCalibrationUsed = false,
 		        existsCalibration = false,
 		        selectedAllRulersAndScale = true;
 
 	      for(var i in allAnnotations) {
-		      if(allAnnotations[i].type == MEASURE_ANNOTATION || allAnnotations[i].type == FREE_FORM_ANNOTATION || allAnnotations[i].type == POLYGON_ANNOTATION || allAnnotations[i].type == SQUARE_ANNOTATION || allAnnotations[i].type == CIRCLE_ANNOTATION) {
-			      existsRuler = true;
+		      var cur = allAnnotations[i];
+		      if( (cur.type == MEASURE_ANNOTATION) || (cur.hasArea && cur.areaMeasured) || (cur.hasPerimeter && cur.perimeterMeasured) ) {
+			      isCalibrationUsed = true;
 
 			      var selectedCurrentAnnotation = false;
 			      for(var j in selectedAnnotations) {
-				      if(selectedAnnotations[j].id == allAnnotations[i].id) {
+				      if(selectedAnnotations[j].id == cur.id) {
 					      selectedCurrentAnnotation = true;
 				      }
 			      }
@@ -277,7 +278,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 			      }
 		      }
 
-		      if(allAnnotations[i].type == SCALE_ANNOTATION) {
+		      if(cur.type == SCALE_ANNOTATION) {
 			      existsCalibration = true;
 		      }
 	      }
@@ -287,7 +288,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 	      }
 
 	      // If selected only calibration annotation
-	      if(existsRuler && existsCalibration && selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION) {
+	      if(isCalibrationUsed && existsCalibration && selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION) {
 		      appendDeleteButton = false;
 	      }
 
