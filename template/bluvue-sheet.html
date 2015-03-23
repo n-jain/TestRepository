@@ -44,13 +44,38 @@
 			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected', true)">Selected (<span>0</span>)</li>
 			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all', true)">View All (<span>0</span>)</li>
 		</ul>
-		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls" class="ng-hide">
-			<li id="attachments-panel-control-add" ng-click="addAttachmentAction()">Add</li>
+		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls || isShowAddAttachmentPanel" class="ng-hide">
+			<li id="attachments-panel-control-add" ng-click="addModeAttachmentsAction('open')">Add</li>
 			<li id="attachments-panel-control-edit" ng-click="editModeAttachmentsAction('open')">Edit</li>
 		</ul>
 		<ul id="attachments-panel-controls-cancel" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide">
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
+
+		<ul id="attachment-mimetypes-controls-cancel" ng-show="isShowAddAttachmentPanel">
+			<li id="attachment-mimetypes-control-cancel" ng-click="addModeAttachmentsAction('close')">Cancel</li>
+		</ul>
+
+		<ul id="attachments-panel-mimetypes" ng-show="isShowAddAttachmentPanel">
+			<li ng-click="addAttachmentAction('image')">
+				<div class="attachment-icon attachment-icon-photo"></div>
+				<div class="attachment-type">Add Photo</div>
+			</li>
+			<li ng-click="addAttachmentAction('video')">
+				<div class="attachment-icon attachment-icon-video"></div>
+				<div class="attachment-type">Add Video</div>
+			</li>
+			<li ng-click="addAttachmentAction('audio')">
+				<div class="attachment-icon attachment-icon-audio"></div>
+				<div class="attachment-type">Add Audio</div>
+			</li>
+			<li ng-click="addAttachmentAction('document')">
+				<div class="attachment-icon attachment-icon-document"></div>
+				<div class="attachment-type">Add Document</div>
+			</li>
+		</ul>
+
+
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
 			<li ng-repeat="fileItem in attachmentFiles | orderBy: '-createdDate'" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>

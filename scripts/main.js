@@ -706,6 +706,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                if('all' == filter) {
 		                selected.removeClass('active');
 		                all.addClass('active');
+		                scope.addModeAttachmentsAction('close');
 	                } else {
 		                selected.addClass('active');
 		                all.removeClass('active');
@@ -719,31 +720,42 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                return is_all ? 'all' : 'selected';
                 };
 
-	              scope.editModeAttachmentsAction = function(action) {
+	              scope.addModeAttachmentsAction = function(action) {
 									switch(action) {
 										case 'open':
-											scope.isHideAttachmentsPanelCancelControls = false;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = false;
+											scope.isShowAddAttachmentPanel = true;
 											break;
 										case 'close':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = false;
-											scope.isHideAttachmentsPanelFilterControls = false;
+											scope.isShowAddAttachmentPanel = false;
 											break;
-										case 'hide':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = false;
-											break;
-										case 'hide-all':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = true;
 									}
 	              };
 
-	              scope.addAttachmentAction = function() {
+		            scope.editModeAttachmentsAction = function(action) {
+			            switch(action) {
+				            case 'open':
+					            scope.isHideAttachmentsPanelCancelControls = false;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'close':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = false;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'hide':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'hide-all':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = true;
+			            }
+		            };
+
+	              scope.addAttachmentAction = function(filetype) {
                   var mgr = scope.currentSheet.tileView.annotationManager;
                   var annotation = mgr.getSelectedAnnotation()[0];
 
@@ -776,11 +788,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				              mgr.addAttachment( annotation, options);
 
 				              scope.changeFilterAttachmentPanel('selected');
+				              scope.addModeAttachmentsAction('close');
 				              scope.generateAttachmentFilesList(true);
 				              scope.selectAttachmentItem(0);
 
-			              }, function attachmentCanceled() {
-			              });
+			              }, function attachmentCanceled() {}, filetype);
 		              };
 
 		              navigator.geolocation.getCurrentPosition(function(position) {
