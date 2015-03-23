@@ -22,13 +22,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 saveSheet: "=",
                 filepickerApiKey: "=",
                 attachmentsBucketName: "=",
-	              canEditNotes: "="
+	              canEditNotes: "=",
+	              fullName: "="
             },
             restrict: "E",
             replace: true,
             transclude: false,
             templateUrl: "template/bluvue-sheet.html?_=" + Math.random().toString(36).substring(7),
             link: function bvSheetLink(scope, elem) {
+	              scope.isShowAttachmentsButton = false;
                 scope.currentSheet = null;
                 scope.selectedTool = null;
                 scope.tools = BluVueSheet.Constants.Tools;
@@ -37,6 +39,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
                 scope.selectedToolMenu = null;
                 scope.textSizes = BluVueSheet.Constants.TextSizes;
+	              scope.loadingImagesList = [];
 
                 for( var i=0; i<BluVueSheet.Constants.MoreMenu.length; i++ )
                 {
@@ -83,10 +86,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     currentSheetPinned: false
                 };
 
+                var backHistoryDepth = $window.history.length-1;
+
+                // There's a bug in the container for this webapp that causes
+                // the html element to have a scrollbar when we're displayed.
+                // This class, 'html.noScroll', disables that scroll bar.
+                // See also Jira - BWA-1211.
+                document.querySelector('html').classList.toggle( 'noScroll', true );
                 scope.close = function () {
+                    document.querySelector('html').classList.toggle( 'noScroll', false );
                     if (!backPressed) {
                         setTimeout(function() {
-                            $window.history.back();
+                            scope.currentSheet.dispose();
+                            scope.closeSheet();
+                            $window.history.go( backHistoryDepth - $window.history.length );
                         }, 0);
                         return;
                     }
@@ -109,9 +122,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     if( tool )
                     {
+	                      var mgr = scope.currentSheet.tileView.annotationManager;
+
+	                      if('lasso' != tool.name) {
+		                      mgr.deselectAllAnnotations();
+	                      }
+
                         if( tool.id == BluVueSheet.Constants.Tools.Calibration.id )
                         {
-                            var mgr = scope.currentSheet.tileView.annotationManager;
+
                             if( mgr.scaleAnnotation )
                             {
                               console.log('scale');
@@ -197,7 +216,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 }
                 scope.enterFullscreen = function() {
                     if (!document.fullscreenElement && !document.mozFullScreenElement &&
-                        !document.webkitFullscreenElement && !document.msFullscreenElement ){
+                        !document.webkitFullscreenElement && !document.msFullscreenElement &&
+	                    !angular.element(document.querySelector('body')).hasClass('fullscreen-mode') ){
                         if (document.documentElement.requestFullscreen) {
                             document.documentElement.requestFullscreen();
                         } else if (document.documentElement.msRequestFullscreen) {
@@ -257,6 +277,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                           val = val.substring( 0, 50 );
                         scope.sheet.name = val;
                         scope.saveSheet(scope.sheet);
+	                      dialog.hide();
                       });
                     },
                     cancelAction: function hideAction(){
@@ -290,6 +311,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             okAction: function () {
                                 scope.$apply(function () {
                                     scope.openSheetById(revisions[editor[0].value].id);
+	                                  dialog.hide();
                                 });
                             }
                         });
@@ -327,7 +349,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     var overlay = angular.element( document.querySelector( '.overlay' ) );
                     overlay.toggleClass( 'bluvue-replaced-revision', scope.isReplacement() );
 
-	                  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
+	                  scope.isShowAttachmentsButton = false;
                 });
 
                 scope.$on('$destroy', function () {
@@ -474,10 +496,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                   if( forceSync )
                     scope.doAnnotationSync();
-
-	                if(undefined != scope.currentSheet) {
-		                scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
-	                }
                 };
 
                 scope.syncBuffer = { modifiedAnnotations: {}, deletedAnnotationIds: [], finallyQueue:[] };
@@ -520,6 +538,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         mgr.onExternalAnnotationDelete( result.data.annotationDeletes );
                     }
 
+	                  scope.currentSheet.tileView.setLoaded();
+
                   })["catch"]( function( err ) {
                     console.error( "Annotation sync error", err );
                   })["finally"]( function() {
@@ -547,6 +567,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
                   panel.addClass('bluvue-attachments-panel-open');
 	                attachment_icon.addClass('another-status');
+
+	                var onKeyUp = function(event) {
+		                switch(event.keyCode){
+			                case 27: //esc
+				                scope.hideAttachmentsPanel();
+				                break;
+		                }
+
+		                window.removeEventListener('keyup', onKeyUp);
+	                }
+
+	                window.addEventListener("keyup", onKeyUp);
+
+	                scope.isShowAttachmentNextButton = true;
+	                scope.isShowAttachmentPreviousButton = true;
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
@@ -575,7 +610,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		                var ann_sel = mgr.getSelectedAnnotation();
 
-		                if(ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
+		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
 			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
@@ -629,12 +664,28 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
 			                case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
 		                }
+
+		                var filename = scope.attachmentFiles[i].name;
+		                scope.attachmentFiles[i].filename = filename.substr(0, filename.lastIndexOf('.'));
+		                scope.attachmentFiles[i].fileextension = filename.substr(filename.lastIndexOf('.'));
 	                }
 
 	                if(need_apply) {
 		                scope.$apply();
 	                }
                 }
+
+	            scope.selectAttachmentItem = function(position) {
+		            var el = document.getElementById('attachments-panel-files').getElementsByTagName('li')[position],
+			            ael = angular.element(el);
+
+		            el.scrollIntoView({block: "end"});
+		            ael.addClass('active-element');
+
+		            setTimeout(function() {
+			            ael.removeClass('active-element');
+		            }, 300);
+	            };
 
                 scope.hideAttachmentsPanel = function() {
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
@@ -644,6 +695,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                panel.removeClass('bluvue-attachments-panel-open');
 
 	                attachment_icon.removeClass('another-status');
+
+	                scope.isShowAttachmentNextButton = false;
+	                scope.isShowAttachmentPreviousButton = false;
                 }
 
                 scope.changeFilterAttachmentPanel = function(filter, need_apply) {
@@ -652,6 +706,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                if('all' == filter) {
 		                selected.removeClass('active');
 		                all.addClass('active');
+		                scope.addModeAttachmentsAction('close');
 	                } else {
 		                selected.addClass('active');
 		                all.removeClass('active');
@@ -665,52 +720,86 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                return is_all ? 'all' : 'selected';
                 };
 
-	              scope.editModeAttachmentsAction = function(action) {
+	              scope.addModeAttachmentsAction = function(action) {
 									switch(action) {
 										case 'open':
-											scope.isHideAttachmentsPanelCancelControls = false;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = false;
+											scope.isShowAddAttachmentPanel = true;
 											break;
 										case 'close':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = false;
-											scope.isHideAttachmentsPanelFilterControls = false;
+											scope.isShowAddAttachmentPanel = false;
 											break;
-										case 'hide':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = false;
-											break;
-										case 'hide-all':
-											scope.isHideAttachmentsPanelCancelControls = true;
-											scope.isHideAttachmentsPanelControls = true;
-											scope.isHideAttachmentsPanelFilterControls = true;
 									}
 	              };
 
-	              scope.addAttachmentAction = function() {
+		            scope.editModeAttachmentsAction = function(action) {
+			            switch(action) {
+				            case 'open':
+					            scope.isHideAttachmentsPanelCancelControls = false;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'close':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = false;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'hide':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = false;
+					            break;
+				            case 'hide-all':
+					            scope.isHideAttachmentsPanelCancelControls = true;
+					            scope.isHideAttachmentsPanelControls = true;
+					            scope.isHideAttachmentsPanelFilterControls = true;
+			            }
+		            };
+
+	              scope.addAttachmentAction = function(filetype) {
                   var mgr = scope.currentSheet.tileView.annotationManager;
                   var annotation = mgr.getSelectedAnnotation()[0];
 
-                  scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
+		              var appendFile = function(lat, lon) {
+			              scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {
 
-                    mgr.addAttachment( annotation, {
-                      createdDate: scope.generateTimestamp(),
-                      id: scope.generateUUID(),
-                      name: fileInfo.filename,
-                      mimeType: fileInfo.mimetype,
-                      url: fileInfo.url,
-                      userId: scope.userId,
-                      email: scope.email,
-                      amazonKeyPath: fileInfo.key
-                    });
+				              var options = {
+					              createdDate: scope.generateTimestamp(),
+					              id: scope.generateUUID(),
+					              name: fileInfo.filename,
+					              mimeType: fileInfo.mimetype,
+					              url: fileInfo.url,
+					              userId: scope.userId,
+					              email: scope.email,
+					              amazonKeyPath: fileInfo.key
+				              };
 
-	                  scope.changeFilterAttachmentPanel('selected');
-	                  scope.generateAttachmentFilesList(true);
+				              if(lat != null && lon != null) {
+					              options.location = {
+						              "id": scope.generateUUID(),
+						              "horizontalAccuracy": 192,
+						              "longitude": lon,
+						              "verticalAccuracy": 192,
+						              "latitude": lat,
+						              "altitude": 0,
+						              "determinationDate": $filter('date')( new Date(), 'yyyy-MM-dd HH:mm:ss' )
+					              };
+				              }
 
-                  }, function attachmentCanceled() {
-                  });
+				              mgr.addAttachment( annotation, options);
+
+				              scope.changeFilterAttachmentPanel('selected');
+				              scope.addModeAttachmentsAction('close');
+				              scope.generateAttachmentFilesList(true);
+				              scope.selectAttachmentItem(0);
+
+			              }, function attachmentCanceled() {}, filetype);
+		              };
+
+		              navigator.geolocation.getCurrentPosition(function(position) {
+			              appendFile(position.coords.latitude, position.coords.longitude);
+		              }, function() {
+			              appendFile(null, null);
+		              });
                 };
 
 	            scope.removeAttachment = function(attachment_id) {
@@ -730,7 +819,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            window.open(url, url, 'width=500,height=500');
 	            };
 
-	            scope.openInViewer = function(url, type, name) {
+	            scope.openInTab = function(url) {
+		            window.open(url, "_blank", "");
+	            };
+
+	            scope.openInViewer = function(url, type, name, index) {
+		            scope.openAttachmentIndex = index;
+
 		            scope.hideAttachmentsPanel();
 		            scope.isShowViewerPlaceholder = true;
 
@@ -740,55 +835,180 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            filename: name
 		            };
 
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).addClass('bluvue-viewer-panel-holder-active');
+
 		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({width: 'auto'});
+
+		            scope.stopViewerMedia();
 
 		            switch(type) {
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
-				            image.src =  url;
 				            image.style.display = 'none';
-				            image.onload = function () {
-					            image.style.display = 'block';
+				            image.src =  url;
+
+				            var viewerPhoto = function (blockMode) {
+					            if(blockMode == undefined) {
+						            blockMode = true;
+					            }
+
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({});
+
+					            if(blockMode) {
+						            image.style.display = 'block';
+					            }
+
+					            var css = {};
+					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
+						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
+					            } else {
+						            css.top = '100px';
+						            css.height = (window.innerHeight - 145) + 'px';
+					            }
+
+					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
+
+					            // Set left param after set real height
 					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
-						            left: 'calc(50% - ' +  panel_inline.clientWidth + 'px/2)',
-						            top: 'calc(50% - ' +  panel_inline.clientHeight + 'px/2)'
+						            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
 					            });
 				            };
 
+				            image.onload = viewerPhoto;
+
+				            var imageWasLoading = false;
+				            for(var i in scope.loadingImagesList) {
+					            if(scope.loadingImagesList[i] == url) {
+						            imageWasLoading = true;
+					            }
+			              }
+
+				            if(!imageWasLoading) {
+					            scope.loadingImagesList.push(url);
+				            } else {
+					            viewerPhoto(true);
+				            }
+
+				            var onResize = function() {
+											viewerPhoto(false);
+					            window.removeEventListener('resize', onResize);
+					            window.addEventListener('resize', onResize, true);
+				            };
+
+				            onResize();
+
 				            break;
 			            case 'video':
-				            angular.element(document.querySelector('#viewer-video')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('#viewer-video')).append('<source src="' + url + '">');
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            left: 'calc(50% - 240px)',
 					            top: 'calc(50% - 135px)'
 				            });
 				            break;
 			            case 'audio':
-				            angular.element(document.querySelector('#viewer-audio')).empty().append('<source src="' + url + '">');
+				            angular.element(document.querySelector('#viewer-audio')).append('<source src="' + url + '">');
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            left: 'calc(50% - 150px)',
 					            top: 'calc(50% - 15px)'
 				            });
 				            break;
+			            case 'document':
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
+					            cursor: 'pointer',
+					            left: 'calc(50% - 75px)',
+					            top: '50%',
+				              width: '150px',
+				              textAlign: 'center'
+				            });
+				            break;
 		            }
 
+		            var col_attachments = angular.element(document.querySelectorAll('#attachments-panel-files li')).length;
+
+		            scope.isShowAttachmentNextButton = index + 1 != col_attachments;
+		            scope.isShowAttachmentPreviousButton = index;
 	            };
 
 	            scope.hideViewer = function() {
 		            scope.showAttachmentsPanel(false, true);
 		            scope.isShowViewerPlaceholder = false;
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({height: 'auto', left: '-10000px'});
+
+		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).removeClass('bluvue-viewer-panel-holder-active');
+
+		            var image = document.getElementById('viewer-photo');
+		            image.style.display = 'none';
+
+		            scope.stopViewerMedia();
+
+		            scope.isShowAttachmentPreviousButton = false;
+		            scope.isShowAttachmentNextButton = false;
+	            };
+
+	            scope.stopViewerMedia = function() {
+		            var video = document.querySelector('#viewer-video'),
+		                audio = document.querySelector('#viewer-audio');
+
+		            audio.pause();
+		            video.pause();
+
+		            audio.addEventListener('pause', function () {
+			            this.currentTime = 0;
+		            }, false);
+
+		            video.addEventListener('pause', function () {
+			            this.currentTime = 0;
+		            }, false);
+
+		            angular.element(video).empty();
+		            angular.element(audio).empty();
 	            };
 
                 scope.fileChooser = new BluVueSheet.FileChooser( scope );
 
-                scope.generateUUID = function generateUUID() {
+                scope.generateUUID = function generateUUID( base64 ) {
                   var d = new Date().getTime();
                   var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                       var r = (d + Math.random()*16)%16 | 0;
                       d = Math.floor(d/16);
                       return (c=='x' ? r : (r&0x3|0x8)).toString(16);
                   });
-                  return uuid.replace( /-/g, '' );
+                  uuid = uuid.replace( /-/g, '' );
+                  return base64 ? scope.uuidToBase64( uuid ) : uuid;
+                };
+
+                var hexlist = '0123456789abcdef';
+                var b64list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+
+                scope.uuidToBase64 = function uuidToBase64( g )
+                {
+                  var s = g.replace(/[^0-9a-f]/ig,'').toLowerCase();
+                  if (s.length != 32) return '';
+
+                  s = s.slice(6,8) + s.slice(4,6) + s.slice(2,4) + s.slice(0,2) +
+                        s.slice(10,12) + s.slice(8,10) +
+                        s.slice(14,16) + s.slice(12,14) +
+                        s.slice(16);
+                  s += '0';
+
+                  var a, p, q;
+                  var r = '';
+                  var i = 0;
+                  while (i < 33) {
+                   a =  (hexlist.indexOf(s.charAt(i++)) << 8) |
+                        (hexlist.indexOf(s.charAt(i++)) << 4) |
+                        (hexlist.indexOf(s.charAt(i++)));
+
+                   p = a >> 6;
+                   q = a & 63;
+
+                   r += b64list.charAt(p) + b64list.charAt(q);
+                  }
+
+                  return r;
                 };
 
                 scope.generateTimestamp = function generateTimestamp() {
@@ -798,8 +1018,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.checkMenuItemShowCondition = function(menuItem) {
 		                switch(menuItem.func) {
 			                case 'notesDialog':
-												return scope.canEditNotes || scope.sheetHasNotes();
+												return scope.userCanEditNotes() || scope.sheetHasNotes();
 				                break;
+			                case 'selectRevision':
+				                return scope.sheetCountRevisions() > 1;
+			                  break;
 		                }
 
 		              return true;
@@ -809,16 +1032,24 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		              return null != scope.sheet.notes;
 	              }
 
+		            scope.userCanEditNotes = function() {
+			            return scope.canEditNotes;
+		            }
+
 		            scope.sheetHasRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
 		            }
 
-	              scope.notesDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+		            scope.sheetCountRevisions = function() {
+			            return scope.revisionsForCurrentSheet(scope.currentSheet).length;
+		            }
+
+	              scope.notesDialog = function(openAnimate, hideAnimate) {
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
 			            if(scope.sheet.notes == null) {
-				            scope.notesEditDialog();
+				            scope.notesEditDialog(true);
 				            return;
 			            }
 
@@ -830,42 +1061,172 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            okLabel:'Edit',
 				            okAction: function () {
 					            scope.$apply(function () {
-						            scope.notesEditDialog();
+						            dialog.destroy();
+						            scope.notesEditDialog(false, true, true);
 					            });
 				            }
 			            });
 		            }
 
-		            scope.notesEditDialog = function() {
-			            var dialog = new BluVueSheet.Dialog();
+		            scope.notesEditDialog = function(openAnimate, hideAnimate, fromShowDialog) {
+			            fromShowDialog = fromShowDialog || false;
+
+			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
 
-			            var editor = angular.element( "<textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea>" );
+			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div>" );
 
 			            holder.append( editor );
 			            // Allow user to click input field
 			            editor.on( 'click', function(e){ e.stopPropagation(); } );
-			            dialog.showConfirmDialog( {
+
+
+			            var insertAtCursor = function insertAtCursor(myField, myValue) {
+				            //IE support
+				            if (document.selection) {
+					            myField.focus();
+					            var sel = document.selection.createRange();
+					            sel.text = myValue;
+				            }
+				            //MOZILLA and others
+				            else if (myField.selectionStart || myField.selectionStart == '0') {
+					            var startPos = myField.selectionStart;
+					            var endPos = myField.selectionEnd;
+					            myField.value = myField.value.substring(0, startPos)
+					            + myValue
+					            + myField.value.substring(endPos, myField.value.length);
+				            } else {
+					            myField.value += myValue;
+				            }
+				            //myField.focus();
+			            };
+
+			            var doGetCaretPosition = function doGetCaretPosition(ctrl) {
+				            var CaretPos = 0;	// IE Support
+				            if (document.selection) {
+					            ctrl.focus ();
+					            var Sel = document.selection.createRange ();
+					            Sel.moveStart ('character', -ctrl.value.length);
+					            CaretPos = Sel.text.length;
+				            }
+				            // Firefox support
+				            else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+					            CaretPos = ctrl.selectionStart;
+				            return (CaretPos);
+			            }
+
+			            var setCaretPosition = function (elem, caretPos) {
+				            if(elem != null) {
+					            if(elem.createTextRange) {
+						            var range = elem.createTextRange();
+						            range.move('character', caretPos);
+						            range.select();
+					            }
+					            else {
+						            if(elem.selectionStart) {
+							            elem.focus();
+							            elem.setSelectionRange(caretPos, caretPos);
+						            }
+						            else
+							            elem.focus();
+					            }
+				            }
+			            };
+
+			            var moveCaretToEnd = function (el) {
+				            if (typeof el.selectionStart == "number") {
+					            el.selectionStart = el.selectionEnd = el.value.length;
+				            } else if (typeof el.createTextRange != "undefined") {
+					            el.focus();
+					            var range = el.createTextRange();
+					            range.collapse(false);
+					            range.select();
+				            }
+			            };
+
+			            var addText = function(text) {
+				            var el = document.getElementById('notes-editor'),
+					            pos = doGetCaretPosition(el);
+
+				            insertAtCursor(el, (el.value[pos-1] != "\n" && pos ? "\n" : "") + text + "\n");
+				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 2 : 1));
+			            };
+
+			            var options = {
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: editor,
-				            okLabel:'Save',
-				            okAction: function () {
-					            scope.$apply(function() {
-						            var notes = document.getElementById('notes-editor').value;
-
-						            if(!notes.length) {
-							            notes = null;
-						            }
-						            console.log(notes);
-
-						            scope.sheet.notes = notes;
-						            scope.saveSheet(scope.sheet);
-					            });
+				            button2Label:'Save',
+				            cancelLabel: 'Add Name',
+				            okLabel: 'Add Date',
+				            buttonClass: 'button-with-border',
+				            okAction: function() {
+											addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
+				            },
+				            cancelAction: function() {
+					            addText(scope.fullName);
 				            }
-			            });
+			            };
+
+			            var save = function() {
+				            scope.$apply(function() {
+					            var notes = document.getElementById('notes-editor').value;
+
+					            if(!notes.length) {
+						            notes = null;
+					            }
+
+					            scope.sheet.notes = notes;
+					            scope.saveSheet(scope.sheet);
+
+					            dialog.hide();
+				            });
+			            }
+
+			            if(fromShowDialog) {
+				            options.button1Action = function() {
+					            scope.notesDialog(false, true);
+				            };
+
+				            options.button2Action = (function (save) {
+					            return function() {
+						            save();
+						            scope.notesDialog(false, true);
+					            }
+				            })(save);
+			            } else {
+				            options.button1Action = function() {
+					            dialog.hide();
+				            };
+
+				            options.button2Action = (function (save) {
+					            return function() {
+						            save();
+					            }
+				            })(save);
+			            }
+
+			            dialog.showConfirmDialog(options);
+			            moveCaretToEnd(document.getElementById('notes-editor'));
 		            }
+
+		    scope.selectPreviousAttachment = function() {
+		            scope.openAttachmentIndex--;
+
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+
+	            };
+
+	            scope.selectNextAttachment = function() {
+		            scope.openAttachmentIndex++;
+
+		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+	              }
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();

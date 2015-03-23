@@ -8,7 +8,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     this.deselectTool = deselectTool;
 	this.tileLoader;
 	this.annotationManager;
-	this.keyboardControls;
 	this.mouseControls;
 
 	this.scrollX;
@@ -44,7 +43,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    this.scrollY=0;
 	    this.scale=1;
 	    this.tileLoader = new BluVueSheet.TileLoader(sheetObj.slicesUrl, sheetObj.previewUrl, this);
-	    this.keyboardControls = new BluVueSheet.KeyboardControls(this);
 	    this.mouseControls = new BluVueSheet.MouseControls(this);
 	    this.annotationManager = new BluVueSheet.AnnotationManager(this, scope);
 
@@ -122,6 +120,13 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
             this.drawProgressIndicator();
             return;
         }
+
+	      var tempIsShowAttachmentsButton = scope.isShowAttachmentsButton;
+	      scope.isShowAttachmentsButton = this.annotationManager.getAttachments(false).length;
+
+	      if(!tempIsShowAttachmentsButton && scope.isShowAttachmentsButton) {
+		      scope.$apply();
+	      }
 
         context.save();
 
@@ -234,10 +239,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
    	      height: Math.abs( this.tileLoader.width * Math.sin( theta ) + this.tileLoader.height * Math.cos( theta ) )
 	    };
 	}
-
-    this.mainLoopKeyboardControls = function() {
-        t.keyboardControls.handleControls();
-    }
 
 	this.render = function(){
 		t.drawAll();

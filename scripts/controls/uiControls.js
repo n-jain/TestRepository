@@ -397,7 +397,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
           message: 'Select the unit of measurement to convert to',
           bodyElement: holder,
           okLabel:'Convert',
-          okAction: function() { okAction( editor[0].value ); }
+          okAction: function() { okAction( editor[0].value ); dialog.hide(); }
         });
     }
 }
@@ -417,24 +417,68 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         var menu = angular.element( document.querySelector( '.bluvue-sheet-floating-tools-menu' ));
         menu.empty();
 
-        var userIsAdmin = scope.isAdmin;
-        if( userIsAdmin && selectedAnnotations.length >= 1 )
+	      var allSelectedAnnotationsPersonal = true;
+	      for(var i in selectedAnnotations) {
+		      if(selectedAnnotations[i].userId == null) {
+			      allSelectedAnnotationsPersonal = false;
+		      }
+	      }
+
+        var userIsAdmin = scope.isAdmin,
+	          issetMasterMeasurement = false,
+	          selectedCalibration = false;
+
+				for(var i in selectedAnnotations) {
+					if(selectedAnnotations[i].type == SCALE_ANNOTATION) {
+						selectedCalibration = true;
+					}
+				}
+
+	      if(sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
+		      issetMasterMeasurement = true;
+	      }
+
+        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement )
         {
             menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
                 sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
+
+	              if(!scope.isAdmin && newState == 'master') {
+		              sheet.tileView.annotationManager.deselectAllAnnotations();
+	              }
+
             }) );
         }
     }
 
     this.createMasterPersonalControl = function( annotations, applyState )
     {
-        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster();
+	      if(!scope.isAdmin) {
+		      return '';
+	      }
+
+        var isMaster = sheet.tileView.annotationManager.isAnnotationContextMaster(),
+		        allAnnotations = sheet.tileView.annotationManager.getAnnotations(),
+		        existsMasterRuler = false,
+		        colSelectedMasterRuler = 0,
+		        colAllMasterRuler = 0;
 
         var masterPersonalControl = angular.element( "<div></div>" ).addClass( 'bluvue-sheet-floating-tools-toggle');
         var masterButton = angular.element( "<div>Master</div>" ).addClass( 'bv-toggle-master');
         masterButton.on( 'click', function() {
             masterPersonalControl.addClass( 'master' );
             masterPersonalControl.removeClass( 'personal' );
+
+	          // Set calibration master state
+	          if(annotations.length == 1 && (annotations[0].type == MEASURE_ANNOTATION || annotations[0].type == FREE_FORM_ANNOTATION || annotations[0].type == POLYGON_ANNOTATION || annotations[0].type == SQUARE_ANNOTATION || annotations[0].type == CIRCLE_ANNOTATION)) {
+							for(var i in allAnnotations) {
+								if(allAnnotations[i].type == SCALE_ANNOTATION) {
+									allAnnotations[i].userId = null;
+									break;
+								}
+							}
+	          }
+
             applyState( annotations, 'master' );
         } );
         var personalButton = angular.element( "<div>Personal</div>" ).addClass( 'bv-toggle-personal');
@@ -445,11 +489,6 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
         } );
         masterPersonalControl.append( personalButton ).append( masterButton );
         masterPersonalControl.addClass( isMaster ? 'master' : 'personal' );
-
-	      var allAnnotations =  sheet.tileView.annotationManager.getAnnotations(),
-		        existsMasterRuler = false,
-		        colSelectedMasterRuler = 0,
-		        colAllMasterRuler = 0;
 
 		    for(var i in annotations) {
 			    if(annotations[i].type == MEASURE_ANNOTATION && annotations[i].userId == null) {
@@ -634,7 +673,18 @@ BluVueSheet.ToolMenuExtension = function(sheet, scope){
     }
 }
 
-BluVueSheet.Dialog = function() {
+BluVueSheet.Dialog = function(params) {
+	params = params || {};
+	params.openAnimate = params.openAnimate != undefined ? params.openAnimate : true;
+	params.hideAnimate = params.hideAnimate != undefined ? params.hideAnimate : true;
+
+	var typeClass = '';
+	switch(params.showType) {
+		case 'panel':
+			typeClass = 'bluvue-dialog-type-panel';
+			break;
+	}
+
   var dialog = this;
 
   var defaultHideAction = function defaultHideAction(){
@@ -665,24 +715,44 @@ BluVueSheet.Dialog = function() {
 
   this.showConfirmDialog = function showDialog( options ) {
     cancelAction = options.cancelAction || defaultHideAction;
-    return dialog.showDialog( {
-      title: options.title||"Confirm",
-      bodyClass: 'bluvue-dialog-confirmBody',
-      message: options.message,
-      bodyElement: options.bodyElement,
-      buttons: [
-        {
-          label: options.cancelLabel||"Cancel",
-          action: cancelAction,
-          buttonClass: 'cancel'
-        },
-        {
-          label: options.okLabel||"Ok",
-          validatorFactory: options.validatorFactory,
-          action: options.okAction||defaultHideAction
-        }
-      ]
-    });
+
+	  var data = {
+		  title: options.title||"Confirm",
+		  bodyClass: 'bluvue-dialog-confirmBody',
+		  message: options.message,
+		  bodyElement: options.bodyElement,
+		  buttons: [
+			  {
+				  label: options.cancelLabel||"Cancel",
+				  action: cancelAction,
+				  buttonClass: options.buttonClass||'cancel'
+			  },
+			  {
+				  label: options.okLabel||"Ok",
+				  validatorFactory: options.validatorFactory,
+				  action: options.okAction||defaultHideAction,
+				  buttonClass: options.buttonClass||''
+			  }
+		  ],
+		  topButtons: {},
+		  showBottomButtons: options.showBottomButtons
+	  };
+
+	  if(options.button1Action != undefined) {
+		  data.topButtons[1] = {
+			  label: options.button1Label || "Cancel",
+			  action: options.button1Action
+		  };
+	  }
+
+	  if(options.button2Action != undefined) {
+		  data.topButtons[2] = {
+			  label: options.button2Label||"Ok",
+			  action: options.button2Action
+		  };
+	  }
+
+    return dialog.showDialog( data );
   }
 
   this.showTooltip = function showTooltip( options ) {
@@ -691,21 +761,44 @@ BluVueSheet.Dialog = function() {
           title: options.title||"Tip",
           dialogClass: 'bluvue-tooltip',
           bodyClass: 'bluvue-dialog-tooltipBody',
-          message: options.message,
+          message: options.message
       });
   }
 
   this.showDialog = function showConfirmDialog( options ) {
+    options.topButtons = options.topButtons||[];
+
     var bodyContent = angular.element( "<div class='" + (options.dialogClass||"bluvue-dialog-body") + "'></div>" );
+
     if( options.image )
       bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
+	  if('panel' == params.showType)
+		  bodyContent.append(angular.element("<div style=\"text-align: right;\"></div>").append(angular.element('<a href="#" class="dialog-close"></a>').on('click', defaultHideAction)));
+
+	  var titleContent = angular.element("<div class='dialog-title'></div>");
+
+	  if(options.topButtons[1] != undefined) {
+		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[1].label + "</div>" );
+		 button.on( 'click', options.topButtons[1].action );
+		 titleContent.append( button );
+	  }
+
     if( options.title )
-      bodyContent.append( angular.element( "<div class='dialog-title'>" + options.title + "</div>" ) );
+	    titleContent.append( options.title );
+
+	  if(options.topButtons[2] != undefined) {
+		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[2].label + "</div>" );
+		 button.on( 'click', options.topButtons[2].action );
+		 titleContent.append( button );
+	  }
+
+	  bodyContent.append(titleContent);
+
     if( options.message )
       bodyContent.append( angular.element( "<div class='dialog-message'>" + options.message + "</div>" ) );
     if( options.bodyElement )
       bodyContent.append( options.bodyElement );
-    if( options.buttons )
+    if( options.buttons && options.showBottomButtons != false )
     {
       var buttonHolder = angular.element( "<div class='dialog-button-holder'>" );
       options.buttons.forEach( function( spec ) {
@@ -730,32 +823,97 @@ BluVueSheet.Dialog = function() {
       content.addClass( dialogClass );
 
     content.append( angular.element( body ) );
-    holder.on( 'click', cancelAction );
+	  holder.on( 'click', defaultHideAction );
+	  content.on( 'click', function() {return false;} );
     holder.css( { display: "block" } );
+    wrapper.css( { display: "block" } );
     window.addEventListener( 'resize', resizeListener );
+
+	  switch(params.showType) {
+		  case 'panel':
+			  if(params.openAnimate) {
+				  setTimeout(function() {
+					  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+						  .addClass('bluvue-dialog-content-open');
+				  }, 100);
+			  } else {
+				  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+					  .addClass('bluvue-dialog-content-open')
+					  .addClass('bluvue-dialog-content-no-animate');
+			  }
+
+			  break;
+	  }
+
     onResize(); // Initialize the height logic
+
+	  var onKeyUp = function(event) {
+		  switch(event.keyCode){
+			  case 27: //esc
+				  dialog.hide();
+				  break;
+		  }
+
+		  window.removeEventListener('keyup', onKeyUp);
+	  }
+
+	  window.addEventListener('keyup', onKeyUp, true);
   }
 
+	this.hideHolder = function() {
+		holder.css( { display: "none" } );
+		wrapper.css( { display: "none" } );
+	}
+
   this.hide = function() {
-    window.removeEventListener( 'resize', resizeListener );
-    holder.css( { display: "none" } );
-    holder.off( 'click', cancelAction );
-    content.removeClass();
-    content.addClass( 'bluvue-dialog-content' );
-    content.empty();
+	  var el = this;
+	  var hideEvent = function() {
+		  window.removeEventListener( 'resize', resizeListener );
+		  holder.off( 'click', cancelAction );
+		  el.hideHolder();
+		  content.removeClass();
+		  content.addClass( 'bluvue-dialog-content' );
+		  content.empty();
+		  el.destroy();
+	  };
+
+	  switch(params.showType) {
+		  case 'panel':
+			  angular.element(document.querySelectorAll('.bluvue-dialog-type-panel .bluvue-dialog-content'))
+				  .removeClass('bluvue-dialog-content-open')
+				  .removeClass('bluvue-dialog-content-no-animate');
+
+			  if(params.hideAnimate) {
+				  setTimeout(function() { hideEvent(); el.destroy(); }, 500);
+			  } else {
+				  hideEvent();
+			  }
+
+			  break;
+		  default:
+			  hideEvent();
+	  }
   }
 
   this.destroy = function() {
     holder.remove();
+    wrapper.remove();
   }
 
-  var parent = angular.element( document.querySelector('.bluvue-sheet') );
-  var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
-  var content = angular.element( '<div class="bluvue-dialog-content"></div>');
-  holder.append( content );
-  this.hide();
+	// Remove old holders
+	angular.element(document.querySelector('.bluvue-dialog-holder')).remove();
+	angular.element(document.querySelector('.bluvue-dialog-wrapper')).remove();
 
-  parent.append( holder );
+  var parent = angular.element( document.querySelector('.bluvue-sheet') );
+  var wrapper = angular.element( '<div class="bluvue-dialog-wrapper ' + typeClass + '"></div>' );
+	var holder = angular.element( '<div class="bluvue-dialog-holder"></div>' );
+  var content = angular.element( '<div class="bluvue-dialog-content"></div>');
+
+  wrapper.append(content);
+  this.hideHolder();
+
+  parent.append( wrapper );
+	parent.append(holder);
 }
 
 
@@ -767,8 +925,8 @@ BluVueSheet.FileChooser = function( scope ) {
   var createPickerOptions = function createPickerOptions( mimetypes ) {
     var options = {
       multiple: true,
-      services: ['COMPUTER', 'BOX', 'DROPBOX', 'FTP', 'GOOGLE_DRIVE', 'SKYDRIVE', 'WEBDAV', 'GMAIL']
-    };
+      services: ['COMPUTER', 'DROPBOX', 'BOX', 'GOOGLE_DRIVE', 'SKYDRIVE', 'CLOUDDRIVE' ]
+  };
 
     if( mimetypes )
       options.mimetypes = mimetypes;
@@ -795,7 +953,7 @@ BluVueSheet.FileChooser = function( scope ) {
 
   var createStorageInfo = function createStorageInfo( inkBlob )
   {
-    var guid = scope.generateUUID();
+    var guid = scope.generateUUID( true );
     var amazonKeyPath = guid + "." + getExtension( inkBlob.filename );
 
     return {
@@ -806,8 +964,15 @@ BluVueSheet.FileChooser = function( scope ) {
     };
   }
 
-  this.chooseAttachment = function chooseAttachment( onSuccess, onError ) {
-    var mimeTypes = Object.keys( BluVueSheet.Constants.MIME );
+  this.chooseAttachment = function chooseAttachment( onSuccess, onError, filetype ) {
+	  var mimeTypes = [];
+
+	  for(var i in BluVueSheet.Constants.MIME) {
+		  if(BluVueSheet.Constants.MIME[i].type == filetype) {
+			  mimeTypes.push(i);
+		  }
+	  }
+
     this.openFileChooser( mimeTypes, onSuccess, onError );
   }
 

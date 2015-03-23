@@ -191,6 +191,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 			cancelClick=true;
 		}
+		else // test for rollover cursors
+		{
+	    var cursor = 'auto';
+		  for( var i=0; i<annotations.length; i++ )
+		  {
+		    if( annotations[i].attachmentIndicatorBounds && annotations[i].attachmentIndicatorBounds.contains(x,y) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin))
+		    {
+		      cursor='pointer';
+		    }
+		  }
+		  angular.element( scope.currentSheet.canvas ).css( 'cursor', cursor );
+		}
 	}
 	this.onclick = function(x,y){
 
@@ -220,17 +232,32 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	}
 
     this.handleClick = function(x, y) {
+        var showAttachments = false;
         //get which annotations are touched
         var touchedAnnotations = new Array();
         for (var i = 0; i < annotations.length; i++) {
-            var bounds = annotations[i].bounds;
-            if (bounds.width() * tileView.scale < 30)
-                bounds = bounds.inset(-(20 / tileView.scale), 0);
-            if (bounds.height() * tileView.scale < 30)
-                bounds = bounds.inset(0, -(20 / tileView.scale));
+	          if(!scope.isAdmin && (annotations[i].userId == null || annotations[i].userId != scope.userId)) {
+		          continue;
+	          }
 
-            if (bounds.contains(x, y)) {
+            var attachmentIndicatorBounds = annotations[i].attachmentIndicatorBounds;
+            if( attachmentIndicatorBounds && attachmentIndicatorBounds.contains(x,y) )
+            {
                 touchedAnnotations[touchedAnnotations.length] = annotations[i];
+                showAttachments = true;
+            }
+            else
+            {
+                var bounds = annotations[i].bounds;
+
+                if (bounds.width() * tileView.scale < 30)
+                    bounds = bounds.inset(-(20 / tileView.scale), 0);
+                if (bounds.height() * tileView.scale < 30)
+                    bounds = bounds.inset(0, -(20 / tileView.scale));
+
+                if (bounds.contains(x, y)) {
+                    touchedAnnotations[touchedAnnotations.length] = annotations[i];
+                }
             }
         }
         //get which are selected already
@@ -266,6 +293,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
                 if (!anySelected) touchedAnnotations[i].selectIndex -= 1;
             }
         }
+
+        if( showAttachments )
+        {
+		      scope.changeFilterAttachmentPanel('selected');
+		      scope.showAttachmentsPanel(true);
+        }
     }
 
 	this.isAllowMovedAnnotations = function(x, y) {
@@ -295,6 +328,25 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				if (selectedAnnotations[i].points[j].y > maxY) {
 					maxY = selectedAnnotations[i].points[j].y;
 				}
+			}
+		}
+
+		var h = tileView.sheet.textEditor.getHeight() / tileView.scale;
+		if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == TEXT_ANNOTATION) {
+			if(!tileView.getRotation() && h > maxY - minY) {
+				maxY = minY + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
+			}
+
+			if(90 == tileView.getRotation() && h > maxX - minX) {
+				maxX = minX + (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
+			}
+
+			if(180 == tileView.getRotation() && h > maxY - minY) {
+				minY = maxY - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
+			}
+
+			if(270 == tileView.getRotation() && h > maxX - minX) {
+				minX = maxX - (tileView.sheet.textEditor.getHeight() - BOUND_DIST * 2) / tileView.scale;
 			}
 		}
 
@@ -370,35 +422,41 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	function calcTextEditorLocation(annotation) {
 	    var x;
 	    var y;
+			var condition;
 	    var padding = BOUND_DIST / tileView.scale;
 	    var w = tileView.sheet.textEditor.getWidth() / tileView.scale;
+
 
 	    switch (scope.sheet.rotation) {
 	        case 90:
 	            x = annotation.getPoint(0, true).x + annotation.offset_x;
 	            y = annotation.getPoint(0, true).y + annotation.offset_y - padding;
-	            if (y - w < 0) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(0, annotation.getPoint(6, true).y).x;
+	            if (condition > window.innerWidth / 2) {
 	                y = annotation.getPoint(6, true).y + annotation.offset_y + padding + w;
 	            }
 	            break;
 	        case 180:
 	            x = annotation.getPoint(6, true).x + annotation.offset_x - padding;
 	            y = annotation.getPoint(6, true).y + annotation.offset_y;
-	            if (x - w < 0) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(annotation.getPoint(2, true).x, 0).x;
+	            if (condition > window.innerWidth / 2) {
 	                x = annotation.getPoint(2, true).x + annotation.offset_x + padding + w;
 	            }
 	            break;
 	        case 270:
 	            x = annotation.getPoint(4, true).x + annotation.offset_x;
 	            y = annotation.getPoint(4, true).y + annotation.offset_y + padding;
-	            if (y + w > window.innerWidth) {
+		          condition = tileView.screenCoordinatesFromSheetCoordinates(0, annotation.getPoint(0, true).y).x;
+	            if (condition > window.innerWidth / 2) {
 	                y = annotation.getPoint(0, true).y + annotation.offset_y - padding - w;
 	            }
 	            break;
-	        default:
+		      default:
 	            x = annotation.getPoint(2, true).x + annotation.offset_x + padding;
 	            y = annotation.getPoint(2, true).y + annotation.offset_y;
-	            if (x + w > window.innerWidth) {
+			        condition = tileView.screenCoordinatesFromSheetCoordinates(annotation.getPoint(0, true).x, 0).x;
+	            if (condition > window.innerWidth / 2) {
 	                x = annotation.getPoint(0, true).x + annotation.offset_x - padding - w;
 	            }
 	            break;
@@ -512,7 +570,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		switch (scope.sheet.rotation) {
 		    case 90:
-                return tileView.screenCoordinatesFromSheetCoordinates(maxX + BOUND_DIST / tileView.scale, (minY + maxY + w) / 2);
+			      return tileView.screenCoordinatesFromSheetCoordinates(maxX + BOUND_DIST / tileView.scale, (minY + maxY + w) / 2);
 		    case 180:
 		        return tileView.screenCoordinatesFromSheetCoordinates((minX + maxX + w) / 2, maxY - BOUND_DIST / tileView.scale);
 		    case 270:
@@ -734,6 +792,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     		tileView.sheet.textEditor.hide();
     		tileView.sheet.floatingToolsMenu.hide();
     		tileView.sheet.floatingOptionsMenu.hide();
+
+		    dialog.hide();
 	    }
 	  });
 	}
@@ -864,35 +924,21 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.saveSelectedAnnotations();
 	}
-	var pointInLasso = function(point){
-		//create a horizontal line at this y value, then cross it with every line from the polygon created by lasso tool (use every other point for fast speed if needed)
-		//find all intersections. count how many have an x value greater/less than. if both numbers are even, it is outside (ray goes through and comes out)
-		//if odd number, then at some point ray didn't enter, only came out, so point lies inside lasso
-		var intersections = new Array();
-		for(var i=0; i<lasso.points.length; i++){
-			var p1 = lasso.points[i];
-			var p2 = lasso.points[(i+1)%lasso.points.length];
-			var gx = p1.x>p2.x?p1.x:p2.x;//greater x
-			var lx = p1.x<p2.x?p1.x:p2.x;//lesser x
-			var gy = p1.y>p2.y?p1.y:p2.y;//""
-			var ly = p1.y<p2.y?p1.y:p2.y;//""
 
-			if(p1.x-p2.x==0){
-			    if (point.y > ly && point.y < gy) intersections[intersections.length] = new BluVueSheet.Point(p1.x, point.y);
-			}else{
-				var m = (p2.y-p1.y)/(p2.x-p1.x);
-				var xi = ((point.y-p1.y)/m) + p1.x;
-				if (xi > lx && xi < gx) intersections[intersections.length] = new BluVueSheet.Point(xi, point.y);
-			}
-		}
-		var il = 0;
-		var ir = 0;
-		for(var i=0; i<intersections.length; i++){
-			if(intersections[i].x>point.x)ir++;
-			else if(intersections[i].x<point.x)il++;
-		}
-		return ir%2==1&&il%2==1;
-	}
+  // Checks whether a point is inside a polygon.
+  // See:  http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+  // Credit:
+  //   Jonas Raoni Soares Silva  - http://jsfromhell.com/math/is-point-in-poly [rev. #0]
+  var isPointInPoly = function( poly, pt ) {
+    for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+      ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+      && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+      && (c = !c);
+    return c;
+  }
+  var pointInLasso = function( point ) {
+    return isPointInPoly( lasso.points, point );
+  }
 
 	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){
@@ -973,6 +1019,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   						else
                             scope.scheduleAnnotationSync( [annotation], null, null, false );
   						mgr.recalculateMeasurements();
+
+	            dialog.hide();
           },
           cancelAction: function hideAction(){
               this.captureKeyboard=oldKeyCapture;
@@ -1082,6 +1130,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   	      }
 	      }
 	    });
+
+		  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
 	  }
 	}
 
@@ -1188,5 +1238,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		this.selectSingleAnnotation(annotation);
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
+	}
+
+	this.issetMasterMeasurementAnnotation = function() {
+		for(var i in annotations) {
+			if(annotations[i].userId == null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

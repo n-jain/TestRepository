@@ -136,14 +136,18 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		}
 
 		if(!this.selected && this.attachments.length){
-			this.drawAttachments.call(this, context);
+			this.attachmentIndicatorBounds = this.drawAttachments.call(this, context);
 		}
+		else
+		  this.attachmentIndicatorBounds = null;
 
 		context.restore();
 	}
 
+  /**
+   * Draws an attachments indicator lozenge, returning the bounding box in sheet coordinates of that lozenge
+   **/
 	this.drawAttachments = function(context) {
-		var x, y;
 
 		if(!this.added) {
 			return;
@@ -153,85 +157,134 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		var isFlipped = (this.tileView.getRotation()==90 || this.tileView.getRotation()==270)
 		context.save();
 
-	  x = this.bounds.left + (this.bounds.width() / 2);
-    y = this.bounds.top + (this.bounds.height() / 2);
-
-	  context.translate( x, y );
-	  context.rotate( theta );
-
+	  var x = this.bounds.left + (this.bounds.width() / 2);
+    var y = this.bounds.top + (this.bounds.height() / 2);
     var width = isFlipped ? this.bounds.height() : this.bounds.width();
     var height = isFlipped ? this.bounds.width() : this.bounds.height();
 
+    // Set canvas to rotated relative coordinates with center of annotation at
+    // center of screen
+	  context.translate( x, y );
+	  context.rotate( theta );
+
+    var relativeBounds = {
+      x: 0,
+      y: 0,
+      width: 34/tileView.scale,
+      height: 20/tileView.scale
+    }
+
+    // Evaluate location of the indicator appropriate for the annotation shape
 		switch(this.type) {
       case SQUARE_ANNOTATION:
       case TEXT_ANNOTATION:
       case X_ANNOTATION:
       case CLOUD_ANNOTATION:
-        context.translate( width/2, -height/2 );
+        relativeBounds.x = width/2;
+        relativeBounds.y = -height/2;
         break;
 
       case CIRCLE_ANNOTATION:
-        var dx = (0.25 * width );
-        var dy = -(0.433 * height );
-        context.translate( dx, dy );
+        relativeBounds.x = (0.25 * width );
+        relativeBounds.y = -(0.433 * height );
         break;
 
 			default:
 				var max_x = this.points[0].x,
 						min_x = this.points[0].x,
 						max_y = this.points[0].y,
-						min_y = this.points[0].y,
-						dx = 0,
-						dy = 0;
+						min_y = this.points[0].y
 
 				for(var i in this.points) {
 					if(!this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y <= min_y) {
 						max_x = this.points[i].x;
 						min_y = this.points[i].y;
-						dx = this.points[i].x - x;
-						dy = this.points[i].y - y;
+						relativeBounds.x = this.points[i].x - x;
+						relativeBounds.y = this.points[i].y - y;
 					}
 
 					if(90 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y <= min_y) {
 						min_x = this.points[i].x;
 						min_y = this.points[i].y;
-						dx = y - this.points[i].y;
-						dy = this.points[i].x - x;
+						relativeBounds.x = y - this.points[i].y;
+						relativeBounds.y = this.points[i].x - x;
 					}
 
 					if(180 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y >= max_y) {
 						min_x = this.points[i].x;
 						max_y = this.points[i].y;
-						dx = x - this.points[i].x;
-						dy = y - this.points[i].y;
+						relativeBounds.x = x - this.points[i].x;
+						relativeBounds.y = y - this.points[i].y;
 					}
 
 					if(270 == this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y >= max_y) {
 						max_x = this.points[i].x;
 						max_y = this.points[i].y;
-						dx = this.points[i].y - y;
-						dy = x - this.points[i].x;
+						relativeBounds.x = this.points[i].y - y;
+						relativeBounds.y = x - this.points[i].x;
 					}
 				}
-				context.translate(dx, dy);
     }
-
-    // Reset canvas to SCREEN coordinates instead of SHEET coordinates
-    context.scale( 1/tileView.scale, 1/tileView.scale );
 
 		context.strokeStyle="#e52b2e";
 		context.fillStyle="#e52b2e";
-		this.roundRect( context, 0, 0, 30, 16, 8.50 , true );
+		this.roundRect( context, relativeBounds.x, relativeBounds.y, relativeBounds.width, relativeBounds.height, 12/tileView.scale, true, false );
+
+    // Reset canvas to SCREEN coordinates instead of SHEET coordinates while
+    // still honoring the rotation position - this lets us use normal font
+    // rendering and graphics compositing
+		context.translate( relativeBounds.x, relativeBounds.y );
+    context.scale( 1/tileView.scale, 1/tileView.scale );
 
 		context.font = (12) + 'pt Helvetica';
 		context.fillStyle="#fff";
-		context.fillText(this.attachments.length, 16, 13 );
+		context.fillText(this.attachments.length, 18, 16 );
 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
-		context.drawImage( attach_icon, 0, 0, 16, 16 );
+		context.drawImage( attach_icon, 2, 2, 16, 16 );
 
 		context.restore();
+
+		// Calculate the SHEET coordinates of the lozenge bounding box for use in
+		// click testing
+		var sheetPolygon = {};
+		switch( this.tileView.getRotation() )
+		{
+		  default:
+		  case 0:
+		    sheetPolygon.x1 = x + relativeBounds.x;
+  		  sheetPolygon.y1 = y + relativeBounds.y;
+		    sheetPolygon.x2 = x + relativeBounds.x + relativeBounds.width;
+  		  sheetPolygon.y2 = y + relativeBounds.y + relativeBounds.height;
+  		  break;
+
+		  case 90:
+		    sheetPolygon.x1 = x + relativeBounds.y;
+  		  sheetPolygon.y1 = y - relativeBounds.x;
+		    sheetPolygon.x2 = x + relativeBounds.y + relativeBounds.height;
+  		  sheetPolygon.y2 = y - relativeBounds.x - relativeBounds.width;
+  		  break;
+
+		  case 180:
+		    sheetPolygon.x1 = x - relativeBounds.x;
+  		  sheetPolygon.y1 = y - relativeBounds.y;
+		    sheetPolygon.x2 = x - relativeBounds.x - relativeBounds.width;
+  		  sheetPolygon.y2 = y - relativeBounds.y - relativeBounds.height;
+  		  break;
+
+		  case 270:
+		    sheetPolygon.x1 = x - relativeBounds.y;
+  		  sheetPolygon.y1 = y + relativeBounds.x;
+		    sheetPolygon.x2 = x - relativeBounds.y - relativeBounds.height;
+  		  sheetPolygon.y2 = y + relativeBounds.x + relativeBounds.width;
+  		  break;
+		}
+		return new BluVueSheet.Rect(
+		  Math.min(sheetPolygon.x1, sheetPolygon.x2),
+		  Math.min(sheetPolygon.y1, sheetPolygon.y2),
+		  Math.max(sheetPolygon.x1, sheetPolygon.x2),
+		  Math.max(sheetPolygon.y1, sheetPolygon.y2) );
 	};
 
 	this.roundRect = function(ctx, x, y, width, height, radius, fill, stroke) {
@@ -307,15 +360,20 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	  context.font = textSize+"px Verdana";
 
 		while(context.measureText(text).width>drawWidth&&textSize>8*this.lineWidth){
-			textSize-=8*this.lineWidth;
+			textSize-=2*this.lineWidth;
 			context.font = textSize+"px Verdana";
 		}
-		if(textSize<8*this.lineWidth)textSize=8*this.lineWidth;
+		if(textSize < 24*this.lineWidth)
+		{
+		  textSize=24*this.lineWidth;
+			context.font = textSize+"px Verdana";
+		}
 
 		context.save();
 		context.translate(this.bounds.centerX(), this.bounds.centerY());
 		context.rotate( theta );
-		context.fillStyle = this.color;
+		context.fillStyle=this.color.toStyle();
+
 		context.textAlign = "center";
 		context.fillText(text,0,textSize/3);
 		context.restore();
@@ -775,11 +833,11 @@ function drawScale(context){
 		var measureSpace;
 		if(this.measurement!=null){
 			var myLength = this.getLength();
-			var textSize = 22*this.lineWidth;
+			var textSize = 32*this.lineWidth;
 			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
-			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
-				textSize-=4*this.lineWidth;
+			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
+				textSize-=2*this.lineWidth;
 				context.font = textSize+"px Verdana";
 			}
 			measureSpace = context.measureText(text).width/myLength;
@@ -851,7 +909,7 @@ function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, 
 		    ( y1>y2 && rotation == 270 ) ) {
 			context.rotate(Math.PI);
 		}
-		context.fillStyle = color;
+		context.fillStyle = color.toStyle();
 		context.textAlign = "center";
 		context.fillText( text ,0,textSize/3);
 		context.restore();
@@ -875,11 +933,11 @@ function drawMeasure(context){
 	  if( this.measurement && tileView.annotationManager.scaleAnnotation )
 	  {
 			var myLength = this.getLength();
-			var textSize = 22*this.lineWidth;
+			var textSize = 32*this.lineWidth;
 			var text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
-			while(context.measureText(text).width>(myLength/3.5)&&textSize>16){
-				textSize-=4*this.lineWidth;
+			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
+				textSize-=2*this.lineWidth;
 				context.font = textSize+"px Verdana";
 			}
 			measureSpace = context.measureText(text).width/myLength;

@@ -17,13 +17,16 @@
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
 	<button ng-click="showAttachmentsPanel()" id="attachments-button" class="ng-show"  ng-show="isShowAttachmentsButton">Attachments</button>
 
+	<button ng-click="selectPreviousAttachment()" ng-show="isShowAttachmentPreviousButton" id="previous-attachment-arrow">< Previous</button>
+	<button ng-click="selectNextAttachment()" ng-show="isShowAttachmentNextButton" id="next-attachment-arrow">Next ></button>
+
     <div id="fullscreen_floating_block">
         <button id="fullscreen_exit_button" ng-click="enterFullscreen(this)">Exit Full Screen</button>
     </div>
 
 	<div id="floating-indicators-panel">
-		<div id="revisions-floating-indicator" ng-show="sheetHasRevisions()" ng-click="selectRevision()"></div>
-		<div id="notes-floating-indicator" ng-show="sheetHasNotes()" ng-click="notesDialog()">Sheet has notes</div>
+		<div id="notes-floating-indicator" ng-click="notesDialog()" ng-show="sheetHasNotes() || userCanEditNotes()" class="{{ sheetHasNotes() ? 'notes-on-floating-indicator' : '' }} {{ !sheetHasNotes() && userCanEditNotes() ? 'notes-off-floating-indicator' : '' }}"></div>
+		<div id="revisions-floating-indicator" ng-show="sheetCountRevisions() > 1" ng-click="selectRevision()"></div>
 	</div>
 
 
@@ -41,25 +44,50 @@
 			<li id="attachments-panel-filter-selected" class="active" ng-click="changeFilterAttachmentPanel('selected', true)">Selected (<span>0</span>)</li>
 			<li id="attachments-panel-filter-all" ng-click="changeFilterAttachmentPanel('all', true)">View All (<span>0</span>)</li>
 		</ul>
-		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls" class="ng-hide">
-			<li id="attachments-panel-control-add" ng-click="addAttachmentAction()">Add</li>
+		<ul id="attachments-panel-controls" ng-hide="isHideAttachmentsPanelControls || isShowAddAttachmentPanel" class="ng-hide">
+			<li id="attachments-panel-control-add" ng-click="addModeAttachmentsAction('open')">Add</li>
 			<li id="attachments-panel-control-edit" ng-click="editModeAttachmentsAction('open')">Edit</li>
 		</ul>
 		<ul id="attachments-panel-controls-cancel" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide">
 			<li id="attachments-panel-control-cancel" ng-click="editModeAttachmentsAction('close')">Cancel</li>
 		</ul>
+
+		<ul id="attachment-mimetypes-controls-cancel" ng-show="isShowAddAttachmentPanel">
+			<li id="attachment-mimetypes-control-cancel" ng-click="addModeAttachmentsAction('close')">Cancel</li>
+		</ul>
+
+		<ul id="attachments-panel-mimetypes" ng-show="isShowAddAttachmentPanel">
+			<li ng-click="addAttachmentAction('image')">
+				<div class="attachment-icon attachment-icon-photo"></div>
+				<div class="attachment-type">Add Photo</div>
+			</li>
+			<li ng-click="addAttachmentAction('video')">
+				<div class="attachment-icon attachment-icon-video"></div>
+				<div class="attachment-type">Add Video</div>
+			</li>
+			<li ng-click="addAttachmentAction('audio')">
+				<div class="attachment-icon attachment-icon-audio"></div>
+				<div class="attachment-type">Add Audio</div>
+			</li>
+			<li ng-click="addAttachmentAction('document')">
+				<div class="attachment-icon attachment-icon-document"></div>
+				<div class="attachment-type">Add Document</div>
+			</li>
+		</ul>
+
+
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
-			<li ng-repeat="fileItem in attachmentFiles" ng-click="(fileItem.icon == 'photo' || fileItem.icon == 'video' || fileItem.icon == 'audio') ? openInViewer(fileItem.url, fileItem.icon, fileItem.name) : openInPopup(fileItem.url)">
+			<li ng-repeat="fileItem in attachmentFiles | orderBy: '-createdDate'" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
-						<div class="attachment-file-name">{{ fileItem.name }}</div>
+						<div class="attachment-file-name" title="{{ fileItem.filename }}{{ fileItem.fileextension }}"><span>{{ fileItem.filename }}</span>{{ fileItem.fileextension }}</div>
 						<div class="attachment-file-remove" ng-click="removeAttachment(fileItem.id)" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide"></div>
 					</div>
 					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
 					<div class="attachment-file-info">
 						<div class="attachment-file-info-email">{{ fileItem.email }}</div>
-						<div class="attachment-file-info-date">{{ fileItem.createdDate }}</div>
+					    <div class="attachment-file-info-date">{{ fileItem.createdDate | date : "short" }}</div>
 					</div>
 				</div>
 			</li>
@@ -77,10 +105,16 @@
 			<img ng-show="viewerData.icon == 'photo'" id="viewer-photo">
 			<video ng-show="viewerData.icon == 'video'" controls="controls" id="viewer-video"></video>
 			<audio ng-show="viewerData.icon == 'audio'" controls="controls" id="viewer-audio"></audio>
+			<div ng-show="viewerData.icon == 'document'" ng-click="openInTab(viewerData.url, viewerData.icon, viewerData.filename)" id="viewer-document">
+				<div class="attachment-icon-document"></div>
+				<div>Open Document</div>
+			</div>
 		</div>
 	</div>
 	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
 
+
+	<div id="bluvue-sheet-tool-menu-disabled"></div>
 
     <div class="bluvue-sheet-tool-menu">
         <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
