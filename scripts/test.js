@@ -54,7 +54,7 @@ angular.module('test', ['bluvueSheet'])
                       userId:'guid',
                       type:3,
                       version: 'kjygqweqw',
-                      data: '{"id":"c0986619c0ab4b7a90522b36c1e052a1","projectId":"guid","sheetId":"sheet001r0","userId":"guid","type":3,"colorRed":0.7803921568627451,"colorGreen":0,"colorBlue":0.8745098039215686,"zOrder":0,"fill":1,"perimeterVisible":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","attachments":[],"x":5088.526997840173,"y":1581.518358531317,"width":731.7473002159832,"height":684.5377969762421,"attachments":[{"createdDate":"2015-02-19T15:54:04.00","id":"f7e2b8e5d0dd45b6923aa42fe2237418","name":"Photo_3.png","mimeType":"image/png","url":"http://oi60.tinypic.com/33mah6s.jpg","userId":"a7e2b8e5d0dd45b6923aa42fe223741a","email":"bseay@bluvue.com","location":{"id":"f7e2b8e5d0dd45b6923aa42fe2237418","horizontalAccuracy":192,"longitude":-96.8175661149196,"verticalAccuracy":192,"latitude":33.06953235078641,"altitude":124.7712583396452,"determinationDate":"2014-12-05 16:37:27"}}]}'
+                      data: '{"id":"c0986619c0ab4b7a90522b36c1e052a1","projectId":"guid","sheetId":"sheet001r0","userId":"guid","type":3,"colorRed":0.7803921568627451,"colorGreen":0,"colorBlue":0.8745098039215686,"zOrder":0,"fill":1,"perimeterVisible":1,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","attachments":[],"x":5088.526997840173,"y":1581.518358531317,"width":731.7473002159832,"height":684.5377969762421,"attachments":[{"createdDate":"2015-02-19T15:54:04.00","id":"f7e2b8e5d0dd45b6923aa42fe2237418","name":"Photo_3.png","mimeType":"image/png","url":"http://oi60.tinypic.com/33mah6s.jpg","userId":"a7e2b8e5d0dd45b6923aa42fe223741a","email":"very.long.email.address@bluvue.com","location":{"id":"f7e2b8e5d0dd45b6923aa42fe2237418","horizontalAccuracy":192,"longitude":-96.8175661149196,"verticalAccuracy":192,"latitude":33.06953235078641,"altitude":124.7712583396452,"determinationDate":"2014-12-05 16:37:27"}}]}'
                     }
                 ] // hard code annotations here for testing
             },
@@ -90,7 +90,7 @@ angular.module('test', ['bluvueSheet'])
             }];
 
             $scope.revisionsForCurrentSheet = function () {
-              if( currentSheetIndex != 0 )
+              if( currentSheetIndex !== 0 )
                 return[
                     {
                         name: sheets[currentSheetIndex].name,
@@ -133,8 +133,8 @@ angular.module('test', ['bluvueSheet'])
                     rotation: 0,
                     annotationVersion: "",
                     annotations: []
-                }
-            }
+                };
+            };
 
             var currentSheetIndex = 0;
 
@@ -162,7 +162,7 @@ angular.module('test', ['bluvueSheet'])
                 // this is only for testing ... i know it's just setting it's own name
                 s.name = sheet.name;
                 s.notes = sheet.notes;
-            }
+            };
 
             $scope.getSheetById = function(sheetId) {
                 for (var i = 0; i < sheets.length; i++) {
@@ -172,7 +172,7 @@ angular.module('test', ['bluvueSheet'])
                 }
 
                 return null;
-            }
+            };
 
             $scope.nextSheet = function () {
                 if (currentSheetIndex === sheets.length - 1) { return; }
@@ -190,11 +190,11 @@ angular.module('test', ['bluvueSheet'])
 
             $scope.getCurrentIndex = function () {
                 return currentSheetIndex;
-            }
+            };
 
             $scope.getTotalSheets = function () {
                 return sheets.length;
-            }
+            };
 
             var pendingUpdateAnnotations = [];
             var pendingDeleteAnnotationIds = [];
