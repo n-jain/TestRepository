@@ -90,7 +90,7 @@ angular.module('test', ['bluvueSheet'])
             }];
 
             $scope.revisionsForCurrentSheet = function () {
-              if( currentSheetIndex != 0 )
+              if( currentSheetIndex !== 0 )
                 return[
                     {
                         name: sheets[currentSheetIndex].name,
@@ -133,8 +133,8 @@ angular.module('test', ['bluvueSheet'])
                     rotation: 0,
                     annotationVersion: "",
                     annotations: []
-                }
-            }
+                };
+            };
 
             var currentSheetIndex = 0;
 
@@ -162,7 +162,7 @@ angular.module('test', ['bluvueSheet'])
                 // this is only for testing ... i know it's just setting it's own name
                 s.name = sheet.name;
                 s.notes = sheet.notes;
-            }
+            };
 
             $scope.getSheetById = function(sheetId) {
                 for (var i = 0; i < sheets.length; i++) {
@@ -172,7 +172,7 @@ angular.module('test', ['bluvueSheet'])
                 }
 
                 return null;
-            }
+            };
 
             $scope.nextSheet = function () {
                 if (currentSheetIndex === sheets.length - 1) { return; }
@@ -190,11 +190,11 @@ angular.module('test', ['bluvueSheet'])
 
             $scope.getCurrentIndex = function () {
                 return currentSheetIndex;
-            }
+            };
 
             $scope.getTotalSheets = function () {
                 return sheets.length;
-            }
+            };
 
             var pendingUpdateAnnotations = [];
             var pendingDeleteAnnotationIds = [];
