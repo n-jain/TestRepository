@@ -580,8 +580,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                window.addEventListener("keyup", onKeyUp);
 
-	                scope.isShowAttachmentNextButton = true;
-	                scope.isShowAttachmentPreviousButton = true;
+	                scope.isShowAttachmentNextButton = false;
+	                scope.isShowAttachmentPreviousButton = false;
                 }
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
