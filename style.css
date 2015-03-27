@@ -1050,6 +1050,9 @@ select.bluvue-annotation-unit-edit {
     font-size: 12px;
     float: left;
     width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .attachment-file-info-date {
