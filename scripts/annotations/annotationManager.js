@@ -1,6 +1,6 @@
 BluVueSheet.AnnotationManager = function(tileView, scope){
-    var annotations = new Array();
-	var selectedAnnotations = new Array();
+    var annotations = [];
+	var selectedAnnotations = [];
 	var currentAnnotation = null;
 	var lasso = null;
 	var touchedHandle=-1;
@@ -17,14 +17,14 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	var removeFromArray = function(array, element){
 	    array.splice(array.indexOf(element),1);
-	}
+	};
 
 	this.onmousedown = function(x,y){
 		this.captureMouse = false;
 		//create new annotation
-		if(toolToAnnotation(tileView.getTool())!=NO_ANNOTATION&&currentAnnotation==null){
+		if(toolToAnnotation(tileView.getTool())!==NO_ANNOTATION&&currentAnnotation===null){
 			var annType = toolToAnnotation(tileView.getTool());
-			if (this.scaleAnnotation != null && tileView.getTool() == BluVueSheet.Constants.Tools.Ruler) annType = MEASURE_ANNOTATION;
+			if (this.scaleAnnotation !== null && tileView.getTool() == BluVueSheet.Constants.Tools.Ruler) annType = MEASURE_ANNOTATION;
 			var ann = new BluVueSheet.Annotation(annType, tileView, scope.userId, scope.sheet.projectId, scope.sheet.id);
 			ann.points[0] = new BluVueSheet.Point(x, y);
 
@@ -84,7 +84,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 			this.captureMouse = true;
 		}
-	}
+	};
 	this.onmouseup = function(x,y){
 		var save = false;
 		for(var i=0; i<selectedAnnotations.length; i++){
@@ -116,7 +116,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    if( tool != BluVueSheet.Constants.Tools.Pen && tool != BluVueSheet.Constants.Tools.Highlighter)
   	      tileView.deselectTool();
 		}
-		if(lasso!=null){
+		if(lasso!==null){
 			this.selectAllInLasso();
 			lasso=null;
 		}
@@ -130,10 +130,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             }
         }
     }
-	}
+	};
 	this.onmousemove = function (x, y) {
         // new annotation
-		if(currentAnnotation!=null){
+		if(currentAnnotation!==null){
 			if(currentAnnotation.type==FREE_FORM_ANNOTATION||currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			} else if (currentAnnotation.type != POLYGON_ANNOTATION) {
@@ -203,10 +203,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		  }
 		  angular.element( scope.currentSheet.canvas ).css( 'cursor', cursor );
 		}
-	}
+	};
 	this.onclick = function(x,y){
 
-        if(scope.selectedTool != null && scope.selectedTool.name == 'polygon') {
+        if(scope.selectedTool !== null && scope.selectedTool.name == 'polygon') {
             return;
         }
 
@@ -217,10 +217,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	    cancelClick = false;
 	    this.handleClick(x, y);
-	}
+	};
 	this.ondblclick = function(x,y){
 	    if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
-			if(currentAnnotation!=null)if(currentAnnotation.type==POLYGON_ANNOTATION){
+			if(currentAnnotation!==null)if(currentAnnotation.type==POLYGON_ANNOTATION){
 				currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
 				if (BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), currentAnnotation.points[0]) < HANDLE_TOUCH_RADIUS / tileView.scale){
 					currentAnnotation.points.splice(currentAnnotation.points.length-1,1);
@@ -229,14 +229,14 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				tileView.deselectTool();
 			}
 		}
-	}
+	};
 
     this.handleClick = function(x, y) {
         var showAttachments = false;
         //get which annotations are touched
-        var touchedAnnotations = new Array();
+        var touchedAnnotations = [];
         for (var i = 0; i < annotations.length; i++) {
-	          if(!scope.isAdmin && (annotations[i].userId == null || annotations[i].userId != scope.userId)) {
+	          if(!scope.isAdmin && (annotations[i].userId === null || annotations[i].userId != scope.userId)) {
 		          continue;
 	          }
 
@@ -261,18 +261,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             }
         }
         //get which are selected already
-        var selected = new Array();
+        var selected = [];
         var anySelected = false;
         for (var i = 0; i < touchedAnnotations.length; i++) {
             selected[i] = touchedAnnotations[i].selected;
             if (selected[i]) anySelected = true;
         }
         //decide what to do
-        if (touchedAnnotations.length == 0) {
+        if (touchedAnnotations.length === 0) {
             for (var i = 0; i < annotations.length; i++) {
                 annotations.selectIndex = 0;
             }
-            if (selectedAnnotations.length != 0) {
+            if (selectedAnnotations.length !== 0) {
                 this.deselectAllAnnotations();
             }
         } else {
@@ -299,7 +299,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		      scope.changeFilterAttachmentPanel('selected');
 		      scope.showAttachmentsPanel(true);
         }
-    }
+    };
 
 	this.isAllowMovedAnnotations = function(x, y) {
 		if(!selectedAnnotations.length) {
@@ -405,20 +405,20 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 
 		return true;
-	}
+	};
 
 	this.textUpdate = function (text) {
 		if(selectedAnnotations.length==1)
 			if(selectedAnnotations[0].type==TEXT_ANNOTATION)
 				selectedAnnotations[0].text=text;
-	}
+	};
 	this.updateTextEditorIfPresent= function(){
-		if(currentAnnotation==null&&touchedHandle==-1&&selectedAnnotations.length==1) {
+		if(currentAnnotation===null&&touchedHandle==-1&&selectedAnnotations.length==1) {
 		    tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
 			tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
 			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 		}
-	}
+	};
 	function calcTextEditorLocation(annotation) {
 	    var x;
 	    var y;
@@ -586,7 +586,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				selectedAnnotations[0].textSize=textSize;
 				this.saveSelectedAnnotations();
 			}
-	}
+	};
 
 	/**
 	 * Selects a single annotation, clearing any previous selection, and surfacing
@@ -604,7 +604,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
 		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
-	}
+	};
 
 	/**
 	 * Selects an array of annotations, clearing any previous selection, and
@@ -617,12 +617,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		tileView.sheet.floatingToolsMenu.show( calcFloatingToolsMenuLocation(selectedAnnotations) );
 		tileView.sheet.floatingOptionsMenu.show( calcFloatingOptionsMenuLocation(selectedAnnotations) );
-	}
+	};
 
 	// Returns true if the annotation is personal or if the user is an admin.
 	this.isSelectable = function( annotation ) {
 	  return ( annotation.userId || scope.isAdmin );
-	}
+	};
 
 	/**
 	 * Adds a single annotation to the selection group without surfacing the
@@ -645,7 +645,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 
 		return true;
-	}
+	};
 
 	this.deselectAllAnnotations = function(){
 		if(selectedAnnotations.length==1){
@@ -653,8 +653,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				this.saveSelectedAnnotations();
 			}
 		}
-		var toKill = new Array();
-		selectedAnnotations=new Array();
+		var toKill = [];
+		selectedAnnotations=[];
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 		for(var i=0;i<annotations.length; i++){
 			annotations[i].selected=false;
@@ -669,7 +669,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		for(var i=0; i<toKill.length; i++){
 			removeFromArray(annotations,toKill[i]);
 		}
-	}
+	};
 
 	/**
 	 * Deselects a single annotation.  If deselecting ALL annotations, it's far
@@ -686,7 +686,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 
-    var newSelection = []
+    var newSelection = [];
 		for( var i=0; i<selectedAnnotations.length; i++)
 		{
 		  if( annotation.id !== selectedAnnotations[i].id )
@@ -705,14 +705,14 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
     if( selectedAnnotations.length === 0 )
       this.hideSelectionUI();
-	}
+	};
 
 	this.hideSelectionUI = function hideSelectionUI() {
 		this.captureKeyboard=false;
 		tileView.sheet.textEditor.hide();
 		tileView.sheet.floatingToolsMenu.hide();
 		tileView.sheet.floatingOptionsMenu.hide();
-	}
+	};
 
 	this.selectAllInLasso = function(){
 		this.deselectAllAnnotations();
@@ -732,7 +732,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		  tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
 		  tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
 		}
-	}
+	};
 
 	/**
 	 * Deletes the given annotation.
@@ -786,7 +786,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
     		}
     		scope.scheduleAnnotationSync( null, deleteList, null, false );
 
-    		selectedAnnotations = new Array();
+    		selectedAnnotations = [];
     		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     		self.captureKeyboard=false;
     		tileView.sheet.textEditor.hide();
@@ -796,7 +796,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		    dialog.hide();
 	    }
 	  });
-	}
+	};
 
 	/**
 	 * Clones the given annotation, making sure that ID and user fields are
@@ -822,10 +822,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 
 		return clone;
-	}
+	};
 
 	this.copySelectedAnnotations = function(){
-		var copies = new Array();
+		var copies = [];
 		for(var i=0; i<selectedAnnotations.length; i++) {
       copies[i] = this.cloneAnnotation( selectedAnnotations[i] );
 
@@ -837,7 +837,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			annotations[annotations.length] = copies[i];
 		}
 		this.setSelectedAnnotations( copies );
-	}
+	};
 	this.fillSelectedAnnotations = function(){
 		var totalFilled= 0, totalCanFilled = 0;
 		var ret = false;
@@ -857,7 +857,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.saveSelectedAnnotations();
 		return ret;
-	}
+	};
 	this.colorSelectedAnnotations = function(color){
 		var ret = false;
 		for(var i=0; i<selectedAnnotations.length; i++){
@@ -866,7 +866,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 		this.saveSelectedAnnotations();
 		return ret;
-	}
+	};
 	this.perimeterSelectedAnnotation = function(){
 		selectedAnnotations[0].perimeterMeasured=!selectedAnnotations[0].perimeterMeasured;
 		if(selectedAnnotations[0].perimeterMeasured){
@@ -875,7 +875,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		  	selectedAnnotations[0].updateMeasure();
 		}
 		this.saveSelectedAnnotations();
-	}
+	};
 	this.areaSelectedAnnotation = function(){
 		selectedAnnotations[0].areaMeasured=!selectedAnnotations[0].areaMeasured;
 		if(selectedAnnotations[0].areaMeasured){
@@ -884,7 +884,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		  	selectedAnnotations[0].updateMeasure();
 		}
 		this.saveSelectedAnnotations();
-	}
+	};
     this.convertToUnit = function(type, subType) {
         for (var i = 0; i < selectedAnnotations.length; i++) {
             var ann = selectedAnnotations[i];
@@ -895,7 +895,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             }
         }
        	this.saveSelectedAnnotations();
-    }
+    };
   this.isAnnotationContextMaster = function(){
 		for(var i=0; i<selectedAnnotations.length; i++){
 			if( selectedAnnotations[i].userId ){
@@ -903,10 +903,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 		return true;
-	}
+	};
 	this.masterSelectedAnnotations = function toggleAnnotationContextMaster(){
 	  this.setAnnotationContextMaster( !this.isAnnotationContextMaster() );
-	}
+	};
 	this.setAnnotationContextMaster = function( isMaster ) {
 		for(var i in selectedAnnotations) {
 			if(selectedAnnotations[i].type == MEASURE_ANNOTATION && isMaster) {
@@ -923,7 +923,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			selectedAnnotations[i].userId = isMaster ? null : scope.userId;
 		}
 		this.saveSelectedAnnotations();
-	}
+	};
 
   // Checks whether a point is inside a polygon.
   // See:  http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -935,19 +935,19 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
       && (c = !c);
     return c;
-  }
+  };
   var pointInLasso = function( point ) {
     return isPointInPoly( lasso.points, point );
-  }
+  };
 
 	this.drawAllAnnotations = function(context){
 		for(var i=0; i<annotations.length; i++){
 			annotations[i].drawMe(context);
 		}
-		if(currentAnnotation!=null){
+		if(currentAnnotation!==null){
 			currentAnnotation.drawMe(context);
 		}
-	}
+	};
 	this.recalculateMeasurements = function() {
 	    for (var j = 0; j < annotations.length; j++)
 	    {
@@ -956,7 +956,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               annotations[j].updateMeasure();
           }
       }
-	}
+	};
 
 	this.updateCalibration = function( annotation, onSuccess ) {
 	    var mgr = this;
@@ -990,7 +990,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           var txtVal = editor.val();
           var valid = txtVal && !isNaN( Number( txtVal ) );
           okButton.css( 'visibility', valid?'visible':'hidden' );
-      }
+      };
 
       // Spoof BluVueSheet.KeyboardControls to make it not eat our keypresses
       var oldKeyCapture = this.captureKeyboard;
@@ -1027,7 +1027,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               dialog.hide();
           }
       });
-	}
+	};
 
 	this.finishAnnotation = function()
 	{
@@ -1044,7 +1044,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   				}
   	  };
 
-  		if( currentAnnotation!=null )
+  		if( currentAnnotation!==null )
   		{
           this.deselectAllAnnotations();
           if( currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION )
@@ -1064,17 +1064,17 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           cancelClick=true;
       }
       currentAnnotation=null;
-  }
+  };
 	this.updateOptionsMenu = function(){
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
-	}
+	};
 	var isHandleTouched = function(x,y,id,annotation){
 		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
 		return BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), handleLoc) < HANDLE_TOUCH_RADIUS / tileView.scale;
-	}
+	};
 	this.loadAnnotation = function(jsonString){
 		this.addAnnotation( loadAnnotationJSON(JSON.parse(jsonString), tileView) );
-	}
+	};
 
 	this.addAnnotation = function addAnnotation( annotation ) {
 		annotation.added=true;
@@ -1087,7 +1087,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			}
 		}
 		annotations.push( annotation );
-  }
+  };
 
 	this.saveSelectedAnnotations = function(){
 	    for (var i = 0; i < selectedAnnotations.length; i++) {
@@ -1096,7 +1096,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             }
             scope.scheduleAnnotationSync( [selectedAnnotations[i]], null, null, false );
 		}
-	}
+	};
 
 
 	/**
@@ -1133,7 +1133,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		  scope.isShowAttachmentsButton = scope.currentSheet.tileView.annotationManager.getAttachments(false).length;
 	  }
-	}
+	};
 
 
 	/**
@@ -1148,22 +1148,22 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	      mgr.deleteAnnotation( mgr.getAnnotation( id ), true );
 	    });
 	  }
-	}
+	};
 
 	this.isSelected = function isSelected( annotationId ) {
 	  for( var i=0; i<selectedAnnotations.length; i++ )
 	    if( selectedAnnotations[i].id == annotationId )
 	      return true;
 	  return false;
-	}
+	};
 
 	this.getSelectedAnnotation = function getSelectedAnnotation() {
 		return selectedAnnotations;
-	}
+	};
 
 	this.getAnnotations = function getAnnotations() {
 		return annotations;
-	}
+	};
 
 	this.getAnnotation = function getAnnotation( annotationId ) {
 	  for( var i=0; i<annotations.length; i++ )
@@ -1171,7 +1171,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    if( annotations[i].id == annotationId )
 	      return annotations[i];
 	  }
-	}
+	};
 
   this.configureDefaultAnnotation = function( x, y ) {
 
@@ -1197,7 +1197,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       default:
         console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
     }
-  }
+  };
 
   this.getAttachments = function getAttachments( selectedOnly )
   {
@@ -1215,7 +1215,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    }
 	  }
 	  return attachments;
-  }
+  };
 
   this.addAttachment = function addAttachment( annotation, attachment ) {
     attachment.annotation = annotation;
@@ -1226,7 +1226,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		this.selectSingleAnnotation(annotation);
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
-	}
+	};
 
 	this.removeAttachment = function removeAttachment( annotation, attachment_id ) {
 		for(var i in annotation.attachments) {
@@ -1238,15 +1238,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		this.selectSingleAnnotation(annotation);
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
-	}
+	};
 
 	this.issetMasterMeasurementAnnotation = function() {
 		for(var i in annotations) {
-			if(annotations[i].userId == null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
+			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
 				return true;
 			}
 		}
 
 		return false;
-	}
-}
+	};
+};
