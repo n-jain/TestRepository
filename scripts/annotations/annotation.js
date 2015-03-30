@@ -8,7 +8,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.sheetId = sheetId;
 
 	this.type=type;
-	this.points=new Array();
+	this.points=[];
 
 	this.selected=false;
 	this.showHandles=false;
@@ -29,20 +29,21 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.tileView=tileView;
 	this.offset_x=0;
 	this.offset_y=0;
-	this.x_handle;
-	this.y_handle;
+	this.x_handle = undefined;
+	this.y_handle = undefined;
 
     this.measurement = null;
 	this.updateMeasure = function(){};
 	this.hasArea = false;
 	this.hasPerimeter = false;
-	this.bounds;
+	this.bounds = undefined;
 
 	this.setColor = function(color){
 		this.color=color.clone();
 		var alpha=type==HIGHLIGHTER_ANNOTATION?0.6:1;
 		this.color.alpha=alpha;
-	}
+	};
+	
 	this.setColor(this.color);
 
 	if(type==LASSO_ANNOTATION){
@@ -56,7 +57,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
   this.toSerializable = function toSerializable() {
     return new AnnotationJSON( this );
-  }
+  };
 
   var initMeasurement = function( self, linearCalc, areaCalc )
   {
@@ -70,7 +71,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
               linearCalc.apply( self );
 
           return self.measurement;
-      }
+      };
   };
 
   switch( type )
@@ -83,6 +84,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
       case CIRCLE_ANNOTATION: initMeasurement( this, updateMeasureEllipsePerimeter, updateMeasureEllipseArea ); break;
 
       // Unimplemented cases fall through to the default case
+      default:
       case LINE_ANNOTATION:
       case ARROW_ANNOTATION:
       case HIGHLIGHTER_ANNOTATION:
@@ -92,7 +94,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
       case TEXT_ANNOTATION:
       case NO_ANNOTATION:
       case LASSO_ANNOTATION:
-      default: initMeasurement( this, undefined, undefined );
+        initMeasurement( this, undefined, undefined );
   }
 
   this.getLength = function getLength( p1, p2 )
@@ -100,7 +102,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
     p1 = p1 || this.points[0];
     p2 = p2 || this.points[1];
 		return Math.sqrt( (p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y) );
-  }
+  };
+  
 	this.calcBounds = function(){
 	    this.bounds = new BluVueSheet.Rect(0, 0, 0, 0);
 		this.bounds.left = this.points[0].x;
@@ -115,7 +118,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			if(y<this.bounds.top)this.bounds.top=y;
 			if(y>this.bounds.bottom)this.bounds.bottom=y;
 		}
-	}
+	};
+	
 	this.drawMe = function(context){
 		context.strokeStyle=this.color.toStyle();
 		context.lineWidth=this.lineWidth;
@@ -142,7 +146,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		  this.attachmentIndicatorBounds = null;
 
 		context.restore();
-	}
+	};
 
   /**
    * Draws an attachments indicator lozenge, returning the bounding box in sheet coordinates of that lozenge
@@ -154,7 +158,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		}
 
 		var theta = this.tileView.getRotation()/-180*Math.PI;
-		var isFlipped = (this.tileView.getRotation()==90 || this.tileView.getRotation()==270)
+		var isFlipped = (this.tileView.getRotation()==90 || this.tileView.getRotation()==270);
 		context.save();
 
 	  var x = this.bounds.left + (this.bounds.width() / 2);
@@ -172,7 +176,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
       y: 0,
       width: 34/tileView.scale,
       height: 20/tileView.scale
-    }
+    };
 
     // Evaluate location of the indicator appropriate for the annotation shape
 		switch(this.type) {
@@ -193,7 +197,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				var max_x = this.points[0].x,
 						min_x = this.points[0].x,
 						max_y = this.points[0].y,
-						min_y = this.points[0].y
+						min_y = this.points[0].y;
 
 				for(var i in this.points) {
 					if(!this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y <= min_y) {
@@ -313,7 +317,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		if (fill) {
 			ctx.fill();
 		}
-	}
+	};
 
 	this.drawSelected = function(context){
 	  context.save();
@@ -325,9 +329,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				this.drawHandlesPoint(context);
 		}
 		context.restore();
-	}
+	};
+	
 	this.drawBoundsRect = function(context){
-		context.strokeStyle="#7e7e7e"
+		context.strokeStyle="#7e7e7e";
 
     var oldStroke = setPatternStroke( context, [80,40] );
     {
@@ -336,17 +341,20 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
   		context.strokeRect(bounds.left, bounds.top, bounds.width(), bounds.height());
     }
     setPatternStroke( context, oldStroke );
-	}
+	};
+	
 	this.drawHandlesRect = function(context){
 		for(var i=0; i<8; i++){
 		  drawHandle( context, this.getPoint(i,true), tileView.scale );
 		}
-	}
+	};
+	
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 		  drawHandle( context, this.points[i], tileView.scale );
 		}
-	}
+	};
+	
 	this.drawMeasurement = function(context) {
 	  if( !this.measurement || !tileView.annotationManager.scaleAnnotation )
 	      return;
@@ -377,7 +385,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.textAlign = "center";
 		context.fillText(text,0,textSize/3);
 		context.restore();
-	}
+	};
+	
 	this.getPoint = function(id,handle){
 	    var rect = this.bounds.clone();
 	    if (handle) {
@@ -396,13 +405,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			case 7:loc.x=rect.left;loc.y=rect.centerY();break;
 		}
 		return loc;
-	}
+	};
+	
 	this.offsetTo = function(x,y){
 		this.offset_x=x-this.x_handle-this.bounds.centerX();
 		this.offset_y=y-this.y_handle-this.bounds.centerY();
-	}
+	};
+	
 	this.applyOffset = function(){
-		if(this.offset_y!=0||this.offset_x!=0){
+		if(this.offset_y!==0||this.offset_x!==0){
 			for(var i=0; i<this.points.length; i++){
 				this.points[i].x+=this.offset_x;
 				this.points[i].y+=this.offset_y;
@@ -413,9 +424,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			return true;
 		}
 		return false;
-	}
+	};
+	
 	this.applyMoveOffset = function(){
-		if((this.offset_y!=0||this.offset_x!=0) && !isNaN(this.offset_x) && !isNaN(this.offset_y)){
+		if((this.offset_y!==0||this.offset_x!==0) && !isNaN(this.offset_x) && !isNaN(this.offset_y)){
 			for(var i=0; i<this.points.length; i++){
 				this.points[i].x+=this.offset_x;
 				this.points[i].y+=this.offset_y;
@@ -426,7 +438,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			return true;
 		}
 		return false;
-	}
+	};
+	
 	this.scaleWithHandleTo = function(x,y,handleId) {
 	    var xPositive = [2, 3, 4].indexOf(handleId) >= 0;
 	    var yPositive = [4, 5, 6].indexOf(handleId) >= 0;
@@ -454,9 +467,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		this.calcBounds();
 		this.updateMeasure();
-	}
+	};
 
-var drawFunctions = new Array();
+var drawFunctions = [];
 	drawFunctions[LASSO_ANNOTATION] = drawPoints;
 	drawFunctions[SQUARE_ANNOTATION] = drawRectangle;
 	drawFunctions[X_ANNOTATION] = drawX;
@@ -474,7 +487,7 @@ var drawFunctions = new Array();
 
     function setMeasurement( annotation, value, isArea )
     {
-        if( annotation.measurement && annotation.tileView.annotationManager.scaleAnnotation!=null )
+        if( annotation.measurement && annotation.tileView.annotationManager.scaleAnnotation )
         {
             var m = annotation.tileView.annotationManager.scaleAnnotation.measurement;
             var l = annotation.tileView.annotationManager.scaleAnnotation.getLength();
@@ -581,7 +594,7 @@ var drawFunctions = new Array();
         return false;
     }
 
-    var EPSILON = .001;
+    var EPSILON = 0.001;
     function pointsEqual( p1, p2 )
     {
         return (Math.abs( p1.x-p2.x ) < EPSILON) &&
@@ -619,7 +632,7 @@ var drawFunctions = new Array();
             var j2 = JSON.stringify( new AnnotationJSON( that ) );
             return j1.localeCompare( j2 ) === 0;
         }
-    }
+    };
 
 
 function drawArc(x1,y1,x2,y2,start,angle,context,fill){
@@ -673,6 +686,7 @@ function drawCloud(context){
 		var gy = (this.points[0].y>this.points[1].y?this.points[0].y:this.points[1].y);
 		var lx = (this.points[0].x<this.points[1].x?this.points[0].x:this.points[1].x);
 		var ly = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
+		var i;
 
 		var wc = Math.floor((gx-lx-this.lineWidth)/(arcSize));
 		var hc = Math.floor((gy-ly-this.lineWidth)/(arcSize));
@@ -684,28 +698,28 @@ function drawCloud(context){
 		//draw top
 		var currentX=lx+this.lineWidth/2+arcSizeW/2;
 		var currentY=ly+this.lineWidth/2;
-		for(var i=0; i<wc-1; i++){
+		for(i=0; i<wc-1; i++){
 			drawArc(currentX+arcSizeW,currentY+arcSizeH,currentX,currentY,0, Math.PI,context,this.fill);
 			currentX+=arcSizeW;
 		}
 		//draw bottom
 		currentX = lx+this.lineWidth/2+arcSizeW/2;
 		currentY = gy-arcSizeH-this.lineWidth/2;
-		for(var i=0; i<wc-1; i++){
+		for(i=0; i<wc-1; i++){
 			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH, 0, Math.PI,context,this.fill);
 			currentX+=arcSizeW;
 		}
 		//draw left
 		currentX=lx+this.lineWidth/2;
 		currentY=ly+this.lineWidth/2+arcSizeH/2;
-		for(var i=0; i<hc-1; i++){
+		for(i=0; i<hc-1; i++){
 			drawArc(currentX+arcSizeW,currentY+arcSizeH,currentX,currentY,1.5*Math.PI, Math.PI,context,this.fill);
 			currentY+=arcSizeH;
 		}
 		//draw left
 		currentX=gx-arcSizeW-this.lineWidth/2;
 		currentY=ly+this.lineWidth/2+arcSizeH/2;
-		for(var i=0; i<hc-1; i++){
+		for(i=0; i<hc-1; i++){
 			drawArc(currentX,currentY,currentX+arcSizeW,currentY+arcSizeH,1.5*Math.PI, Math.PI,context,this.fill);
 			currentY+=arcSizeH;
 		}
@@ -718,6 +732,7 @@ function drawCloud(context){
 		context.stroke();
 	}
 }
+
 function drawPoints(context){
 	if(this.points.length>1){
 		context.save();
@@ -738,6 +753,7 @@ function drawPoints(context){
 		context.restore();
 	}
 }
+
 function drawText(context){
 	if(this.points.length>1){
 		context.save();
@@ -755,21 +771,23 @@ function drawText(context){
 
 		var currentY=this.textSize;
 		var lines = this.text.split("\n");
+
 		for(var i=0; i<lines.length; i++){
-			var lines2 = new Array();
+		  var j;
+			var lines2 = [];
 			lines2[0] = "";
 			var currentLine = 0;
 			var words = lines[i].split(" ");
-			for(var j=0; j<words.length; j++){
+			for(j=0; j<words.length; j++){
 				var temp = lines2[currentLine] + words[j] + " ";
-				if(context.measureText(temp).width<=w||lines2[currentLine]==""){
+				if(context.measureText(temp).width<=w || !lines2[currentLine] ){
 					lines2[currentLine] = temp;
 				}else{
 					lines2[lines2.length] = words[j]+" ";
 					currentLine++;
 				}
 			}
-			for(var j=0; j<lines2.length; j++){
+			for(j=0; j<lines2.length; j++){
 				context.fillText(lines2[j], 0, currentY);
 				currentY+=this.textSize;
 			}
@@ -777,6 +795,7 @@ function drawText(context){
 		context.restore();
 	}
 }
+
 function drawLine(context){
 	if(this.points.length==2){
 		context.save();
@@ -793,6 +812,7 @@ function drawLine(context){
 		context.stroke();
 	}
 }
+
 function drawArrow(context){
 	if(this.points.length==2){
 		context.save();
@@ -820,6 +840,7 @@ function drawArrow(context){
 		context.stroke();
 	}
 }
+
 function drawScale(context){
 	if(this.points.length==2){
 		var x1 = this.points[0].x;
@@ -831,10 +852,13 @@ function drawScale(context){
 
 		var baseEndLength = 8;
 		var measureSpace;
-		if(this.measurement!=null){
+		var textSize;
+		var text;
+			
+		if( this.measurement ){
 			var myLength = this.getLength();
-			var textSize = 32*this.lineWidth;
-			var text = htmlDecode( this.measurement.toString() );
+			textSize = 32*this.lineWidth;
+			text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
 				textSize-=2*this.lineWidth;
@@ -903,7 +927,7 @@ function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, 
 		context.save();
 		context.translate(cx,cy);
 		context.rotate(theta);
-		if( ( x1>x2 && rotation == 0) ||
+		if( ( x1>x2 && rotation === 0) ||
 		    ( y1<y2 && rotation == 90 ) ||
 		    ( x1<x2 && rotation == 180) ||
 		    ( y1>y2 && rotation == 270 ) ) {
@@ -926,15 +950,14 @@ function drawMeasure(context){
 
 		var baseEndLength = 8;
 		var measureSpace;
-
-		var baseEndLength = 8;
-		var measureSpace;
+		var textSize;
+		var text;
 
 	  if( this.measurement && tileView.annotationManager.scaleAnnotation )
 	  {
 			var myLength = this.getLength();
-			var textSize = 32*this.lineWidth;
-			var text = htmlDecode( this.measurement.toString() );
+			textSize = 32*this.lineWidth;
+			text = htmlDecode( this.measurement.toString() );
 			context.font = textSize+"px Verdana";
 			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
 				textSize-=2*this.lineWidth;
@@ -1011,7 +1034,7 @@ function drawHandle( context, point, scale )
   context.stroke();
 }
 
-}  // End of Annotation
+};  // End of Annotation
 
 function createUUID() {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -1023,15 +1046,15 @@ function AnnotationJSON(annotation) {
     var rectType = !(annotation.type==POLYGON_ANNOTATION||annotation.type==LINE_ANNOTATION||annotation.type==ARROW_ANNOTATION||
 					 annotation.type==SCALE_ANNOTATION||annotation.type==MEASURE_ANNOTATION||annotation.type==PEN_ANNOTATION||
 					 annotation.type==FREE_FORM_ANNOTATION||annotation.type==HIGHLIGHTER_ANNOTATION);
-	this.points;
-	this.x;
-	this.y;
-	this.width;
-	this.height;
-	this.text;
-	this.textSize;
-	this.distance;
-	this.closed;
+	this.points = undefined;
+	this.x = undefined;
+	this.y = undefined;
+	this.width = undefined;
+	this.height = undefined;
+	this.text = undefined;
+	this.textSize = undefined;
+	this.distance = undefined;
+	this.closed = undefined;
 	//UNIVERSAL
 	this.id = annotation.id.replace(/-/g, "");
 	this.projectId = annotation.projectId.replace(/-/g, "");
@@ -1046,9 +1069,9 @@ function AnnotationJSON(annotation) {
 	this.fill = annotation.fill?1:0;
 	this.perimeterVisible = annotation.perimeterMeasured?1:0;
 	this.areaVisible = annotation.areaMeasured?1:0;
-	this.unitOfMeasure;
+	this.unitOfMeasure = undefined;
 	this.lineWidth=annotation.lineWidth;
-	if(annotation.measurement!=null){
+	if(annotation.measurement){
 	    this.unitOfMeasure = BluVueSheet.Constants.UnitNames[annotation.measurement.type][annotation.measurement.unit].toLowerCase();
 	} else {
 		this.unitOfMeasure = "na";
@@ -1098,10 +1121,11 @@ function AnnotationJSON(annotation) {
 		this.closed = annotation.closed ? 1 : 0;
 	}
 }
+
 function loadAnnotationJSON(json,tileView){
   var normalizeGuid = function normalizeGuid( guid ) {
     return guid.replace( /-/g, '' );
-  }
+  };
 
     var annotation = new BluVueSheet.Annotation(json.type, tileView);
 	annotation.id=normalizeGuid(json.id);
