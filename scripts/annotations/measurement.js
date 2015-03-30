@@ -47,7 +47,7 @@ BluVueSheet.Measurement = function(amount, unit, type){
 			var a = parseFloat(this.amount).toFixed(2);
 			str = a+" "+BluVueSheet.Constants.UnitDisplayNames[this.type][this.unit];
 		}else{
-			if(Math.floor(this.amount)!=0){
+			if(Math.floor(this.amount)!==0){
 				str+=Math.floor(this.amount);
 				str+="\' ";				
 			}
@@ -108,8 +108,10 @@ BluVueSheet.Measurement.createMeasurement = function (str) {
 	var numStarted = false;
 	var numEnd = 0;
 	var numEnded = false;
+	var i;
+	
 	//find locations where numbers stop and units start
-	for(var i=0; i<str.length; i++){
+	for(i=0; i<str.length; i++){
 		if(!numStarted&&isDigit(str.charAt(i))){
 			numStarted=true;
 			numStart=i;
@@ -125,8 +127,9 @@ BluVueSheet.Measurement.createMeasurement = function (str) {
 	var unitStart = 0;
 	var unitEnd = 0;
 	var unitStarted = false;
+
 	//find the start of the unit
-	for(var i=numEnd; i<str.length; i++){
+	for(i=numEnd; i<str.length; i++){
 		if(str.charAt(i)!=' '&&!unitStarted){
 			unitStart=i;
 			unitStarted=true;
@@ -139,14 +142,21 @@ BluVueSheet.Measurement.createMeasurement = function (str) {
 	var unitInfo = BluVueSheet.Measurement.toUnit(str.substring(unitStart));
 	var type = unitInfo[1];
 	var unit = unitInfo[0];
-	if(unitEnd==0)unitEnd=str.length;
+	if(unitEnd===0)
+	  unitEnd=str.length;
+	  
 	if(unit == -1){
 	    unitInfo = BluVueSheet.Measurement.toUnit(str.substring(unitStart, unitEnd));
 		 unit = unitInfo[0];
 		 if(unit == -1)return null;
-		 if(unit == FT){
+		 if(unit == FT)
+		 {
+		   // tonyj:  I don't understand this next line, nor do I know how to
+		   //         exercise it.  If you're tracing a bug and you ended up
+		   //         here, that call to create() is looking pretty suspect to
+		   //         me.
 			var m = create(str.substring(unitEnd));
-			if(m==null)return null;
+			if(!m) return null;
 			if(m.unit==IN){
 			    unit = FT_IN;
 			    type = BluVueSheet.Constants.Length;
