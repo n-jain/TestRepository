@@ -1141,16 +1141,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	      if( !isDirty && !annotation.equals( oldAnnotation ) )
 	      {
   	      var isSelected = mgr.isSelected( annotation.id );
-  	      mgr.deleteAnnotation( oldAnnotation, true );
-  	      mgr.addAnnotation( annotation );
-
-  	      if( isSelected )
+  	      
+ 	        if( !isSelected )
   	      {
-  	        if( selectedAnnotations.length === 0 )
-  	          mgr.selectSingleAnnotation( annotation );
-  	        else
-  	          mgr.selectAnnotation( annotation, true );
-  	      }
+  	        mgr.deleteAnnotation( oldAnnotation, true );
+  	        mgr.addAnnotation( annotation );
+          }
+          // Otherwise, ignore the external edit - we own the edit state here.  
+          // Network-wide, the last one to save their edits will win this race
+          // and apply across the board.
 	      }
 	    });
 
