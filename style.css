@@ -1049,7 +1049,7 @@ select.bluvue-annotation-unit-edit {
 .attachment-file-info-email {
     font-size: 12px;
     float: left;
-    width: 45%;
+    width: 55%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1059,7 +1059,7 @@ select.bluvue-annotation-unit-edit {
     float: left;
     font-size: 12px;
     text-align: right;
-    width: 55%;
+    width: 45%;
 }
 
 .attachment-file-remove {
