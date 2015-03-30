@@ -6,15 +6,15 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     this.canvas = canvas;
 
     this.deselectTool = deselectTool;
-	this.tileLoader;
-	this.annotationManager;
-	this.mouseControls;
+	this.tileLoader = undefined;
+	this.annotationManager = undefined;
+	this.mouseControls = undefined;
 
-	this.scrollX;
-	this.scrollY;
-	this.scale;
+	this.scrollX = undefined;
+	this.scrollY = undefined;
+	this.scale = undefined;
 
-	this.color;
+	this.color = undefined;
 	this.textSize = 128;
     this.canDraw = false;
 	var tool;
@@ -24,13 +24,13 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	this.setLoading = function () {
 	    this.canDraw = false;
 	    setLoading();
-	}
+	};
 	this.setLoaded = function () {
         if (!this.canDraw) {
 	        this.canDraw = true;
 	        setLoaded();
         }
-    }
+    };
 
 	this.create = function(sheetObj){
 		context=canvas.getContext('2d');
@@ -52,14 +52,14 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 		for(var i=0; i<sheetObj.annotations.length; i++){
 			this.annotationManager.loadAnnotation(sheetObj.annotations[i].data);
 		}
-	}
+	};
 
 	this.dispose = function () {
 	    this.canDraw = false;
 	    window.cancelAnimationFrame(this.animationFrameRequest);
 	    this.drawAll();
 
-	}
+	};
 
     this.drawProgressIndicator = function() {
         var can = canvas;
@@ -142,14 +142,14 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         var drawRect = {
           x:0, y:0,
           x2:this.tileLoader.width, y2:this.tileLoader.height
-        }
+        };
 
     		this.tileLoader.drawAllTiles( context, drawRect );
     		//debugDraw( context, drawRect );
     		this.annotationManager.drawAllAnnotations(context);
 
     		context.restore();
-  	}
+  	};
 
     function debugDraw( context, r ){
         context.save();
@@ -177,7 +177,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    this.setScale( 0.8 * canvasDim / sheetDim );
 	    this.setScroll( 0,0 );
 	    this.updateRes();
-	}
+	};
 
 	/**
 	 * Updates scrollX and scrollY, honoring any scroll clamps that may exist (e.g., edge of screen)
@@ -215,7 +215,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
 	    this.scrollX = x;
 	    this.scrollY = y;
-	}
+	};
 
 	this.setScale = function( newScale ) {
       var sheetSize = this.getSheetSize();
@@ -229,7 +229,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
       this.scale = newScale;
       return newScale;
-	}
+	};
 
 	this.getSheetSize = function() {
 	    var theta = -this.getRotation() * Math.PI / 180;
@@ -238,21 +238,21 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
    	      width: Math.abs( this.tileLoader.width * Math.cos( theta ) - this.tileLoader.height * Math.sin( theta ) ),
    	      height: Math.abs( this.tileLoader.width * Math.sin( theta ) + this.tileLoader.height * Math.cos( theta ) )
 	    };
-	}
+	};
 
 	this.render = function(){
 		t.drawAll();
 
 		this.animationFrameRequest = requestAnimationFrame(t.render);
-	}
+	};
 
 	this.setColor = function(color){
 		if(!this.annotationManager.colorSelectedAnnotations(color))this.color=color;
-	}
+	};
 
     this.convertToUnit = function(type, subType) {
         this.annotationManager.convertToUnit(type, subType);
-    }
+    };
 
 	this.setTool = function (newTool) {
 	    this.sheet.optionsMenu.deselectAllButtons();
@@ -260,15 +260,15 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 		tool = newTool;
 		this.annotationManager.finishAnnotation();
 		this.annotationManager.updateOptionsMenu();
-	}
+	};
 
 	this.getTool = function(){
 		return tool;
-	}
+	};
 
     this.getRotation = function() {
         return scope.sheet.rotation;
-    }
+    };
 
 	this.optionChosen = function (option) {
         switch (option) {
@@ -301,7 +301,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     	this.sheet.floatingToolsMenu.setSelectedToolsForAnnotations( selectedAnnotations, tileView );
     	this.sheet.floatingOptionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
-    }
+    };
 
 	this.updateRes = function () {
 	    if (this.scale > 0.75 || !this.tileLoader.levelAvailable[1]) { this.tileLoader.setTileRes(0); }
@@ -309,7 +309,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    else if (this.scale > 0.1875 || !this.tileLoader.levelAvailable[3]) { this.tileLoader.setTileRes(2); }
 	    else if (this.scale > 0.09375 || !this.tileLoader.levelAvailable[4]) { this.tileLoader.setTileRes(3); }
 	    else { this.tileLoader.setTileRes(4); }
-	}
+	};
 
 	this.sheetCoordinatesFromScreenCoordinates = function(x, y) {
 	    var centerX = this.tileLoader.width / 2;
@@ -326,7 +326,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    var p = new BluVueSheet.Point(newX, newY);
 
 	    return p;
-	}
+	};
 
 	this.screenCoordinatesFromSheetCoordinates = function (x, y) {
 	    var centerX = this.tileLoader.width / 2;
@@ -341,11 +341,11 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	    var y1 = newY * this.scale + this.scrollY * this.scale + (this.canvas.height - this.tileLoader.height * this.scale) / 2;
 
 	    return new BluVueSheet.Point(x1, y1);
-    }
+    };
 
     this.isFillableAnnotation = function(type) {
         return type != TEXT_ANNOTATION && type != HIGHLIGHTER_ANNOTATION &&
             type != LINE_ANNOTATION && type != ARROW_ANNOTATION &&
             type != MEASURE_ANNOTATION && type != SCALE_ANNOTATION;
-    }
-}
+    };
+};
