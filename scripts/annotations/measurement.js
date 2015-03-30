@@ -24,18 +24,22 @@ BluVueSheet.Measurement = function(amount, unit, type){
 	this.unit=unit;
 	this.amount=amount;
 	this.type=type;
+	
 	this.setAmount = function (newAmount, newUnit) {
 	    if (newUnit != -1 && this.unit != -1 && this.type != -1) {
 	        this.amount = newAmount * convMult[this.type][newUnit][this.unit];
 		}
-	}
+	};
+	
 	this.convertTo=function(newUnit){
 		return this.amount*convMult[this.type][this.unit][newUnit];
-	}
+	};
+	
 	this.changeToUnit=function(newUnit){
 	    this.amount = this.amount * convMult[this.type][this.unit][newUnit];
 	    this.unit = newUnit;
-	}
+	};
+	
 	this.toString=function(){
 		var str = "";
 		if(this.unit!=-1&&this.type!=-1)
@@ -51,8 +55,8 @@ BluVueSheet.Measurement = function(amount, unit, type){
 			str+=inches+"\"";
 		}
 		return str;
-	}
-}
+	};
+};
 
 BluVueSheet.Measurement.toUnit = function (str) {
 	var s = str.toLowerCase();
@@ -78,7 +82,7 @@ BluVueSheet.Measurement.toUnit = function (str) {
 	if (s === "ha") return [HA, BluVueSheet.Constants.Area];
 	if (s === "km2") return [KM2, BluVueSheet.Constants.Area];
 	return [-1,-1];
-}
+};
 
 BluVueSheet.Measurement.toArea = function (lengthUnit) {
 	switch(lengthUnit){
@@ -92,7 +96,7 @@ BluVueSheet.Measurement.toArea = function (lengthUnit) {
 		case KM:return KM2;
 	}
 	return -1;
-}
+};
 
 BluVueSheet.Measurement.createMeasurement = function (str) {
 	function isDigit(str){
@@ -153,4 +157,4 @@ BluVueSheet.Measurement.createMeasurement = function (str) {
 		 }
 	}
 	return new BluVueSheet.Measurement(amount, unit, type);
-}
+};
