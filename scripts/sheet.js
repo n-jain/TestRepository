@@ -1,4 +1,4 @@
-﻿BluVueSheet.Sheet = function() {
+BluVueSheet.Sheet = function() {
     this.tileView = null;
 
     this.optionsMenu = null;
@@ -21,12 +21,12 @@
     this.setLoaded = function () {
         t.userInterface.style.display = "block";
 	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'none';
-    }
+    };
 
     this.setLoading = function () {
         t.userInterface.style.display = "none";
 	      document.getElementById('bluvue-sheet-tool-menu-disabled').style.display = 'block';
-    }
+    };
 
     this.loadSheet = function (sheet, scope, elem) {
         this.sheetId = sheet.sheetId;
@@ -98,7 +98,7 @@
 
     this.resetZoom = function() {
         t.tileView.fitToScreen();
-    }
+    };
 
     this.setTool = function (tool) {
         t.tileView.setTool(tool);
@@ -106,13 +106,13 @@
 
     this.hideOptionMenus = function() {
         t.optionsMenu.hideAllMenus();
-    }
+    };
 
     this.convertToUnit = function(type, subType) {
         t.tileView.convertToUnit(type, subType);
         t.optionsMenu.lengthUnitConverter.hide();
         t.optionsMenu.areaUnitConverter.hide();
-    }
+    };
 
     this.setColor = function (colorName) {
         var color = colorFromString(colorName);
@@ -129,5 +129,5 @@
         t.tileView.annotationManager.setTextSize(textSize);
         t.tileView.textSize = textSize;
     };
-}
+};
 
