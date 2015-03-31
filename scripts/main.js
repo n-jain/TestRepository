@@ -143,7 +143,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         }
                         else if( tool.id == BluVueSheet.Constants.Tools.Ruler.id )
                         {
-                            var mgr = scope.currentSheet.tileView.annotationManager;
                             if( !mgr.scaleAnnotation )
                             {
                                 // There's no calibration, so enforce one!
@@ -169,7 +168,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         scope.toolMenuButtonTools[i] = (tool) ? ((tool.menuId==i) ? tool.menuIndex:0) : 0;
                     }
 
-                    if( scope.selectedTool == null ) {
+                    if( !scope.selectedTool ) {
                         angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
                             angular.element(value).removeClass('active-child-tool');
                         });
@@ -183,7 +182,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
                     // If need un-expand expanded tool item
-                    if(scope.selectedToolMenu != null && scope.selectedToolMenu.id == toolMenuButton.id && toolMenuButton.buttons.length > 1) {
+                    if( scope.selectedToolMenu && scope.selectedToolMenu.id == toolMenuButton.id && toolMenuButton.buttons.length > 1) {
                         try {
                             scope.selectTool(null);
                         } catch(e) {}
@@ -273,7 +272,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     okAction: function saveSheetNameAction() {
                       scope.$apply(function() {
                         var val = editor[0].value;
-                        if( val.length == 0 )
+                        if( val.length === 0 )
                           val = "Untitled";
                         if( val.length > 50 )
                           val = val.substring( 0, 50 );
@@ -328,19 +327,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.$watch('sheet', function (newValue) {
-                    if (scope.currentSheet != null) {
+                    if (scope.currentSheet) {
                         scope.currentSheet.dispose();
                         scope.currentSheet = null;
                     }
 
-                    if (newValue != null) {
+                    if (newValue) {
                         scope.currentSheet = new BluVueSheet.Sheet();
                         scope.currentSheet.loadSheet(scope.sheet, scope, elem);
                         scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
                     } else {
                         scope.options.currentSheetPinned = false;
                     }
-                    if( scope.getCurrentIndex() == 0 ) {
+                    if( scope.getCurrentIndex() === 0 ) {
                         document.getElementById('previous-sheet-arrow').style.display = 'none';
                     }
 
@@ -395,10 +394,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 //#endregion
 
                 scope.moreMenuToggle = function (need_closed) {
-                    var need_closed = need_closed || false;
+                    need_closed = need_closed || false;
 
                     var menu = document.getElementsByClassName('bluvue-sheet-more-menu')[0];
-                    var isClosed = menu.style.display == 'none' || menu.style.display == '';
+                    var isClosed = menu.style.display == 'none' || !menu.style.display;
 
                     if(isClosed && !need_closed) {
                         menu.style.display = 'block';
@@ -453,7 +452,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                         // Hide right arrow if nextSheet isn't exists
                         document.getElementById('next-sheet-arrow').style.display = 'block';
-                        if( scope.getCurrentIndex() == 0 ) {
+                        if( scope.getCurrentIndex() === 0 ) {
                             document.getElementById('previous-sheet-arrow').style.display = 'none';
                         }
                     }, true );
@@ -612,7 +611,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		                var ann_sel = mgr.getSelectedAnnotation();
 
-		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || ann_sel[0].userId == null && scope.isAdmin)) {
+		                if (ann_sel.length == 1 && (!scope.attachmentFiles.length || ann_sel[0].userId == scope.userId || !ann_sel[0].userId && scope.isAdmin)) {
 			                scope.editModeAttachmentsAction('close');
 		                }
 	                }
@@ -775,7 +774,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					              amazonKeyPath: fileInfo.key
 				              };
 
-				              if(lat != null && lon != null) {
+				              if(lat && lon ) {
 					              options.location = {
 						              "id": scope.generateUUID(),
 						              "horizontalAccuracy": 192,
@@ -852,7 +851,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            image.src =  url;
 
 				            var viewerPhoto = function (blockMode) {
-					            if(blockMode == undefined) {
+					            if(blockMode === undefined) {
 						            blockMode = true;
 					            }
 
@@ -1021,17 +1020,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                switch(menuItem.func) {
 			                case 'notesDialog':
 												return scope.userCanEditNotes() || scope.sheetHasNotes();
-				                break;
+
 			                case 'selectRevision':
 				                return scope.sheetCountRevisions() > 1;
-			                  break;
+
 		                }
 
 		              return true;
 	              };
 
 	              scope.sheetHasNotes = function() {
-		              return null != scope.sheet.notes;
+		              return null !== scope.sheet.notes;
 	              };
 
 		            scope.userCanEditNotes = function() {
@@ -1050,7 +1049,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 
-			            if(scope.sheet.notes == null) {
+			            if(scope.sheet.notes === null) {
 				            scope.notesEditDialog(true);
 				            return;
 			            }
@@ -1075,7 +1074,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
-			            var notes = scope.sheet.notes == null ? '' : scope.sheet.notes;
+			            var notes = scope.sheet.notes === null ? '' : scope.sheet.notes;
 
 			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div>" );
 
@@ -1116,10 +1115,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            else if (ctrl.selectionStart || ctrl.selectionStart == '0')
 					            CaretPos = ctrl.selectionStart;
 				            return (CaretPos);
-			            }
+			            };
 
 			            var setCaretPosition = function (elem, caretPos) {
-				            if(elem != null) {
+				            if(elem !== null) {
 					            if(elem.createTextRange) {
 						            var range = elem.createTextRange();
 						            range.move('character', caretPos);
