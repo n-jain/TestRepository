@@ -50,7 +50,6 @@ BluVueSheet.Sheet = function() {
         elem.append(this.userInterface);
         
         this.canvas = elem.find('canvas')[0];
-
         this.setLoading();
 
         //make tileView
@@ -59,20 +58,21 @@ BluVueSheet.Sheet = function() {
         this.tileView.render();
 
         //setup mouse controls
-
         this.canvas.onmousedown = this.tileView.mouseControls.onmousedown;
         this.canvas.onmouseup = this.tileView.mouseControls.onmouseup;
         this.canvas.onmousemove = this.tileView.mouseControls.onmousemove;
         this.canvas.onclick = this.tileView.mouseControls.onclick;
         this.canvas.ondblclick = this.tileView.mouseControls.ondblclick;
         
-
         this.canvas.addEventListener("touchstart", this.tileView.mouseControls.ontouchstart, true);
         this.canvas.addEventListener("touchmove", this.tileView.mouseControls.ontouchmove, true);
         this.canvas.addEventListener("touchend", this.tileView.mouseControls.ontouchend, true);
         this.canvas.addEventListener("touchcancel", this.tileView.mouseControls.ontouchcancel, true);
         this.canvas.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
         this.canvas.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
+        
+        // Force a sync to ensure remote content is up to date
+	      scope.scheduleAnnotationSync( null, null, function(){}, true );
     };
 
     this.dispose = function () {
