@@ -54,12 +54,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
+                
                 $window.onpopstate = function () {
                     scope.scheduleAnnotationSync( null, null, function(){
                         backPressed = true;
                         scope.close();
                     }, true );
-                }
+                };
 
                 var windowResizeObserver = function windowResizeObserver() {
                     var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
@@ -106,13 +107,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     scope.currentSheet.dispose();
                     scope.closeSheet();
-                }
+                };
 
                 scope.deselectTool = function() {
                     scope.selectTool(null);
                     scope.$apply();
                     scope.moreMenuToggle(true);
-                }
+                };
 
                 scope.selectTool = function(tool) {
                     if( !tool || (scope.selectedTool && tool.id === scope.selectedTool.id) ) {
@@ -178,7 +179,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     //update tool menu
                     scope.selectedToolMenu = null;
-                }
+                };
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
                     // If need un-expand expanded tool item
@@ -204,16 +205,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     }
 
                     scope.currentSheet.toolMenuExtension.updateLocation(toolMenuButton);
-                }
+                };
 
                 scope.showToolbar = function() {
                     document.getElementsByClassName('bluvue-sheet-tool-menu')[0].style.display = 'block';
                     document.getElementById('show-toolbar').style.display = 'none';
-                }
+                };
 
                 scope.resetZoom = function () {
                     scope.currentSheet.resetZoom();
-                }
+                };
+                
                 scope.enterFullscreen = function() {
                     if (!document.fullscreenElement && !document.mozFullScreenElement &&
                         !document.webkitFullscreenElement && !document.msFullscreenElement &&
@@ -285,7 +287,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       dialog.hide();
                     }
                   });
-                }
+                };
 
                 scope.selectRevision = function selectRevision() {
                     scope.scheduleAnnotationSync( null, null, function(){
@@ -316,14 +318,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             }
                         });
                     }, true );
-                }
+                };
 
                 scope.rotateSheet = function rotateSheet() {
                     scope.currentSheet.tileView.annotationManager.deselectAllAnnotations();
                     scope.sheet.rotation = ((scope.sheet.rotation+90) % 360);
                     scope.currentSheet.tileView.setScale(0);
                     scope.currentSheet.tileView.setScroll(0,0);
-                }
+                };
 
                 scope.$watch('sheet', function (newValue) {
                     if (scope.currentSheet != null) {
@@ -373,23 +375,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     }
 
                     return -1;
-                }
+                };
 
                 scope.pinCurrentSheet = function () {
                     if (indexOfPinnedSheet(scope.sheet) !== -1) { return; }
                     scope.pinnedSheets.push(scope.sheet);
                     scope.options.currentSheetPinned = true;
-                }
+                };
 
                 scope.unpinSheet = function(index) {
                     scope.pinnedSheets.splice(index, 1);
                     scope.options.currentSheetPinned = indexOfPinnedSheet(scope.sheet) >= 0;
-                }
+                };
 
                 scope.selectPinnedSheet = function (pinnedSheet) {
                     if (scope.sheet === pinnedSheet) { return; }
                     scope.sheet = pinnedSheet;
-                }
+                };
                 //#endregion
 
                 scope.moreMenuToggle = function (need_closed) {
@@ -403,7 +405,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     } else {
                         menu.style.display = 'none';
                     }
-                }
+                };
 
                 scope.moreMenuItemClicked = function(menuItem) {
                     var f = menuItem.func;
@@ -416,7 +418,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     }
 
                     scope.moreMenuToggle(true);
-                }
+                };
 
                 scope.alwaysShowToolHelp = function() {
                     return document.getElementById('toggle_tool_help_button').getElementsByTagName('span')[0].innerHTML != 'Show Tool Help';
@@ -431,7 +433,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     } else {
                         button.innerHTML = 'Show Tool Help';
                     }
-                }
+                };
 
                 scope.selectNextSheet = function () {
                     scope.scheduleAnnotationSync( null, null, function(){
@@ -576,13 +578,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                }
 
 		                window.removeEventListener('keyup', onKeyUp);
-	                }
+	                };
 
 	                window.addEventListener("keyup", onKeyUp);
 
 	                scope.isShowAttachmentNextButton = false;
 	                scope.isShowAttachmentPreviousButton = false;
-                }
+                };
 
                 scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
 	                required_show_filters = required_show_filters || false;
@@ -673,7 +675,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                if(need_apply) {
 		                scope.$apply();
 	                }
-                }
+                };
 
 	            scope.selectAttachmentItem = function(position) {
 		            var el = document.getElementById('attachments-panel-files').getElementsByTagName('li')[position],
@@ -698,7 +700,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	                scope.isShowAttachmentNextButton = false;
 	                scope.isShowAttachmentPreviousButton = false;
-                }
+                };
 
                 scope.changeFilterAttachmentPanel = function(filter, need_apply) {
 	                var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
@@ -1030,19 +1032,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 	              scope.sheetHasNotes = function() {
 		              return null != scope.sheet.notes;
-	              }
+	              };
 
 		            scope.userCanEditNotes = function() {
 			            return scope.canEditNotes;
-		            }
+		            };
 
 		            scope.sheetHasRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet) ? true: false;
-		            }
+		            };
 
 		            scope.sheetCountRevisions = function() {
 			            return scope.revisionsForCurrentSheet(scope.currentSheet).length;
-		            }
+		            };
 
 	              scope.notesDialog = function(openAnimate, hideAnimate) {
 			            var dialog = new BluVueSheet.Dialog({showType: 'panel', openAnimate: openAnimate, hideAnimate: hideAnimate});
@@ -1066,7 +1068,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            });
 				            }
 			            });
-		            }
+		            };
 
 		            scope.notesEditDialog = function(openAnimate, hideAnimate, fromShowDialog) {
 			            fromShowDialog = fromShowDialog || false;
@@ -1182,7 +1184,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 					            dialog.hide();
 				            });
-			            }
+			            };
 
 			            if(fromShowDialog) {
 				            options.button1Action = function() {
@@ -1193,7 +1195,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            return function() {
 						            save();
 						            scope.notesDialog(false, true);
-					            }
+					            };
 				            })(save);
 			            } else {
 				            options.button1Action = function() {
@@ -1203,13 +1205,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            options.button2Action = (function (save) {
 					            return function() {
 						            save();
-					            }
+					            };
 				            })(save);
 			            }
 
 			            dialog.showConfirmDialog(options);
 			            moveCaretToEnd(document.getElementById('notes-editor'));
-		            }
+		            };
 
 		    scope.selectPreviousAttachment = function() {
 		            scope.openAttachmentIndex--;
@@ -1226,12 +1228,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
 
 		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
-	              }
+	              };
 
                // Force initial sync to occur at link time
               scope.doAnnotationSync();
 
             }
-        }
+        };
     }
 ]);
