@@ -1082,7 +1082,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes === null ? '' : scope.sheet.notes;
 
-			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div><hr>" );
+			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\" maxlength=\"8000\">"+ notes +"</textarea></div><hr>" );
 
 			            holder.append( editor );
 			            // Allow user to click input field
