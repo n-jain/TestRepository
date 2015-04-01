@@ -727,17 +727,20 @@ BluVueSheet.Dialog = function(params) {
 				  label: options.cancelLabel||"Cancel",
 				  action: cancelAction,
 				  buttonClass: options.buttonClass||'cancel'
-			  },
-			  {
-				  label: options.okLabel||"Ok",
-				  validatorFactory: options.validatorFactory,
-				  action: options.okAction||defaultHideAction,
-				  buttonClass: options.buttonClass||''
 			  }
 		  ],
 		  topButtons: {},
 		  showBottomButtons: options.showBottomButtons
 	  };
+
+	  if(options.hideOkButton != true) {
+		  data.buttons.push({
+			  label: options.okLabel||"Ok",
+			  validatorFactory: options.validatorFactory,
+			  action: options.okAction||defaultHideAction,
+			  buttonClass: options.buttonClass||''
+		  });
+	  }
 
 	  if(options.button1Action != undefined) {
 		  data.topButtons[1] = {
@@ -785,7 +788,7 @@ BluVueSheet.Dialog = function(params) {
 	  }
 
     if( options.title )
-	    titleContent.append( options.title );
+	    titleContent.append( '<span>' + options.title + '</span>' );
 
 	  if(options.topButtons[2] != undefined) {
 		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[2].label + "</div>" );

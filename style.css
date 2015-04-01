@@ -440,6 +440,7 @@ footer.bluvue-sheet-footer {
     color: #4397fb;
     vertical-align: middle;
     padding-top: 12px;
+    width: 15%;
 }
 .button-with-border {
     border: 2px solid #157dfa;
@@ -449,7 +450,7 @@ footer.bluvue-sheet-footer {
 .button-with-border:hover {
     background: #fff!important;
 }
-.dialog-top-button:nth-child(2) {
+span + .dialog-top-button {
     float: right;
 }
 .dialog-button:hover {
@@ -476,6 +477,11 @@ footer.bluvue-sheet-footer {
   margin-bottom:20px;
   font-weight: 400;
   text-transform: capitalize;
+}
+
+.dialog-title span {
+    display: inline-block;
+    width: 70%;
 }
 
 .dialog-message {
@@ -1182,6 +1188,14 @@ select.bluvue-annotation-unit-edit {
 .notes-body {
     overflow-y: auto;
     white-space: pre-wrap;
+}
+
+.notes-body + hr {
+    background-color: #C8CEDC;
+    border: none;
+    color: #C8CEDC;
+    height: 1px;
+    margin-top: -14px;
 }
 
 .notes-editor {

@@ -1059,8 +1059,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            message: '',
 				            bodyElement: '<div class="notes-body">' + scope.sheet.notes + '</div>',
 				            cancelLabel:'Close',
-				            okLabel:'Edit',
-				            okAction: function () {
+				            button2Label:'Edit',
+				            hideOkButton: true,
+				            button2Action: function () {
 					            scope.$apply(function () {
 						            dialog.destroy();
 						            scope.notesEditDialog(false, true, true);
@@ -1076,7 +1077,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
 			            var notes = scope.sheet.notes === null ? '' : scope.sheet.notes;
 
-			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div>" );
+			            var editor = angular.element( "<div class=\"notes-body\"><textarea class=\"notes-editor\" id=\"notes-editor\">"+ notes +"</textarea></div><hr>" );
 
 			            holder.append( editor );
 			            // Allow user to click input field
