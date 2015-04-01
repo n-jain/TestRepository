@@ -298,18 +298,22 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 	      }
 
 
-        if( selectedAnnotations.length > 0 && appendDeleteButton) {
-          addButton(BluVueSheet.Constants.OptionButtons.Delete);
-        }
+
 
         if (selectedAnnotations.length == 1) {
-            var a = selectedAnnotations[0];
+	        var a = selectedAnnotations[0];
 
-            if( a.type != SCALE_ANNOTATION )
-                addButton( BluVueSheet.Constants.OptionButtons.Copy );
-            else
-                addButton( BluVueSheet.Constants.OptionButtons.Calibrate );
+	        if (a.type != SCALE_ANNOTATION)
+		        addButton(BluVueSheet.Constants.OptionButtons.Copy);
+	        else
+		        addButton(BluVueSheet.Constants.OptionButtons.Calibrate);
+        }
 
+		    if( selectedAnnotations.length > 0 && appendDeleteButton) {
+			    addButton(BluVueSheet.Constants.OptionButtons.Delete);
+		    }
+
+	      if (selectedAnnotations.length == 1) {
             if(  (tileView.annotationManager.scaleAnnotation != null) )
             {
                 if( selectedAnnotations[0].hasPerimeter && a.type != MEASURE_ANNOTATION )
