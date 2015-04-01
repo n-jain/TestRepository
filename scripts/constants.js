@@ -206,7 +206,7 @@ BluVueSheet.Constants.MIME = {
         "extension":".rtf"
     },
     "application/pdf":{
-        "type":"",
+        "type":"document",
         "extension":".pdf"
     },
     "application/vnd.ms-excel":{
