@@ -1235,9 +1235,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 	              };
 
-               // Force initial sync to occur at link time
-              scope.doAnnotationSync();
-
             }
         };
     }
