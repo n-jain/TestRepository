@@ -766,11 +766,23 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	};
 
 	this.deleteSelectedAnnotations = function(){
-	  var self = this;
-	  var dialog = new BluVueSheet.Dialog();
-	  var msg =  "This will permanently delete " + (selectedAnnotations.length == 1 ? "this annotation" : (selectedAnnotations.length + " annotations") );
+	  var self = this,
+	  dialog = new BluVueSheet.Dialog(),
+		title = "Delete Annotation?",
+	  msg =  "This will permanently delete " + (selectedAnnotations.length == 1 ? "this annotation" : (selectedAnnotations.length + " annotations") ),
+	  col_attachments = 0;
+
+		for(var i in selectedAnnotations) {
+			col_attachments += selectedAnnotations[i].attachments.length;
+		}
+
+		if(col_attachments) {
+			title = "Delete Annotation with Attachments?";
+			msg = (selectedAnnotations.length == 1 ? "This annotation" : "Annotations") + " has " + col_attachments + " attachments. The attachments and the annotation will be permanently deleted.";
+		}
+
 	  dialog.showConfirmDialog( {
-	    title: "Delete Annotation?",
+	    title: title,
 	    message: msg,
 	    okLabel:"Delete",
 	    okAction:function(){
