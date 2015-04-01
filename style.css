@@ -1191,6 +1191,10 @@ select.bluvue-annotation-unit-edit {
     white-space: pre-wrap;
 }
 
+.notes-body-with-border {
+    border: 3px solid transparent;
+}
+
 .notes-body + hr {
     background-color: #C8CEDC;
     border: none;
@@ -1201,6 +1205,7 @@ select.bluvue-annotation-unit-edit {
 
 .notes-editor {
     height: 97%;
+    resize: none;
     width: 98%;
 }
 

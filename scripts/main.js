@@ -1061,7 +1061,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			              });
 		              };
 
-		              var sheetNotesElement = angular.element('<div class="notes-body">' + scope.sheet.notes + '</div>')
+		              var sheetNotesElement = angular.element('<div class="notes-body notes-body-with-border">' + scope.sheet.notes + '</div>')
 			              .on('click', openEditDialog);
 
 			            dialog.showConfirmDialog( {
