@@ -1054,19 +1054,24 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            return;
 			            }
 
+		              var openEditDialog = function () {
+			              scope.$apply(function () {
+				              dialog.destroy();
+				              scope.notesEditDialog(false, true, true);
+			              });
+		              };
+
+		              var sheetNotesElement = angular.element('<div class="notes-body">' + scope.sheet.notes + '</div>')
+			              .on('click', openEditDialog);
+
 			            dialog.showConfirmDialog( {
 				            title: 'Notes',
 				            message: '',
-				            bodyElement: '<div class="notes-body">' + scope.sheet.notes + '</div>',
+				            bodyElement: sheetNotesElement,
 				            cancelLabel:'Close',
 				            button2Label:'Edit',
 				            hideOkButton: true,
-				            button2Action: function () {
-					            scope.$apply(function () {
-						            dialog.destroy();
-						            scope.notesEditDialog(false, true, true);
-					            });
-				            }
+				            button2Action: openEditDialog
 			            });
 		            };
 

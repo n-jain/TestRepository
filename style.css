@@ -1186,6 +1186,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 .notes-body {
+    cursor: pointer;
     overflow-y: auto;
     white-space: pre-wrap;
 }
