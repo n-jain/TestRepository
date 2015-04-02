@@ -206,7 +206,7 @@ BluVueSheet.Constants.MIME = {
         "extension":".rtf"
     },
     "application/pdf":{
-        "type":"",
+        "type":"document",
         "extension":".pdf"
     },
     "application/vnd.ms-excel":{
@@ -248,6 +248,10 @@ BluVueSheet.Constants.MIME = {
     "audio/mp4":{
         "type":"audio",
         "extension":".mp4"
+    },
+    "audio/mp3":{
+        "type":"audio",
+        "extension":".mp3"
     },
     "audio/mpeg":{
         "type":"audio",
