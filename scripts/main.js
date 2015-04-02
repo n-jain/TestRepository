@@ -1160,22 +1160,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            setCaretPosition(el, pos + text.length + (el.value[pos-1] != "\n" && pos ? 2 : 1));
 			            };
 
-			            var options = {
-				            title: 'Notes',
-				            message: '',
-				            bodyElement: editor,
-				            button2Label:'Save',
-				            cancelLabel: 'Add Name',
-				            okLabel: 'Add Date',
-				            buttonClass: 'button-with-border',
-				            okAction: function() {
-											addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
-				            },
-				            cancelAction: function() {
-					            addText(scope.fullName);
-				            }
-			            };
-
 			            var save = function() {
 				            scope.$apply(function() {
 					            var notes = document.getElementById('notes-editor').value;
@@ -1191,50 +1175,92 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            });
 			            };
 
-			            if(fromShowDialog) {
-				            options.button1Action = function() {
-					            scope.notesDialog(false, true);
-				            };
+			            var isChangeNote = function(fromShowDialog) {
+				            var temp_note   = document.getElementById('notes-editor').value,
+					              sheet_note  = scope.sheet.notes;
 
-				            options.button2Action = (function (save) {
-					            return function() {
-						            save();
+				            if(sheet_note == null) {
+					            sheet_note = '';
+				            }
+
+				            if(sheet_note == temp_note) {
+					            return false;
+				            }
+
+				            var dialog = new BluVueSheet.Dialog();
+
+				            dialog.showConfirmDialog({
+					            title: 'Discard your changes?',
+					            bodyElement: 'You have unsaved changes to the sheet notes.',
+					            cancelLabel: 'Edit',
+					            okLabel: 'Discard',
+					            okAction: function() {
+						            dialog.hide();
+					            },
+					            cancelAction: function() {
+						            dialog.hide();
+						            scope.notesEditDialog(false, true, fromShowDialog);
+						            document.getElementById('notes-editor').value = temp_note;
+					            }
+				            });
+				            return true;
+			            };
+
+			            dialog.showConfirmDialog({
+				            title: 'Notes',
+				            message: '',
+				            bodyElement: editor,
+				            button2Label:'Save',
+				            cancelLabel: 'Add Name',
+				            okLabel: 'Add Date',
+				            buttonClass: 'button-with-border',
+				            okAction: function() {
+					            addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
+				            },
+				            cancelAction: function() {
+					            addText(scope.fullName);
+				            },
+				            button1Action: function() {
+					            if(document.getElementById('notes-editor').value == '' && scope.sheet.notes == null) {
+						            dialog.hide();
+						            return;
+					            }
+
+					            // Show prompt dialog if notes was changed, but don't saved
+					            if(!isChangeNote(fromShowDialog)) {
 						            scope.notesDialog(false, true);
-					            };
-				            })(save);
-			            } else {
-				            options.button1Action = function() {
-					            dialog.hide();
-				            };
-
-				            options.button2Action = (function (save) {
+					            }
+				            },
+				            button2Action: (function (save, fromShowDialog) {
 					            return function() {
 						            save();
-					            };
-				            })(save);
-			            }
 
-			            dialog.showConfirmDialog(options);
+						            if(fromShowDialog && scope.sheet.notes != null) {
+							            scope.notesDialog(false, true);
+						            }
+					            };
+				            })(save, fromShowDialog)
+			            });
+
 			            moveCaretToEnd(document.getElementById('notes-editor'));
 		            };
 
-		    scope.selectPreviousAttachment = function() {
-		            scope.openAttachmentIndex--;
+		            scope.selectPreviousAttachment = function() {
+			            scope.openAttachmentIndex--;
 
-		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+			            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
 
-		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+			            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 
-	            };
-
-	            scope.selectNextAttachment = function() {
-		            scope.openAttachmentIndex++;
-
-		            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
-
-		            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 	              };
 
+	              scope.selectNextAttachment = function() {
+			            scope.openAttachmentIndex++;
+
+			            var cur_attachment = angular.element(document.querySelectorAll('#attachments-panel-files li')[scope.openAttachmentIndex]);
+
+			            scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
+	              };
             }
         };
     }
