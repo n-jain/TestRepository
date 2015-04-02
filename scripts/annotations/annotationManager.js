@@ -777,8 +777,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		}
 
 		if(col_attachments) {
-			title = "Delete Annotation with Attachments?";
-			msg = (selectedAnnotations.length == 1 ? "This annotation" : "Annotations") + " has " + col_attachments + " attachments. The attachments and the annotation will be permanently deleted.";
+			title = selectedAnnotations.length == 1 ? "Delete Annotation with Attachments?" : "Delete Annotations and Attachments? ";
+			msg = selectedAnnotations.length == 1 ? "This annotation has " + col_attachments + " attachments. The attachments and the annotation will be permanently deleted." : "The " + selectedAnnotations.length + " selected annotations have a total of " + col_attachments + " attachments. The attachments and and annotations will be permanently deleted.";
 		}
 
 	  dialog.showConfirmDialog( {
