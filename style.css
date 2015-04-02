@@ -477,6 +477,7 @@ span + .dialog-top-button {
   margin-bottom:20px;
   font-weight: 400;
   text-transform: capitalize;
+  line-height: 40px;
 }
 
 .dialog-title span {
