@@ -249,6 +249,10 @@ BluVueSheet.Constants.MIME = {
         "type":"audio",
         "extension":".mp4"
     },
+    "audio/mp3":{
+        "type":"audio",
+        "extension":".mp3"
+    },
     "audio/mpeg":{
         "type":"audio",
         "extension":".mp3"

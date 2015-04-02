@@ -967,11 +967,14 @@ BluVueSheet.FileChooser = function( scope ) {
   {
     var guid = scope.generateUUID( true );
     var amazonKeyPath = guid + "." + getExtension( inkBlob.filename );
-
+    
+    // BWA-1457 -- special case for bogus 'audio/mp3' MIME - use standardized 'audio/mpeg' instead
+    var mime = inkBlob.mimetype == "audio/mp3" ? "audio/mpeg":inkBlob.mimetype;
+    
     return {
       container: scope.attachmentsBucketName,
       filename: inkBlob.filename,
-      mimetype: inkBlob.mimetype,
+      mimetype: mime,
       path: amazonKeyPath
     };
   }
