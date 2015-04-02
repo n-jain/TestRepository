@@ -194,6 +194,11 @@ footer.bluvue-sheet-footer {
     display: none;
 }
 
+textarea.notes-editor {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 .bluvue-text-editor textarea{
 	width: 100%;
 	height: 200px;
