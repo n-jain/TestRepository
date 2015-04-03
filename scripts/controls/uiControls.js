@@ -693,7 +693,11 @@ BluVueSheet.Dialog = function(params) {
   var dialog = this;
 
   var defaultHideAction = function defaultHideAction(){
-    dialog.hide();
+	  if(dialog.defaultHideAction != undefined) {
+		  dialog.defaultHideAction();
+	  } else {
+		  dialog.hide();
+	  }
   }
 
   // Need this resize listener to ensure that vertical height is honored, even
@@ -758,6 +762,10 @@ BluVueSheet.Dialog = function(params) {
 			  label: options.button2Label||"Ok",
 			  action: options.button2Action
 		  };
+	  }
+
+	  if(options.defaultHideAction != undefined) {
+		  dialog.defaultHideAction = options.defaultHideAction;
 	  }
 
     return dialog.showDialog( data );
@@ -826,6 +834,7 @@ BluVueSheet.Dialog = function(params) {
       } );
       bodyContent.append( buttonHolder );
     }
+
     return dialog.show( bodyContent, options.dialogClass );
   }
 

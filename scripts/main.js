@@ -1191,7 +1191,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				            dialog.showConfirmDialog({
 					            title: 'Discard your changes?',
-					            bodyElement: 'You have unsaved changes to the sheet notes.',
+					            bodyElement: '<div style="text-align: center;">You have unsaved changes to the sheet notes.</div>',
 					            cancelLabel: 'Edit',
 					            okLabel: 'Discard',
 					            okAction: function() {
@@ -1221,15 +1221,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            addText(scope.fullName);
 				            },
 				            button1Action: function() {
-					            if(document.getElementById('notes-editor').value == '' && scope.sheet.notes == null) {
-						            dialog.hide();
-						            return;
-					            }
-
-					            // Show prompt dialog if notes was changed, but don't saved
-					            if(!isChangeNote(fromShowDialog)) {
-						            scope.notesDialog(false, true);
-					            }
+					            scope.notesDialog(false, true);
 				            },
 				            button2Action: (function (save, fromShowDialog) {
 					            return function() {
@@ -1239,7 +1231,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							            scope.notesDialog(false, true);
 						            }
 					            };
-				            })(save, fromShowDialog)
+				            })(save, fromShowDialog),
+				            defaultHideAction: function() {
+					            if(document.getElementById('notes-editor').value == '' && scope.sheet.notes == null) {
+						            dialog.hide();
+						            return;
+					            }
+
+					            // Show prompt dialog if notes was changed, but don't saved
+					            if(!isChangeNote(fromShowDialog)) {
+						            scope.notesDialog(false, true);
+					            }
+				            }
 			            });
 
 			            moveCaretToEnd(document.getElementById('notes-editor'));
