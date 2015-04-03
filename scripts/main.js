@@ -150,15 +150,28 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             }
                         }
 
-                        if( !tool.visited || scope.alwaysShowToolHelp() )
+	                      var toolsStorage = JSON.parse(localStorage['tools'] || "{}");
+
+	                      if(toolsStorage[tool.id] == undefined) {
+		                      toolsStorage[tool.id] = {};
+	                      }
+
+	                      if(toolsStorage[tool.id].visited == undefined) {
+		                      toolsStorage[tool.id].visited = false;
+	                      }
+
+                        if( !toolsStorage[tool.id].visited || scope.alwaysShowToolHelp() )
                         {
-                            toolipDialog.showTooltip( {
+	                          new BluVueSheet.Dialog().showTooltip( {
                                title: tool.label||tool.name,
                                message:tool.description,
                                image: tool.heroImage
                             });
                         }
                         tool.visited = true;
+	                      toolsStorage[tool.id].visited = true;
+
+	                      localStorage['tools'] = JSON.stringify(toolsStorage);
 
                         scope.selectedTool = tool;
                     }
@@ -429,8 +442,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     if(isShow) {
                         button.innerHTML = 'Don\'t Show Tool Help';
+	                      localStorage.showToolHelp = false;
                     } else {
                         button.innerHTML = 'Show Tool Help';
+	                      localStorage.showToolHelp = true;
                     }
                 };
 
