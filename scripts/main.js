@@ -848,7 +848,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            case 'photo':
 				            var image = document.getElementById('viewer-photo');
 				            image.style.display = 'none';
-				            image.src =  url;
+				            image.src = url;
+
+				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({height: 'auto'});
 
 				            var viewerPhoto = function (blockMode) {
 					            if(blockMode === undefined) {
@@ -861,13 +863,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            image.style.display = 'block';
 					            }
 
-					            var css = {};
-					            if(window.innerHeight * 0.5 - panel_inline.clientHeight * 0.95 * 0.5 > 100) {
-						            css.top = 'calc(50% - ' + panel_inline.clientHeight * 0.95 + 'px/2)';
-					            } else {
-						            css.top = '100px';
-						            css.height = (window.innerHeight - 145) + 'px';
-					            }
+					            var css = {
+						            height: !image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height + 'px',
+						            top: (window.innerHeight + 100 - (!image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height)) / 2 + 'px'
+					            };
 
 					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
 
