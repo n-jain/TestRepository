@@ -323,10 +323,16 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	  context.save();
 		if(this.rectType||!this.showHandles)this.drawBoundsRect(context);
 		if(this.showHandles){
-			if(this.rectType)
+			if(this.rectType) {
 				this.drawHandlesRect(context);
-			else
+			} else if(this.type == SCALE_ANNOTATION) {
+				this.drawHandlesMeasurementPoint(context);
+			} else if(this.type == MEASURE_ANNOTATION) {
+				this.drawHandlesMeasurementPoint(context);
+				this.drawHandlesMeasurementHairLines(context);
+			} else {
 				this.drawHandlesPoint(context);
+			}
 		}
 		context.restore();
 	};
@@ -348,8 +354,46 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		  drawHandle( context, this.getPoint(i,true), tileView.scale );
 		}
 	};
-	
-	this.drawHandlesPoint = function(context){
+
+	this.drawHandlesMeasurementPoint = function(context){
+		var baseEndLength = 32;
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
+
+		for(var i=0; i<this.points.length; i++){
+			var signX = ((this.points[0].x < this.points[1].x && !i) || (this.points[0].x > this.points[1].x && i)) ? -1 : 1;
+			var signY = ((this.points[0].y < this.points[1].y && !i) || (this.points[0].y > this.points[1].y && i)) ? -1 : 1;
+
+			var point = {
+				x: this.points[i].x + 16 / tileView.scale * signX,
+				y: this.points[i].y + 16 / tileView.scale * signY
+			};
+
+			drawHandle( context, point, tileView.scale );
+		}
+	};
+
+	this.drawHandlesMeasurementHairLines = function(context){
+		var baseEndLength = 32;
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
+
+		for(var i = 0; i <= 1; i++) {
+			context.save();
+			context.beginPath();
+			context.moveTo(this.points[i].x, this.points[i].y);
+			context.lineTo(this.points[i].x + (Math.cos(theta+Math.PI/2)*endLength), this.points[i].y + (Math.sin(theta+Math.PI/2) * endLength));
+			context.moveTo(this.points[i].x, this.points[i].y);
+			context.lineTo(this.points[i].x + (Math.cos(theta-Math.PI/2)*endLength), this.points[i].y + (Math.sin(theta-Math.PI/2) * endLength));
+			context.lineCap = 'round';
+			context.lineJoin = "round";
+			context.lineWidth = 4;
+			context.stroke();
+			context.restore();
+		}
+	};
+
+		this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 		  drawHandle( context, this.points[i], tileView.scale );
 		}
