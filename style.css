@@ -1199,6 +1199,7 @@ select.bluvue-annotation-unit-edit {
 
 .notes-body-with-border {
     border: 3px solid transparent;
+    word-wrap: break-word;
 }
 
 .notes-body + hr {
