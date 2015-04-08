@@ -581,6 +581,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                   });
                 };
                 scope.showAttachmentsPanel = function(need_apply, dont_change_filter) {
+	                scope.attachmentFiles = [];
+
 	                need_apply = need_apply || false;
 	                dont_change_filter = dont_change_filter || false;
 
