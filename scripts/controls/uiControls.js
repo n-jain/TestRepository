@@ -797,7 +797,7 @@ BluVueSheet.Dialog = function(params) {
 		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[1].label + "</div>" );
 		 button.on( 'click', options.topButtons[1].action );
 		 titleContent.append( button );
-	  } else {
+	  } else if('panel' == params.showType){
 		  titleContent.append( angular.element( "<div class='dialog-top-button'></div>") );
 	  }
 
@@ -808,7 +808,7 @@ BluVueSheet.Dialog = function(params) {
 		 var button = angular.element( "<div class='dialog-top-button'>" + options.topButtons[2].label + "</div>" );
 		 button.on( 'click', options.topButtons[2].action );
 		 titleContent.append( button );
-	  } else {
+	  } else if('panel' == params.showType) {
 		  titleContent.append( angular.element( "<div class='dialog-top-button'></div>") );
 	  }
 

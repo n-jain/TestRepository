@@ -444,7 +444,6 @@ textarea.notes-editor {
     font-size: 14px;
     color: #4397fb;
     vertical-align: middle;
-    padding-top: 12px;
     width: 15%;
 }
 .button-with-border {
@@ -485,7 +484,7 @@ span + .dialog-top-button {
   line-height: 40px;
 }
 
-.dialog-title span {
+.dialog-title > div+span {
     display: inline-block;
     width: 70%;
 }

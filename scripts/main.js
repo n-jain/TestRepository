@@ -146,7 +146,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                             if( !mgr.scaleAnnotation )
                             {
                                 // There's no calibration, so enforce one!
-                                tool = BluVueSheet.Constants.Tools.Calibration;
+	                              var dialog = new BluVueSheet.Dialog();
+
+	                              dialog.showConfirmDialog( {
+			                            title: "Calibration Required",
+			                            message: "Before using the ruler, the scale for this sheet needs to be set and calibrated.",
+			                            okLabel:"Calibrate Now",
+			                            okAction:function(){
+				                            scope.selectTool(BluVueSheet.Constants.Tools.Calibration);
+				                            dialog.hide();
+			                            }
+		                            });
+
+	                              return;
                             }
                         }
 
