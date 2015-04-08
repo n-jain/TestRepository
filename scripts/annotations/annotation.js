@@ -361,20 +361,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 	  var theta = this.tileView.getRotation()/-180*Math.PI;
 	  var drawWidth = Math.abs( this.bounds.width()*Math.cos(theta) - this.bounds.height()*Math.sin(theta) );
-
-		var textSize=32*this.lineWidth;
 		var text = htmlDecode( this.measurement.toString() );
+		var textSize = 128;
+		var col = 0;
 
-	  context.font = textSize+"px Verdana";
-
-		while(context.measureText(text).width>drawWidth&&textSize>8*this.lineWidth){
-			textSize-=2*this.lineWidth;
+		context.font = textSize+"px Verdana";
+		while(context.measureText(text).width > drawWidth && col < 6) {
+			textSize *= 0.75;
 			context.font = textSize+"px Verdana";
-		}
-		if(textSize < 24*this.lineWidth)
-		{
-		  textSize=24*this.lineWidth;
-			context.font = textSize+"px Verdana";
+			col++;
 		}
 
 		context.save();
@@ -852,18 +847,20 @@ function drawScale(context){
 
 		var baseEndLength = 8;
 		var measureSpace;
-		var textSize;
-		var text;
 			
 		if( this.measurement ){
 			var myLength = this.getLength();
-			textSize = 32*this.lineWidth;
-			text = htmlDecode( this.measurement.toString() );
+			var text = htmlDecode( this.measurement.toString() );
+			var textSize = 128;
+			var col = 0;
+
 			context.font = textSize+"px Verdana";
-			while(context.measureText(text).width>(myLength/1.5)&&textSize>32){
-				textSize-=2*this.lineWidth;
+			while(context.measureText(text).width > myLength / 1.5 && col < 6) {
+				textSize *= 0.75;
 				context.font = textSize+"px Verdana";
+				col++;
 			}
+
 			measureSpace = context.measureText(text).width/myLength;
 		} else {
 			measureSpace = 0;
