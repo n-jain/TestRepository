@@ -126,6 +126,12 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.fillStyle=this.color.transparent().toStyle();
 		context.save();
 		context.translate(this.offset_x, this.offset_y);
+		
+		if( this.selected && (this.type == SCALE_ANNOTATION || this.type == MEASURE_ANNOTATION) )
+		{
+      this.drawMeasurementHairLines( context );
+		}
+		
 		drawFunctions[type].call(this,context);
 		if(this.type==TEXT_ANNOTATION&&(this.selected||!this.added)){
 			context.strokeStyle="#000000";
@@ -323,10 +329,13 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	  context.save();
 		if(this.rectType||!this.showHandles)this.drawBoundsRect(context);
 		if(this.showHandles){
-			if(this.rectType)
+			if(this.rectType) {
 				this.drawHandlesRect(context);
-			else
+			} else if(this.type == SCALE_ANNOTATION || this.type == MEASURE_ANNOTATION) {
+				this.drawHandlesMeasurement(context);
+			} else {
 				this.drawHandlesPoint(context);
+			}
 		}
 		context.restore();
 	};
@@ -348,7 +357,39 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		  drawHandle( context, this.getPoint(i,true), tileView.scale );
 		}
 	};
-	
+
+	this.drawHandlesMeasurement = function(context){
+	  
+		var radius = BOUND_DIST / tileView.scale;
+		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
+		var x2 = radius * Math.cos( theta );
+		var y2 = radius * Math.sin( theta );
+    
+		drawHandle( context, { x: this.points[0].x - x2, y: this.points[0].y - y2 }, tileView.scale );
+		drawHandle( context, { x: this.points[1].x + x2, y: this.points[1].y + y2 }, tileView.scale );
+	};
+
+	this.drawMeasurementHairLines = function(context){
+		var baseEndLength = 32;
+		var endLength = baseEndLength*this.lineWidth;
+		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
+
+		for(var i = 0; i <= 1; i++) {
+			context.save();
+			context.beginPath();
+			context.moveTo(this.points[i].x, this.points[i].y);
+			context.lineTo(this.points[i].x + (Math.cos(theta+Math.PI/2)*endLength), this.points[i].y + (Math.sin(theta+Math.PI/2) * endLength));
+			context.moveTo(this.points[i].x, this.points[i].y);
+			context.lineTo(this.points[i].x + (Math.cos(theta-Math.PI/2)*endLength), this.points[i].y + (Math.sin(theta-Math.PI/2) * endLength));
+			context.lineCap = 'round';
+			context.lineJoin = "round";
+			context.lineWidth = 4;
+			context.strokeStyle = '#000000';
+			context.stroke();
+			context.restore();
+		}
+	};
+
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 		  drawHandle( context, this.points[i], tileView.scale );
