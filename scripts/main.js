@@ -1219,9 +1219,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				            dialog.showConfirmDialog({
 					            title: 'Discard your changes?',
-					            bodyElement: '<div style="text-align: center;">You have unsaved changes to the sheet notes.</div>',
-					            cancelLabel: 'Edit',
-					            okLabel: 'Discard',
+					            bodyElement: '<div style="text-align: center;">This Note has been modified. Discard changes?</div>',
+					            cancelLabel: 'Cancel',
+					            okLabel: 'Yes',
 					            okAction: function() {
 						            dialog.hide();
 					            },
