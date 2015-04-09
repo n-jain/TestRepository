@@ -933,26 +933,27 @@ function drawScale(context){
 		//end 1
 		var angle1 = (Math.PI/8)*3;
 		var angle2 = (Math.PI/8)*5;
+		var angle3 = Math.PI * 1.5;
 		context.moveTo(x1,y1);
-		context.lineTo(x1+(Math.cos(theta+angle1)*endLength), y1+(Math.sin(theta+angle1)*endLength));
+		context.lineTo(x1+(Math.cos(theta+angle3)*endLength),y1+(Math.sin(theta+angle3)*endLength));
 		context.moveTo(x1,y1);
 		context.lineTo(x1+(Math.cos(theta-angle1)*endLength), y1+(Math.sin(theta-angle1)*endLength));
 
 		context.moveTo(x1,y1);
 		context.lineTo(x1+(Math.cos(theta+angle2)*endLength), y1+(Math.sin(theta+angle2)*endLength));
 		context.moveTo(x1,y1);
-		context.lineTo(x1+(Math.cos(theta-angle2)*endLength), y1+(Math.sin(theta-angle2)*endLength));
+		context.lineTo(x1+(Math.cos(theta-angle3)*endLength), y1+(Math.sin(theta-angle3)*endLength));
 
 		//end 2
 		context.moveTo(x2,y2);
-		context.lineTo(x2+(Math.cos(theta+angle1)*endLength), y2+(Math.sin(theta+angle1)*endLength));
+		context.lineTo(x2+(Math.cos(theta+angle3)*endLength), y2+(Math.sin(theta+angle3)*endLength));
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta-angle1)*endLength), y2+(Math.sin(theta-angle1)*endLength));
 
 		context.moveTo(x2,y2);
 		context.lineTo(x2+(Math.cos(theta+angle2)*endLength), y2+(Math.sin(theta+angle2)*endLength));
 		context.moveTo(x2,y2);
-		context.lineTo(x2+(Math.cos(theta-angle2)*endLength), y2+(Math.sin(theta-angle2)*endLength));
+		context.lineTo(x2+(Math.cos(theta-angle3)*endLength), y2+(Math.sin(theta-angle3)*endLength));
 
     drawLinearText( context, text, textSize, this.color, x1, y1, x2, y2, theta, this.tileView.getRotation() );
 
