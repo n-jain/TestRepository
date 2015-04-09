@@ -789,7 +789,7 @@ BluVueSheet.Dialog = function(params) {
     if( options.image )
       bodyContent.append( angular.element( "<img class='dialog-hero-image' src='" + options.image + "'></img>" ) );
 	  if('panel' == params.showType)
-		  bodyContent.append(angular.element("<div style=\"text-align: right;\"></div>").append(angular.element('<a href="#" class="dialog-close"></a>').on('click', defaultHideAction)));
+		  bodyContent.append(angular.element("<div style=\"text-align: right;\"></div>").append(angular.element('<a href="#" id="dialog-panel-close"></a>').on('click', defaultHideAction)));
 
 	  var titleContent = angular.element("<div class='dialog-title'></div>");
 
