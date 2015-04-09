@@ -126,6 +126,12 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.fillStyle=this.color.transparent().toStyle();
 		context.save();
 		context.translate(this.offset_x, this.offset_y);
+		
+		if( this.selected && (this.type == SCALE_ANNOTATION || this.type == MEASURE_ANNOTATION) )
+		{
+      this.drawMeasurementHairLines( context );
+		}
+		
 		drawFunctions[type].call(this,context);
 		if(this.type==TEXT_ANNOTATION&&(this.selected||!this.added)){
 			context.strokeStyle="#000000";
@@ -878,7 +884,6 @@ function drawArrow(context){
 
 function drawScale(context){
 	if(this.points.length==2){
-    this.drawMeasurementHairLines( context );
 		var x1 = this.points[0].x;
 		var y1 = this.points[0].y;
 		var x2 = this.points[1].x;
@@ -977,8 +982,6 @@ function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, 
 
 function drawMeasure(context){
 	if(this.points.length==2){
-    this.drawMeasurementHairLines( context );
-
 		var x1 = this.points[0].x;
 		var y1 = this.points[0].y;
 		var x2 = this.points[1].x;
