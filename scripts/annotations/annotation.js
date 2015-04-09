@@ -325,11 +325,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		if(this.showHandles){
 			if(this.rectType) {
 				this.drawHandlesRect(context);
-			} else if(this.type == SCALE_ANNOTATION) {
-				this.drawHandlesMeasurementPoint(context);
-			} else if(this.type == MEASURE_ANNOTATION) {
-				this.drawHandlesMeasurementPoint(context);
-				this.drawHandlesMeasurementHairLines(context);
+			} else if(this.type == SCALE_ANNOTATION || this.type == MEASURE_ANNOTATION) {
+				this.drawHandlesMeasurement(context);
 			} else {
 				this.drawHandlesPoint(context);
 			}
@@ -355,25 +352,18 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		}
 	};
 
-	this.drawHandlesMeasurementPoint = function(context){
-		var baseEndLength = 32;
-		var endLength = baseEndLength*this.lineWidth;
+	this.drawHandlesMeasurement = function(context){
+	  
+		var radius = BOUND_DIST / tileView.scale;
 		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
-
-		for(var i=0; i<this.points.length; i++){
-			var signX = ((this.points[0].x < this.points[1].x && !i) || (this.points[0].x > this.points[1].x && i)) ? -1 : 1;
-			var signY = ((this.points[0].y < this.points[1].y && !i) || (this.points[0].y > this.points[1].y && i)) ? -1 : 1;
-
-			var point = {
-				x: this.points[i].x + 16 / tileView.scale * signX,
-				y: this.points[i].y + 16 / tileView.scale * signY
-			};
-
-			drawHandle( context, point, tileView.scale );
-		}
+		var x2 = radius * Math.cos( theta );
+		var y2 = radius * Math.sin( theta );
+    
+		drawHandle( context, { x: this.points[0].x - x2, y: this.points[0].y - y2 }, tileView.scale );
+		drawHandle( context, { x: this.points[1].x + x2, y: this.points[1].y + y2 }, tileView.scale );
 	};
 
-	this.drawHandlesMeasurementHairLines = function(context){
+	this.drawMeasurementHairLines = function(context){
 		var baseEndLength = 32;
 		var endLength = baseEndLength*this.lineWidth;
 		var theta = Math.atan2((this.points[1].y - this.points[0].y),(this.points[1].x - this.points[0].x));
@@ -388,12 +378,13 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			context.lineCap = 'round';
 			context.lineJoin = "round";
 			context.lineWidth = 4;
+			context.strokeStyle = '#000000';
 			context.stroke();
 			context.restore();
 		}
 	};
 
-		this.drawHandlesPoint = function(context){
+	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
 		  drawHandle( context, this.points[i], tileView.scale );
 		}
@@ -887,6 +878,7 @@ function drawArrow(context){
 
 function drawScale(context){
 	if(this.points.length==2){
+    this.drawMeasurementHairLines( context );
 		var x1 = this.points[0].x;
 		var y1 = this.points[0].y;
 		var x2 = this.points[1].x;
@@ -985,6 +977,8 @@ function drawLinearText( context, text, textSize, color, x1, y1, x2, y2, theta, 
 
 function drawMeasure(context){
 	if(this.points.length==2){
+    this.drawMeasurementHairLines( context );
+
 		var x1 = this.points[0].x;
 		var y1 = this.points[0].y;
 		var x2 = this.points[1].x;
