@@ -1159,12 +1159,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            range.select();
 					            }
 					            else {
-						            if(elem.selectionStart) {
-							            elem.focus();
-							            elem.setSelectionRange(caretPos, caretPos);
-						            }
-						            else
-							            elem.focus();
+						            elem.focus();
+						            elem.setSelectionRange(caretPos, caretPos);
 					            }
 				            }
 			            };
