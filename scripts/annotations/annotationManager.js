@@ -1229,7 +1229,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         break;
 
       default:
-        console.log( "TODO: Implement default shape logic for type", currentAnnotation.type );
+        console.log( "No default shape logic for type", currentAnnotation.type );
     }
   };
 
