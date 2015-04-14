@@ -155,7 +155,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                            okAction:function(){
 				                            scope.selectTool(BluVueSheet.Constants.Tools.Calibration);
 				                            dialog.hide();
-			                            }
+			                            },
+		                              cancelAction: function() {
+			                              scope.deselectTool();
+			                              dialog.hide();
+		                              }
 		                            });
 
 	                              return;
@@ -206,6 +210,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
+		                var issetActiveChildTool = false;
+		                angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
+				               if(angular.element(value).hasClass('active-child-tool')) {
+					                issetActiveChildTool = true;
+				               }
+		                });
+
+		                if(issetActiveChildTool && scope.selectedTool != null) {
+			                var isCurrentActiveItem = angular.element(document.querySelector(".bluvue-sheet-tool-menu .bv-toolbar-" + toolMenuButton.name)).hasClass("active-child-tool");
+
+			                scope.selectTool(null);
+
+			                if(isCurrentActiveItem) {
+				                return;
+			                }
+		                }
+
                     // If need un-expand expanded tool item
                     if( scope.selectedToolMenu && scope.selectedToolMenu.id == toolMenuButton.id && toolMenuButton.buttons.length > 1) {
                         try {
@@ -1096,9 +1117,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: sheetNotesElement,
-				            cancelLabel:'Close',
 				            button2Label:'Edit',
 				            hideOkButton: true,
+				            hideCancelButton: true,
 				            button2Action: openEditDialog
 			            });
 		            };
@@ -1242,7 +1263,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
 				            },
 				            cancelAction: function() {
-					            //Notes drawer won't 'cancel' to close		            addText(scope.fullName);
+					            addText(scope.fullName);
 				            },
 				            button1Action: function() {
 					            if(fromShowDialog) {
@@ -1274,6 +1295,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            });
 
 			            moveCaretToEnd(document.getElementById('notes-editor'));
+			            document.getElementById('notes-editor').focus();
 		            };
 
 		            scope.selectPreviousAttachment = function() {

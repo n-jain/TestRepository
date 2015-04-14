@@ -1053,6 +1053,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   						    onSuccess( annotation );
   						else
                             scope.scheduleAnnotationSync( [annotation], null, null, false );
+
+
+	            mgr.selectSingleAnnotation(annotation);
+
   						mgr.recalculateMeasurements();
 
 	            dialog.hide();

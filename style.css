@@ -554,7 +554,7 @@ span + .dialog-top-button {
 
 .bluvue-dialog-type-panel .dialog-title + * {
     margin: 20px;
-    height: calc(100% - 180px);
+    height: calc(100% - 92px);
 }
 
 .bluvue-dialog-type-panel .dialog-title {
@@ -1210,7 +1210,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 .notes-editor {
-    height: 97%;
+    height: calc(100% - 90px);
     resize: none;
     width: 98%;
 }
