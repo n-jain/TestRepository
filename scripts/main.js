@@ -155,7 +155,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                            okAction:function(){
 				                            scope.selectTool(BluVueSheet.Constants.Tools.Calibration);
 				                            dialog.hide();
-			                            }
+			                            },
+		                              cancelAction: function() {
+			                              scope.deselectTool();
+			                              dialog.hide();
+		                              }
 		                            });
 
 	                              return;
