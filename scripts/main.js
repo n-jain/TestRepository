@@ -210,6 +210,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.toolMenuButtonClicked = function(toolMenuButton) {
+		                var issetActiveChildTool = false;
+		                angular.forEach(document.querySelectorAll(".bluvue-sheet-tool-menu .bv-toolbar-image"), function(value, key){
+				               if(angular.element(value).hasClass('active-child-tool')) {
+					                issetActiveChildTool = true;
+				               }
+		                });
+
+		                if(issetActiveChildTool && scope.selectedTool != null) {
+			                var isCurrentActiveItem = angular.element(document.querySelector(".bluvue-sheet-tool-menu .bv-toolbar-" + toolMenuButton.name)).hasClass("active-child-tool");
+
+			                scope.selectTool(null);
+
+			                if(isCurrentActiveItem) {
+				                return;
+			                }
+		                }
+
                     // If need un-expand expanded tool item
                     if( scope.selectedToolMenu && scope.selectedToolMenu.id == toolMenuButton.id && toolMenuButton.buttons.length > 1) {
                         try {
