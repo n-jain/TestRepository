@@ -1274,6 +1274,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			            });
 
 			            moveCaretToEnd(document.getElementById('notes-editor'));
+			            document.getElementById('notes-editor').focus();
 		            };
 
 		            scope.selectPreviousAttachment = function() {
