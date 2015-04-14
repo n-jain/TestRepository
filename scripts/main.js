@@ -1242,7 +1242,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            addText($filter('date')(new Date(), 'MMM d, y h:mm a'));
 				            },
 				            cancelAction: function() {
-					            //Notes drawer won't 'cancel' to close		            addText(scope.fullName);
+					            addText(scope.fullName);
 				            },
 				            button1Action: function() {
 					            if(fromShowDialog) {
