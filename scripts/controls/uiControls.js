@@ -730,16 +730,18 @@ BluVueSheet.Dialog = function(params) {
 		  bodyClass: 'bluvue-dialog-confirmBody',
 		  message: options.message,
 		  bodyElement: options.bodyElement,
-		  buttons: [
-			  {
-				  label: options.cancelLabel||"Cancel",
-				  action: cancelAction,
-				  buttonClass: options.buttonClass||'cancel'
-			  }
-		  ],
+		  buttons: [],
 		  topButtons: {},
 		  showBottomButtons: options.showBottomButtons
 	  };
+
+	  if(options.hideCancelButton != true) {
+		  data.buttons.push({
+			  label: options.cancelLabel||"Cancel",
+			  action: cancelAction,
+			  buttonClass: options.buttonClass||'cancel'
+		  });
+	  }
 
 	  if(options.hideOkButton != true) {
 		  data.buttons.push({

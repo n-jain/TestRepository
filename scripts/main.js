@@ -1096,9 +1096,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            title: 'Notes',
 				            message: '',
 				            bodyElement: sheetNotesElement,
-				            cancelLabel:'Close',
 				            button2Label:'Edit',
 				            hideOkButton: true,
+				            hideCancelButton: true,
 				            button2Action: openEditDialog
 			            });
 		            };
