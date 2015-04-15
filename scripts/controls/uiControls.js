@@ -259,7 +259,8 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		        appendDeleteButton = true,
 		        isCalibrationUsed = false,
 		        existsCalibration = false,
-		        selectedAllRulersAndScale = true;
+		        selectedAllRulersAndScale = true,
+		        selectedCalibration = false;
 
 	      for(var i in allAnnotations) {
 		      var cur = allAnnotations[i];
@@ -283,6 +284,12 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		      }
 	      }
 
+		    for(var j in selectedAnnotations) {
+			    if(selectedAnnotations[j].type == SCALE_ANNOTATION) {
+				    selectedCalibration = true;
+			    }
+		    }
+
 	      if(selectedAllRulersAndScale && !existsCalibration) {
 		      selectedAllRulersAndScale = false;
 	      }
@@ -292,13 +299,15 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		      appendDeleteButton = false;
 	      }
 
-	      // If selected all ruler and calibration annotations
+	      // If selected all rulers annotations and exists calibration annotation
 	      if(existsCalibration && !selectedAllRulersAndScale && selectedAnnotations.length > 1) {
 		      appendDeleteButton = false;
 	      }
 
-
-
+	      // If selected calibration annotation
+	      if(!selectedCalibration) {
+		     appendDeleteButton = true;
+	      }
 
         if (selectedAnnotations.length == 1) {
 	        var a = selectedAnnotations[0];
