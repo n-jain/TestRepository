@@ -788,6 +788,16 @@ function drawPoints(context){
 		context.stroke();
 		context.restore();
 	}
+
+	if(!this.added && this.type == POLYGON_ANNOTATION) {
+		context.beginPath();
+		context.arc( this.points[this.points.length-1].x, this.points[this.points.length-1].y, 10/tileView.scale, 0, 2 * Math.PI, false);
+		context.fillStyle = this.color.toStyle();
+		context.fill();
+		context.strokeStyle = this.color.toStyle();
+		context.lineWidth = 2/tileView.scale;
+		context.stroke();
+	}
 }
 
 function drawText(context){
