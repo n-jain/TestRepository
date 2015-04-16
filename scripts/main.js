@@ -887,9 +887,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            };
 
 		            angular.element(document.querySelector('.bluvue-viewer-panel-holder')).addClass('bluvue-viewer-panel-holder-active');
-
-		            var panel_inline = document.getElementsByClassName('bluvue-viewer-panel-content-inline')[0];
-
 		            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({width: 'auto'});
 
 		            scope.stopViewerMedia();
@@ -907,23 +904,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            blockMode = true;
 					            }
 
-					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({});
-
 					            if(blockMode) {
 						            image.style.display = 'block';
 					            }
 
-					            var css = {
-						            height: !image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height + 'px',
-						            top: (window.innerHeight + 100 - (!image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height)) / 2 + 'px'
-					            };
+					            (function(image) {
+						            setTimeout(function() {
+							            var css = {
+								            height: !image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height + 'px',
+								            top: (window.innerHeight + 100 - (!image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height)) / 2 + 'px',
+								            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
+							            };
 
-					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
-
-					            // Set left param after set real height
-					            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
-						            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
-					            });
+							            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
+						            }, 5);
+					            })(image);
 				            };
 
 				            image.onload = viewerPhoto;
