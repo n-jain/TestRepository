@@ -724,6 +724,10 @@ function drawCloud(context){
 		var ly = (this.points[0].y<this.points[1].y?this.points[0].y:this.points[1].y);
 		var i;
 
+		if(Math.floor((gx-lx-this.lineWidth)/(arcSize)) < 2 || Math.floor((gy-ly-this.lineWidth)/(arcSize)) < 2) {
+			arcSize /= 4;
+		}
+
 		var wc = Math.floor((gx-lx-this.lineWidth)/(arcSize));
 		var hc = Math.floor((gy-ly-this.lineWidth)/(arcSize));
 		if(wc<1)wc=1;
@@ -764,6 +768,7 @@ function drawCloud(context){
 			var inRect = this.bounds.inset(this.lineWidth/2+arcSizeW/2, this.lineWidth/2+arcSizeH/2);
 			context.fillRect(inRect.left, inRect.top, inRect.width(), inRect.height());
 		}
+
 		context.restore();
 		context.stroke();
 	}
