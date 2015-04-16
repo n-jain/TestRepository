@@ -904,21 +904,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						            blockMode = true;
 					            }
 
-					            if(blockMode) {
-						            image.style.display = 'block';
-					            }
-
-					            (function(image) {
+					            (function(image, blockMode) {
 						            setTimeout(function() {
+							            if(blockMode) {
+								            image.style.display = 'block';
+							            }
+
 							            var css = {
 								            height: !image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height + 'px',
-								            top: (window.innerHeight + 100 - (!image.clientHeight || image.clientHeight > (window.innerHeight - 100) ? (window.innerHeight - 145) + 'px' : image.height)) / 2 + 'px',
+								            top: (window.innerHeight + 50 - (!image.clientHeight || image.clientHeight > (window.innerHeight - 50) ? (window.innerHeight - 95) + 'px' : image.height)) / 2 + 'px',
 								            left: (window.outerWidth - document.querySelectorAll(".bluvue-viewer-panel-content")[0].clientWidth) / 2 + 'px'
 							            };
 
 							            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css(css);
 						            }, 5);
-					            })(image);
+					            })(image, blockMode);
 				            };
 
 				            image.onload = viewerPhoto;
@@ -949,7 +949,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            angular.element(document.querySelector('#viewer-video')).append('<source src="' + url + '">');
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            left: 'calc(50% - 240px)',
-					            top: 'calc(50% - 135px)'
+					            top: 'calc(50% - 100px)'
 				            });
 				            break;
 			            case 'audio':
@@ -963,7 +963,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
 					            cursor: 'pointer',
 					            left: 'calc(50% - 75px)',
-					            top: '50%',
+					            top: 'calc(50% - 50px)',
 				              width: '150px',
 				              textAlign: 'center'
 				            });

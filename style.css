@@ -1101,7 +1101,7 @@ select.bluvue-annotation-unit-edit {
     position: absolute;
     height: 46px;
     left: 0;
-    top: 46px;
+    top: 0;
     padding: 4px 20px;
     z-index: 1001;
     width: calc(100% - 40px);
