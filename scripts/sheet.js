@@ -71,8 +71,12 @@ BluVueSheet.Sheet = function() {
         this.canvas.addEventListener("mousewheel", this.tileView.mouseControls.onmousewheel, true);
         this.canvas.addEventListener("DOMMouseScroll", this.tileView.mouseControls.onmousewheel, true);
 
-	      document.addEventListener("mouseup", this.tileView.mouseControls.onmouseup, true);
-	      document.addEventListener("mousemove", this.tileView.mouseControls.onmousemove, true);
+	      var controlId = ['.bluvue-sheet-header', '.bluvue-sheet-tool-menu', '#attachments-button', '#floating-indicators-panel', '#next-sheet-arrow', '#previous-sheet-arrow'];
+
+	      for(var i in controlId) {
+		      angular.element(document.querySelector(controlId[i]))[0].onmouseup = this.tileView.mouseControls.onmouseup;
+		      angular.element(document.querySelector(controlId[i]))[0].onmousemove = this.tileView.mouseControls.onmousemove;
+	      }
 
         // Force a sync to ensure remote content is up to date
 	      scope.scheduleAnnotationSync( null, null, function(){}, true );
