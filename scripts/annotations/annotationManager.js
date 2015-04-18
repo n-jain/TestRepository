@@ -64,17 +64,15 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		if(selectedAnnotations.length==1){
 			touchedHandle=-1;
-			var annotation = selectedAnnotations[0];
-			if(annotation.rectType){
-				for(i=0; i<8;i++){
-					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
-				}
-			} else {
-				for( i=0; i<annotation.points.length;i++){
-					if(isHandleTouched(x,y,i,annotation))touchedHandle=i;
-				}
+			for( i in selectedAnnotations[0].drawables )
+			{
+			  var drawable = selectedAnnotations[0].drawables[i];
+			  if( drawable.isActive() && drawable.getBounds().contains( x, y ) )
+			  {
+			    this.captureMouse = drawable;
+			    touchedHandle = true;
+			  }
 			}
-			if(touchedHandle!=-1)this.captureMouse=true;
 		}
 
         // panning annotations
@@ -164,7 +162,18 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				currentAnnotation.updateMeasure();
 			}
 		} else if (this.captureMouse) {
-			if(touchedHandle==-1){
+		  if( this.captureMouse.onDrag )
+		  {
+		    this.captureMouse.onDrag( x, y, {
+		      annotations: annotations,
+		      selectedAnnotations: selectedAnnotations
+		    } );
+		    
+				tileView.sheet.textEditor.setLoc( calcTextEditorLocation( selectedAnnotations[0] ) );
+				tileView.sheet.floatingToolsMenu.setLoc( calcFloatingToolsMenuLocation( selectedAnnotations ) );
+				tileView.sheet.floatingOptionsMenu.setLoc( calcFloatingOptionsMenuLocation( selectedAnnotations ) );		    
+			}
+			else if(touchedHandle==-1){
 				for(i=0; i<selectedAnnotations.length; i++) {
 					//move text box if it is present
 					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
@@ -172,28 +181,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
-			} else {
-				var annotation = selectedAnnotations[0];
-				if (annotation.rectType) {
-				    annotation.scaleWithHandleTo(x, y, touchedHandle);
-				    tileView.sheet.textEditor.setLoc(calcTextEditorLocation(annotation));
-					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
-				} else {
-			        annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
-				    annotation.calcBounds();
-				    annotation.updateMeasure();
-
-				    if (annotation.type === SCALE_ANNOTATION) {
-				        for (i = 0; i < annotations.length; i++) {
-				            annotations[i].updateMeasure();
-				        }
-				    }
-					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
-				}
-			}
-
+		  }
 			cancelClick=true;
 		}
 		else // test for rollover cursors
@@ -201,10 +189,26 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    var cursor = 'auto';
 		  for( i=0; i<annotations.length; i++ )
 		  {
-		    if( annotations[i].attachmentIndicatorBounds && annotations[i].attachmentIndicatorBounds.contains(x,y) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin))
+		    var a = annotations[i];
+		    if( a.attachmentIndicatorBounds && a.attachmentIndicatorBounds.contains(x,y) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin))
 		    {
 		      cursor='pointer';
 		    }
+		    else if( a.drawables && a.drawables.length )
+  		  {
+  		    for( var j in a.drawables )
+	  	    {
+		        var drawable = a.drawables[j];
+		        if( drawable.isActive() )
+		        {
+		          if( drawable.getBounds().contains(x,y) )
+		          {
+  		          var hoverOptions = drawable.onMouseOver ? drawable.onMouseOver() : { cursor:'pointer' };
+		            cursor = hoverOptions.cursor || cursor;
+		          }
+		        }
+		      }
+  		  }
 		  }
 		  angular.element( scope.currentSheet.canvas ).css( 'cursor', cursor );
 		}
@@ -1107,10 +1111,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.updateOptionsMenu = function(){
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
 	};
-	var isHandleTouched = function(x,y,id,annotation){
-		var handleLoc = annotation.rectType?annotation.getPoint(id,true):annotation.points[id];
-		return BluVueSheet.Point.dist(new BluVueSheet.Point(x, y), handleLoc) < HANDLE_TOUCH_RADIUS / tileView.scale;
-	};
+
 	this.loadAnnotation = function(jsonString){
 		this.addAnnotation( loadAnnotationJSON(JSON.parse(jsonString), tileView) );
 	};
