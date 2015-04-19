@@ -343,7 +343,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.drawBoundsRect = function(context){
 		context.strokeStyle="#7e7e7e";
 
-    var oldStroke = setPatternStroke( context, [80,40] );
+    var gap = 5/tileView.scale;
+    var dash = 2*gap;
+    var oldStroke = setPatternStroke( context, [dash, gap] );
     {
   		context.lineWidth=3/tileView.scale;
   		var bounds = this.bounds.inset(-BOUND_DIST/tileView.scale);
