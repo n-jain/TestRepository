@@ -194,6 +194,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				}
 			}
 
+			this.saveSelectedAnnotations();
+
 			cancelClick=true;
 		}
 		else // test for rollover cursors
