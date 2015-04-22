@@ -81,8 +81,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
                 angular.element($window).on( 'unload', windowCloseObserver );
 
-                scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
-
                 scope.options = {
                     currentSheetPinned: false
                 };
@@ -599,6 +597,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                           callback();
                       }
                     }
+
+	                  scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
                   });
                 };
                 scope.showAttachmentsPanel = function(need_apply, dont_change_filter) {
