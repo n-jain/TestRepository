@@ -598,7 +598,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       }
                     }
 
-	                  scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL );
+	                  scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL, 1 );
                   });
                 };
                 scope.showAttachmentsPanel = function(need_apply, dont_change_filter) {
