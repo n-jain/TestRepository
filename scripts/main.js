@@ -598,6 +598,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                       }
                     }
 
+                    if (scope.annotationWatcher) {
+                        $interval.cancel(scope.annotationWatcher);
+                        delete scope.annotationWatcher;
+                    }
+
 	                  scope.annotationWatcher = $interval( function(){scope.doAnnotationSync();}, BluVueSheet.Constants.ANNOTATION_SYNC_INTERVAL, 1 );
                   });
                 };
