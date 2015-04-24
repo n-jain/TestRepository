@@ -1282,13 +1282,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				            defaultHideAction: function() {
 					            if(document.getElementById('notes-editor').value == '' && scope.sheet.notes == null) {
 						            dialog.hide();
-						            return;
 					            }
 
 					            // Show prompt dialog if notes was changed, but don't saved
 					            if(!isChangeNote(fromShowDialog)) {
 						            scope.notesDialog(false, true);
 					            }
+
+					            return false;
 				            }
 			            });
 
