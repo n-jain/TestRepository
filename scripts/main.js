@@ -484,6 +484,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 };
 
                 scope.selectNextSheet = function () {
+		                document.getElementById('previous-sheet-arrow').setAttribute('disabled', 'disabled');
+		                document.getElementById('next-sheet-arrow').setAttribute('disabled', 'disabled');
+
                     scope.scheduleAnnotationSync( null, null, function(){
                         scope.nextSheet();
 
@@ -492,10 +495,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         if( scope.getCurrentIndex() === scope.getTotalSheets()-1 ) {
                             document.getElementById('next-sheet-arrow').style.display = 'none';
                         }
+
+		                    document.getElementById('previous-sheet-arrow').removeAttribute('disabled');
+		                    document.getElementById('next-sheet-arrow').removeAttribute('disabled');
                     }, true );
                 };
 
                 scope.selectPreviousSheet = function () {
+		                document.getElementById('previous-sheet-arrow').setAttribute('disabled', 'disabled');
+		                document.getElementById('next-sheet-arrow').setAttribute('disabled', 'disabled');
+
                     scope.scheduleAnnotationSync( null, null, function(){
                         scope.previousSheet();
 
@@ -504,6 +513,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         if( scope.getCurrentIndex() === 0 ) {
                             document.getElementById('previous-sheet-arrow').style.display = 'none';
                         }
+
+		                    document.getElementById('previous-sheet-arrow').removeAttribute('disabled');
+		                    document.getElementById('next-sheet-arrow').removeAttribute('disabled');
                     }, true );
                 };
 
