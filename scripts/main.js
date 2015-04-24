@@ -152,6 +152,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                            okLabel:"Calibrate Now",
 			                            okAction:function(){
 				                            scope.selectTool(BluVueSheet.Constants.Tools.Calibration);
+				                            scope.$apply();
 				                            dialog.hide();
 			                            },
 		                              cancelAction: function() {
@@ -159,6 +160,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                              dialog.hide();
 		                              }
 		                            });
+
+	                              scope.selectedToolMenu = null;
 
 	                              return;
                             }
