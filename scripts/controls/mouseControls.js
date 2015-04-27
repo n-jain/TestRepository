@@ -41,6 +41,22 @@ BluVueSheet.MouseControls = function(tileView) {
 
         tileView.annotationManager.updateTextEditorIfPresent();
 
+		    var selectedAnnotations = tileView.annotationManager.getSelectedAnnotation(),
+			      ann = selectedAnnotations[0],
+			      minLength = 10 / tileView.scale;
+
+		    if(ann != undefined && selectedAnnotations.length == 1 && ann.points.length == 2) {
+						while(ann.bounds.width() < minLength) {
+							ann.points[1].x += 1;
+							ann.calcBounds();
+						}
+
+				    while(ann.bounds.height() < minLength) {
+					    ann.points[1].y += 1;
+					    ann.calcBounds();
+				    }
+		    }
+
         preventDefault(e);
     };
 

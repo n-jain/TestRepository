@@ -181,9 +181,34 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 					selectedAnnotations[i].offsetTo(x,y);
 				}
-		  }
+<<<<<<< HEAD
+			} else {
+				var annotation = selectedAnnotations[0];
+				if (annotation.rectType) {
+				    annotation.scaleWithHandleTo(x, y, touchedHandle);
+				    tileView.sheet.textEditor.setLoc(calcTextEditorLocation(annotation));
+					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
+				} else {
+			        annotation.points[touchedHandle] = new BluVueSheet.Point(x, y);
+				    annotation.calcBounds();
+				    annotation.updateMeasure();
+
+				    if (annotation.type === SCALE_ANNOTATION) {
+				        for (i = 0; i < annotations.length; i++) {
+				            annotations[i].updateMeasure();
+				        }
+				    }
+					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
+					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
+				}
+			}
+
 			this.saveSelectedAnnotations();
 
+=======
+		  }
+>>>>>>> origin/BWA-1792_Handles
 			cancelClick=true;
 		}
 		else // test for rollover cursors
