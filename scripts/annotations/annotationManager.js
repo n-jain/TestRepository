@@ -635,7 +635,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 	// Returns true if the annotation is personal or if the user is an admin.
 	this.isSelectable = function( annotation ) {
-	  return ( annotation.userId || scope.isAdmin );
+	  return annotation != undefined && ( annotation.userId || scope.isAdmin );
 	};
 
 	/**
