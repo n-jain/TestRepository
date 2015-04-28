@@ -1286,7 +1286,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            };
 				            })(save, fromShowDialog),
 				            defaultHideAction: function() {
-					            if((document.getElementById('notes-editor').value == '' && scope.sheet.notes == null) || (!isChangeNote(fromShowDialog) && document.getElementById('notes-editor').value != '')) {
+					            if((document.getElementById('notes-editor').value == '' && (scope.sheet.notes == null || scope.sheet.notes == '')) || (!isChangeNote(fromShowDialog) && document.getElementById('notes-editor').value != '')) {
 						            dialog.hide();
 						            return;
 					            }
