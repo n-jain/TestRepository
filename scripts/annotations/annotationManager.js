@@ -171,7 +171,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		    
 				tileView.sheet.textEditor.setLoc( calcTextEditorLocation( selectedAnnotations[0] ) );
 				tileView.sheet.floatingToolsMenu.setLoc( calcFloatingToolsMenuLocation( selectedAnnotations ) );
-				tileView.sheet.floatingOptionsMenu.setLoc( calcFloatingOptionsMenuLocation( selectedAnnotations ) );		    
+				tileView.sheet.floatingOptionsMenu.setLoc( calcFloatingOptionsMenuLocation( selectedAnnotations ) );
 			}
 			else if(touchedHandle==-1){
 				for(i=0; i<selectedAnnotations.length; i++) {
@@ -1110,6 +1110,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   };
 	this.updateOptionsMenu = function(){
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
+	};
+
+	this.updateOptionsMenuUI = function(selectedAnnotations) {
+		tileView.sheet.textEditor.setLoc( calcTextEditorLocation( selectedAnnotations[0] ) );
+		tileView.sheet.floatingToolsMenu.setLoc( calcFloatingToolsMenuLocation( selectedAnnotations ) );
+		tileView.sheet.floatingOptionsMenu.setLoc( calcFloatingOptionsMenuLocation( selectedAnnotations ) );
 	};
 
 	this.loadAnnotation = function(jsonString){
