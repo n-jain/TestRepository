@@ -57,6 +57,8 @@ BluVueSheet.MouseControls = function(tileView) {
 				    }
 		    }
 
+	      tileView.annotationManager.updateOptionsMenuUI(selectedAnnotations);
+
         preventDefault(e);
     };
 
