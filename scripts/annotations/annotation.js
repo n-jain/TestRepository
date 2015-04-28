@@ -782,6 +782,12 @@ function drawPoints(context){
 
 		context.beginPath();
 		context.moveTo(this.points[0].x,this.points[0].y);
+
+		switch(this.type) {
+			case HIGHLIGHTER_ANNOTATION: context.lineWidth = 8/tileView.scale; break;
+			case PEN_ANNOTATION: context.lineWidth = 0.4/tileView.scale; break;
+		}
+
 		for(var i=1; i<this.points.length; i++){
 			context.lineTo(this.points[i].x,this.points[i].y);
 		}
@@ -790,7 +796,7 @@ function drawPoints(context){
 		}
 		if (this.fill && this.type != HIGHLIGHTER_ANNOTATION) context.fill();
 
-		context.lineCap = 'round';
+		context.lineCap = "round";
 		context.lineJoin = "round";
 		context.stroke();
 		context.restore();
