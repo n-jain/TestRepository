@@ -134,12 +134,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         }
     }
 	};
-	
+
 	this.onmousemove = function (x, y) {
 	  var i;
         // new annotation
 		if(currentAnnotation!==null){
-			if(currentAnnotation.type==FREE_FORM_ANNOTATION||currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION){
+			if(currentAnnotation.type==FREE_FORM_ANNOTATION||currentAnnotation.type==LASSO_ANNOTATION||currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION){
 			    currentAnnotation.points[currentAnnotation.points.length] = new BluVueSheet.Point(x, y);
 			} else if (currentAnnotation.type != POLYGON_ANNOTATION) {
                 if (currentAnnotation.rectType) {
@@ -1096,6 +1096,28 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               }
               else
               {
+	              if(currentAnnotation.type==PEN_ANNOTATION||currentAnnotation.type==HIGHLIGHTER_ANNOTATION) {
+			              var new_points = [currentAnnotation.points[0]],
+				                d = currentAnnotation.type==PEN_ANNOTATION ? DISTANCE_BETWEEN_PEN_POINTS : DISTANCE_BETWEEN_HIGHLIGHTER_POINTS;
+				                dist = tileView.scale < 1.2 ? d * tileView.scale : d / tileView.scale;
+			              for(var i in currentAnnotation.points) {
+				              var cur_point = tileView.screenCoordinatesFromSheetCoordinates(currentAnnotation.points[i].x, currentAnnotation.points[i].y),
+					                new_point = tileView.screenCoordinatesFromSheetCoordinates(new_points[new_points.length-1].x, new_points[new_points.length-1].y);
+
+				              if(Math.sqrt(Math.pow(new_point.x - cur_point.x, 2) + Math.pow(new_point.y - cur_point.y, 2)) > dist) {
+												new_points.push(currentAnnotation.points[i]);
+				              }
+			              }
+
+		                if(currentAnnotation.points.length != new_points.length) {
+			                new_points.push((currentAnnotation.points[currentAnnotation.points.length-1]));
+		                }
+
+		              console.log(currentAnnotation.points.length, new_points.length);
+
+		                currentAnnotation.points = new_points;
+	              }
+
                 doSave( currentAnnotation );
               }
           }
