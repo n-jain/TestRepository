@@ -807,7 +807,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		                all.removeClass('active');
 	                }
 
-	                scope.generateAttachmentFilesList(false, true);
+	                scope.attachmentFiles = [];
+
+	                need_apply = need_apply || false;
+
+	                scope.generateAttachmentFilesList(need_apply, true);
                 };
 
                 scope.activeFilterAttachmentPanel = function() {
