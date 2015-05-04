@@ -17,7 +17,7 @@ BluVueSheet.AnnotationHandleDrawable = function AnnotationHandleDrawable( annota
   {
     context.beginPath();
     context.arc( point.x, point.y, radius, 0, 2 * Math.PI, false);
-    context.fillStyle = 'white';
+    context.fillStyle = 'rgba(255, 255, 255, ' + (annotation.type == POLYGON_ANNOTATION ? 0.7 : 1) + ')';
     context.fill();
   
     context.strokeStyle = '#070707';
