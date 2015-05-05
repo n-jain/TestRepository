@@ -999,6 +999,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            left: 'calc(50% - 240px)',
 					            top: 'calc(50% - 100px)'
 				            });
+
+				            document.querySelector('#viewer-video').load();
 				            break;
 			            case 'audio':
 				            angular.element(document.querySelector('#viewer-audio')).append('<source src="' + url + '">');
@@ -1006,6 +1008,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					            left: 'calc(50% - 150px)',
 					            top: 'calc(50% - 15px)'
 				            });
+
+				            document.querySelector('#viewer-audio').load();
 				            break;
 			            case 'document':
 				            angular.element(document.querySelector('.bluvue-viewer-panel-content')).css({
