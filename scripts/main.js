@@ -901,7 +901,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		              });
                 };
 
-	            scope.removeAttachment = function(attachment_id) {
+	            scope.removeAttachment = function(event, attachment_id) {
 		            var mgr = scope.currentSheet.tileView.annotationManager;
 
 		            mgr.removeAttachment(mgr.getSelectedAnnotation()[0], attachment_id);
@@ -912,6 +912,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            } else {
 			            scope.editModeAttachmentsAction('close');
 		            }
+
+		            event.stopPropagation()
 	            };
 
 	            scope.openInPopup = function(url) {
