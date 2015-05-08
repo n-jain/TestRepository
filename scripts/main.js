@@ -1036,47 +1036,50 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            };
 
                 scope.drawAttachmentFiles = function() {
-                    var htmlFiles = '';
-
-                    //console.log(angular.element(document.getElementById('testController')).scope());
                     angular.element(document.getElementById('attachments-panel-files')).empty();
 
                     for(var i in scope.attachmentFiles) {
                         var fileItem = scope.attachmentFiles[i];
 
-                        var li = angular.element('<li data-url="{{ fileItem.url }}" data-icon="' + fileItem.icon + '" data-name="' + fileItem.name + '"></li>').bind('click',
+                        var li = angular.element('<li data-url="' + fileItem.url + '" data-icon="' + fileItem.icon + '" data-name="' + fileItem.name + '"></li>').bind('click',
                             (function(fileItem, i) {
                                 return function () {
                                     scope.openInViewer(fileItem.url, fileItem.icon, fileItem.name, i);
+                                    scope.$apply();
                                 };
                             })(fileItem, i)
                         );
 
+                        var attachment_file = angular.element('<div class="attachment-file"></div>'),
+                        attachment_file_info_block = angular.element('<div class="attachment-file-info-block"></div>'),
+                        attachment_file_name = angular.element('<div class="attachment-file-name" title="' + fileItem.filename + fileItem.fileextension + '"><span>' + fileItem.filename + '</span>' + fileItem.fileextension + '</div>'),
+                        attachment_file_remove = angular.element('<div class="attachment-file-remove ' + (scope.isHideAttachmentsPanelCancelControls ? 'ng-hide' : '') + '"></div>').bind('click',
+                            (function(fileItem) {
+                                return function (event) {
+                                    scope.removeAttachment(event, fileItem.id);
+                                    scope.$apply();
+                                };
+                            })(fileItem)
+                        );
 
-
-                        var htmlFiles = '' +
-                                //'<li onclick="openInViewer(\'fileItem.url\', \'fileItem.icon\', \'fileItem.name\', 1)" data-url="{{ fileItem.url }}" data-icon="' + fileItem.icon + '" data-name="' + fileItem.name + '">' +
-                            '<div class="attachment-icon attachment-icon-' + fileItem.icon + '"></div>'+
-                            '<div class="attachment-file">'+
-                            '<div class="attachment-file-info-block">'+
-                            '<div class="attachment-file-name" title="' + fileItem.filename + fileItem.fileextension + '"><span>' + fileItem.filename + '</span>' + fileItem.fileextension + '</div>'+
-                            '<div class="attachment-file-remove ' + (scope.isHideAttachmentsPanelCancelControls ? 'ng-hide' : '') + '" ng-click="removeAttachment($event, fileItem.id)"></div>'+
-                            '</div>'+
+                        var bottom_html = angular.element(
                             '<div class="attachment-file-attached-to">Attached to ' + fileItem.type_label + '</div>'+
                             '<div class="attachment-file-info">'+
                             '<div class="attachment-file-info-email" title="' + fileItem.email + '">' + fileItem.email + '</div>'+
                             '<div class="attachment-file-info-date">' + $filter('date')(fileItem.createdDate, 'short') + '</div>'+
-                            '</div>'+
-                            '</div>';//+
-                        //'</li>';
+                            '</div>'
+                        );
 
-                        li.append(htmlFiles);
+                        attachment_file_info_block.append(attachment_file_name);
+                        attachment_file_info_block.append(attachment_file_remove);
+                        attachment_file.append(attachment_file_info_block);
+                        attachment_file.append(bottom_html);
+
+                        li.append('<div class="attachment-icon attachment-icon-' + fileItem.icon + '"></div>');
+                        li.append(attachment_file);
+
                         angular.element(document.getElementById('attachments-panel-files')).append(li);
                     }
-
-                    //document.getElementById('attachments-panel-files').innerHTML = htmlFiles;
-
-
                 };
 
 	            scope.hideViewer = function() {
