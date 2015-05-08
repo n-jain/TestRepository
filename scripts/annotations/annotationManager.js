@@ -442,6 +442,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	    var padding = BOUND_DIST / tileView.scale;
 	    var w = tileView.sheet.textEditor.getWidth() / tileView.scale;
 
+        if(annotation == undefined) {
+            return tileView.screenCoordinatesFromSheetCoordinates(0, 0);
+        }
 
 	    switch (scope.sheet.rotation) {
 	        case 90:
