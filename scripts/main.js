@@ -929,7 +929,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            };
 
 	            scope.openInViewer = function(url, type, name, index) {
-                    console.log(url, type, name, index)
 		            scope.openAttachmentIndex = index;
 
 		            scope.hideAttachmentsPanel();
@@ -1031,7 +1030,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 		            var col_attachments = angular.element(document.querySelectorAll('#attachments-panel-files li')).length;
 
-		            scope.isShowAttachmentNextButton = index + 1 != col_attachments;
+		            scope.isShowAttachmentNextButton = parseInt(index) + 1 != col_attachments;
 		            scope.isShowAttachmentPreviousButton = index;
 	            };
 
@@ -1056,6 +1055,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         attachment_file_remove = angular.element('<div class="attachment-file-remove ' + (scope.isHideAttachmentsPanelCancelControls ? 'ng-hide' : '') + '"></div>').bind('click',
                             (function(fileItem) {
                                 return function (event) {
+                                    event.stopPropagation()
                                     scope.removeAttachment(event, fileItem.id);
                                     scope.$apply();
                                 };
