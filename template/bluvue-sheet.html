@@ -77,7 +77,7 @@
 
 
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
-			<li ng-repeat="fileItem in attachmentFiles | orderBy: '-createdDate'" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
+			<!--<li ng-repeat="fileItem in attachmentFiles | orderBy: '-createdDate'" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
 				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
 				<div class="attachment-file">
 					<div class="attachment-file-info-block">
@@ -90,7 +90,7 @@
 					    <div class="attachment-file-info-date">{{ fileItem.createdDate | date : "short" }}</div>
 					</div>
 				</div>
-			</li>
+			</li>  -->
 		</ul>
 	</div>
 	<div class="bluvue-attachments-panel-holder" ng-click="hideAttachmentsPanel()"></div>
