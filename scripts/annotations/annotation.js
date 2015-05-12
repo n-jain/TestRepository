@@ -394,7 +394,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 	this.drawHandlesPoint = function(context){
 		for(var i=0; i<this.points.length; i++){
-		  drawHandle( context, this.points[i], tileView.scale, 0.7 );
+		  drawHandle( context, this.points[i], tileView.scale );
 		}
 	};
 	
@@ -1079,16 +1079,11 @@ function setPatternStroke( context, pattern ) {
   return oldStroke;
 }
 
-function drawHandle( context, point, scale, opacity )
+function drawHandle( context, point, scale )
 {
-	opacity = opacity || 1;
-
   context.beginPath();
   context.arc( point.x, point.y, 10/scale, 0, 2 * Math.PI, false);
-
-
-
-  context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
+  context.fillStyle = 'white';
   context.fill();
 
   context.strokeStyle = '#070707';
