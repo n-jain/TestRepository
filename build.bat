@@ -9,3 +9,5 @@ copy style.css ..\bin\Content\bluvue-sheet.css
 copy template\bluvue-sheet.html ..\bin\template\bluvue-sheet.html
 copy libs\* ..\bin\scripts\
 xcopy images\update\* ..\bin\images\update\ /s
+xcopy ..\bin\* ..\..\web-plans-console\App2\ /sy
+pause
