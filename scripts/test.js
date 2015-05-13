@@ -125,7 +125,7 @@ angular.module('test', ['bluvueSheet'])
             $scope.openSheetById = function(sheetId) {
                 $scope.sheet = {
                     name: 'Sheet 2!',
-                   versionName: 'Latest s2a',
+                    versionName: 'Latest s2a',
                     slicesUrl: "sheet2/slices.zip",
                     previewUrl: "sheet2/preview.png",
                     projectId: "guid",
@@ -148,9 +148,12 @@ angular.module('test', ['bluvueSheet'])
 
             $scope.isAdmin = true;
 
-	          $scope.canEditNotes = true;
+	        $scope.canEditNotes = true;
 
-	          $scope.fullName = 'Tester Name';
+	        $scope.fullName = 'Tester Name';
+
+	        $scope.favorites = [];
+	        $scope.links = [];
 
             $scope.closeSheet = function() {
                 console.log("close sheet");

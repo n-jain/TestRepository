@@ -38,6 +38,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	this.hasArea = false;
 	this.hasPerimeter = false;
 	this.bounds = undefined;
+	this.links = [];
 
 	this.setColor = function (color) {
 		this.color = color.clone();
