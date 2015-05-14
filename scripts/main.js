@@ -1439,6 +1439,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						document.getElementById('link-sheet-block').addEventListener('click', function() {
 							console.log('Go to projects list...');
 						});
+					} else {
+						console.log('show all links');
 					}
 				};
 			}
