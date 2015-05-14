@@ -1393,8 +1393,53 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function() {
-					console.log('Open link panel');
+				scope.showLinkPanel = function(singleAnnotation) {
+					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
+						dialog = new BluVueSheet.Dialog({
+							showType: 'panel'
+						});
+
+					function changeSourceParams(e) {
+						var sheet_block = document.getElementsByClassName('link-sheet-block')[0],
+							url_block = document.getElementsByClassName('link-url-block')[0];
+
+						switch(e.target.value) {
+							case 'sheet':
+								sheet_block.style.display = 'block';
+								url_block.style.display = 'none';
+								break;
+							case 'url':
+								sheet_block.style.display = 'none';
+								url_block.style.display = 'block';
+
+						}
+					}
+
+					if(singleAnnotation) {
+						var body = '<form id="form-link-append">' +
+							'<div class="row">' +
+							'<label><span>Name</span> <input type="text" name="name" placeholder="Enter Name"></label>' +
+							'</div>' +
+							'<div class="row">' +
+							'<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="url"> URL</label></span>' +
+							'<div class="link-sheet-block" id="link-sheet-block">Select a sheet to link to</div>' +
+							'<div class="link-url-block" style="display: none;"><input type="text" name="url" placeholder="Enter your link"></div>' +
+							'</div>' +
+							'</form>';
+
+						dialog.showConfirmDialog({
+							title: 'Add Link',
+							message: '',
+							bodyElement: body,
+							hideCancelButton: true,
+							hideOkButton: true
+						});
+
+						document.getElementById('source-params').addEventListener('change', changeSourceParams);
+						document.getElementById('link-sheet-block').addEventListener('click', function() {
+							console.log('Go to projects list...');
+						});
+					}
 				};
 			}
 		};

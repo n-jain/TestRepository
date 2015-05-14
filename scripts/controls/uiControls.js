@@ -327,9 +327,11 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope) {
 			addButton(BluVueSheet.Constants.OptionButtons.Delete);
 		}
 
-		addButton(BluVueSheet.Constants.OptionButtons.Link, function() {
-			scope.showLinkPanel();
-		});
+		if (selectedAnnotations.length == 1) {
+			addButton(BluVueSheet.Constants.OptionButtons.Link, function () {
+				scope.showLinkPanel(true);
+			});
+		}
 
 		if (selectedAnnotations.length == 1) {
 			if ((tileView.annotationManager.scaleAnnotation != null)) {

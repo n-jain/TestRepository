@@ -1293,3 +1293,46 @@ select.bluvue-annotation-unit-edit {
     background: #fff;
     transition: 0;
 }
+
+#form-link-append {
+    margin: -20px 0 0 0;
+}
+
+#form-link-append .row {
+    border-bottom: 1px solid #C8CEDC;
+    padding: 20px 15px;
+}
+
+#form-link-append label span {
+    margin-right: 20px;
+}
+
+#form-link-append input[type=text] {
+    border: none;
+}
+
+#form-link-append .link-sheet-block {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUOCzYvKRu/1AAAAtBJREFUSMetlU9onFUUxX/nfvkzSWaaUBsoVailgYIbl7YRWlKoYCOCi65cuHKhiFSRulBsUUspVGipQnVXodCdf1ZZFTsaqEgWgsta/yDoRiLYSDLO946L930TEWfSCX2rBw/uueeec+5TWZbmf44BnBCBAdUPYqgT/R46XbP8I/zVNWDsDDjs6Qtw4za8+lnwwbJY64DDOLh/AIf3BQtzcLEN528EaxtiOwgj/R4mx82phUSnLLi6YqYa8NJ8ojke9wdAmJ2TwbnjZtcUXG4Hv/4h3n4yMd0AGyTAGij8yEB4mcaoeflxsbZR8vGKmJkQJ4/ATMNgMMao76z7A6RsyYRoNuDNY2a2KS624bc/zdlFsXMyM9V2RuQQtgmESUyMwYvzcLcDH94KWmPm9aNmtlWFRsMyMEgJU6CU+xwbSbxyOHd+4SasrsM7x2FPsz/CAJHBiDrmkoGgOQ4vHMpBvPRVUCyZ008kHpweEsDkgtkuxg5q04Tg+YNio2sufwkiOP+UmW5UTCREAoKBps7+SD3bbi4p+Gk18fXPMDFu9u+C0VBVPLsLayubqipWVJ2nXD3BD6vi5KfBnd/FuUVYfASmRqu6vfW4lchKhAMrkRByYJubd8QbSyKVcOWEOTqXiIBkkDbzYAkNFlmZpVX5w6z8Yl77PFjvwkcnEo/tDUKGVPRG+N/YxSAFaqbd0lz/Fp67XrB7B1x7FuYfNkVUaVRmnJuq3GRv4aKq89LwyXfBmSV4aAbeezpxYLYqmgBFZeGi6lgV5j2IfLdjrn4jLi2Lg3vNW8dK9j+gTXYSUOY1PmySOyVcuSXeb5uFOfHuotnTqm2oKohGLkjh4Zdd+3tzbSV45lFz6ojZ3doUME8n76nE4F2kfp/++t/mi9twaB+0GhC15hJKJaYAGbliJQ0HYECVEyzlu+oAug5qT8xt/Gj0uvr3nZrFPX6Z/wDLHic3hlBuVQAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    background-position: right center;
+    color: #C8CEDC;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#form-link-append .source-params label {
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+#form-link-append .source-params {
+    float: right;
+}
+
+#form-link-append .link-url-block {
+    margin-top: 20px;
+}
+
+#form-link-append .link-url-block input {
+    width: 100%;
+}
