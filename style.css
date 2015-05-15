@@ -1326,7 +1326,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 #form-link-append .link-sheet-block {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUOCzYvKRu/1AAAAtBJREFUSMetlU9onFUUxX/nfvkzSWaaUBsoVailgYIbl7YRWlKoYCOCi65cuHKhiFSRulBsUUspVGipQnVXodCdf1ZZFTsaqEgWgsta/yDoRiLYSDLO946L930TEWfSCX2rBw/uueeec+5TWZbmf44BnBCBAdUPYqgT/R46XbP8I/zVNWDsDDjs6Qtw4za8+lnwwbJY64DDOLh/AIf3BQtzcLEN528EaxtiOwgj/R4mx82phUSnLLi6YqYa8NJ8ojke9wdAmJ2TwbnjZtcUXG4Hv/4h3n4yMd0AGyTAGij8yEB4mcaoeflxsbZR8vGKmJkQJ4/ATMNgMMao76z7A6RsyYRoNuDNY2a2KS624bc/zdlFsXMyM9V2RuQQtgmESUyMwYvzcLcDH94KWmPm9aNmtlWFRsMyMEgJU6CU+xwbSbxyOHd+4SasrsM7x2FPsz/CAJHBiDrmkoGgOQ4vHMpBvPRVUCyZ008kHpweEsDkgtkuxg5q04Tg+YNio2sufwkiOP+UmW5UTCREAoKBps7+SD3bbi4p+Gk18fXPMDFu9u+C0VBVPLsLayubqipWVJ2nXD3BD6vi5KfBnd/FuUVYfASmRqu6vfW4lchKhAMrkRByYJubd8QbSyKVcOWEOTqXiIBkkDbzYAkNFlmZpVX5w6z8Yl77PFjvwkcnEo/tDUKGVPRG+N/YxSAFaqbd0lz/Fp67XrB7B1x7FuYfNkVUaVRmnJuq3GRv4aKq89LwyXfBmSV4aAbeezpxYLYqmgBFZeGi6lgV5j2IfLdjrn4jLi2Lg3vNW8dK9j+gTXYSUOY1PmySOyVcuSXeb5uFOfHuotnTqm2oKohGLkjh4Zdd+3tzbSV45lFz6ojZ3doUME8n76nE4F2kfp/++t/mi9twaB+0GhC15hJKJaYAGbliJQ0HYECVEyzlu+oAug5qT8xt/Gj0uvr3nZrFPX6Z/wDLHic3hlBuVQAAAABJRU5ErkJggg==');
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUPDTUC+9irtQAAAu1JREFUSMetlk+IVWUYxn/PdxrnTnmdgRLEBLMZEFrkJkgNkhkwqIkgaNq4aFMLW4RE2CIwKUEGFJIy1N0EwtAmbTWLGJqpCSNnEbS06Q9uWoQLveXce77vcfGdO2nMuXrFFw7nwDnnfd73fZ7nPUcxRtYLAzghAgbUvSH6ilB3o12apd/xP6UBY2fAfqMWYP4Kfvdi4PSS3GqDg3HgwQE8vyNofAw+WYTp+eDWqrgfhNo3Hh40h8fT9Ou7xMyyOf0DbrX7H5HqSM5zF6slnFzAny8FXnvafPRi0nADbJAAqyfxD/WGN40B885zUms1+otlMTIkH9rH/pGGv8FgjFH9KGKM6x+dkrIs6ZT5fP3fDifmo7cdjX5ztvRf1+OXnRgpY0lZlyPG+g4chG0CwiSGNsDbe9GNNj57KdDc4Kn3J3x5c5Nn7jTKPXJgA4pAgZKxBCRabTFzWT6xABOj5uOXYOtGlAnpgwMBRtnRgGQgsHEQDu5B7dI+9X2gmDMfvpD8+PD6CPUjIifMcjF2oCuaIHhrt7Ra2p9+ByIw/bKfHG54BQQSIgGBns7J+khVR75tScEf15J//BOGBs3oYzAQVCV3fsa6m0xVJSuqylPOnuC3a/KhC4GVv8XxSZh8Cj0yUOVdW49384ESwQErkRBywDYLK/IHcyJFODNlJsaSQoBkkP7zgyXUm2TlLq1KgWb5qv3e14GbJZybSjy7PSjIkIq1Ef7fdqEXA91Oy2hmf8ZvzBZs2QTnD8DeJ6wipDxK5Y5zUbpN571UVFUeDV/9Enx0DraNwMlXEjs3V/0nQKGScFFVrArzHki+0TYzP8mnlsTu7ebI/sjoo9JadxIQ8xpXn8uuHeHMJfmzRTM+Jo5Nmq1NKctQlRGNXJCCa2ddC7D4q31+OfDqLnN4n9nSRF0C83Tynkpdb/S7i252zLdX8J4dqNmA0OVcQiliCpCRK3PV7CL1+qtQpQRL+VpdA7pr1DUy7+OL9mDiFqNmjC8jUVyRAAAAAElFTkSuQmCC');
     background-repeat: no-repeat;
     background-position: right center;
     color: #C8CEDC;
@@ -1349,4 +1349,31 @@ select.bluvue-annotation-unit-edit {
 
 #form-link-append .link-url-block input {
     width: 100%;
+}
+
+#block-projects {
+    margin: -20px 0 0 0;
+}
+
+#block-projects .row {
+    border-bottom: 1px solid #C8CEDC;
+    padding: 20px 15px;
+}
+
+#block-projects li {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUPDTUC+9irtQAAAu1JREFUSMetlk+IVWUYxn/PdxrnTnmdgRLEBLMZEFrkJkgNkhkwqIkgaNq4aFMLW4RE2CIwKUEGFJIy1N0EwtAmbTWLGJqpCSNnEbS06Q9uWoQLveXce77vcfGdO2nMuXrFFw7nwDnnfd73fZ7nPUcxRtYLAzghAgbUvSH6ilB3o12apd/xP6UBY2fAfqMWYP4Kfvdi4PSS3GqDg3HgwQE8vyNofAw+WYTp+eDWqrgfhNo3Hh40h8fT9Ou7xMyyOf0DbrX7H5HqSM5zF6slnFzAny8FXnvafPRi0nADbJAAqyfxD/WGN40B885zUms1+otlMTIkH9rH/pGGv8FgjFH9KGKM6x+dkrIs6ZT5fP3fDifmo7cdjX5ztvRf1+OXnRgpY0lZlyPG+g4chG0CwiSGNsDbe9GNNj57KdDc4Kn3J3x5c5Nn7jTKPXJgA4pAgZKxBCRabTFzWT6xABOj5uOXYOtGlAnpgwMBRtnRgGQgsHEQDu5B7dI+9X2gmDMfvpD8+PD6CPUjIifMcjF2oCuaIHhrt7Ra2p9+ByIw/bKfHG54BQQSIgGBns7J+khVR75tScEf15J//BOGBs3oYzAQVCV3fsa6m0xVJSuqylPOnuC3a/KhC4GVv8XxSZh8Cj0yUOVdW49384ESwQErkRBywDYLK/IHcyJFODNlJsaSQoBkkP7zgyXUm2TlLq1KgWb5qv3e14GbJZybSjy7PSjIkIq1Ef7fdqEXA91Oy2hmf8ZvzBZs2QTnD8DeJ6wipDxK5Y5zUbpN571UVFUeDV/9Enx0DraNwMlXEjs3V/0nQKGScFFVrArzHki+0TYzP8mnlsTu7ebI/sjoo9JadxIQ8xpXn8uuHeHMJfmzRTM+Jo5Nmq1NKctQlRGNXJCCa2ddC7D4q31+OfDqLnN4n9nSRF0C83Tynkpdb/S7i252zLdX8J4dqNmA0OVcQiliCpCRK3PV7CL1+qtQpQRL+VpdA7pr1DUy7+OL9mDiFqNmjC8jUVyRAAAAAElFTkSuQmCC');
+    background-repeat: no-repeat;
+    background-position: right center;
+    cursor: pointer;
+    padding: 20px 10px;
+    border-bottom: 1px solid #C8CEDC;
+}
+
+#block-projects li:hover {
+    background-color: rgba(238, 238, 238, 0.7);
+}
+
+#block-projects .label {
+    text-align: center;
+    font-weight: bold;
 }

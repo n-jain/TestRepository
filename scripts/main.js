@@ -1437,11 +1437,36 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 						document.getElementById('source-params').addEventListener('change', changeSourceParams);
 						document.getElementById('link-sheet-block').addEventListener('click', function() {
-							console.log('Go to projects list...');
+							scope.showProjectsPanel();
 						});
 					} else {
-						console.log('show all links');
+
 					}
+				};
+
+				scope.showProjectsPanel = function() {
+					var dialog = new BluVueSheet.Dialog({
+						showType: 'panel',
+						openAnimate: false
+					});
+
+					var body = '<div id="block-projects">' +
+						'<div class="row label">' +
+						'Projects' +
+						'</div>' +
+						'<ul>' +
+						'<li>Pine Island Country club</li>' +
+						'<li>Dakota Hudicial Court</li>' +
+						'</ul>' +
+						'</div>';
+
+					dialog.showConfirmDialog({
+						title: 'Source',
+						message: '',
+						bodyElement: body,
+						hideCancelButton: true,
+						hideOkButton: true
+					});
 				};
 			}
 		};
