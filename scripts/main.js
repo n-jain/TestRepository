@@ -1393,10 +1393,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function(singleAnnotation) {
+				scope.showLinkPanel = function(singleAnnotation, openAnimate) {
 					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
 						dialog = new BluVueSheet.Dialog({
-							showType: 'panel'
+							showType: 'panel',
+							openAnimate: openAnimate
 						});
 
 					function changeSourceParams(e) {
@@ -1455,8 +1456,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						'Projects' +
 						'</div>' +
 						'<ul>' +
-						'<li>Pine Island Country club</li>' +
-						'<li>Dakota Hudicial Court</li>' +
+						'<li data-id="11">Pine Island Country club</li>' +
+						'<li data-id="22">Dakota Hudicial Court</li>' +
 						'</ul>' +
 						'</div>';
 
@@ -1466,6 +1467,66 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						bodyElement: body,
 						hideCancelButton: true,
 						hideOkButton: true
+					});
+
+					document.getElementById('block-projects').addEventListener('click', function(event) {
+						var target = event.target;
+
+						while (target.tagName != 'LI') {
+							target = target.parentNode;
+						}
+
+						var id = target.getAttribute('data-id'),
+							name = target.innerHTML;
+
+						scope.showSheetsPanel(id,  name);
+					});
+				};
+
+				scope.showSheetsPanel = function(id, name) {
+					var dialog = new BluVueSheet.Dialog({
+						showType: 'panel',
+						openAnimate: false
+					});
+
+					var body = '<div id="block-projects" class="block-sheet">' +
+						'<div class="row label-sheet">' +
+						name +
+						'</div>' +
+						'<ul>' +
+						'<li data-id="1">A-001</li>' +
+						'<li data-id="2" class="selected">A-002</li>' +
+						'<li data-id="3">A-003</li>' +
+						'<li data-id="4">A-004</li>' +
+						'</ul>' +
+						'</div>';
+
+					dialog.showConfirmDialog({
+						title: 'Source',
+						message: '',
+						bodyElement: body,
+						hideCancelButton: true,
+						hideOkButton: true
+					});
+
+					document.getElementById('block-projects').addEventListener('click', function(event) {
+						var target = event.target;
+
+						while (target.tagName != 'LI' && target.parentNode) {
+							target = target.parentNode;
+						}
+
+						var id = target.getAttribute('data-id'),
+							name = target.innerHTML;
+
+						scope.showLinkPanel(true, false);
+					});
+
+
+					document.getElementsByClassName('label-sheet')[0].addEventListener('click', function(event) {
+						event.stopPropagation();
+
+						scope.showProjectsPanel();
 					});
 				};
 			}

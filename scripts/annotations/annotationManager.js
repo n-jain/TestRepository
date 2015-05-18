@@ -308,7 +308,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		}
 
 		if(showHyperlinks) {
-			scope.showLinkPanel(true);
+			scope.showLinkPanel(true, true);
 		}
 	};
 
