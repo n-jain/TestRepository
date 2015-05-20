@@ -5,6 +5,7 @@ angular.module('test', ['bluvueSheet'])
 
             var sheets = [{
                 name: 'Sheet 1!',
+	            favorite: true,
                 notes: 'Bacon ipsum dolor amet sunt anim chuck in ham hock pastrami. Shank fugiat hamburger meatball. Corned beef nostrud kevin non pork chop capicola beef ribs pastrami.',
                 versionName: 'Latest s1',
                 slicesUrl: "sheet/slices.zip",
@@ -60,6 +61,7 @@ angular.module('test', ['bluvueSheet'])
             },
             {
                 name: 'Sheet 2!',
+	            favorite: false,
                 notes: null,
                 versionName: 'Latest s2',
                 slicesUrl: "sheet2/slices.zip",
@@ -78,6 +80,7 @@ angular.module('test', ['bluvueSheet'])
             },
             {
                 name: 'Sheet 3!',
+	            favorite: false,
                 notes: null,
                 versionName: 'Latest s3',
                 slicesUrl: "sheet3/slices.zip",
