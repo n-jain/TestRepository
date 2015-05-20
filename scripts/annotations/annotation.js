@@ -256,8 +256,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				}
 		}
 
-		context.strokeStyle = "#e52b2e";
-		context.fillStyle = "#e52b2e";
+		context.strokeStyle = 'rgba(229, 43, 46, 0.7)';
+		context.fillStyle = 'rgba(229, 43, 46, 0.7)';
 		this.roundRect(context, relativeBounds.x, relativeBounds.y, relativeBounds.width, relativeBounds.height, 12 / tileView.scale, true, false);
 
 		// Reset canvas to SCREEN coordinates instead of SHEET coordinates while
@@ -407,7 +407,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		var attach_icon = new Image();
 		attach_icon.src = "images/update/annotation-link.png";
+		context.globalAlpha = 0.7;
 		context.drawImage(attach_icon, 2, 2, 24, 24);
+
 
 		context.restore();
 
