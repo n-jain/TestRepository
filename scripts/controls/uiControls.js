@@ -329,7 +329,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope) {
 
 		if (selectedAnnotations.length == 1) {
 			addButton(BluVueSheet.Constants.OptionButtons.Link, function () {
-				scope.showLinkPanel(true, true);
+				scope.showLinkPanel(true, true, null);
 			});
 		}
 

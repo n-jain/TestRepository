@@ -1393,7 +1393,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function(singleAnnotation, openAnimate) {
+				scope.showLinkPanel = function(singleAnnotation, openAnimate, link) {
 					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
 						dialog = new BluVueSheet.Dialog({
 							showType: 'panel',
@@ -1409,7 +1409,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								sheet_block.style.display = 'block';
 								url_block.style.display = 'none';
 								break;
-							case 'url':
+							case 'uri':
 								sheet_block.style.display = 'none';
 								url_block.style.display = 'block';
 
@@ -1422,30 +1422,89 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							'<label><span>Name</span> <input type="text" name="name" placeholder="Enter Name"></label>' +
 							'</div>' +
 							'<div class="row">' +
-							'<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="url"> URL</label></span>' +
+							'<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="uri"> URL</label></span>' +
 							'<div class="link-sheet-block" id="link-sheet-block">Select a sheet to link to</div>' +
-							'<div class="link-url-block" style="display: none;"><input type="text" name="url" placeholder="Enter your link"></div>' +
+							'<div class="link-url-block" style="display: none;"><input type="text" name="uri" placeholder="Enter your link"></div>'
 							'</div>' +
 							'</form>';
 
+						var isAddLink = !selectedAnnotation[0].links.length,
+							title = isAddLink ? 'Add Link' : 'Edit Link';
+
 						dialog.showConfirmDialog({
-							title: 'Add Link',
+							title: title,
 							message: '',
 							bodyElement: body,
 							hideCancelButton: true,
-							hideOkButton: true
+							hideOkButton: true,
+							defaultHideAction: function() {
+								if(!selectedAnnotation[0].links.length) {
+									selectedAnnotation[0].links.push(new BluVueSheet.Link());
+
+									selectedAnnotation[0].links[0].createdDate = new Date();
+									selectedAnnotation[0].links[0].id = scope.generateUUID();
+								}
+
+								selectedAnnotation[0].links[0].name = document.querySelector('#form-link-append input[name=name]').value;
+								selectedAnnotation[0].links[0].uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+								dialog.hide();
+							}
 						});
+
+						if(isAddLink && link == null) {
+							link = new BluVueSheet.Link();
+						} else {
+							if(link == null) {
+								link = selectedAnnotation[0].links[0];
+							}
+
+							document.querySelector('#form-link-append input[name=name]').value = link.name;
+							document.querySelector('#form-link-append input[name=uri]').value = link.uri;
+
+							if(link.uri.length && link.uri.substr(0, 14) != 'bluvueplans://' ) {
+								document.querySelector('#form-link-append input[name=link-type][value=uri]').checked = true;
+								changeSourceParams({target: {value: 'uri'}});
+							} else if(link.uri.length) {
+								document.getElementById('link-sheet-block').innerHTML = link.uri;
+
+								document.getElementById('link-sheet-block').style.color = '#0F63E4';
+							}
+						}
 
 						document.getElementById('source-params').addEventListener('change', changeSourceParams);
 						document.getElementById('link-sheet-block').addEventListener('click', function() {
-							scope.showProjectsPanel();
+							link.name = document.querySelector('#form-link-append input[name=name]').value;
+							link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+							scope.showProjectsPanel({
+								button1Label: '<span class="back-btn"></span>' + title,
+								button1Action: function() {
+									scope.showLinkPanel(true, false, link);
+								},
+								_link: link
+							});
 						});
+
+						document.querySelector('#form-link-append input[name=uri]').addEventListener('change', function() {
+							var uri = document.querySelector('#form-link-append input[name=uri]');
+
+							if(uri.value.length && uri.value.substr(0, 14) != 'bluvueplans://' ) {
+								document.getElementById('link-sheet-block').style.color = '#C8CEDC';
+								document.getElementById('link-sheet-block').innerHTML = 'Select a sheet to link to';
+							} else {
+								document.getElementById('link-sheet-block').innerHTML = link.uri;
+								document.getElementById('link-sheet-block').style.color = '#0F63E4';
+							}
+						});
+
+
 					} else {
 
 					}
 				};
 
-				scope.showProjectsPanel = function() {
+				scope.showProjectsPanel = function(backLink) {
 					var dialog = new BluVueSheet.Dialog({
 						showType: 'panel',
 						openAnimate: false
@@ -1461,13 +1520,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						'</ul>' +
 						'</div>';
 
-					dialog.showConfirmDialog({
-						title: 'Source',
-						message: '',
-						bodyElement: body,
-						hideCancelButton: true,
-						hideOkButton: true
-					});
+					dialog.showConfirmDialog(
+						angular.extend({
+							title: 'Source',
+							message: '',
+							bodyElement: body,
+							hideCancelButton: true,
+							hideOkButton: true
+						} , backLink)
+					);
 
 					document.getElementById('block-projects').addEventListener('click', function(event) {
 						var target = event.target;
@@ -1479,11 +1540,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						var id = target.getAttribute('data-id'),
 							name = target.innerHTML;
 
-						scope.showSheetsPanel(id,  name);
+						scope.showSheetsPanel(id, name, backLink);
 					});
 				};
 
-				scope.showSheetsPanel = function(id, name) {
+				scope.showSheetsPanel = function(id, name, backLink) {
 					var dialog = new BluVueSheet.Dialog({
 						showType: 'panel',
 						openAnimate: false
@@ -1494,20 +1555,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						name +
 						'</div>' +
 						'<ul>' +
-						'<li data-id="1">A-001</li>' +
-						'<li data-id="2" class="selected">A-002</li>' +
-						'<li data-id="3">A-003</li>' +
-						'<li data-id="4">A-004</li>' +
+						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID1">A-001</li>' +
+						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID2" class="selected">A-002</li>' +
+						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID3">A-003</li>' +
+						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID4">A-004</li>' +
 						'</ul>' +
 						'</div>';
 
-					dialog.showConfirmDialog({
-						title: 'Source',
-						message: '',
-						bodyElement: body,
-						hideCancelButton: true,
-						hideOkButton: true
-					});
+					dialog.showConfirmDialog(
+						angular.extend({
+							title: 'Source',
+							message: '',
+							bodyElement: body,
+							hideCancelButton: true,
+							hideOkButton: true
+						} , backLink)
+					);
 
 					document.getElementById('block-projects').addEventListener('click', function(event) {
 						var target = event.target;
@@ -1516,17 +1579,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							target = target.parentNode;
 						}
 
-						var id = target.getAttribute('data-id'),
-							name = target.innerHTML;
+						var link = target.getAttribute('data-id');;
 
-						scope.showLinkPanel(true, false);
+						backLink._link.uri = link;
+
+						scope.showLinkPanel(true, false, backLink._link);
 					});
 
 
 					document.getElementsByClassName('label-sheet')[0].addEventListener('click', function(event) {
 						event.stopPropagation();
 
-						scope.showProjectsPanel();
+						scope.showProjectsPanel(backLink);
 					});
 				};
 			}
