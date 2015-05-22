@@ -78,20 +78,6 @@
 
 
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
-			<li ng-repeat="fileItem in attachmentFiles | orderBy: '-createdDate'" ng-click="openInViewer(fileItem.url, fileItem.icon, fileItem.name, $index)" data-url="{{ fileItem.url }}" data-icon="{{ fileItem.icon }}" data-name="{{ fileItem.name }}">
-				<div class="attachment-icon attachment-icon-{{ fileItem.icon }}"></div>
-				<div class="attachment-file">
-					<div class="attachment-file-info-block">
-						<div class="attachment-file-name" title="{{ fileItem.filename }}{{ fileItem.fileextension }}"><span>{{ fileItem.filename }}</span>{{ fileItem.fileextension }}</div>
-						<div class="attachment-file-remove" ng-click="removeAttachment($event, fileItem.id)" ng-hide="isHideAttachmentsPanelCancelControls" class="ng-hide"></div>
-					</div>
-					<div class="attachment-file-attached-to">Attached to {{ fileItem.type_label }}</div>
-					<div class="attachment-file-info">
-						<div class="attachment-file-info-email" title="{{ fileItem.email }}">{{ fileItem.email }}</div>
-					    <div class="attachment-file-info-date">{{ fileItem.createdDate | date : "short" }}</div>
-					</div>
-				</div>
-			</li>
 		</ul>
 	</div>
 	<div class="bluvue-attachments-panel-holder" ng-click="hideAttachmentsPanel()"></div>
