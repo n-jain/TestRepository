@@ -1550,15 +1550,24 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						openAnimate: false
 					});
 
+					var sheetsData = [
+						{name: 'A-001', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID1'},
+						{name: 'A-002', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID2'},
+						{name: 'A-003', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID3'},
+						{name: 'A-004', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID4'},
+					];
+
+					var sheetsHtml = '', colSheets = sheetsData.length;
+					for(var i = 0; i < colSheets; i++) {
+						sheetsHtml += '<li data-id="' + sheetsData[i].link + '" class="' + ( backLink._link.uri && sheetsData[i].link == backLink._link.uri ? 'selected' : '') + '">' + sheetsData[i].name + '</li>';
+					}
+
 					var body = '<div id="block-projects" class="block-sheet">' +
 						'<div class="row label-sheet">' +
 						name +
 						'</div>' +
 						'<ul>' +
-						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID1">A-001</li>' +
-						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID2" class="selected">A-002</li>' +
-						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID3">A-003</li>' +
-						'<li data-id="bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID4">A-004</li>' +
+						sheetsHtml +
 						'</ul>' +
 						'</div>';
 
