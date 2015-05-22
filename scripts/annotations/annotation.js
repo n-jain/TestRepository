@@ -163,7 +163,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		else
 			this.attachmentIndicatorBounds = null;
 
-		if (!this.selected) {
+		var scope = angular.element(document.querySelector('[data-ng-app=test]')).scope().$$childHead;
+
+		if (!this.selected && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
 			this.hyperlinkIndicatorBounds = this.drawHyperlink.call(this, context);
 		}
 		else
@@ -1395,6 +1397,8 @@ function loadAnnotationJSON(json, tileView) {
 	annotation.attachments.forEach(function (attachment) {
 		attachment.annotation = annotation;
 	});
+
+	annotation.links = json.links || [];
 
 	if (json.unitOfMeasure != "na") {
 		var unitInfo = BluVueSheet.Measurement.toUnit(json.unitOfMeasure);

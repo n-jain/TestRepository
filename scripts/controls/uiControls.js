@@ -327,7 +327,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope) {
 			addButton(BluVueSheet.Constants.OptionButtons.Delete);
 		}
 
-		if (selectedAnnotations.length == 1) {
+		if (selectedAnnotations.length == 1 && ((selectedAnnotations[0].userId == null && scope.isAdmin) || (selectedAnnotations[0].userId != null && selectedAnnotations[0].userId == scope.userId))) {
 			addButton(BluVueSheet.Constants.OptionButtons.Link, function () {
 				scope.showLinkPanel(true, true, null);
 			});

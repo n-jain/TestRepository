@@ -781,6 +781,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						scope.attachmentFiles[i].fileextension = filename.substr(filename.lastIndexOf('.'));
 					}
 
+					scope.drawAttachmentFiles();
+
 					if (need_apply) {
 						scope.$apply();
 					}
@@ -868,6 +870,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							scope.isHideAttachmentsPanelControls = true;
 							scope.isHideAttachmentsPanelFilterControls = true;
 					}
+
+					scope.drawAttachmentFiles();
 				};
 
 				scope.addAttachmentAction = function (filetype) {
@@ -1045,6 +1049,54 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 					scope.isShowAttachmentNextButton = index + 1 != col_attachments;
 					scope.isShowAttachmentPreviousButton = index;
+				};
+
+				scope.drawAttachmentFiles = function() {
+					angular.element(document.getElementById('attachments-panel-files')).empty();
+
+					for(var i in scope.attachmentFiles) {
+						var fileItem = scope.attachmentFiles[i];
+
+						var li = angular.element('<li data-url="' + fileItem.url + '" data-icon="' + fileItem.icon + '" data-name="' + fileItem.name + '"></li>').bind('click',
+							(function(fileItem, i) {
+								return function () {
+									scope.openInViewer(fileItem.url, fileItem.icon, fileItem.name, i);
+									scope.$apply();
+								};
+							})(fileItem, i)
+						);
+
+						var attachment_file = angular.element('<div class="attachment-file"></div>'),
+							attachment_file_info_block = angular.element('<div class="attachment-file-info-block"></div>'),
+							attachment_file_name = angular.element('<div class="attachment-file-name" title="' + fileItem.filename + fileItem.fileextension + '"><span>' + fileItem.filename + '</span>' + fileItem.fileextension + '</div>'),
+							attachment_file_remove = angular.element('<div class="attachment-file-remove ' + (scope.isHideAttachmentsPanelCancelControls ? 'ng-hide' : '') + '"></div>').bind('click',
+								(function(fileItem) {
+									return function (event) {
+										event.stopPropagation()
+										scope.removeAttachment(event, fileItem.id);
+										scope.$apply();
+									};
+								})(fileItem)
+							);
+
+						var bottom_html = angular.element(
+							'<div class="attachment-file-attached-to">Attached to ' + fileItem.type_label + '</div>'+
+							'<div class="attachment-file-info">'+
+							'<div class="attachment-file-info-email" title="' + fileItem.email + '">' + fileItem.email + '</div>'+
+							'<div class="attachment-file-info-date">' + $filter('date')(fileItem.createdDate, 'short') + '</div>'+
+							'</div>'
+						);
+
+						attachment_file_info_block.append(attachment_file_name);
+						attachment_file_info_block.append(attachment_file_remove);
+						attachment_file.append(attachment_file_info_block);
+						attachment_file.append(bottom_html);
+
+						li.append('<div class="attachment-icon attachment-icon-' + fileItem.icon + '"></div>');
+						li.append(attachment_file);
+
+						angular.element(document.getElementById('attachments-panel-files')).append(li);
+					}
 				};
 
 				scope.hideViewer = function () {
@@ -1393,7 +1445,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function(singleAnnotation, openAnimate, link) {
+				scope.showLinkPanel = function(singleAnnotation, openAnimate, link, backLink) {
+					singleAnnotation = singleAnnotation || false;
+					openAnimate = openAnimate || false;
+					link = link || null;
+					backLink = backLink || {};
+
 					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
 						dialog = new BluVueSheet.Dialog({
 							showType: 'panel',
@@ -1412,7 +1469,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							case 'uri':
 								sheet_block.style.display = 'none';
 								url_block.style.display = 'block';
-
 						}
 					}
 
@@ -1428,32 +1484,46 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							'</div>' +
 							'</form>';
 
-						var isAddLink = !selectedAnnotation[0].links.length,
-							title = isAddLink ? 'Add Link' : 'Edit Link';
+						var isAddLink = backLink.length;
 
-						dialog.showConfirmDialog({
-							title: title,
-							message: '',
-							bodyElement: body,
-							hideCancelButton: true,
-							hideOkButton: true,
-							defaultHideAction: function() {
-								if(!selectedAnnotation[0].links.length) {
-									selectedAnnotation[0].links.push(new BluVueSheet.Link());
+						if(selectedAnnotation[0] != undefined) {
+							isAddLink = !selectedAnnotation[0].links.length
+						}
 
-									selectedAnnotation[0].links[0].createdDate = new Date();
-									selectedAnnotation[0].links[0].id = scope.generateUUID();
+						var title = isAddLink ? 'Add Link' : 'Edit Link';
+
+						dialog.showConfirmDialog(
+							angular.extend({
+								title: title,
+								message: '',
+								bodyElement: body,
+								hideCancelButton: true,
+								hideOkButton: true,
+								defaultHideAction: function() {
+
+									// If link for annotation is empty
+									if(document.querySelector('#form-link-append input[name=name]').value.length) {
+										if(selectedAnnotation[0] && !selectedAnnotation[0].links.length) {
+											link = new BluVueSheet.Link();
+											link.createdDate = new Date();
+											link.id = scope.generateUUID();
+
+											selectedAnnotation[0].links.push(link);
+										}
+
+										link.name = document.querySelector('#form-link-append input[name=name]').value;
+										link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+									} else if(selectedAnnotation[0].links.length && link.id) {
+										BluVueSheet.Link.removeByID(scope, link.id);
+									}
+
+									dialog.hide();
 								}
-
-								selectedAnnotation[0].links[0].name = document.querySelector('#form-link-append input[name=name]').value;
-								selectedAnnotation[0].links[0].uri = document.querySelector('#form-link-append input[name=uri]').value;
-
-								dialog.hide();
-							}
-						});
+							}, backLink)
+						);
 
 						if(isAddLink && link == null) {
-							link = new BluVueSheet.Link();
+							//link = new BluVueSheet.Link();
 						} else {
 							if(link == null) {
 								link = selectedAnnotation[0].links[0];
@@ -1473,6 +1543,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						}
 
 						document.getElementById('source-params').addEventListener('change', changeSourceParams);
+
 						document.getElementById('link-sheet-block').addEventListener('click', function() {
 							link.name = document.querySelector('#form-link-append input[name=name]').value;
 							link.uri = document.querySelector('#form-link-append input[name=uri]').value;
@@ -1500,7 +1571,76 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 
 					} else {
+						var annotations = scope.currentSheet.tileView.annotationManager.getAnnotations(),
+							colAnnotations = annotations.length,
+							links = '';
 
+						for(var i = 0; i < colAnnotations; i++) {
+							var _links = annotations[i].links, _col = _links.length;
+
+							for(var j = 0; j < _col; j++) {
+								var actions = (annotations[i].userId == null && scope.isAdmin) || (annotations[i].userId != null && annotations[i].userId == scope.userId) ? '<a href="#" class="remove-link" data-id="' + _links[j].id + '"></a><a href="#" class="edit-link" data-id="' + _links[j].id + '"></a>' : '';
+
+								var name = '';
+								if(_links[j].uri.length && _links[j].uri.substr(0, 14) == 'bluvueplans://' ) {
+									name = '<div class="link-name-sheet">' + _links[j].uri + '</div><div class="link-name-project">Undefined Project</div>';
+								} else {
+									name = '<div class="link-name-sheet">' + _links[j].uri + '</div>';
+								}
+
+								links += '<li><div class="link-name"><div class="link-name-label"><a href="' + _links[j].uri + '">' + _links[j].name + '</a></div>' + name + '</div><div class="link-actions">' + actions + '</div></li>';
+							}
+						}
+
+						var body = '<ul id="block-links">' + links + '</ul>';
+
+						dialog.showConfirmDialog({
+							title: 'Links',
+							message: '',
+							bodyElement: body,
+							hideCancelButton: true,
+							hideOkButton: true,
+							button2Label: 'Edit',
+							button2Action: function() {
+								var label = document.getElementsByClassName('dialog-top-button')[1];
+								if(label.innerHTML == 'Edit') {
+									angular.element(document.querySelector('#block-links')).addClass('show-actions');
+									label.innerHTML = '<span style="color:#fc3d38;">Cancel</span>';
+								} else {
+									angular.element(document.querySelector('#block-links')).removeClass('show-actions');
+									label.innerHTML = 'Edit';
+								}
+
+							}
+						});
+
+						document.getElementById('block-links').addEventListener('click', function(e) {
+							var id = e.target.getAttribute('data-id'),
+								link = BluVueSheet.Link.searchByID(scope, id);
+
+							switch(e.target.className) {
+								case 'edit-link':
+									scope.showLinkPanel(true, false, link, {
+										button1Label: '<span class="back-btn"></span> Links',
+										button1Action: function() {
+											link.name = document.querySelector('#form-link-append input[name=name]').value;
+											link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+											scope.showLinkPanel(false, false, link);
+										}
+									});
+									break;
+
+								case 'remove-link':
+									// TODO: Show nice dialog
+									if(confirm('Are you sure you want to delete?')) {
+										BluVueSheet.Link.removeByID(scope, id);
+										scope.showLinkPanel(false, false);
+									}
+
+									break;
+							}
+						});
 					}
 				};
 

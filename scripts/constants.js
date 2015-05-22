@@ -139,7 +139,7 @@ BluVueSheet.Constants = {
         { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png", idAttr: ""},
         { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png", idAttr: ""},
 	    //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
-	    { id: 4, func: "", text: "Links", imageURL: "images/update/icon_links.png", idAttr: ""},
+	    { id: 4, func: "showLinkPanel", text: "Links", imageURL: "images/update/icon_links.png", idAttr: ""},
 	    { id: 5, func: "", text: "Favorites", imageURL: "images/update/icon_favorites.png", idAttr: ""},
 	    { id: 6, func: "", text: "User History", imageURL: "images/update/icon_user_history.png", idAttr: ""},
         { id: 7, func: "toggleToolHelp", text: localStorage.showToolHelp == "true" || localStorage.showToolHelp == undefined ? "Show Tool Help" : "Don't Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
