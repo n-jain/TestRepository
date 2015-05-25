@@ -957,7 +957,37 @@ BluVueSheet.Dialog = function (params) {
 
 	parent.append(wrapper);
 	parent.append(holder);
-}
+};
+
+BluVueSheet.Confirm = function (params) {
+	params.title = params.title || '';
+	params.content = params.content || '';
+	params.confirmButton = params.confirmButton || 'Confirm';
+	params.cancelButton = params.cancelButton || 'Cancel';
+	params.confirmAction = params.confirmAction || defaultCancelAction;
+	params.cancelAction = params.cancelAction || defaultCancelAction;
+	params.appendClass = params.appendClass || '';
+
+	function defaultCancelAction() {
+		angular.element(document.querySelector('.confirm-popup')).remove();
+	}
+
+	this.openPopup = function() {
+		var popup = angular.element('<div class="confirm-popup"></div>').addClass(params.appendClass);
+		var title = angular.element('<h1></h1>').text(params.title);
+		var content = angular.element('<div class="confirm-popup-content"></div>').text(params.content);
+		var actions = angular.element('<ul></ul>').addClass('confirm-popup-actions')
+			.append(angular.element('<li></li>').addClass('confirm-popup-confirm-action').text(params.confirmButton).bind('click', params.confirmAction).bind('click', defaultCancelAction))
+			.append(angular.element('<li></li>').addClass('confirm-popup-cancel-action').text(params.cancelButton).bind('click', params.cancelAction).bind('click', defaultCancelAction));
+
+		popup.append(title).append(content).append(actions);
+		angular.element(document.querySelector('body')).append(popup);
+	};
+
+	this.closePopup = function() {
+
+	};
+};
 
 
 BluVueSheet.FileChooser = function (scope) {

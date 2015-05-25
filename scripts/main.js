@@ -1527,7 +1527,9 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							}, backLink)
 						);
 
-						if(!isAddLink || link != null) {
+						if(isAddLink && link == null) {
+							link = new BluVueSheet.Link();
+						} else {
 							if(link == null) {
 								link = selectedAnnotation[0].links[0];
 							}
@@ -1596,7 +1598,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 						var colLinks = linksItems.length;
 						for(var i = 0; i < colLinks; i++) {
-							var actions = (linksItems[i].userId == null && scope.isAdmin) || (linksItems[i].userId != null && annotations[i].userId == scope.userId) ? '<a href="#" class="remove-link" data-id="' + linksItems[i].id + '"></a><a href="#" class="edit-link" data-id="' + linksItems[i].id + '"></a>' : '';
+							var actions = (linksItems[i].userId == null && scope.isAdmin) || (linksItems[i].userId != null && linksItems[i].userId == scope.userId) ? '<a href="#" class="remove-link" data-id="' + linksItems[i].id + '"></a><a href="#" class="edit-link" data-id="' + linksItems[i].id + '"></a>' : '';
 
 							var name = '';
 							if(linksItems[i].uri.length && linksItems[i].uri.substr(0, 14) == 'bluvueplans://' ) {
@@ -1658,11 +1660,26 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 									break;
 
 								case 'remove-link':
-									// TODO: Show nice dialog
-									if(confirm('Are you sure you want to delete?')) {
-										BluVueSheet.Link.removeByID(scope, id);
-										scope.showLinkPanel(false, false);
-									}
+
+									var confirmDialog = new BluVueSheet.Confirm({
+										title: 'Delete Link',
+										content: 'Are you sure you want to delete?',
+										appendClass: 'confirm-dialog-remove-link',
+										confirmAction: (function(scope, id) {
+											return function() {
+												BluVueSheet.Link.removeByID(scope, id);
+												scope.showLinkPanel(false, false);
+											}
+										})(scope, id)
+									});
+
+									confirmDialog.openPopup();
+
+									//// TODO: Show nice dialog
+									//if(confirm('Are you sure you want to delete?')) {
+									//	BluVueSheet.Link.removeByID(scope, id);
+									//	scope.showLinkPanel(false, false);
+									//}
 
 									break;
 							}
