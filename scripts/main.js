@@ -1476,7 +1476,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					if(singleAnnotation) {
 						var body = '<form id="form-link-append">' +
 							'<div class="row">' +
-							'<label><span>Name</span> <input type="text" name="name" placeholder="Enter Name"></label>' +
+							'<label><span>Name</span> <input type="text" name="name" placeholder="Enter Name" maxlength="255"></label>' +
 							'</div>' +
 							'<div class="row">' +
 							'<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="uri"> URL</label></span>' +
@@ -1501,22 +1501,26 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								hideCancelButton: true,
 								hideOkButton: true,
 								defaultHideAction: function() {
+									if(selectedAnnotation[0] && !selectedAnnotation[0].links.length) {
+										link = new BluVueSheet.Link();
+										link.createdDate = new Date();
+										link.id = scope.generateUUID();
+
+										selectedAnnotation[0].links.push(link);
+									}
+
+									link.name = document.querySelector('#form-link-append input[name=name]').value;
+									link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+									if(link.uri.indexOf('://') == -1) {
+										link.uri = 'http://' + link.uri;
+									}
 
 									// If link for annotation is empty
-									if(document.querySelector('#form-link-append input[name=name]').value.length) {
-										if(selectedAnnotation[0] && !selectedAnnotation[0].links.length) {
-											link = new BluVueSheet.Link();
-											link.createdDate = new Date();
-											link.id = scope.generateUUID();
-
-											selectedAnnotation[0].links.push(link);
-										}
-
-										link.name = document.querySelector('#form-link-append input[name=name]').value;
-										link.uri = document.querySelector('#form-link-append input[name=uri]').value;
-									} else if(selectedAnnotation[0].links.length && link.id) {
-										BluVueSheet.Link.removeByID(scope, link.id);
+									if(!link.name.length) {
+										link.name = null;
 									}
+
 
 									dialog.hide();
 								}
@@ -1563,6 +1567,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								document.getElementById('link-sheet-block').style.color = '#C8CEDC';
 								document.getElementById('link-sheet-block').innerHTML = 'Select a sheet to link to';
 							} else {
+								if(link.uri.indexOf('://') == -1) {
+									link.uri = 'http://' + link.uri;
+								}
+
 								document.getElementById('link-sheet-block').innerHTML = link.uri;
 								document.getElementById('link-sheet-block').style.color = '#0F63E4';
 							}
@@ -1639,6 +1647,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 										button1Action: function() {
 											link.name = document.querySelector('#form-link-append input[name=name]').value;
 											link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+											if(link.uri.indexOf('://') == -1) {
+												link.uri = 'http://' + link.uri;
+											}
 
 											scope.showLinkPanel(false, false, link, {}, true);
 										}
