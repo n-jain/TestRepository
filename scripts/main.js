@@ -1445,11 +1445,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function(singleAnnotation, openAnimate, link, backLink) {
+				scope.showLinkPanel = function(singleAnnotation, openAnimate, link, backLink, openEditActions) {
 					singleAnnotation = singleAnnotation || false;
 					openAnimate = openAnimate || false;
 					link = link || null;
 					backLink = backLink || {};
+					openEditActions = openEditActions || false;
 
 					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
 						dialog = new BluVueSheet.Dialog({
@@ -1522,9 +1523,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							}, backLink)
 						);
 
-						if(isAddLink && link == null) {
-							//link = new BluVueSheet.Link();
-						} else {
+						if(!isAddLink || link != null) {
 							if(link == null) {
 								link = selectedAnnotation[0].links[0];
 							}
@@ -1573,35 +1572,36 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					} else {
 						var annotations = scope.currentSheet.tileView.annotationManager.getAnnotations(),
 							colAnnotations = annotations.length,
-							links = '';
+							links = '',
+							linksItems = [];
 
 						for(var i = 0; i < colAnnotations; i++) {
 							var _links = annotations[i].links, _col = _links.length;
 
-							for(var j = 0; j < _col; j++) {
-								var actions = (annotations[i].userId == null && scope.isAdmin) || (annotations[i].userId != null && annotations[i].userId == scope.userId) ? '<a href="#" class="remove-link" data-id="' + _links[j].id + '"></a><a href="#" class="edit-link" data-id="' + _links[j].id + '"></a>' : '';
-
-								var name = '';
-								if(_links[j].uri.length && _links[j].uri.substr(0, 14) == 'bluvueplans://' ) {
-									name = '<div class="link-name-sheet">' + _links[j].uri + '</div><div class="link-name-project">Undefined Project</div>';
-								} else {
-									name = '<div class="link-name-sheet">' + _links[j].uri + '</div>';
-								}
-
-								links += '<li><div class="link-name"><div class="link-name-label"><a href="' + _links[j].uri + '">' + _links[j].name + '</a></div>' + name + '</div><div class="link-actions">' + actions + '</div></li>';
+							for (var j = 0; j < _col; j++) {
+								_links[j].userId = annotations[i].userId;
+								linksItems.push(_links[j]);
 							}
 						}
 
-						var body = '<ul id="block-links">' + links + '</ul>';
+						linksItems = $filter('orderBy')(linksItems, 'name');
 
-						dialog.showConfirmDialog({
-							title: 'Links',
-							message: '',
-							bodyElement: body,
-							hideCancelButton: true,
-							hideOkButton: true,
-							button2Label: 'Edit',
-							button2Action: function() {
+						var colLinks = linksItems.length;
+						for(var i = 0; i < colLinks; i++) {
+							var actions = (linksItems[i].userId == null && scope.isAdmin) || (linksItems[i].userId != null && annotations[i].userId == scope.userId) ? '<a href="#" class="remove-link" data-id="' + linksItems[i].id + '"></a><a href="#" class="edit-link" data-id="' + linksItems[i].id + '"></a>' : '';
+
+							var name = '';
+							if(linksItems[i].uri.length && linksItems[i].uri.substr(0, 14) == 'bluvueplans://' ) {
+								name = '<div class="link-name-sheet">' + linksItems[i].uri + '</div><div class="link-name-project">Undefined Project</div>';
+							} else {
+								name = '<div class="link-name-sheet">' + linksItems[i].uri + '</div>';
+							}
+
+							links += '<li><div class="link-name"><div class="link-name-label"><a href="' + linksItems[i].uri + '">' + linksItems[i].name + '</a></div>' + name + '</div><div class="link-actions">' + actions + '</div></li>';
+						}
+
+						var body = '<ul id="block-links">' + links + '</ul>',
+							changeVisibleActions = function() {
 								var label = document.getElementsByClassName('dialog-top-button')[1];
 								if(label.innerHTML == 'Edit') {
 									angular.element(document.querySelector('#block-links')).addClass('show-actions');
@@ -1611,8 +1611,22 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 									label.innerHTML = 'Edit';
 								}
 
-							}
+							};
+
+						dialog.showConfirmDialog({
+							title: 'Links',
+							message: '',
+							bodyElement: body,
+							hideCancelButton: true,
+							hideOkButton: true,
+							button2Label: 'Edit',
+							button2Action: changeVisibleActions
 						});
+
+						// Change buttons actions visible
+						if(openEditActions) {
+							changeVisibleActions();
+						}
 
 						document.getElementById('block-links').addEventListener('click', function(e) {
 							var id = e.target.getAttribute('data-id'),
@@ -1626,7 +1640,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 											link.name = document.querySelector('#form-link-append input[name=name]').value;
 											link.uri = document.querySelector('#form-link-append input[name=uri]').value;
 
-											scope.showLinkPanel(false, false, link);
+											scope.showLinkPanel(false, false, link, {}, true);
 										}
 									});
 									break;
