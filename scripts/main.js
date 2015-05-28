@@ -1,7 +1,7 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter',
-	function sheetDirective($window, $location, $interval, $filter) {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter', '$compile',
+	function sheetDirective($window, $location, $interval, $filter, $compile) {
 		'use strict';
 
 		return {
@@ -49,6 +49,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						scope.toolMoreMenu.push(item);
 					}
 				}
+
+				scope.projects.forEach(function(item, i) {
+					item.sheets.forEach(function(sheet) {});
+				});
 
 				var toolipDialog = new BluVueSheet.Dialog();
 
@@ -1544,8 +1548,16 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								changeSourceParams({target: {value: 'uri'}});
 							} else if(link.uri.length) {
 								document.getElementById('link-sheet-block').innerHTML = link.uri;
-
 								document.getElementById('link-sheet-block').style.color = '#0F63E4';
+
+								scope.projects.forEach(function(item, i) {
+									item.sheets.forEach(function(sheet) {
+										if('bluvueplans://projects/' + item.id + '/sheets/' + sheet.id == link.uri) {
+											document.getElementById('link-sheet-block').innerHTML = sheet.name;
+											return;
+										}
+									});
+								});
 							}
 						}
 
@@ -1604,7 +1616,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 							var name = '';
 							if(linksItems[i].uri.length && linksItems[i].uri.substr(0, 14) == 'bluvueplans://' ) {
-								name = '<div class="link-name-sheet">' + linksItems[i].uri + '</div><div class="link-name-project">Undefined Project</div>';
+								var linkName = linksItems[i].uri, linkProject = 'Undefined Project';
+
+								scope.projects.forEach(function(item) {
+									item.sheets.forEach(function(sheet) {
+										if('bluvueplans://projects/' + item.id + '/sheets/' + sheet.id == linksItems[i].uri) {
+											linkName = sheet.name;
+											linkProject = item.name;
+											return;
+										}
+									});
+								});
+
+								name = '<div class="link-name-sheet">' + linkName + '</div><div class="link-name-project">' + linkProject + '</div>';
 							} else {
 								name = '<div class="link-name-sheet">' + linksItems[i].uri + '</div>';
 							}
@@ -1677,12 +1701,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 									confirmDialog.openPopup();
 
-									//// TODO: Show nice dialog
-									//if(confirm('Are you sure you want to delete?')) {
-									//	BluVueSheet.Link.removeByID(scope, id);
-									//	scope.showLinkPanel(false, false);
-									//}
-
 									break;
 							}
 						});
@@ -1695,13 +1713,18 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						openAnimate: false
 					});
 
+					var html = '';
+
+					scope.projects.forEach(function(item) {
+						html += '<li data-id="' + item.id + '">' + item.name + '</li>';
+					});
+
 					var body = '<div id="block-projects">' +
 						'<div class="row label">' +
 						'Projects' +
 						'</div>' +
 						'<ul>' +
-						'<li data-id="11">Pine Island Country club</li>' +
-						'<li data-id="22">Dakota Hudicial Court</li>' +
+						html +
 						'</ul>' +
 						'</div>';
 
@@ -1735,25 +1758,23 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						openAnimate: false
 					});
 
-					var sheetsData = [
-						{name: 'A-001', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID1'},
-						{name: 'A-002', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID2'},
-						{name: 'A-003', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID3'},
-						{name: 'A-004', link: 'bluvueplans://projects/PROJECT-ID/sheets/SHEET-ID4'},
-					];
+					var sheetsHtml = angular.element('<ul></ul>'), project_pos = 0;
 
-					var sheetsHtml = '', colSheets = sheetsData.length;
-					for(var i = 0; i < colSheets; i++) {
-						sheetsHtml += '<li data-id="' + sheetsData[i].link + '" class="' + ( backLink._link.uri && sheetsData[i].link == backLink._link.uri ? 'selected' : '') + '">' + sheetsData[i].name + '</li>';
-					}
+					scope.projects.forEach(function(item, i) {
+						if(item.id == id) {
+							scope.showSheetsOnPanel = item.sheets;
+							scope.showSheetsProjectID = id;
+							scope.showSheetsBackLink = backLink._link.uri;
+							project_pos = i;
+
+							sheetsHtml = angular.element('<ul ng-repeat="sheet in showSheetsOnPanel"><li data-id="bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}" ng-class="{selected: showSheetsBackLink && \'bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}\' == showSheetsBackLink}">{{ sheet.name }}</li></ul>');
+						}
+					});
 
 					var body = '<div id="block-projects" class="block-sheet">' +
 						'<div class="row label-sheet">' +
 						name +
 						'</div>' +
-						'<ul>' +
-						sheetsHtml +
-						'</ul>' +
 						'</div>';
 
 					dialog.showConfirmDialog(
@@ -1765,6 +1786,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							hideOkButton: true
 						} , backLink)
 					);
+
+					angular.element(document.querySelector('#block-projects')).append(sheetsHtml);
+					$compile(sheetsHtml)(scope);
+
+					$interval(function(scope) {
+						try{scope.$apply();} catch(e) {}
+					}, 300, 25);
 
 					document.getElementById('block-projects').addEventListener('click', function(event) {
 						var target = event.target;
