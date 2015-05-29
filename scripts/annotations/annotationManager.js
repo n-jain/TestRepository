@@ -187,9 +187,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			for (i = 0; i < annotations.length; i++) {
 				var a = annotations[i],
 					attachmentContains = a.attachmentIndicatorBounds && a.attachmentIndicatorBounds.contains(x, y),
-					hyperlinkContains = a.hyperlinkIndicatorBounds && a.hyperlinkIndicatorBounds.contains(x, y);
+					hyperlinkContains = a.hyperlinkIndicatorBounds && a.hyperlinkIndicatorBounds.contains(x, y),
+					attachmentHyperlinkContains = a.attachmentHyperlinkIndicatorBounds && a.attachmentHyperlinkIndicatorBounds.contains(x, y);
 
-				if ((attachmentContains || hyperlinkContains) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin)) {
+				if ((attachmentContains || hyperlinkContains || attachmentHyperlinkContains) && ((!scope.isAdmin && annotations[i].userId == scope.userId) || scope.isAdmin)) {
 					cursor = 'pointer';
 				}
 				else if (a.drawables && a.drawables.length) {
@@ -236,7 +237,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	};
 
 	this.handleClick = function (x, y) {
-		var showAttachments = false, showHyperlinks = false;
+		var showAttachments = false, showHyperlinks = false, showAnnotationHyperlinks = false;
 		//get which annotations are touched
 		var touchedAnnotations = [];
 		var i;
@@ -246,7 +247,8 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			}
 
 			var attachmentIndicatorBounds = annotations[i].attachmentIndicatorBounds,
-				hyperlinkIndicatorBounds = annotations[i].hyperlinkIndicatorBounds;
+				hyperlinkIndicatorBounds = annotations[i].hyperlinkIndicatorBounds,
+				attachmentHyperlinkIndicatorBounds = annotations[i].attachmentHyperlinkIndicatorBounds;
 			if (attachmentIndicatorBounds && attachmentIndicatorBounds.contains(x, y)) {
 				touchedAnnotations[touchedAnnotations.length] = annotations[i];
 				showAttachments = true;
@@ -254,6 +256,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			else if (hyperlinkIndicatorBounds && hyperlinkIndicatorBounds.contains(x, y)) {
 				touchedAnnotations[touchedAnnotations.length] = annotations[i];
 				showHyperlinks = true;
+			}
+			else if (attachmentHyperlinkIndicatorBounds && attachmentHyperlinkIndicatorBounds.contains(x, y)) {
+				touchedAnnotations[touchedAnnotations.length] = annotations[i];
+				showAnnotationHyperlinks = true;
 			}
 			else {
 				var bounds = annotations[i].bounds;
@@ -309,6 +315,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 		if(showHyperlinks) {
 			scope.showLinkPanel(true, true, null);
+		}
+
+		if(showAnnotationHyperlinks) {
+			scope.showAttachmentsHyperlinksConfirm();
 		}
 	};
 

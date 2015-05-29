@@ -1815,6 +1815,39 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						scope.showProjectsPanel(backLink);
 					});
 				};
+
+				scope.showAttachmentsHyperlinksConfirm = function() {
+					var confirmDialog = new BluVueSheet.Confirm({
+						content: 'Select which option you\'d like to view:',
+						appendClass: 'confirm-dialog-attachments-hyperlinks',
+						showHolder: true,
+						buttons: [
+							{
+								label: 'Links',
+								action: (function (scope) {
+									return function() {
+										scope.showLinkPanel(true, true, null);
+									}
+								})(scope)
+							},
+							{
+								label: 'Attachments',
+								action: (function (scope) {
+									return function() {
+										scope.changeFilterAttachmentPanel('selected');
+										scope.showAttachmentsPanel(true);
+									};
+								})(scope)
+							},
+							{
+								label: 'Cancel'
+							}
+						]
+					});
+
+					confirmDialog.openPopup();
+
+				};
 			}
 		};
 	}

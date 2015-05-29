@@ -856,7 +856,8 @@ select.bluvue-annotation-unit-edit {
 }
 
 .bluvue-attachments-panel-holder,
-.bluvue-viewer-panel-holder {
+.bluvue-viewer-panel-holder,
+.bluvue-confirm-popup-holder {
     display: none;
     position: absolute;
     top: 0;
@@ -867,6 +868,11 @@ select.bluvue-annotation-unit-edit {
     right: 0;
     background: rgba(64,64,64,0.5);
     z-index: 1000;
+}
+
+.bluvue-confirm-popup-holder {
+    margin-top: 0;
+    height: 100%;
 }
 
 .bluvue-viewer-panel-holder-active {
@@ -1521,4 +1527,31 @@ select.bluvue-annotation-unit-edit {
 
 .confirm-dialog-remove-link {
     left: calc(50% - 200px);
+}
+
+.confirm-dialog-attachments-hyperlinks {
+    height: 216px;
+    margin-top: -108px;
+}
+
+.confirm-dialog-attachments-hyperlinks .confirm-popup-actions {
+    border: none;
+    height: 138px;
+}
+
+.confirm-dialog-attachments-hyperlinks .confirm-popup-actions li {
+    border-top: 1px solid #CCC;
+    color: #1294F3!important;
+    font-weight: normal;
+    display: block;
+    height: 46px;
+    width: 100%;
+}
+
+.confirm-dialog-attachments-hyperlinks .confirm-popup-actions li:last-child {
+    font-weight: bold;
+}
+
+.confirm-dialog-attachments-hyperlinks .confirm-popup-content {
+    padding: 0;
 }

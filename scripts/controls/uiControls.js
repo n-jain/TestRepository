@@ -967,9 +967,12 @@ BluVueSheet.Confirm = function (params) {
 	params.confirmAction = params.confirmAction || defaultCancelAction;
 	params.cancelAction = params.cancelAction || defaultCancelAction;
 	params.appendClass = params.appendClass || '';
+	params.buttons = params.buttons || [];
+	params.showHolder = params.showHolder || false;
 
 	function defaultCancelAction() {
 		angular.element(document.querySelector('.confirm-popup')).remove();
+		angular.element(document.querySelector('.bluvue-confirm-popup-holder')).css({display: 'none'});
 	}
 
 	this.openPopup = function() {
@@ -980,8 +983,23 @@ BluVueSheet.Confirm = function (params) {
 			.append(angular.element('<li></li>').addClass('confirm-popup-confirm-action').text(params.confirmButton).bind('click', params.confirmAction).bind('click', defaultCancelAction))
 			.append(angular.element('<li></li>').addClass('confirm-popup-cancel-action').text(params.cancelButton).bind('click', params.cancelAction).bind('click', defaultCancelAction));
 
+		if(params.buttons.length) {
+			var actions = angular.element('<ul></ul>').addClass('confirm-popup-actions');
+			params.buttons.forEach(function(button) {
+				actions.append(angular.element('<li></li>').addClass('confirm-popup-confirm-action').text(button.label).bind('click', button.action || defaultCancelAction).bind('click', defaultCancelAction))
+			});
+		}
+
 		popup.append(title).append(content).append(actions);
 		angular.element(document.querySelector('body')).append(popup);
+
+		if(params.showHolder) {
+			angular.element(document.querySelector('.bluvue-confirm-popup-holder')).css({display: 'block'});
+
+			document.querySelector('.bluvue-confirm-popup-holder').addEventListener('click', function() {
+				angular.element(document.querySelector('.bluvue-confirm-popup-holder')).css({display: 'none'});
+			});
+		}
 	};
 
 	this.closePopup = function() {

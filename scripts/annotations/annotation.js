@@ -157,19 +157,30 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			this.drawMeasurement(context);
 		}
 
-		if (!this.selected && this.attachments.length) {
-			this.attachmentIndicatorBounds = this.drawAttachments.call(this, context);
-		}
-		else
-			this.attachmentIndicatorBounds = null;
-
 		var scope = angular.element(document.querySelector('[data-ng-app=test]')).scope().$$childHead;
 
-		if (!this.selected && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
-			this.hyperlinkIndicatorBounds = this.drawHyperlink.call(this, context);
-		}
-		else
+		if (!this.selected && this.attachments.length && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
+			this.attachmentIndicatorBounds = null;
 			this.hyperlinkIndicatorBounds = null;
+
+			this.attachmentHyperlinkIndicatorBounds = this.drawAttachmentsHyperlink.call(this, context);
+		} else {
+			this.attachmentHyperlinkIndicatorBounds = null;
+
+			if (!this.selected && this.attachments.length) {
+				this.attachmentIndicatorBounds = this.drawAttachments.call(this, context);
+			}
+			else
+				this.attachmentIndicatorBounds = null;
+
+			if (!this.selected && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
+				this.hyperlinkIndicatorBounds = this.drawHyperlink.call(this, context);
+			}
+			else
+				this.hyperlinkIndicatorBounds = null;
+		}
+
+
 
 		renderDrawables(context, this.drawables);
 
@@ -345,7 +356,138 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			height: 24 / tileView.scale
 		};
 
-		var append_y = this.attachments.length ? 24 / tileView.scale : 0;
+		// Evaluate location of the indicator appropriate for the annotation shape
+		switch (this.type) {
+			case SQUARE_ANNOTATION:
+			case TEXT_ANNOTATION:
+			case X_ANNOTATION:
+			case CLOUD_ANNOTATION:
+				relativeBounds.x = width / 2;
+				relativeBounds.y = -height / 2;
+				break;
+
+			case CIRCLE_ANNOTATION:
+				relativeBounds.x = (0.25 * width );
+				relativeBounds.y = -(0.433 * height );
+				break;
+
+			default:
+				var max_x = this.points[0].x,
+					min_x = this.points[0].x,
+					max_y = this.points[0].y,
+					min_y = this.points[0].y;
+
+				for (var i in this.points) {
+					if (!this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y <= min_y) {
+						max_x = this.points[i].x;
+						min_y = this.points[i].y;
+						relativeBounds.x = this.points[i].x - x;
+						relativeBounds.y = this.points[i].y - y;
+					}
+
+					if (90 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y <= min_y) {
+						min_x = this.points[i].x;
+						min_y = this.points[i].y;
+						relativeBounds.x = y - this.points[i].y;
+						relativeBounds.y = this.points[i].x - x;
+					}
+
+					if (180 == this.tileView.getRotation() && this.points[i].x <= min_x && this.points[i].y >= max_y) {
+						min_x = this.points[i].x;
+						max_y = this.points[i].y;
+						relativeBounds.x = x - this.points[i].x;
+						relativeBounds.y = y - this.points[i].y;
+					}
+
+					if (270 == this.tileView.getRotation() && this.points[i].x >= max_x && this.points[i].y >= max_y) {
+						max_x = this.points[i].x;
+						max_y = this.points[i].y;
+						relativeBounds.x = this.points[i].y - y;
+						relativeBounds.y = x - this.points[i].x;
+					}
+				}
+		}
+
+		// Reset canvas to SCREEN coordinates instead of SHEET coordinates while
+		// still honoring the rotation position - this lets us use normal font
+		// rendering and graphics compositing
+		context.translate(relativeBounds.x, relativeBounds.y);
+		context.scale(1 / tileView.scale, 1 / tileView.scale);
+
+		var attach_icon = new Image();
+		attach_icon.src = "images/update/annotation-link.png";
+		context.globalAlpha = 0.7;
+		context.drawImage(attach_icon, 2, 2, 24, 24);
+
+
+		context.restore();
+
+		// Calculate the SHEET coordinates of the lozenge bounding box for use in
+		// click testing
+		var sheetPolygon = {};
+		switch (this.tileView.getRotation()) {
+			default:
+			case 0:
+				sheetPolygon.x1 = x + relativeBounds.x;
+				sheetPolygon.y1 = y + relativeBounds.y;
+				sheetPolygon.x2 = x + relativeBounds.x + relativeBounds.width;
+				sheetPolygon.y2 = y + relativeBounds.y + relativeBounds.height;
+				break;
+
+			case 90:
+				sheetPolygon.x1 = x + relativeBounds.y;
+				sheetPolygon.y1 = y - relativeBounds.x;
+				sheetPolygon.x2 = x + relativeBounds.y + relativeBounds.height;
+				sheetPolygon.y2 = y - relativeBounds.x - relativeBounds.width;
+				break;
+
+			case 180:
+				sheetPolygon.x1 = x - relativeBounds.x;
+				sheetPolygon.y1 = y - relativeBounds.y;
+				sheetPolygon.x2 = x - relativeBounds.x - relativeBounds.width;
+				sheetPolygon.y2 = y - relativeBounds.y - relativeBounds.height;
+				break;
+
+			case 270:
+				sheetPolygon.x1 = x - relativeBounds.y;
+				sheetPolygon.y1 = y + relativeBounds.x;
+				sheetPolygon.x2 = x - relativeBounds.y - relativeBounds.height;
+				sheetPolygon.y2 = y + relativeBounds.x + relativeBounds.width;
+				break;
+		}
+		return new BluVueSheet.Rect(
+			Math.min(sheetPolygon.x1, sheetPolygon.x2),
+			Math.min(sheetPolygon.y1, sheetPolygon.y2),
+			Math.max(sheetPolygon.x1, sheetPolygon.x2),
+			Math.max(sheetPolygon.y1, sheetPolygon.y2));
+	};
+
+	this.drawAttachmentsHyperlink = function (context) {
+
+		if (!this.added) {
+			return;
+		}
+
+		var theta = this.tileView.getRotation() / -180 * Math.PI;
+		var isFlipped = (this.tileView.getRotation() == 90 || this.tileView.getRotation() == 270);
+		context.save();
+
+		var x = this.bounds.left + (this.bounds.width() / 2);
+		var y = this.bounds.top + (this.bounds.height() / 2);
+		var width = isFlipped ? this.bounds.height() : this.bounds.width();
+		var height = isFlipped ? this.bounds.width() : this.bounds.height();
+
+		// Set canvas to rotated relative coordinates with center of annotation at
+		// center of screen
+		context.translate(x, y);
+		context.rotate(theta);
+
+		var relativeBounds = {
+			x: 0,
+			y: 0,
+			width: 48 / tileView.scale,
+			height: 24 / tileView.scale
+		};
 
 		// Evaluate location of the indicator appropriate for the annotation shape
 		switch (this.type) {
@@ -399,8 +541,6 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				}
 		}
 
-		relativeBounds.y += append_y;
-
 		// Reset canvas to SCREEN coordinates instead of SHEET coordinates while
 		// still honoring the rotation position - this lets us use normal font
 		// rendering and graphics compositing
@@ -408,9 +548,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.scale(1 / tileView.scale, 1 / tileView.scale);
 
 		var attach_icon = new Image();
-		attach_icon.src = "images/update/annotation-link.png";
+		attach_icon.src = "images/update/bv-btn-linkattach.png";
 		context.globalAlpha = 0.7;
-		context.drawImage(attach_icon, 2, 2, 24, 24);
+		context.drawImage(attach_icon, 2, 2, 48, 24);
 
 
 		context.restore();
