@@ -44,6 +44,7 @@ angular.module('test', ['bluvueSheet'])
                     projectId: "project_1",
                     id: "sheet001-r0",
                     rotation: 0,
+	                favorite: true,
                     annotationVersion: "usdfhasdf",
                     annotations: [
                         {
@@ -201,19 +202,6 @@ angular.module('test', ['bluvueSheet'])
 	        $scope.canEditNotes = true;
 
 	        $scope.fullName = 'Tester Name';
-
-	        $scope.favorites = [{
-	            uri: "http://www.google.com",
-	            id: "fav1",
-	            name: null,
-	            createdDate: "2015-02-19T16:54:04.00"
-	        },
-            {
-                uri: "http://www.apple.com",
-                id: "fav2",
-                name: null,
-                createdDate: "2015-04-19T10:34:22.00"
-            }];
 
             $scope.closeSheet = function() {
                 console.log("close sheet");
