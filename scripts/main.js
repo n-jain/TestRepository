@@ -1848,6 +1848,92 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					confirmDialog.openPopup();
 
 				};
+
+				scope.showFavoritesPanel = function() {
+					var body = '<div class="favorites-content"><ul class="favorites-toggle" id="favorites-toggle"><li id="favorites-local" data-type="local" class="active">Local</li><li id="favorites-global" data-type="global">Global</li></ul><ul id="block-favorites"></ul><ul id="favorites-list"></ul> </div>';
+
+
+					var changeVisibleActions = function() {
+						var label = document.getElementsByClassName('dialog-top-button')[1];
+						if(label.innerHTML == 'Edit') {
+							angular.element(document.querySelector('#favorites-list')).addClass('show-actions');
+							label.innerHTML = '<span style="color:#fc3d38;">Cancel</span>';
+						} else {
+							angular.element(document.querySelector('#favorites-list')).removeClass('show-actions');
+							label.innerHTML = 'Edit';
+						}
+
+					};
+
+					var dialog = new BluVueSheet.Dialog({
+						showType: 'panel',
+						openAnimate: true
+					});
+
+					dialog.showConfirmDialog({
+						title: 'Favorites',
+						message: '',
+						bodyElement: body,
+						hideCancelButton: true,
+						hideOkButton: true,
+						button2Label: 'Edit',
+						button2Action: changeVisibleActions
+					});
+
+					function generateFavoritesList(type) {
+						var sheets = [], html = '';
+
+						scope.projects.forEach(function(project, i) {
+							if(scope.sheet.projectId == project.id && type == 'local' || type == 'global') {
+								project.sheets.forEach(function(sheet) {
+									if(sheet.favorite) {
+										sheets.push({id: sheet.id, name: sheet.name});
+									}
+								});
+							}
+						});
+
+						sheets.forEach(function(sheet) {
+							html += '<li data-id="' + sheet.id +'">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type +'"></a></li>'
+						});
+
+						angular.element(document.getElementById('favorites-list')).empty().append(html);
+					}
+
+					document.getElementById('favorites-toggle').addEventListener('click', function(e) {
+						var type = e.target.getAttribute('data-type');
+
+						if(type == 'local') {
+							angular.element(document.getElementById('favorites-global')).removeClass('active');
+							angular.element(document.getElementById('favorites-local')).addClass('active');
+						} else {
+							angular.element(document.getElementById('favorites-local')).removeClass('active');
+							angular.element(document.getElementById('favorites-global')).addClass('active');
+						}
+
+						generateFavoritesList(type);
+					});
+
+					generateFavoritesList('global');
+
+					document.getElementById('favorites-list').addEventListener('click', function(e) {
+						var id = e.target.getAttribute('data-id'),
+							type = e.target.getAttribute('data-type');
+
+						if(e.target.className == 'remove-favorite') {
+							scope.projects.forEach(function(project, i) {
+								project.sheets.forEach(function(sheet) {
+									if(sheet.id == id) {
+										sheet.favorite = false;
+										generateFavoritesList(type);
+										scope.$apply();
+										return;
+									}
+								});
+							});
+						}
+					});
+				};
 			}
 		};
 	}

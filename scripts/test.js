@@ -16,7 +16,7 @@ angular.module('test', ['bluvueSheet'])
                             setTimeout(function () {
                                 sheets.forEach(function (sheet) {
                                     if (sheet.projectId !== t.id) return true;
-                                    t._sheets.push({ "id": sheet.id, "name": sheet.name });
+                                    t._sheets.push({ "id": sheet.id, "name": sheet.name, "favorite": !!sheet.favorite });
                                     return true;
                                 });
 
