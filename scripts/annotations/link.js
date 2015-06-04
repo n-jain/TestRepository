@@ -3,6 +3,8 @@ BluVueSheet.Link = function() {
 	this.createdDate    = null;
 	this.name           = null;
 	this.id             = null;
+	this.hidden         = false;
+	this.action         = 0;
 };
 
 BluVueSheet.Link.searchByID = function(scope, id) {

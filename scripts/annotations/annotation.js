@@ -159,7 +159,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 		var scope = angular.element(document.querySelector('[data-ng-app=test]')).scope().$$childHead;
 
-		if (!this.selected && this.attachments.length && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
+		var existsVisibleLinks = false;
+
+		this.links.forEach(function(link) {
+			if(!link.hidden) {
+				existsVisibleLinks = true;
+			}
+		});
+
+		if (!this.selected && this.attachments.length && existsVisibleLinks && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
 			this.attachmentIndicatorBounds = null;
 			this.hyperlinkIndicatorBounds = null;
 
@@ -173,7 +181,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			else
 				this.attachmentIndicatorBounds = null;
 
-			if (!this.selected && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
+			if (!this.selected && existsVisibleLinks && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
 				this.hyperlinkIndicatorBounds = this.drawHyperlink.call(this, context);
 			}
 			else
