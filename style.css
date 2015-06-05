@@ -1605,6 +1605,9 @@ select.bluvue-annotation-unit-edit {
     border-top: 1px solid #C8CEDC;
     margin-top: 20px;
     margin-left: -21px;
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+    overflow-x: hidden;
     width: calc(100% + 42px);
 }
 
