@@ -1887,11 +1887,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							if(scope.sheet.projectId == project.id && type == 'local' || type == 'global') {
 								project.sheets.forEach(function(sheet) {
 									if(sheet.favorite) {
-										sheets.push({id: sheet.id, name: sheet.name});
+										sheets.push({id: sheet.id, name: sheet.name, CreatedDate: sheet.CreatedDate, projectName: project.name});
 									}
 								});
 							}
 						});
+
+						sheets = $filter('orderBy')(sheets, ['projectName', 'name', 'CreatedDate']);
 
 						sheets.forEach(function(sheet) {
 							html += '<li data-id="' + sheet.id +'">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type +'"></a></li>'
