@@ -207,6 +207,14 @@ angular.module('test', ['bluvueSheet'])
 
 	        $scope.fullName = 'Tester Name';
 
+	        $scope.userHistory = [
+		        { type: 'link',     url: 'http://google.com' },
+		        { type: 'favorite', url: 'bluvueplans://projects/project_1/sheets/sheet_1' },
+		        { type: 'favorite', url: 'bluvueplans://projects/project_1/sheets/sheet_2' },
+		        { type: 'favorite', url: 'bluvueplans://projects/project_2/sheets/sheet_1' },
+		        { type: 'link',     url: 'bluvueplans://projects/project_2/sheets/sheet_1' }
+	        ];
+
             $scope.closeSheet = function() {
                 console.log("close sheet");
             };

@@ -1936,6 +1936,25 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						}
 					});
 				};
+
+				scope.showHistoryPanel = function() {
+					var dialog = new BluVueSheet.Dialog({
+						showType: 'panel',
+						openAnimate: true
+					});
+
+					scope.userHistory.forEach(function(item) {
+						// todo
+					});
+
+					dialog.showConfirmDialog({
+						title: 'User History',
+						message: '',
+						bodyElement: '',
+						hideCancelButton: true,
+						hideOkButton: true
+					});
+				};
 			}
 		};
 	}
