@@ -25,7 +25,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				canEditNotes: "=",
 				fullName: "=",
                 favorites: "=",
-                projects: "="
+                projects: "=",
+				userHistory: "="
 			},
 			restrict: "E",
 			replace: true,
@@ -1943,17 +1944,47 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						openAnimate: true
 					});
 
+					var body = '<div class="history-content"><ul id="history-list"></ul> </div>', list = '';
+
 					scope.userHistory.forEach(function(item) {
-						// todo
+						if(item.uri.substr(0, 14) == 'bluvueplans://' ) {
+							var project_name = 'Undefined project', sheet_name = 'Undefined sheet', sheet_local = false;
+							outer: scope.projects.forEach(function (project) {
+								project.sheets.forEach(function (sheet) {
+									if ('bluvueplans://projects/' + project.id + '/sheets/' + sheet.id == item.uri) {
+										sheet_name = sheet.name;
+										project_name = project.name;
+
+										if(scope.sheet.projectId == project.id) {
+											sheet_local = true;
+										}
+
+										return;
+									}
+								});
+							});
+
+							var type = 'sheet';
+
+							if(item.type == 'favorite') {
+								type = sheet_local ? 'fav-local' : 'fav-global';
+							}
+
+							list += '<li class="history-item-type-' + type + '"><a href="' + item.uri + '"> <div class="history-item-sheet">' + sheet_name + '</div> <div class="history-item-project">' + project_name + '</div> </a></li>';
+						} else {
+							list += '<li class="history-item-type-link"><a href="' + item.uri + '"> ' + item.uri + ' </a></li>';
+						}
 					});
 
 					dialog.showConfirmDialog({
 						title: 'User History',
 						message: '',
-						bodyElement: '',
+						bodyElement: body,
 						hideCancelButton: true,
 						hideOkButton: true
 					});
+
+					angular.element(document.querySelector('#history-list')).append(list);
 				};
 			}
 		};

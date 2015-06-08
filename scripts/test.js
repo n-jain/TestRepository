@@ -208,11 +208,10 @@ angular.module('test', ['bluvueSheet'])
 	        $scope.fullName = 'Tester Name';
 
 	        $scope.userHistory = [
-		        { type: 'link',     url: 'http://google.com' },
-		        { type: 'favorite', url: 'bluvueplans://projects/project_1/sheets/sheet_1' },
-		        { type: 'favorite', url: 'bluvueplans://projects/project_1/sheets/sheet_2' },
-		        { type: 'favorite', url: 'bluvueplans://projects/project_2/sheets/sheet_1' },
-		        { type: 'link',     url: 'bluvueplans://projects/project_2/sheets/sheet_1' }
+		        { type: 'link',     uri: 'http://google.com' },
+		        { type: 'favorite', uri: 'bluvueplans://projects/project_1/sheets/sheet001-r0' },
+		        { type: 'favorite', uri: 'bluvueplans://projects/project_2/sheets/sheet003-r0' },
+		        { type: 'link',     uri: 'bluvueplans://projects/project_2/sheets/sheet003-r0' }
 	        ];
 
             $scope.closeSheet = function() {
