@@ -1976,12 +1976,30 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						}
 					});
 
+					function clearHistoryAction() {
+						var confirmDialog = new BluVueSheet.Confirm({
+							title: 'Clear History',
+							content: 'Clear all history from device?',
+							appendClass: '',
+							confirmAction: (function(dialog) {
+								return function() {
+									scope.userHistory = [];
+									dialog.hide();
+								}
+							})(dialog)
+						});
+
+						confirmDialog.openPopup();
+					}
+
 					dialog.showConfirmDialog({
 						title: 'User History',
 						message: '',
 						bodyElement: body,
 						hideCancelButton: true,
-						hideOkButton: true
+						hideOkButton: true,
+						button2Label: 'Clear',
+						button2Action: clearHistoryAction
 					});
 
 					angular.element(document.querySelector('#history-list')).append(list);
