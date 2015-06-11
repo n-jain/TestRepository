@@ -240,7 +240,32 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 				}
 				tileView.deselectTool();
 			}
-		}
+		} else if(tileView.scale == MAX_SCALE) {
+		    tileView.scale = 0.055;
+
+		    //centers zoom around mouse
+		    tileView.setScroll( tileView.scrollX + x, tileView.scrollY + y );
+
+		    tileView.updateRes();
+
+		    tileView.annotationManager.updateTextEditorIfPresent();
+
+		    var selectedAnnotations = tileView.annotationManager.getSelectedAnnotation(),
+			    ann = selectedAnnotations[0],
+			    minLength = 10 / tileView.scale;
+
+		    if(ann != undefined && selectedAnnotations.length == 1 && ann.points.length == 2) {
+			    while(ann.bounds.width() < minLength) {
+				    ann.points[1].x += 1;
+				    ann.calcBounds();
+			    }
+
+			    while(ann.bounds.height() < minLength) {
+				    ann.points[1].y += 1;
+				    ann.calcBounds();
+			    }
+		    }
+	    }
 	};
 
     this.handleClick = function(x, y) {
