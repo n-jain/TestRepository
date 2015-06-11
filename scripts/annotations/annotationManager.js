@@ -1243,6 +1243,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       case SCALE_ANNOTATION:
         currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
         break;
+      case HIGHLIGHTER_ANNOTATION:
+	    currentAnnotation.points[0] = new BluVueSheet.Point(x, y);
+	    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
+	    break;
 
       default:
         console.log( "No default shape logic for type", currentAnnotation.type );
