@@ -1035,6 +1035,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	            };
 
                 scope.drawAttachmentFiles = function() {
+	                scope.originalScale = scope.currentSheet.tileView.scale;
+
                     angular.element(document.getElementById('attachments-panel-files')).empty();
 
                     for(var i in scope.attachmentFiles) {
@@ -1060,7 +1062,42 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                                     scope.$apply();
                                 };
                             })(fileItem)
-                        );
+                        ),
+	                    attachment_file_nav = angular.element('<div class="attachment-nav ' + (scope.isHideAttachmentsPanelCancelControls ? '' : 'ng-hide') + '"></div>').bind('click',
+		                    (function(fileItem) {
+			                    return function (event) {
+				                    event.stopImmediatePropagation();
+
+				                    var tileView = scope.currentSheet.tileView;
+
+
+				                    /* START */
+				                    /* TODO NEED FIX! */
+				                    tileView.scale = scope.originalScale;
+				                    setTimeout(function() {
+					                    var x = window.innerWidth * (fileItem.annotation.bounds.centerX() / tileView.getSheetSize().width),
+						                    y = window.innerHeight * (fileItem.annotation.bounds.centerY() / tileView.getSheetSize().height);
+
+					                    //centers zoom around mouse
+					                    //tileView.setScroll(x, y);
+
+					                    //tileView.scrollX = -x;
+					                    tileView.scrollY = -window.innerHeight * 3;
+
+					                    tileView.setScale(0.2);
+					                    console.log(
+						                    tileView.scale,
+						                    x,
+						                    y,
+						                    (fileItem.annotation.bounds.centerX() / tileView.getSheetSize().width),
+						                    (fileItem.annotation.bounds.centerY() / tileView.getSheetSize().height)
+					                    );
+
+					                    console.log(tileView);
+				                    }, 500);
+			                    };
+		                    })(fileItem)
+	                    );
 
                         var bottom_html = angular.element(
                             '<div class="attachment-file-attached-to">Attached to ' + fileItem.type_label + '</div>'+
@@ -1071,6 +1108,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                         );
 
                         attachment_file_info_block.append(attachment_file_name);
+                        attachment_file_info_block.append(attachment_file_nav);
                         attachment_file_info_block.append(attachment_file_remove);
                         attachment_file.append(attachment_file_info_block);
                         attachment_file.append(bottom_html);
