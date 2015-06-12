@@ -1070,7 +1070,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				                    var tileView = scope.currentSheet.tileView;
 
-
 				                    /* START */
 				                    /* TODO NEED FIX! */
 				                    tileView.scale = scope.originalScale;
