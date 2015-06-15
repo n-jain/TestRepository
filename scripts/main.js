@@ -797,6 +797,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.isShowAttachmentPreviousButton = false;
 				};
 
+				scope.setOriginalScale = function() {
+					var tileView = scope.currentSheet.tileView;
+
+					scope.originalScale = tileView.scale;
+				};
+
+
+				scope.resetAttachmentPanelZoom = function() {
+					var tileView = scope.currentSheet.tileView;
+
+					tileView.scale = scope.originalScale;
+				};
+
 				scope.changeFilterAttachmentPanel = function(filter, need_apply) {
 					var selected = angular.element(document.querySelector('#attachments-panel-filter-selected'));
 					var all = angular.element(document.querySelector('#attachments-panel-filter-all'));
@@ -929,6 +942,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				};
 
 				scope.openInViewer = function(url, type, name, index) {
+					angular.element(document.getElementsByClassName('attachment-nav-fixed')[0])
+						.bind('click', function(event) {
+							event.stopPropagation();
+							event.preventDefault();
+
+							scope.hideViewer();
+
+							var fileItem = scope.attachmentFiles[index];
+							scope.zoomAnnotation(fileItem);
+
+							angular.element(document.querySelectorAll('ul .attachment-nav')).eq(index).addClass('active');
+
+							scope.$apply();
+						});
+
 					scope.openAttachmentIndex = index;
 
 					scope.hideAttachmentsPanel();
@@ -1032,11 +1060,55 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 					scope.isShowAttachmentNextButton = parseInt(index) + 1 != col_attachments;
 					scope.isShowAttachmentPreviousButton = index;
+
+					var attachment = scope.attachmentFiles[index];
+					angular.element(document.querySelector('.bluvue-viewer-panel-metadata'))
+						.empty()
+						.append(attachment.email + ', ' + attachment.createdDate);
+				};
+
+				scope.zoomAnnotation = function(fileItem) {
+					angular
+						.element(document.getElementsByClassName('attachment-nav'))
+						.removeClass('active');
+
+					angular.element(this).addClass('active');
+
+					var tileView = scope.currentSheet.tileView;
+					tileView.scale = 0.01;
+
+					// Set scale
+					var annRealSize = Math.max(
+							fileItem.annotation.bounds.width(),
+							fileItem.annotation.bounds.height()
+						),
+						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth : window.innerHeight) - 600;
+
+					while(annRealSize * tileView.scale < panelSize && tileView.scale < 0.5) {
+						tileView.scale += 0.01;
+					}
+
+					/*
+					 * Set position
+					 * [realWidth, -realWidth] (ex. [4000, -4000])
+					 * [0, sheetWidth] (ex. [0, 10240])
+					 * */
+
+					var realWidth = tileView.getSheetSize().width * tileView.scale,
+						realHeight = tileView.getSheetSize().height * tileView.scale,
+						sheetWidth = tileView.getSheetSize().width,
+						sheetHeight = tileView.getSheetSize().height,
+						bounds = fileItem.annotation.bounds,
+						relativePosX = bounds.left / sheetWidth,
+						relativePosY = bounds.centerY() / sheetHeight;
+
+					tileView.setScroll(
+						realWidth - 2.1 * realWidth * relativePosX,
+						realHeight - 2 * realHeight * relativePosY
+					);
 				};
 
 				scope.drawAttachmentFiles = function() {
-					scope.originalScale = scope.currentSheet.tileView.scale;
-
 					angular.element(document.getElementById('attachments-panel-files')).empty();
 
 					for(var i in scope.attachmentFiles) {
@@ -1063,42 +1135,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 									};
 								})(fileItem)
 							),
-							attachment_file_nav = angular.element('<div class="attachment-nav ' + (scope.isHideAttachmentsPanelCancelControls ? '' : 'ng-hide') + '"></div>').bind('click',
-								(function(fileItem) {
-									return function (event) {
+							attachment_file_nav = angular.element('<div class="attachment-nav"></div>')
+								.bind('click', (function(fileItem) {
+									return function(event) {
 										event.stopImmediatePropagation();
-
-										var tileView = scope.currentSheet.tileView;
-										tileView.scale = 0.1;
-
-										// Set scale
-										var annRealSize = Math.max(
-												fileItem.annotation.bounds.width(),
-												fileItem.annotation.bounds.height()
-											),
-											panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth : window.innerHeight) - 600;
-
-										while(annRealSize * tileView.scale < panelSize) {
-											tileView.scale += 0.01;
-										}
-
-										/*
-										 * Set position
-										 * [realWidth, -realWidth] (ex. [4000, -4000])
-										 * [0, sheetWidth] (ex. [0, 10240])
-										 * */
-										console.log(fileItem.annotation.bounds);
-
-										var realWidth = tileView.getSheetSize().width * tileView.scale,
-										    realHeight = tileView.getSheetSize().height * tileView.scale,
-											sheetWidth = tileView.getSheetSize().width,
-											sheetHeight = tileView.getSheetSize().height,
-											bounds = fileItem.annotation.bounds;
-
-										var relativePosX = bounds.left / sheetWidth,
-										    relativePosY = bounds.centerY() / sheetHeight;
-										tileView.setScroll(realWidth - 2 * realWidth * relativePosX, realHeight - 2 * realHeight * relativePosY);
-									};
+										scope.zoomAnnotation(fileItem);
+									}
 								})(fileItem)
 							);
 
