@@ -95,7 +95,8 @@ BluVueSheet.Constants = {
         Copy: {id: 8, className: "copy"},
         Perimeter: { id: 9, className: "ruler" },
         Calibrate: { id: 10, className: "calibrate" },
-        Attachments: { id: 11, className: "attachments" }
+        Attachments: { id: 11, className: "attachments" }    ,
+	    Link: {id: 12, className: "link"}
     },
     Tools: {
         //menuId is the id of the menuButton it is part of
@@ -136,11 +137,15 @@ BluVueSheet.Constants = {
         { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
     ],
     MoreMenu: [
-        { id: 0, func: "editSheetName", text: "Change Sheet Name", imageURL: "images/update/icon_edit_name.png", idAttr: "", isAdmin: true},
+        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png", idAttr: "", isAdmin: true},
         { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png", idAttr: ""},
         { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png", idAttr: ""},
-        { id: 4, func: "toggleToolHelp", text: localStorage.showToolHelp == "true" || localStorage.showToolHelp == undefined ? "Show Tool Help" : "Don't Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
-        //{ id: 4, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
+	    //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
+	    { id: 4, func: "showLinkPanel", text: "Links", imageURL: "images/update/icon_links.png", idAttr: ""},
+	    { id: 5, func: "showFavoritesPanel", text: "Favorites", imageURL: "images/update/icon_favorites.png", idAttr: ""},
+	    { id: 6, func: "showHistoryPanel", text: "User History", imageURL: "images/update/icon_user_history.png", idAttr: ""},
+        { id: 7, func: "toggleToolHelp", text: localStorage.showToolHelp == "true" || localStorage.showToolHelp == undefined ? "Show Tool Help" : "Don't Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
+
     ],
     ANNOTATION_SYNC_INTERVAL: 15000
 };

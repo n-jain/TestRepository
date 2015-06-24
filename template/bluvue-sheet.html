@@ -3,7 +3,10 @@
         <div class="back-block">
             <button ng-click="close()">Back</button>
         </div>
-        <span>{{sheet.name}}</span>
+        <div class="sheet-name">
+            <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite"></span>
+            <span>{{sheet.name}}</span>
+        </div>
         <nav>
             <button ng-click="resetZoom()" style="display: none;">Fit to Screen</button>
 
@@ -101,6 +104,7 @@
 		</div>
 	</div>
 	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
+    <div class="bluvue-confirm-popup-holder"></div>
 
 
 	<div id="bluvue-sheet-tool-menu-disabled"></div>
