@@ -329,7 +329,11 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope) {
 
 		if (selectedAnnotations.length == 1 && ((selectedAnnotations[0].userId == null && scope.isAdmin) || (selectedAnnotations[0].userId != null && selectedAnnotations[0].userId == scope.userId))) {
 			addButton(BluVueSheet.Constants.OptionButtons.Link, function () {
-				scope.showLinkPanel(true, true, null);
+				if(selectedAnnotations[0].links.length) {
+					scope.showLinkPanel(false, true, null, null, true, true);
+				} else {
+					scope.showLinkPanel(true, true, null);
+				}
 			});
 		}
 

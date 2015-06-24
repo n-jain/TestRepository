@@ -314,7 +314,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		}
 
 		if(showHyperlinks) {
-			scope.showLinkPanel(true, true, null);
+			scope.goToLinkFromSelectedAnnotation();
 		}
 
 		if(showAnnotationHyperlinks) {

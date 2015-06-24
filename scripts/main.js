@@ -1452,12 +1452,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.openInViewer(cur_attachment.attr('data-url'), cur_attachment.attr('data-icon'), cur_attachment.attr('data-name'), scope.openAttachmentIndex);
 				};
 
-				scope.showLinkPanel = function(singleAnnotation, openAnimate, link, backLink, openEditActions) {
+				scope.showLinkPanel = function(singleAnnotation, openAnimate, link, backLink, openEditActions, openLinkFromSelectedAnnotation) {
 					singleAnnotation = singleAnnotation || false;
 					openAnimate = openAnimate || false;
 					link = link || null;
 					backLink = backLink || {};
 					openEditActions = openEditActions || false;
+					openLinkFromSelectedAnnotation = openLinkFromSelectedAnnotation || false;
 
 					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
 						dialog = new BluVueSheet.Dialog({
@@ -1508,6 +1509,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								hideCancelButton: true,
 								hideOkButton: true,
 								defaultHideAction: function() {
+									var name = document.querySelector('#form-link-append input[name=name]').value;
+									var uri = document.querySelector('#form-link-append input[name=uri]').value;
+
+									if(!uri.length) {
+										dialog.hide();
+										return;
+									}
+
 									if(selectedAnnotation[0] && !selectedAnnotation[0].links.length) {
 										link = new BluVueSheet.Link();
 										link.createdDate = new Date();
@@ -1516,8 +1525,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 										selectedAnnotation[0].links.push(link);
 									}
 
-									link.name = document.querySelector('#form-link-append input[name=name]').value;
-									link.uri = document.querySelector('#form-link-append input[name=uri]').value;
+									link.name = name;
+									link.uri = uri;
 
 									if(link.uri.indexOf('://') == -1) {
 										link.uri = 'http://' + link.uri;
@@ -1600,12 +1609,17 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							links = '',
 							linksItems = [];
 
-						for(var i = 0; i < colAnnotations; i++) {
-							var _links = annotations[i].links, _col = _links.length;
+						if(openLinkFromSelectedAnnotation) {
+							angular.extend(linksItems, selectedAnnotation[0].links);
+						} else {
+							for(var i = 0; i < colAnnotations; i++) {
+								var _links = annotations[i].links, _col = _links.length;
 
-							for (var j = 0; j < _col; j++) {
-								_links[j].userId = annotations[i].userId;
-								linksItems.push(_links[j]);
+								for (var j = 0; j < _col; j++) {
+									_links[j].userId = annotations[i].userId;
+
+									linksItems.push(_links[j]);
+								}
 							}
 						}
 
@@ -1819,7 +1833,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				scope.showAttachmentsHyperlinksConfirm = function() {
 					var confirmDialog = new BluVueSheet.Confirm({
-						content: 'Select which option you\'d like to view:',
+						content: 'Which would you like to view?',
 						appendClass: 'confirm-dialog-attachments-hyperlinks',
 						showHolder: true,
 						buttons: [
@@ -2004,6 +2018,38 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 					angular.element(document.querySelector('#history-list')).append(list);
 				};
+
+				scope.goToLinkFromSelectedAnnotation = function() {
+					var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
+						uri = selectedAnnotation[0].links[0].uri;
+
+					if(uri.length && uri.substr(0, 14) == 'bluvueplans://' ) {
+						var name = uri;
+
+						scope.projects.forEach(function(item) {
+							item.sheets.forEach(function(sheet) {
+								if('bluvueplans://projects/' + item.id + '/sheets/' + sheet.id == uri) {
+									name = sheet.name;
+									return;
+								}
+							});
+						});
+					} else {
+						name = uri;
+					}
+
+					var confirmDialog = new BluVueSheet.Confirm({
+						title: '',
+						content: 'Are you sure you want to jump to "' + name + '"',
+						showHolder: true,
+						confirmButton: 'Ok',
+						confirmAction: function() {
+							window.location.href = uri;
+						}
+					});
+
+					confirmDialog.openPopup();
+				}
 			}
 		};
 	}
