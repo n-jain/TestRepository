@@ -546,7 +546,7 @@ var drawFunctions = [];
 	drawFunctions[ARROW_ANNOTATION] = drawArrow;
 	drawFunctions[PEN_ANNOTATION] = drawPoints;
 	drawFunctions[FREE_FORM_ANNOTATION] = drawPoints;
-	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawPoints;
+	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawHighlighter;
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
 
@@ -832,6 +832,28 @@ function drawPoints(context){
 		context.lineWidth = 2/tileView.scale;
 		context.stroke();
 	}
+}
+
+
+function drawHighlighter(context){
+
+		context.save();
+
+		context.beginPath();
+		context.moveTo(this.points[0].x,this.points[0].y);
+		for(var i=1; i<this.points.length; i++){
+			context.lineTo(this.points[i].x,this.points[i].y);
+		}
+		if(this.closed){
+			context.lineTo(this.points[0].x,this.points[0].y);
+		}
+		if (this.fill && this.type != HIGHLIGHTER_ANNOTATION) context.fill();
+
+		context.lineCap = 'round';
+		context.lineJoin = "round";
+		context.stroke();
+		context.restore();
+
 }
 
 function drawText(context){

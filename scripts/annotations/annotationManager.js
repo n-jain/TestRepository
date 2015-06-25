@@ -29,8 +29,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 			ann.points[0] = new BluVueSheet.Point(x, y);
 
 			// Arrows always have a direction, so assign the END POINT now (it's point[1])
-			if( annType == ARROW_ANNOTATION )
-  			ann.points[1] = new BluVueSheet.Point(x,y);
+			if( annType == ARROW_ANNOTATION ) {
+				ann.points[1] = new BluVueSheet.Point(x,y);
+			}
 
 			currentAnnotation = ann;
 			if(ann.type==LASSO_ANNOTATION)lasso=ann;
@@ -42,6 +43,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           currentAnnotation.closed = true;
 
 			this.captureMouse = true;
+
+			if(currentAnnotation.type == HIGHLIGHTER_ANNOTATION) {
+				this.onmousemove(x, y);
+			}
+
 		    return;
 		}
 
@@ -100,7 +106,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 		if(tileView.getTool()!= BluVueSheet.Constants.Tools.Polygon){
 
 		  var tool = tileView.getTool();
-
 
       if(currentAnnotation !== null) {
         if(currentAnnotation.points.length == 2 && currentAnnotation.points[0].x == currentAnnotation.points[1].x && currentAnnotation.points[0].y == currentAnnotation.points[1].y) {
@@ -1120,7 +1125,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   		if( currentAnnotation!==null )
   		{
           this.deselectAllAnnotations();
-          if( currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION )
+          if( (currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION) || currentAnnotation.type == HIGHLIGHTER_ANNOTATION )
           {
               if( currentAnnotation.type==SCALE_ANNOTATION )
               {
@@ -1267,10 +1272,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       case MEASURE_ANNOTATION:
       case SCALE_ANNOTATION:
         currentAnnotation.points[1] = new BluVueSheet.Point(x + width, y);
-        break;
-      case HIGHLIGHTER_ANNOTATION:
-	    currentAnnotation.points[0] = new BluVueSheet.Point(x, y);
-	    currentAnnotation.points[1] = new BluVueSheet.Point(x, y);
 	    break;
 
       default:
