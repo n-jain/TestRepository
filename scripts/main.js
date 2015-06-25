@@ -1,7 +1,7 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter',
-	function sheetDirective($window, $location, $interval, $filter) {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter', '$timeout',
+	function sheetDirective($window, $location, $interval, $filter, $timeout) {
 		'use strict';
 
 		return {
@@ -679,6 +679,28 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.isShowAttachmentPreviousButton = false;
 				};
 
+				scope.getAttachmentAnnotationNameByType = function(type) {
+					var label;
+
+					switch(type) {
+						case SQUARE_ANNOTATION: label = 'Square'; break;
+						case X_ANNOTATION: label = 'X'; break;
+						case CIRCLE_ANNOTATION: label = 'Circle'; break;
+						case ARROW_ANNOTATION: label = 'Arrow'; break;
+						case CLOUD_ANNOTATION: label = 'Cloud'; break;
+						case TEXT_ANNOTATION: label = 'Text'; break;
+						case LINE_ANNOTATION: label = 'Line'; break;
+						case PEN_ANNOTATION: label = 'Pen'; break;
+						case HIGHLIGHTER_ANNOTATION: label = 'Pencil'; break;
+						case SCALE_ANNOTATION: label = 'Calibration'; break;
+						case MEASURE_ANNOTATION: label = 'Distance'; break;
+						case POLYGON_ANNOTATION: label = 'Polygon'; break;
+						case FREE_FORM_ANNOTATION: label = 'Free-form'; break;
+					}
+
+					return label;
+				};
+
 				scope.generateAttachmentFilesList = function(need_apply, required_show_filters) {
 					required_show_filters = required_show_filters || false;
 
@@ -744,21 +766,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 								scope.attachmentFiles[i].icon = 'audio';
 						}
 
-						switch(scope.attachmentFiles[i].annotation.type) {
-							case SQUARE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Square'; break;
-							case X_ANNOTATION: scope.attachmentFiles[i].type_label = 'X'; break;
-							case CIRCLE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Circle'; break;
-							case ARROW_ANNOTATION: scope.attachmentFiles[i].type_label = 'Arrow'; break;
-							case CLOUD_ANNOTATION: scope.attachmentFiles[i].type_label = 'Cloud'; break;
-							case TEXT_ANNOTATION: scope.attachmentFiles[i].type_label = 'Text'; break;
-							case LINE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Line'; break;
-							case PEN_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pen'; break;
-							case HIGHLIGHTER_ANNOTATION: scope.attachmentFiles[i].type_label = 'Pencil'; break;
-							case SCALE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Calibration'; break;
-							case MEASURE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Distance'; break;
-							case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
-							case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
-						}
+						scope.attachmentFiles[i].type_label = scope.getAttachmentAnnotationNameByType(scope.attachmentFiles[i].annotation.type);
 
 						var filename = scope.attachmentFiles[i].name;
 						scope.attachmentFiles[i].filename = filename.substr(0, filename.lastIndexOf('.'));
@@ -1062,9 +1070,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.isShowAttachmentPreviousButton = index;
 
 					var attachment = scope.attachmentFiles[index];
+					console.log(attachment);
+
+					attachment.createdDate = $filter('date')(attachment.createdDate, 'd MMMM yyyy, hh:mm a');
+
 					angular.element(document.querySelector('.bluvue-viewer-panel-metadata'))
 						.empty()
-						.append(attachment.email + ', ' + attachment.createdDate);
+						.append(attachment.name + '<br>' + attachment.email + '<br>' + attachment.createdDate + '<br>Attached to ' + scope.getAttachmentAnnotationNameByType(attachment.annotation.type));
 				};
 
 				scope.zoomAnnotation = function(fileItem) {
@@ -1075,7 +1087,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					angular.element(this).addClass('active');
 
 					var tileView = scope.currentSheet.tileView;
-					tileView.scale = 0.01;
+					tileView.scale = 0.07;
 
 					// Set scale
 					var annRealSize = Math.max(
@@ -1084,28 +1096,34 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						),
 						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth : window.innerHeight) - 600;
 
-					while(annRealSize * tileView.scale < panelSize && tileView.scale < 0.5) {
-						tileView.scale += 0.01;
-					}
-
 					/*
 					 * Set position
 					 * [realWidth, -realWidth] (ex. [4000, -4000])
 					 * [0, sheetWidth] (ex. [0, 10240])
 					 * */
+					function zoomSetScroll() {
+						var realWidth = tileView.getSheetSize().width * tileView.scale,
+							realHeight = tileView.getSheetSize().height * tileView.scale,
+							sheetWidth = tileView.getSheetSize().width,
+							sheetHeight = tileView.getSheetSize().height,
+							bounds = fileItem.annotation.bounds,
+							relativePosX = bounds.left / sheetWidth,
+							relativePosY = bounds.centerY() / sheetHeight;
 
-					var realWidth = tileView.getSheetSize().width * tileView.scale,
-						realHeight = tileView.getSheetSize().height * tileView.scale,
-						sheetWidth = tileView.getSheetSize().width,
-						sheetHeight = tileView.getSheetSize().height,
-						bounds = fileItem.annotation.bounds,
-						relativePosX = bounds.left / sheetWidth,
-						relativePosY = bounds.centerY() / sheetHeight;
+						tileView.setScroll(
+							realWidth - 2.1 * realWidth * relativePosX,
+							realHeight - 2 * realHeight * relativePosY
+						);
+					}
 
-					tileView.setScroll(
-						realWidth - 2.1 * realWidth * relativePosX,
-						realHeight - 2 * realHeight * relativePosY
-					);
+					function zoomToAnnotate() {
+						if(annRealSize * tileView.scale * 1.1 < panelSize && tileView.scale < 0.5) {
+							tileView.scale += 0.025;
+							zoomSetScroll();
+							$timeout(zoomToAnnotate, 0);
+						}
+					}
+					zoomToAnnotate();
 				};
 
 				scope.drawAttachmentFiles = function() {
