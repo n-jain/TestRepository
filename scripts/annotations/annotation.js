@@ -836,24 +836,18 @@ function drawPoints(context){
 
 
 function drawHighlighter(context){
-
 		context.save();
-
 		context.beginPath();
 		context.moveTo(this.points[0].x,this.points[0].y);
+
 		for(var i=1; i<this.points.length; i++){
 			context.lineTo(this.points[i].x,this.points[i].y);
 		}
-		if(this.closed){
-			context.lineTo(this.points[0].x,this.points[0].y);
-		}
-		if (this.fill && this.type != HIGHLIGHTER_ANNOTATION) context.fill();
 
 		context.lineCap = 'round';
 		context.lineJoin = "round";
 		context.stroke();
 		context.restore();
-
 }
 
 function drawText(context){
