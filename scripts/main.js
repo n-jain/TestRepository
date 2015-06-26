@@ -1116,18 +1116,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							sheetWidth = tileView.getSheetSize().width,
 							sheetHeight = tileView.getSheetSize().height,
 							bounds = fileItem.annotation.bounds,
-							relativePosX = bounds.centerX() / sheetWidth,
+							relativePosX = bounds.left / sheetWidth,
 							relativePosY = bounds.centerY() / sheetHeight;
 
-						console.log(fileItem.annotation);
-
 						tileView.setScroll(
-							realWidth + relativePosX,//realWidth - realWidth * relativePosX,
-							realHeight - relativePosY
+							realWidth - 2.1 * realWidth * relativePosX,
+							realHeight - 2 * realHeight * relativePosY
 						);
-
-						tileView.scrollX = relativePosX;
-						tileView.scrollY = relativePosY;
 
 					}
 
@@ -1143,7 +1138,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							tileView.sheet.floatingToolsMenu.setLoc(mgr._calcFloatingToolsMenuLocation([fileItem.annotation]));
 							tileView.sheet.floatingOptionsMenu.setLoc(mgr._calcFloatingOptionsMenuLocation([fileItem.annotation]));
 
-							$timeout(zoomToAnnotate, 400);
+							$timeout(zoomToAnnotate, 0);
 						}
 					}
 					zoomToAnnotate();
