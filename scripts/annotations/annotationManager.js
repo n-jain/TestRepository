@@ -13,6 +13,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	this.captureKeyboard=false;
 	this.scaleAnnotation = null;
 
+	this._calcFloatingOptionsMenuLocation = calcFloatingOptionsMenuLocation;
+	this._calcFloatingToolsMenuLocation = calcFloatingToolsMenuLocation;
+	this._calcTextEditorLocation = calcTextEditorLocation;
+
 	var me = this;
 
 	var removeFromArray = function(array, element){
