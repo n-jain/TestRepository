@@ -1096,6 +1096,15 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 						),
 						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth : window.innerHeight) - 600;
 
+					var mgr = scope.currentSheet.tileView.annotationManager;
+					var constWidth;
+
+					switch(fileItem.annotation.type) {
+						case BluVueSheet.Constants.Tools.Square: constWidth = 2.5; break;
+						default: constWidth = 2.1;
+					}
+
+
 					/*
 					 * Set position
 					 * [realWidth, -realWidth] (ex. [4000, -4000])
@@ -1107,20 +1116,34 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							sheetWidth = tileView.getSheetSize().width,
 							sheetHeight = tileView.getSheetSize().height,
 							bounds = fileItem.annotation.bounds,
-							relativePosX = bounds.left / sheetWidth,
+							relativePosX = bounds.centerX() / sheetWidth,
 							relativePosY = bounds.centerY() / sheetHeight;
 
+						console.log(fileItem.annotation);
+
 						tileView.setScroll(
-							realWidth - 2.1 * realWidth * relativePosX,
-							realHeight - 2 * realHeight * relativePosY
+							realWidth + relativePosX,//realWidth - realWidth * relativePosX,
+							realHeight - relativePosY
 						);
+
+						tileView.scrollX = relativePosX;
+						tileView.scrollY = relativePosY;
+
 					}
 
 					function zoomToAnnotate() {
 						if(annRealSize * tileView.scale * 1.1 < panelSize && tileView.scale < 0.5) {
 							tileView.scale += 0.025;
 							zoomSetScroll();
-							$timeout(zoomToAnnotate, 0);
+
+							if(fileItem.annotation.type == TEXT_ANNOTATION) {
+								tileView.sheet.textEditor.setLoc(mgr._calcTextEditorLocation(fileItem.annotation));
+							}
+
+							tileView.sheet.floatingToolsMenu.setLoc(mgr._calcFloatingToolsMenuLocation([fileItem.annotation]));
+							tileView.sheet.floatingOptionsMenu.setLoc(mgr._calcFloatingOptionsMenuLocation([fileItem.annotation]));
+
+							$timeout(zoomToAnnotate, 400);
 						}
 					}
 					zoomToAnnotate();
