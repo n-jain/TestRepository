@@ -1070,7 +1070,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					scope.isShowAttachmentPreviousButton = index;
 
 					var attachment = scope.attachmentFiles[index];
-					console.log(attachment);
 
 					attachment.createdDate = $filter('date')(attachment.createdDate, 'd MMMM yyyy, hh:mm a');
 
@@ -1090,20 +1089,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					tileView.scale = 0.07;
 
 					// Set scale
-					var annRealSize = Math.max(
-							fileItem.annotation.bounds.width(),
-							fileItem.annotation.bounds.height()
-						),
-						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth : window.innerHeight) - 600;
+					var annRealSize = fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ?
+							fileItem.annotation.bounds.width() : fileItem.annotation.bounds.height(),
+						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth - 400 : window.innerHeight - 50);
 
 					var mgr = scope.currentSheet.tileView.annotationManager;
-					var constWidth;
-
-					switch(fileItem.annotation.type) {
-						case BluVueSheet.Constants.Tools.Square: constWidth = 2.5; break;
-						default: constWidth = 2.1;
-					}
-
 
 					/*
 					 * Set position
@@ -1116,18 +1106,20 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							sheetWidth = tileView.getSheetSize().width,
 							sheetHeight = tileView.getSheetSize().height,
 							bounds = fileItem.annotation.bounds,
-							relativePosX = bounds.left / sheetWidth,
+							relativePosX = bounds.centerX() / sheetWidth,
 							relativePosY = bounds.centerY() / sheetHeight;
 
-						tileView.setScroll(
-							realWidth - 2.1 * realWidth * relativePosX,
-							realHeight - 2 * realHeight * relativePosY
-						);
+						if(!tileView.getRotation()) {
+							tileView.setScroll(realWidth * (1 - 1.8 * relativePosX), realHeight * (1 - 2 * relativePosY));
+						}
 
+						if(180 == tileView.getRotation()) {
+							tileView.setScroll(realWidth * (2 * relativePosX - 1), realHeight * (1.8 * relativePosY - 1.2));
+						}
 					}
 
 					function zoomToAnnotate() {
-						if(annRealSize * tileView.scale * 1.1 < panelSize && tileView.scale < 0.5) {
+						if(annRealSize * tileView.scale * 1 < panelSize && tileView.scale < 0.5) {
 							tileView.scale += 0.025;
 							zoomSetScroll();
 
