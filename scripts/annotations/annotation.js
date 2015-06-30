@@ -844,6 +844,10 @@ function drawHighlighter(context){
 			context.lineTo(this.points[i].x,this.points[i].y);
 		}
 
+		if(this.points.length == 1) {
+			context.lineTo(this.points[0].x,this.points[0].y);
+		}
+
 		context.lineCap = 'round';
 		context.lineJoin = "round";
 		context.stroke();

@@ -44,10 +44,6 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 			this.captureMouse = true;
 
-			if(currentAnnotation.type == HIGHLIGHTER_ANNOTATION) {
-				this.onmousemove(x, y);
-			}
-
 		    return;
 		}
 
@@ -1125,6 +1121,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
   		if( currentAnnotation!==null )
   		{
           this.deselectAllAnnotations();
+
           if( (currentAnnotation.points.length>1 && currentAnnotation.type!=LASSO_ANNOTATION) || currentAnnotation.type == HIGHLIGHTER_ANNOTATION )
           {
               if( currentAnnotation.type==SCALE_ANNOTATION )
