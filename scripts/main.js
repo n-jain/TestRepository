@@ -1091,7 +1091,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					// Set scale
 					var annRealSize = fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ?
 							fileItem.annotation.bounds.width() : fileItem.annotation.bounds.height(),
-						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth - 400 : window.innerHeight - 50);
+						panelSize = (fileItem.annotation.bounds.width() > fileItem.annotation.bounds.height() ? window.innerWidth - 400 : window.innerHeight - 400);
 
 					var mgr = scope.currentSheet.tileView.annotationManager;
 
@@ -1119,7 +1119,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					}
 
 					function zoomToAnnotate() {
-						if(annRealSize * tileView.scale * 1 < panelSize && tileView.scale < 0.5) {
+						if(annRealSize * tileView.scale < panelSize && tileView.scale < 0.5) {
 							tileView.scale += 0.025;
 							zoomSetScroll();
 
@@ -1166,6 +1166,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							attachment_file_nav = angular.element('<div class="attachment-nav"></div>')
 								.bind('click', (function(fileItem) {
 									return function(event) {
+										var mgr = scope.currentSheet.tileView.annotationManager;
+										mgr.deselectAllAnnotations();
+										mgr.selectAnnotation(fileItem.annotation, true);
+
 										event.stopImmediatePropagation();
 										scope.zoomAnnotation(fileItem);
 									}
