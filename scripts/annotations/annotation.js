@@ -1016,19 +1016,16 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	};
 
 
-	function drawArc(x1, y1, x2, y2, start, angle, context, fill) {
+	function drawArc(x1, y1, x2, y2, start, sweep, context) {
 		var centerX = (x1 + x2) / 2;
 		var centerY = (y1 + y2) / 2;
 		var width = x1 - x2;
 		var height = y1 - y2;
 
 		context.save();
-		context.beginPath();
 		context.scale(width / 2, height / 2);
-		context.arc(2 * centerX / width, 2 * centerY / height, 1, start + angle, start, false);
-		context.restore();
-		if (fill)context.fill();
-		context.stroke();
+		context.arc(2 * centerX / width, 2 * centerY / height, 1, start, start + sweep, false);
+	    context.restore();
 	}
 
 	function drawRectangle(context) {
@@ -1058,7 +1055,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 
 	function drawCircle(context) {
 		if (this.points.length == 2) {
-			drawArc(this.points[0].x, this.points[0].y, this.points[1].x, this.points[1].y, 0, 2 * Math.PI, context, this.fill);
+		    context.beginPath();
+            drawArc(this.points[0].x, this.points[0].y, this.points[1].x, this.points[1].y, 0, 2 * Math.PI, context);
+            if (this.fill) { context.fill() }
+            context.stroke();
 		}
 	}
 
@@ -1067,6 +1067,8 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			context.save();
 
 			var arcSize = 15 * this.lineWidth;
+			var arcRadius;
+			var beta = .5 * Math.PI;
 			var gx = (this.points[0].x > this.points[1].x ? this.points[0].x : this.points[1].x);
 			var gy = (this.points[0].y > this.points[1].y ? this.points[0].y : this.points[1].y);
 			var lx = (this.points[0].x < this.points[1].x ? this.points[0].x : this.points[1].x);
@@ -1084,43 +1086,83 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			arcSizeW = arcSize + (gx - lx - this.lineWidth - arcSize * wc) / wc;
 			arcSizeH = arcSize + (gy - ly - this.lineWidth - arcSize * hc) / hc;
 
-			//draw top
-			var currentX = lx + this.lineWidth / 2 + arcSizeW / 2;
-			var currentY = ly + this.lineWidth / 2;
-			for (i = 0; i < wc - 1; i++) {
-				drawArc(currentX + arcSizeW, currentY + arcSizeH, currentX, currentY, 0, Math.PI, context, this.fill);
-				currentX += arcSizeW;
-			}
-			//draw bottom
-			currentX = lx + this.lineWidth / 2 + arcSizeW / 2;
-			currentY = gy - arcSizeH - this.lineWidth / 2;
-			for (i = 0; i < wc - 1; i++) {
-				drawArc(currentX, currentY, currentX + arcSizeW, currentY + arcSizeH, 0, Math.PI, context, this.fill);
-				currentX += arcSizeW;
-			}
-			//draw left
-			currentX = lx + this.lineWidth / 2;
-			currentY = ly + this.lineWidth / 2 + arcSizeH / 2;
-			for (i = 0; i < hc - 1; i++) {
-				drawArc(currentX + arcSizeW, currentY + arcSizeH, currentX, currentY, 1.5 * Math.PI, Math.PI, context, this.fill);
-				currentY += arcSizeH;
-			}
-			//draw left
-			currentX = gx - arcSizeW - this.lineWidth / 2;
-			currentY = ly + this.lineWidth / 2 + arcSizeH / 2;
-			for (i = 0; i < hc - 1; i++) {
-				drawArc(currentX, currentY, currentX + arcSizeW, currentY + arcSizeH, 1.5 * Math.PI, Math.PI, context, this.fill);
-				currentY += arcSizeH;
-			}
-			//draw fill
-			if (this.fill) {
-				var inRect = this.bounds.inset(this.lineWidth / 2 + arcSizeW / 2, this.lineWidth / 2 + arcSizeH / 2);
-				context.fillRect(inRect.left, inRect.top, inRect.width(), inRect.height());
-			}
+			context.beginPath();
+            
+		    //draw bottom
+			arcRadius = arcSizeW / 2;
+			drawCloudSideAndCorner(arcSizeW, arcSizeH, arcRadius, beta, gx, gy, lx, gy, context);
+		    //draw left side
+			arcRadius = arcSizeH / 2;
+			drawCloudSideAndCorner(arcSizeW, arcSizeH, arcRadius, beta, lx, gy, lx, ly, context);
+		    //draw top
+			arcRadius = arcSizeW / 2;
+			drawCloudSideAndCorner(arcSizeW, arcSizeH, arcRadius, beta, lx, ly, gx, ly, context);
+		    //draw right side
+			arcRadius = arcSizeH / 2;
+			drawCloudSideAndCorner(arcSizeW, arcSizeH, arcRadius, beta, gx, ly, gx, gy, context);
 
-			context.restore();
-			context.stroke();
+            //draw fill
+			if (this.fill) { context.fill() }
+			context.lineJoin = "round";
+			context.lineCap = "round"
+            context.stroke();
 		}
+	}
+
+	function drawCloudSideAndCorner(arcSizeW, arcSizeH, arcRadius, beta, startX, startY, stopX, stopY, context) {
+        //Calculate Rotation Angle
+	    var rotationAngle = Math.atan2((stopY - startY), (stopX - startX));
+	    //rotationAngle -= Math.PI;
+	    if (rotationAngle < 0) { rotationAngle += 2 * Math.PI;}
+
+	    var arcScalar = .8 * arcRadius;
+	    var theta = Math.acos((arcRadius + arcScalar) / (2 * arcRadius));
+	    var alpha = (Math.PI - theta);
+
+	    currentX = startX;
+	    currentY = startY;
+
+	    if (startX > stopX) {
+	        currentX -= Math.abs((arcRadius + arcScalar) * Math.cos(rotationAngle));
+	    } else if (startX < stopX) { currentX += Math.abs((arcRadius + arcScalar) * Math.cos(rotationAngle)); }
+
+	    if (startY > stopY) {
+	        currentY -= Math.abs((arcRadius + arcScalar) * Math.sin(rotationAngle));
+	    } else if (startY < stopY) { currentY += Math.abs((arcRadius + arcScalar) * Math.sin(rotationAngle)); }
+
+	    if (startX - stopX == 0 && startY - stopY == 0) { return; }
+
+        //draw Side until last arc
+	    var distanceToEdge = Math.sqrt((currentX - stopX) * (currentX - stopX) + (currentY - stopY) * (currentY - stopY));
+	    while (distanceToEdge > 2 * arcRadius) {
+	        drawArc(currentX - (arcSizeW / 2), currentY - (arcSizeH / 2), currentX + (arcSizeW / 2), currentY + (arcSizeH / 2), rotationAngle + theta, alpha, context);
+
+	        if (startX > stopX) {
+	            currentX -= Math.abs((arcRadius + arcScalar) * Math.cos(rotationAngle));
+	        } else if (startX < stopX) { currentX += Math.abs((arcRadius + arcScalar) * Math.cos(rotationAngle)); }
+
+	        if (startY > stopY) {
+	            currentY -= Math.abs((arcRadius + arcScalar) * Math.sin(rotationAngle));
+	        } else if (startY < stopY) { currentY += Math.abs((arcRadius + arcScalar) * Math.sin(rotationAngle)); }
+
+	        distanceToEdge = Math.sqrt((currentX - stopX) * (currentX - stopX) + (currentY - stopY) * (currentY - stopY));
+	    }
+
+	    //draw last arc
+	    var gamma = Math.acos((distanceToEdge) / (2 * arcRadius));
+	    var phi = 2*Math.PI - gamma - beta;
+	    var psi = Math.PI - theta - gamma;
+
+	    if (distanceToEdge >= (arcRadius + arcScalar)) {
+	        drawArc(currentX - (arcSizeW / 2), currentY - (arcSizeH / 2), currentX + (arcSizeW / 2), currentY + (arcSizeH / 2), rotationAngle + theta, alpha, context);
+	    } else {
+	        drawArc(currentX - (arcSizeW / 2), currentY - (arcSizeH / 2), currentX + (arcSizeW / 2), currentY + (arcSizeH / 2), rotationAngle + theta, psi, context);
+	    }
+
+	    //draw corner
+	    currentX = stopX;
+	    currentY = stopY;
+	    drawArc(currentX - (arcSizeW / 2), currentY - (arcSizeH / 2), currentX + (arcSizeW / 2), currentY + (arcSizeH / 2), rotationAngle + gamma, phi, context);
 	}
 
 	function drawPoints(context) {
