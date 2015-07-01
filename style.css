@@ -1297,3 +1297,114 @@ select.bluvue-annotation-unit-edit {
     background: #fff;
     transition: 0;
 }
+
+.bluvue-annotation-tool-menu {
+    border-top: 1px solid #ccc;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    background-color: #fff;
+    opacity: 1;
+    width: 100%;
+    height: 45px;
+    z-index: 2;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-image {
+    border-right-color: #ccc;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-image:hover {
+    background-color: rgba(204, 204, 204, 0.5);
+}
+
+.bluvue-annotation-tool-menu > div {
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.bluvue-annotation-tool-menu .bluvue-annotation-tool-menu-items-wrapper {
+    display: none;
+    position: absolute;
+    left: -49px;
+    top: -88px;
+    width: 170px;
+}
+
+.bluvue-annotation-tool-menu .bluvue-annotation-tool-menu-items-wrapper div {
+    background-position: -12px 0px;
+    color: #007aff;
+    padding: 13px 0 0 38px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    display: block;
+    margin-top: -1px;
+    width: 170px;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-ruler-button {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-ruler-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-links-button {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-links-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-attachments-button {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-attachments-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-copy-button {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-duplicate-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-delete-button {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-delete-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-fill-button {
+    background-image: url( "images/update/annotationtoolbar/annotationtoolbar-fillcolor-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button {
+    width: 120px;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button span {
+    background-size: 72px;
+    background-repeat: no-repeat;
+    background-position: -15px -4px;
+    color: #007aff;
+    display: block;
+    font-size: 14px;
+    padding: 14px 0 0 40px;
+    height: 100%;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button::after {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHYAAABaCAYAAABtyaJcAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo0ZjYwODE3NS00NWRkLTRiMjktYjFlMi1lZmE4ZWY3NGVjNDMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6N0RDOTZFMjc1NzFDMTFFNDhGQzdGQzhFMDNCQzAyQzMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6N0RDOTZFMjY1NzFDMTFFNDhGQzdGQzhFMDNCQzAyQzMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0ZjYwODE3NS00NWRkLTRiMjktYjFlMi1lZmE4ZWY3NGVjNDMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NGY2MDgxNzUtNDVkZC00YjI5LWIxZTItZWZhOGVmNzRlYzQzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+n6NC2gAAAOlJREFUeNrs20EOwiAUQEFrvC530DNwYPQKJjapj3kJWxZMPmzaY611U6+7IwArsAIrsAK7fQ9HcH5jjFP2nXOa2Av0/Kz1w+UqvhDsyxsLFyxcsNvggo3igo3igo3igo3igo3igo3igo3igo3igo3igo3igo3igo3igo3igo3i+ubpP3FN7K64YKMd/rZrZmLBCqzACqzACixYgRVYgRVYgQUrsAIrsAIrsGAFVmAFVmAFFqzACqzACqzAghVYgRVYgRVYsAIrsAIrsAILVmAFVmAFVmDBCqzACqzACixYgRVYgdUXvQUYAHwPMDCCc7G0AAAAAElFTkSuQmCC");
+    background-size: contain;
+    content: " ";
+    height: 45px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 64px;
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button-personal {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-annotation-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button-master {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-master-inactive.png");
+}
+
+.bluvue-annotation-tool-menu span.type-switcher-button-master {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-master-inactive.png");
+}
+
+.bluvue-annotation-tool-menu span.type-switcher-button-personal {
+    background-image: url("images/update/annotationtoolbar/annotationtoolbar-annotation-inactive.png");
+}

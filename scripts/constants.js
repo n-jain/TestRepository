@@ -122,6 +122,20 @@ BluVueSheet.Constants = {
        TextAnnotations: { id: 5, name: "text-button" },
        HideMenu: { id: 6, name: "hide-button" }
     },
+	AnnotationMenuButtons: {
+		Ruler: { id: 0, name: "ruler-button" },
+		Links: { id: 1, name: "links-button" },
+		Attachments: { id: 2, name: "attachments-button" },
+		Copy: { id: 3, name: "copy-button" },
+		Delete: { id: 4, name: "delete-button" },
+		Fill: { id: 5, name: "fill-button" },
+		TypeSwitcher: {
+			id: 6, name: "type-switcher-button", states: {
+				personal: {name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
+				master: {name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
+			}
+		}
+	},
     Colors: [
         { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "images/update/color_pink.png"},
         { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1), imageURL: "images/update/color_blue.png"},

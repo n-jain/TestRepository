@@ -363,10 +363,27 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     this.show = function(loc){
         this.setLoc(loc);
         this.floatingOptionsMenuElement.style.display = "block";
+
+	    var mgr = scope.currentSheet.tileView.annotationManager;
+
+	    if(mgr.getSelectedAnnotation().length == 1) {
+		    var ann = mgr.getSelectedAnnotation()[0],
+				isMaster = ann.userId === null,
+		        data = BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states[isMaster ? 'master' : 'personal'];
+
+		    scope.selectedSingleAnnotation = true;
+		    scope.$apply();
+
+		    var html = angular.element('<span class="type-switcher-button-' + (isMaster ? 'master' : 'personal') + '">' + data.parentText + '</span>');
+
+		    angular.element(document.getElementsByClassName('bv-toolbar-type-switcher-button')[0]).append(html);
+	    }
     }
 
     this.hide = function(){
         this.floatingOptionsMenuElement.style.display = 'none';
+	    scope.selectedSingleAnnotation = false;
+	    scope.$apply();
     }
 
     this.getWidth = function(){
