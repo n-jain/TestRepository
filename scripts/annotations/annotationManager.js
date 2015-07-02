@@ -1299,4 +1299,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
 		return false;
 	};
+
+	this.showAttachmentsPanel = function() {
+		scope.changeFilterAttachmentPanel('selected');
+		scope.showAttachmentsPanel(true);
+	};
 };

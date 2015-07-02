@@ -293,9 +293,29 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         case BluVueSheet.Constants.OptionButtons.Calibrate.id:
           	this.annotationManager.updateCalibration();
             break;
+        case BluVueSheet.Constants.OptionButtons.Attachments.id:
+	        this.annotationManager.showAttachmentsPanel();
+	        break;
         }
         this.annotationManager.updateOptionsMenu();
     };
+
+	this.optionChosenToolbar = function (option) {
+		switch (option) {
+			case BluVueSheet.Constants.AnnotationMenuButtons.Delete.id:
+				this.annotationManager.deleteSelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Fill.id:
+				this.annotationManager.fillSelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Copy.id:
+				this.annotationManager.copySelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
+				this.annotationManager.showAttachmentsPanel();
+				break;
+		}
+	};
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);

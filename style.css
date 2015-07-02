@@ -1324,6 +1324,7 @@ select.bluvue-annotation-unit-edit {
 }
 
 .bluvue-annotation-tool-menu .bluvue-annotation-tool-menu-items-wrapper {
+    background: #fff;
     display: none;
     position: absolute;
     left: -49px;
@@ -1367,6 +1368,10 @@ select.bluvue-annotation-unit-edit {
     background-image: url( "images/update/annotationtoolbar/annotationtoolbar-fillcolor-inactive.png");
 }
 
+.bluvue-annotation-tool-menu .bv-toolbar-image {
+    width: 70px;
+}
+
 .bluvue-annotation-tool-menu .bv-toolbar-type-switcher-button {
     width: 120px;
 }
@@ -1407,4 +1412,19 @@ select.bluvue-annotation-unit-edit {
 
 .bluvue-annotation-tool-menu span.type-switcher-button-personal {
     background-image: url("images/update/annotationtoolbar/annotationtoolbar-annotation-inactive.png");
+}
+
+.bluvue-annotation-tool-menu .bv-toolbar-counter {
+    border-radius: 50%;
+    font-size: 12px;
+    background: #007aff;
+    color: #FFFFFF;
+    display: block;
+    text-align: center;
+    padding: 3px 4px 5px;
+    height: 12px;
+    position: absolute;
+    right: 3px;
+    top: 14px;
+    width: 12px;
 }

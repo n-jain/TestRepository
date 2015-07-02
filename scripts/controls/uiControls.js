@@ -237,10 +237,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
         this.width = 0;
 
 	      if (selectedAnnotations.length == 1) {
-		      addButton( BluVueSheet.Constants.OptionButtons.Attachments, function() {
-			      scope.changeFilterAttachmentPanel('selected');
-			      scope.showAttachmentsPanel(true);
-		      } );
+		      addButton( BluVueSheet.Constants.OptionButtons.Attachments);
 		      var attachment_button = angular.element(document.querySelector('.bv-options-attachments')),
 			      len = selectedAnnotations[0].attachments.length;
 
@@ -377,6 +374,14 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		    var html = angular.element('<span class="type-switcher-button-' + (isMaster ? 'master' : 'personal') + '">' + data.parentText + '</span>');
 
 		    angular.element(document.getElementsByClassName('bv-toolbar-type-switcher-button')[0]).append(html);
+
+		    if(ann.links && ann.links.length) {
+			    angular.element(document.getElementsByClassName('bv-toolbar-links-button')[0]).append('<span class="bv-toolbar-counter">' + ann.links.length + '</span>');
+		    }
+
+		    if(ann.attachments && ann.attachments.length) {
+			    angular.element(document.getElementsByClassName('bv-toolbar-attachments-button')[0]).append('<span class="bv-toolbar-counter">' + ann.attachments.length + '</span>');
+		    }
 	    }
     }
 
