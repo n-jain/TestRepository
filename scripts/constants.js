@@ -131,8 +131,8 @@ BluVueSheet.Constants = {
 		Fill: { id: 5, name: "fill-button" },
 		TypeSwitcher: {
 			id: 6, name: "type-switcher-button", states: {
-				personal: {name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
-				master: {name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
+				personal: {id: 7, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
+				master: {id: 8, name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
 			}
 		}
 	},

@@ -314,6 +314,10 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 			case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
 				this.annotationManager.showAttachmentsPanel();
 				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.personal.id:
+			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.master.id:
+				this.annotationManager.changeAnnotationType();
+				break;
 		}
 	};
 

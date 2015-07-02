@@ -369,7 +369,10 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 		        data = BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states[isMaster ? 'master' : 'personal'];
 
 		    scope.selectedSingleAnnotation = true;
-		    scope.$apply();
+
+		    if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
+			    scope.$apply();
+		    }
 
 		    var html = angular.element('<span class="type-switcher-button-' + (isMaster ? 'master' : 'personal') + '">' + data.parentText + '</span>');
 
@@ -388,7 +391,9 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
     this.hide = function(){
         this.floatingOptionsMenuElement.style.display = 'none';
 	    scope.selectedSingleAnnotation = false;
-	    scope.$apply();
+	    if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
+		    scope.$apply();
+	    }
     }
 
     this.getWidth = function(){
