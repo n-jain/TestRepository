@@ -1706,12 +1706,19 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 										title: 'Delete Link',
 										content: 'Are you sure you want to delete?',
 										appendClass: 'confirm-dialog-remove-link',
-										confirmAction: (function(scope, id) {
+										confirmAction: (function(scope, id, openLinkFromSelectedAnnotation) {
 											return function() {
 												BluVueSheet.Link.removeByID(scope, id);
-												scope.showLinkPanel(false, false);
+
+												console.log(openLinkFromSelectedAnnotation);
+
+												if(openLinkFromSelectedAnnotation) {
+													scope.showLinkPanel(true, false);
+												} else {
+													scope.showLinkPanel(false, false);
+												}
 											}
-										})(scope, id)
+										})(scope, id, openLinkFromSelectedAnnotation)
 									});
 
 									confirmDialog.openPopup();
