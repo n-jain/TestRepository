@@ -724,8 +724,9 @@ BluVueSheet.Dialog = function(params) {
 		case 'panel':
 			typeClass = 'bluvue-dialog-type-panel';
 			break;
+    case 'unit':
+      typeClass = 'bluvue-dialog-unit-panel';
 	}
-
   var dialog = this;
 
   var defaultHideAction = function defaultHideAction(){

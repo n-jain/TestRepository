@@ -830,6 +830,29 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 	  });
 	};
 
+  /**
+   * Units Panel Annotation annotation.
+   **/
+    this.showUnitsPanel = function() {
+      var self = this,
+      dialog = new BluVueSheet.Dialog({showType: 'unit'}),
+      title = "Show Units";
+      var holder = angular.element( "<div class='bluvue-editor-holder'/>" );
+
+      dialog.showConfirmDialog({
+        title: title,
+        hideOkButton: true,
+        hideCancelButton: true,
+        button1Action: function() {
+          dialog.hide();
+        },
+        button2Action: function() {
+
+        },
+        button2Label:'Save'
+      });
+
+    };
 	/**
 	 * Clones the given annotation, making sure that ID and user fields are
 	 * reset appropriately

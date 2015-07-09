@@ -420,7 +420,9 @@ textarea.notes-editor {
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     display: table;
 }
-
+.bluvue-dialog-unit-panel .bluvue-dialog-content {
+  padding: 10px 0;
+}
 .dialog-button-holder {
   text-align: center;
   margin-top:30px;
@@ -483,7 +485,10 @@ span + .dialog-top-button {
   text-transform: capitalize;
   line-height: 40px;
 }
-
+.bluvue-dialog-unit-panel .dialog-title {
+  margin-top: 0;
+  font-size: 28px;
+}
 .dialog-title > div+span {
     display: inline-block;
     width: 70%;

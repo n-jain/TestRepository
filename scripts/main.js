@@ -1421,14 +1421,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 		            var el = angular.element(document.getElementsByClassName('bv-toolbar-' + tool.name)[0]);
 
 		            if(tool.states) {
-			          if(el.hasClass('open-states')) {
-				          el.removeClass('open-states');
-				          angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'none'});
-			          } else {
-				          el.addClass('open-states');
-				          angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'block'});
-			          }
-			          return;
+                  if(el.hasClass('open-states')) {
+                    el.removeClass('open-states');
+                    angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'none'});
+                  } else {
+                    el.addClass('open-states');
+                    angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'block'});
+                  }
+                  return;
 		            } else {
 			            scope.currentSheet.tileView.optionChosenToolbar(tool.id);
 		            }
