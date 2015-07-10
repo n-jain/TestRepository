@@ -231,6 +231,27 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
       return newScale;
 	};
 
+  this.setMaxMinScale = function( currentScale ) {
+    var sheetSize = this.getSheetSize();
+    var minScale = Math.min( (window.innerWidth)/sheetSize.width,
+      (window.innerHeight-180)/sheetSize.height );
+
+    switch (currentScale) {
+      case MAX_SCALE:
+        currentScale = minScale;
+        break
+      case minScale:
+        currentScale = MAX_SCALE;
+        break
+      default:
+        currentScale = minScale;
+    }
+
+
+    this.scale = currentScale;
+    return currentScale;
+  };
+
 	this.getSheetSize = function() {
 	    var theta = -this.getRotation() * Math.PI / 180;
 

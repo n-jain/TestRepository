@@ -223,7 +223,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		this.handleClick(x, y);
 	};
 
-	this.ondblclick = function (x, y) {
+	this.ondblclick = function (x, y, e) {
 		if (tileView.getTool() == BluVueSheet.Constants.Tools.Polygon) {
 			if (currentAnnotation !== null)if (currentAnnotation.type == POLYGON_ANNOTATION) {
 				currentAnnotation.points.splice(currentAnnotation.points.length - 1, 1);
@@ -234,6 +234,20 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 				tileView.deselectTool();
 			}
 		}
+    else {
+      var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
+
+      tileView.setMaxMinScale( tileView.scale );
+
+      var mouse2 = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
+
+      var nx = mouse2.x - mouse.x;
+      var ny = mouse2.y - mouse.y;
+
+      //centers zoom around mouse
+      tileView.setScroll(tileView.scrollX + nx, tileView.scrollY + ny);
+      tileView.updateRes();
+    }
 	};
 
 	this.handleClick = function (x, y) {

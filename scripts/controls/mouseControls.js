@@ -113,7 +113,7 @@ BluVueSheet.MouseControls = function(tileView) {
 
     this.ondblclick = function(e) {
         var mouse = tileView.sheetCoordinatesFromScreenCoordinates(e.clientX, e.clientY);
-        tileView.annotationManager.ondblclick(mouse.x, mouse.y);
+        tileView.annotationManager.ondblclick(mouse.x, mouse.y, e);
     };
 
     var wheelDistance = function(evt) {
