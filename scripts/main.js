@@ -2007,7 +2007,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					}
 
 					dialog.showConfirmDialog({
-						title: 'User History',
+						title: 'History',
 						message: '',
 						bodyElement: body,
 						hideCancelButton: true,
