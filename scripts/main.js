@@ -1670,7 +1670,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 							bodyElement: body,
 							hideCancelButton: true,
 							hideOkButton: true,
-							button2Label: 'Edit',
+							button2Label: 'Cancel',
 							button2Action: changeVisibleActions
 						});
 
