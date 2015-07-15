@@ -456,18 +456,27 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope) {
 		var userIsAdmin = scope.isAdmin,
 			issetMasterMeasurement = false,
 			selectedCalibration = false;
+      selectedPersonalCalibration = false;
 
 		for (var i in selectedAnnotations) {
-			if (selectedAnnotations[i].type == SCALE_ANNOTATION) {
+			if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id == sheet.tileView.annotationManager.scaleAnnotationMaster) {
 				selectedCalibration = true;
 			}
+
+      if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id != sheet.tileView.annotationManager.scaleAnnotationMaster) {
+        selectedPersonalCalibration = true;
+      }
 		}
+
+    if(!sheet.tileView.annotationManager.scaleAnnotationMaster) {
+      selectedPersonalCalibration = false;
+    }
 
 		if (sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
 			issetMasterMeasurement = true;
 		}
 
-		if ((userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement) {
+		if ((userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement && !selectedPersonalCalibration) {
 			menu.append(this.createMasterPersonalControl(selectedAnnotations, function (annotations, newState) {
 				sheet.tileView.annotationManager.setAnnotationContextMaster(newState == 'master');
 
@@ -492,26 +501,42 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope) {
 
 		var masterPersonalControl = angular.element("<div></div>").addClass('bluvue-sheet-floating-tools-toggle');
 		var masterButton = angular.element("<div>Master</div>").addClass('bv-toggle-master');
-		masterButton.on('click', function () {
-			masterPersonalControl.addClass('master');
-			masterPersonalControl.removeClass('personal');
 
-			// Set calibration master state
-			if (annotations.length == 1 && (annotations[0].type == MEASURE_ANNOTATION || annotations[0].type == FREE_FORM_ANNOTATION || annotations[0].type == POLYGON_ANNOTATION || annotations[0].type == SQUARE_ANNOTATION || annotations[0].type == CIRCLE_ANNOTATION)) {
-				for (var i in allAnnotations) {
-					if (allAnnotations[i].type == SCALE_ANNOTATION) {
-						allAnnotations[i].userId = null;
-						break;
-					}
-				}
-			}
+    masterButton.on('click', function () {
+      masterPersonalControl.addClass('master');
+      masterPersonalControl.removeClass('personal');
 
-			applyState(annotations, 'master');
-		});
+      // Set calibration master state
+      if (annotations.length == 1 && (annotations[0].type == MEASURE_ANNOTATION || annotations[0].type == FREE_FORM_ANNOTATION || annotations[0].type == POLYGON_ANNOTATION || annotations[0].type == SQUARE_ANNOTATION || annotations[0].type == CIRCLE_ANNOTATION)) {
+        for (var i in allAnnotations) {
+          if (allAnnotations[i].type == SCALE_ANNOTATION) {
+            allAnnotations[i].userId = null;
+            break;
+          }
+        }
+      }
+
+      for(var i in annotations) {
+        console.log(annotations[i].type);
+        if (annotations[i].type == SCALE_ANNOTATION) {
+          annotations[i].userId = null;
+          sheet.tileView.annotationManager.scaleAnnotation = annotations[i];
+          sheet.tileView.annotationManager.scaleAnnotationMaster = annotations[i].id;
+          for (var j in allAnnotations) {
+            allAnnotations[j].updateMeasure();
+          }
+          break;
+        }
+      }
+
+        applyState(annotations, 'master');
+    });
+
 		var personalButton = angular.element("<div>Personal</div>").addClass('bv-toggle-personal');
 		personalButton.on('click', function () {
 			masterPersonalControl.removeClass('master');
 			masterPersonalControl.addClass('personal');
+
 			applyState(annotations, 'personal');
 		});
 		masterPersonalControl.append(personalButton).append(masterButton);

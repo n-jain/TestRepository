@@ -12,6 +12,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	this.captureMouse = false;
 	this.captureKeyboard = false;
 	this.scaleAnnotation = null;
+  this.scaleAnnotationMaster = null;
 
 	var me = this;
 
@@ -975,6 +976,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 					}
 				}
 			}
+
+      if(selectedAnnotations[i].type == SCALE_ANNOTATION && !isMaster) {
+        this.scaleAnnotationMaster = null;
+      }
 		}
 
 		for (i = 0; i < selectedAnnotations.length; i++) {
@@ -1161,10 +1166,19 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	this.addAnnotation = function addAnnotation(annotation) {
 		annotation.added = true;
 		if (annotation.type == SCALE_ANNOTATION) {
-			this.scaleAnnotation = annotation;
-			for (var i = 0; i < annotations.length; i++) {
-				annotations[i].updateMeasure();
-			}
+      if(!annotation.userId) {
+        for (var i = 0; i < annotations.length; i++) {
+          annotations[i].scaleAnnotation = null;
+        }
+        this.scaleAnnotationMaster = annotation.id;
+      }
+
+      if(!this.scaleAnnotationMaster || this.scaleAnnotationMaster == annotation.id) {
+        this.scaleAnnotation = annotation;
+        for (var i = 0; i < annotations.length; i++) {
+          annotations[i].updateMeasure();
+        }
+      }
 		}
 		annotations.push(annotation);
 	};

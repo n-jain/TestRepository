@@ -63,11 +63,18 @@ angular.module('test', ['bluvueSheet'])
                             data: '{"id":"048-40b5829aa4-088801edaf9869-70a72","projectId":"project_1","sheetId":"guid","type":6,"colorRed":1,"colorGreen":0,"colorBlue":0,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"na","x":3037.162891046386,"y":2915.9719525350592,"width":786.7879003898297,"height":551.7229772489736,"text":"brad","textSize":128,"links":[{"id":"genID2","CreatedDate":"2015-02-19T16:54:04.00","name":"Another sheet link","uri":"bluvueplans://projects/project_1/sheets/sheet001-r0","hidden":false,"action":0}]}'
                         },
                         {
-                            id: 'c36--387e9ad2e47098--aaf72d4cb8--e79f0',
-                            userId: 'guid',
-                            type: 10,
-                            version: "fqegehs",
-                            data: '{"id":"c36--387e9ad2e47098--aaf72d4cb8--e79f0","projectId":"project_1","sheetId":"guid","userId":"guid","type":10,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","points":[{"x":1248.0025234602954,"y":5298.389953473701},{"x":3767.4252819178296,"y":5274.164734642378}],"distance":50}'
+                          id: 'c36--387e9ad2e47098--aaf72d4cb8--e79f0',
+                          userId: 'guid',
+                          type: 10,
+                          version: "fqegehs",
+                          data: '{"id":"c36--387e9ad2e47098--aaf72d4cb8--e79f0","projectId":"project_1","sheetId":"guid","userId":"guid","type":10,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","points":[{"x":2348.0025234602954,"y":5998.389953473701},{"x":3767.4252819178296,"y":5974.164734642378}],"distance":300}'
+                        },
+                        {
+                          id: 'c36--387e9ad2e47098--aaf72d4cb8--e79f1',
+                          userId: null,
+                          type: 10,
+                          version: "fqegehs",
+                          data: '{"id":"c36--387e9ad2e47098--aaf72d4cb8--e79f1","projectId":"project_1","sheetId":"guid","userId":null,"type":10,"colorRed":0.898,"colorGreen":0,"colorBlue":0.273,"zOrder":0,"fill":0,"areaVisible":0,"lineWidth":7.5,"unitOfMeasure":"ft","points":[{"x":1238.0025234602954,"y":5238.389953473701},{"x":3767.4252819178296,"y":5274.164734642378}],"distance":100}'
                         },
                         {
                             id: "3e457065b71f4f90857f8161314afc8b",

@@ -24,7 +24,7 @@ BluVueSheet.Measurement = function(amount, unit, type){
 	this.unit=unit;
 	this.amount=amount;
 	this.type=type;
-	
+
 	this.setAmount = function (newAmount, newUnit) {
 	    if (newUnit != -1 && this.unit != -1 && this.type != -1) {
 	        this.amount = newAmount * convMult[this.type][newUnit][this.unit];
