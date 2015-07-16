@@ -455,12 +455,15 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope) {
 
 		var userIsAdmin = scope.isAdmin,
 			issetMasterMeasurement = false,
-			selectedCalibration = false;
-      selectedPersonalCalibration = false;
+      selectedMasterCalibration = false,
+      selectedPersonalCalibration = false,
+      noMasterCalibration = false,
+      hasSelectedMeasurement = false,
+      canSwitchPersonalMeasurment = true;
 
 		for (var i in selectedAnnotations) {
 			if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id == sheet.tileView.annotationManager.scaleAnnotationMaster) {
-				selectedCalibration = true;
+				selectedMasterCalibration = true;
 			}
 
       if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id != sheet.tileView.annotationManager.scaleAnnotationMaster) {
@@ -469,14 +472,24 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope) {
 		}
 
     if(!sheet.tileView.annotationManager.scaleAnnotationMaster) {
-      selectedPersonalCalibration = false;
+      noMasterCalibration = true;
     }
 
-		if (sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
+		if (sheet.tileView.annotationManager.hasUnselectedMasterMeasurment() && selectedMasterCalibration && !unselectedMasterCalibration) {
 			issetMasterMeasurement = true;
 		}
 
-		if ((userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement && !selectedPersonalCalibration) {
+    if (sheet.tileView.annotationManager.hasSelectedMeasurment()) {
+      hasSelectedMeasurement = true;
+    }
+
+    if (hasSelectedMeasurement) {
+      if (!selectedPersonalCalibration && noMasterCalibration) {
+        canSwitchPersonalMeasurment = false;
+      }
+    }
+
+		if ((userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement && canSwitchPersonalMeasurment && !(selectedPersonalCalibration && !noMasterCalibration)) {
 			menu.append(this.createMasterPersonalControl(selectedAnnotations, function (annotations, newState) {
 				sheet.tileView.annotationManager.setAnnotationContextMaster(newState == 'master');
 

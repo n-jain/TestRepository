@@ -1323,13 +1323,28 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
 	};
 
-	this.issetMasterMeasurementAnnotation = function () {
+	this.hasUnselectedMasterMeasurment = function () {
+
 		for (var i in annotations) {
-			if (annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
-				return true;
-			}
+      if(annotations[i]) {
+        if (annotations[i].userId === null && annotations[i].hasMeasurement() && !annotations[i].selected) {
+          return true;
+        }
+      }
 		}
 
 		return false;
 	};
+
+  this.hasSelectedMeasurment = function () {
+    for (var i in annotations) {
+      if(annotations[i]) {
+        if (annotations[i].hasMeasurement() && annotations[i].selected) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
 };

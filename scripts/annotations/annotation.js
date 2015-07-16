@@ -109,6 +109,10 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			initMeasurement(this, undefined, undefined);
 	}
 
+  this.hasMeasurement = function hasMeasurement() {
+    return (this.type == MEASURE_ANNOTATION) || (this.hasArea && this.areaMeasured) || (this.hasPerimeter && this.perimeterMeasured);
+  };
+
 	this.getLength = function getLength(p1, p2) {
 		p1 = p1 || this.points[0];
 		p2 = p2 || this.points[1];
