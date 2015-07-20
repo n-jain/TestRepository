@@ -427,6 +427,93 @@ textarea.notes-editor {
   text-align: center;
   margin-top:30px;
 }
+.unit-screen.unit-hide {
+  display: none;
+}
+.unit-screen-title {
+  background-color: #eeeeee;
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  padding: 30px 20px 20px;
+  text-transform: uppercase;
+}
+.unit-screen-body {
+  padding: 0 20px;
+}
+.unit-screen-body-row {
+  color: #777777;
+  padding: 20px 0;
+  overflow: hidden;
+}
+.unit-screen-body-row-left {
+  float: left;
+}
+.unit-screen-body-row-right {
+  float: right;
+}
+.unit-screen-body-row:first-child {
+  border-bottom: 1px solid #eeeeee;
+  cursor: pointer;
+}
+.list-units {
+  padding: 20px 0 20px 30px;
+  overflow: hidden;
+  border-bottom: 1px solid #eeeeee;
+  cursor: pointer;
+}
+.list-units:last-child {
+  border-bottom: none;
+}
+.list-units.selected {
+  background: url("images/ui/checkmark.png") no-repeat left center;
+}
+.cmn-toggle {
+  position: absolute;
+  margin-left: -9999px;
+  visibility: hidden;
+}
+.cmn-toggle + label {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+input.cmn-toggle-round + label {
+  padding: 1px;
+  width: 60px;
+  height: 30px;
+  background-color: #dddddd;
+  border-radius: 30px;
+}
+input.cmn-toggle-round + label:before,
+input.cmn-toggle-round + label:after {
+  display: block;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  bottom: 1px;
+  content: "";
+}
+input.cmn-toggle-round + label:before {
+  right: 0;
+  background-color: #f1f1f1;
+  border-radius: 30px;
+  transition: background 0.4s;
+}
+input.cmn-toggle-round + label:after {
+  width: 30px;
+  background-color: #fff;
+  border-radius: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: margin 0.4s;
+}
+input.cmn-toggle-round:checked + label:before {
+  background-color: #8ce196;
+}
+input.cmn-toggle-round:checked + label:after {
+  margin-left: 30px;
+}
 
 .dialog-button {
   display: inline-block;

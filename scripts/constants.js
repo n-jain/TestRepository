@@ -75,6 +75,10 @@ BluVueSheet.Constants = {
         ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
         ["IN&sup2;", "FT&sup2;", "YD&sup2;", "AC", "MI&sup2;", "CM&sup2;", "M&sup2;", "HA", "KM&sup2;"]
     ],
+    UnitDisplayFullNames: [
+      ["Inches", "Feet", "FTIN", "Yards", "Miles", "Centimeters", "Meters", "Kilometers"],
+      ["Inches&sup2;", "Feet&sup2;", "Yards&sup2;", "Acres", "Miles&sup2;", "Centimeters&sup2;", "Meters&sup2;", "Hectares", "Kilometers&sup2;"]
+    ],
     TextSizes: [32,64,128,256,512],
     Length: 0,
     Area: 1,
