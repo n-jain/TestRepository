@@ -837,6 +837,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       var self = this,
       dialog = new BluVueSheet.Dialog({showType: 'unit'}),
       title = "Show Units";
+
       var holder = angular.element( "<div class='bluvue-editor-units'/>" );
 
       //Main Unit Screen
@@ -849,26 +850,35 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       bodyScreenShowLength = angular.element( "<div class='unit-screen-body-row'/>"),
       bodyScreenShowLengthName = angular.element( "<span class='unit-screen-body-row-left'>Show length in</span>"),
       bodyScreenShowLengthVal = angular.element( "<span class='unit-screen-body-row-right'></span>" );
-
-      bodyScreenShowLength.on('click', function () {
+      //select length row
+      bodyScreenShowLength.on('click', function() {
         secondUnitScreenTitle.text('Length');
+        secondUnitScreenBody.empty();
         for( var i=0; i<units.length; i++ )
         {
           if( units[i] != 'FTIN' )
           {
             // unit id is i, unit name is displayNames[i]
             var selected = (i == defaultUnit) ? " selected" : "";
-            secondUnitScreenBody.append( angular.element( "<div class='list-units" + selected + "' data-val='" + i + "'>"+ UnitDisplayFullNames[i] +"</div>") );
+            secondUnitScreenBody.append( angular.element( "<div class='list-units" + selected + "' data-val='" + i + "'>"+ UnitDisplayFullNames[i] +"</div>").on('click', function(e) {
+              angular.element(document.querySelector('.list-units.selected')).removeClass('selected');
+              angular.element(e.target).addClass('selected');
+              bodyScreenShowLengthVal.text(angular.element(e.target).text());
+            }) );
           }
         }
-        firstUnitScreen.toggleClass('unit-hide');
-        secondUnitScreen.toggleClass('unit-hide');
+        var label = document.getElementsByClassName('dialog-top-button')[0];
+        label.innerHTML = 'Back';
+        angular.element(firstUnitScreen).toggleClass('unit-hide');
+        angular.element(secondUnitScreen).toggleClass('unit-hide');
       });
 
       var unitType = BluVueSheet.Constants.Length;
       var units = BluVueSheet.Constants.UnitNames[ unitType ];
       var UnitDisplayFullNames = BluVueSheet.Constants.UnitDisplayFullNames[ unitType ];
       var defaultUnit = selectedAnnotations[0].measurement ? selectedAnnotations[0].measurement.unit : 1;
+
+
 
       bodyScreenShowLengthVal.append(UnitDisplayFullNames[defaultUnit]);
       bodyScreenShowLength.append(bodyScreenShowLengthName).append(bodyScreenShowLengthVal);
@@ -902,12 +912,30 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       bodyScreenShowAreaName = angular.element( "<span class='unit-screen-body-row-left'>Show area in</span>"),
       bodyScreenShowAreaVal = angular.element( "<span class='unit-screen-body-row-right'></span>" );
 
-      var unitTypeArea = BluVueSheet.Constants.Area;
-      var unitsArea = BluVueSheet.Constants.UnitNames[ unitType ];
-      var UnitDisplayFullNamesArea = BluVueSheet.Constants.UnitDisplayFullNames[ unitTypeArea ];
-      var defaultUnitArea = selectedAnnotations[0].measurement ? selectedAnnotations[0].measurement.unit : 1;
+      //select area row
+      bodyScreenShowArea.on('click', function() {
+        secondUnitScreenTitle.text('Area');
+        secondUnitScreenBody.empty();
+        for( var i=0; i<unitsArea.length; i++ )
+        {
+          var selected = (i == defaultUnit) ? " selected" : "";
+          secondUnitScreenBody.append( angular.element( "<div class='list-units" + selected + "' data-val='" + i + "'>"+ UnitDisplayFullNamesArea[i] +"</div>").on('click', function(e) {
+            angular.element(document.querySelector('.list-units.selected')).removeClass('selected');
+            angular.element(e.target).addClass('selected');
+            bodyScreenShowAreaVal.text(angular.element(e.target).text());
+          }) );
+        }
+        var label = document.getElementsByClassName('dialog-top-button')[0];
+        label.innerHTML = 'Back';
+        angular.element(firstUnitScreen).toggleClass('unit-hide');
+        angular.element(secondUnitScreen).toggleClass('unit-hide');
+      });
 
-      bodyScreenShowAreaVal.append(UnitDisplayFullNamesArea[defaultUnitArea]);
+      var unitTypeArea = BluVueSheet.Constants.Area;
+      var unitsArea = BluVueSheet.Constants.UnitNames[ unitTypeArea ];
+      var UnitDisplayFullNamesArea = BluVueSheet.Constants.UnitDisplayFullNames[ unitTypeArea ];
+
+      bodyScreenShowAreaVal.append(UnitDisplayFullNamesArea[defaultUnit]);
       bodyScreenShowArea.append(bodyScreenShowAreaName).append(bodyScreenShowAreaVal);
       bodyScreenArea.append(bodyScreenShowArea);
 
@@ -941,25 +969,23 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       secondUnitScreen.append(secondUnitScreenTitle).append(secondUnitScreenBody);
       holder.append(secondUnitScreen);
 
-      var changeVisibleUnit = function() {
-        /*var label = document.getElementsByClassName('dialog-top-button')[0];
-        if(label.innerHTML == 'Cancel') {
-          angular.element(document.querySelector('#block-links')).addClass('show-actions');
-          label.innerHTML = 'Back';
-        } else {
-          angular.element(document.querySelector('#block-links')).removeClass('show-actions');
-          label.innerHTML = 'Cancel';
-        }*/
-
-      };
-
       dialog.showConfirmDialog({
         title: title,
         bodyElement: holder,
         hideOkButton: true,
         hideCancelButton: true,
         button1Action: function() {
-          dialog.hide();
+          //
+          var label = document.getElementsByClassName('dialog-top-button')[0];
+          if(label.innerHTML == 'Cancel') {
+            dialog.hide();
+          }
+          else {
+            var label = document.getElementsByClassName('dialog-top-button')[0];
+            label.innerHTML = 'Cancel';
+            angular.element(firstUnitScreen).toggleClass('unit-hide');
+            angular.element(secondUnitScreen).toggleClass('unit-hide');
+          }
         },
         button2Action: function() {
 

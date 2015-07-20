@@ -461,11 +461,15 @@ textarea.notes-editor {
   border-bottom: 1px solid #eeeeee;
   cursor: pointer;
 }
+.list-units:hover {
+  background-color: #eee;
+}
 .list-units:last-child {
   border-bottom: none;
 }
 .list-units.selected {
   background: url("images/ui/checkmark.png") no-repeat left center;
+  cursor: default;
 }
 .cmn-toggle {
   position: absolute;
