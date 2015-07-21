@@ -878,14 +878,13 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         angular.element(firstUnitScreen).toggleClass('unit-hide');
         angular.element(secondUnitScreen).toggleClass('unit-hide');
       });
+      console.log(selectedAnnotations[0].areaMeasured);
+      console.log(selectedAnnotations[0].perimeterMeasured);
 
       var unitType = BluVueSheet.Constants.Length;
       var units = BluVueSheet.Constants.UnitNames[ unitType ];
       var UnitDisplayFullNames = BluVueSheet.Constants.UnitDisplayFullNames[ unitType ];
       var defaultUnit = selectedAnnotations[0].measurement ? selectedAnnotations[0].measurement.unit : 1;
-
-
-
       bodyScreenShowLengthVal.append(UnitDisplayFullNames[defaultUnit]);
       bodyScreenShowLength.append(bodyScreenShowLengthName).append(bodyScreenShowLengthVal);
       bodyScreen.append(bodyScreenShowLength);
@@ -999,17 +998,31 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           }
         },
         button2Action: function() {
-          console.log(defaultUnit);
           var m = selectedAnnotations[0].measurement;
           if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
-            /*if (bodyScreenShowvAreaCheckbox.attr('checked') || bodyScreenShowLengthCheckbox.attr('checked')) {
-
-            }*/
+            if (bodyScreenShowLengthCheckbox.attr('checked')) {
+              selectedAnnotations[0].areaMeasured=false;
+              selectedAnnotations[0].perimeterMeasured=true;
+              m.type = 0;
+              m.changeToUnit( defaultUnit );
+            }
+            else if(bodyScreenShowvAreaCheckbox.attr('checked')) {
+              selectedAnnotations[0].areaMeasured=true;
+              selectedAnnotations[0].perimeterMeasured=false;
+              m.type = 1;
+              m.changeToUnit( defaultUnitArea );
+            }
+            else {
+              selectedAnnotations[0].areaMeasured=false;
+              selectedAnnotations[0].perimeterMeasured=false;
+              selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+              selectedAnnotations[0].updateMeasure();
+            }
           }
           else {
             m.changeToUnit( defaultUnit );
-            this.saveSelectedAnnotations();
           }
+          self.saveSelectedAnnotations();
           dialog.hide();
         },
         button2Label:'Save'
