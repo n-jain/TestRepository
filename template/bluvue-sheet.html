@@ -113,7 +113,7 @@
 
 
     <div class="bluvue-annotation-tool-menu" ng-if="selectedSingleAnnotation">
-        <div ng-repeat="(toolName, toolAnnotationButton) in annotationMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{ toolAnnotationButton.name }}" ng-click="annotationMenuButtonClicked(toolAnnotationButton)">
+        <div ng-repeat="(toolName, toolAnnotationButton) in annotationMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{ toolAnnotationButton.name }}" ng-click="annotationMenuButtonClicked(toolAnnotationButton)" ng-show="annotationIsShowing(toolAnnotationButton)">
             <div ng-if="toolAnnotationButton.states" class="bluvue-annotation-tool-menu-items-wrapper">
                 <div ng-repeat="state in toolAnnotationButton.states" class="bv-toolbar-image bv-toolbar-{{ state.name }}" ng-click="annotationMenuButtonClicked(state)">{{ state.text }}</div>
             </div>

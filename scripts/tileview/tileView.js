@@ -324,6 +324,20 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 		}
 	};
 
+  this.optionVisibleToolbar = function (option) {
+    var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
+    switch (option) {
+      case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
+          if(selectedAnnotations.length == 1 && !(selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION || selectedAnnotations[0].type == SCALE_ANNOTATION)) {
+            return false;
+        }
+        return true;
+        break;
+      default:
+        return true;
+    }
+  };
+
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);
     	this.sheet.floatingToolsMenu.setSelectedToolsForAnnotations( selectedAnnotations, tileView );

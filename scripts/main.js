@@ -1435,6 +1435,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 
 	            };
+
+              scope.annotationIsShowing = function(tool) {
+                return scope.currentSheet.tileView.optionVisibleToolbar(tool.id);
+              }
             }
         };
     }
