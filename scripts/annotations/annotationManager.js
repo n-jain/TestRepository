@@ -1026,12 +1026,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
               selectedAnnotations[0].areaMeasured=false;
               selectedAnnotations[0].perimeterMeasured=false;
               m = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
-              selectedAnnotations[0].updateMeasure();
             }
           }
           else {
             m.changeToUnit( defaultUnit );
           }
+          selectedAnnotations[0].updateMeasure();
           self.saveSelectedAnnotations();
           dialog.hide();
         },
