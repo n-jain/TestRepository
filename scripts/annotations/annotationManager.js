@@ -840,7 +840,8 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
       var self = this,
       dialog = new BluVueSheet.Dialog({showType: 'unit'}),
-      title = "Show Units";
+      title = "Show Units",
+      m = selectedAnnotations[0].measurement;
 
       var holder = angular.element( "<div class='bluvue-editor-units'/>" );
 
@@ -856,6 +857,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
       bodyScreenShowLengthVal = angular.element( "<span class='unit-screen-body-row-right'></span>" );
       //select length row
       bodyScreenShowLength.on('click', function() {
+        angular.element( document.getElementsByClassName('dialog-top-button')[1]).addClass('hide');
         secondUnitScreenTitle.text('Length');
         secondUnitScreenBody.empty();
         for( var i=0; i<units.length; i++ )
@@ -878,13 +880,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         angular.element(firstUnitScreen).toggleClass('unit-hide');
         angular.element(secondUnitScreen).toggleClass('unit-hide');
       });
-      console.log(selectedAnnotations[0].areaMeasured);
-      console.log(selectedAnnotations[0].perimeterMeasured);
 
       var unitType = BluVueSheet.Constants.Length;
       var units = BluVueSheet.Constants.UnitNames[ unitType ];
       var UnitDisplayFullNames = BluVueSheet.Constants.UnitDisplayFullNames[ unitType ];
-      var defaultUnit = selectedAnnotations[0].measurement ? selectedAnnotations[0].measurement.unit : 1;
+      var defaultUnit = m && m.type === unitType ? m.unit : 1;
       bodyScreenShowLengthVal.append(UnitDisplayFullNames[defaultUnit]);
       bodyScreenShowLength.append(bodyScreenShowLengthName).append(bodyScreenShowLengthVal);
       bodyScreen.append(bodyScreenShowLength);
@@ -896,7 +896,11 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           bodyScreenShowLengthValDisplay = angular.element( "<span class='unit-screen-body-row-right switch'></span>" );
 
         var bodyScreenShowLengthCheckbox = angular.element( '<input id="cmn-toggle-length" class="cmn-toggle cmn-toggle-round" type="checkbox">' ),
-          bodyScreenShowLengthLabel = angular.element( '<label for="cmn-toggle-length"></label>' );
+        bodyScreenShowLengthLabel = angular.element( '<label for="cmn-toggle-length"></label>' );
+
+        if(m && m.type === unitType && (selectedAnnotations[0].areaMeasured || selectedAnnotations[0].perimeterMeasured)) {
+          bodyScreenShowLengthCheckbox.prop('checked', true);
+        }
         bodyScreenShowLengthCheckbox.on( 'click', function(){
           if(bodyScreenShowLengthCheckbox.attr('checked')) {
             bodyScreenShowvAreaCheckbox.prop('checked', false);
@@ -923,6 +927,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
 
         //select area row
         bodyScreenShowArea.on('click', function() {
+          angular.element( document.getElementsByClassName('dialog-top-button')[1]).addClass('hide');
           secondUnitScreenTitle.text('Area');
           secondUnitScreenBody.empty();
           for( var i=0; i<unitsArea.length; i++ )
@@ -945,9 +950,9 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
         var unitTypeArea = BluVueSheet.Constants.Area;
         var unitsArea = BluVueSheet.Constants.UnitNames[ unitTypeArea ];
         var UnitDisplayFullNamesArea = BluVueSheet.Constants.UnitDisplayFullNames[ unitTypeArea ];
-        var defaultUnitArea = selectedAnnotations[0].measurement ? selectedAnnotations[0].measurement.unit : 1;
+        var defaultUnitArea = m && m.type === unitTypeArea ? m.unit : 1;
 
-        bodyScreenShowAreaVal.append(UnitDisplayFullNamesArea[defaultUnit]);
+        bodyScreenShowAreaVal.append(UnitDisplayFullNamesArea[defaultUnitArea]);
         bodyScreenShowArea.append(bodyScreenShowAreaName).append(bodyScreenShowAreaVal);
         bodyScreenArea.append(bodyScreenShowArea);
 
@@ -956,7 +961,12 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
           bodyScreenShowAreaValDisplay = angular.element( "<span class='unit-screen-body-row-right switch'></span>" );
 
         var bodyScreenShowvAreaCheckbox = angular.element( '<input id="cmn-toggle-area" class="cmn-toggle cmn-toggle-round" type="checkbox">' ),
-          bodyScreenShowAreaLabel = angular.element( '<label for="cmn-toggle-area"></label>' );
+        bodyScreenShowAreaLabel = angular.element( '<label for="cmn-toggle-area"></label>' );
+
+        if(m && m.type === unitTypeArea && (selectedAnnotations[0].areaMeasured || selectedAnnotations[0].perimeterMeasured)) {
+          bodyScreenShowvAreaCheckbox.prop('checked', true);
+        }
+
         bodyScreenShowvAreaCheckbox.on( 'click', function(){
           if(bodyScreenShowvAreaCheckbox.attr('checked')) {
             bodyScreenShowLengthCheckbox.prop('checked', false);
@@ -995,10 +1005,10 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             label.innerHTML = 'Cancel';
             angular.element(firstUnitScreen).toggleClass('unit-hide');
             angular.element(secondUnitScreen).toggleClass('unit-hide');
+            angular.element( document.getElementsByClassName('dialog-top-button')[1]).removeClass('hide');
           }
         },
         button2Action: function() {
-          var m = selectedAnnotations[0].measurement;
           if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
             if (bodyScreenShowLengthCheckbox.attr('checked')) {
               selectedAnnotations[0].areaMeasured=false;
@@ -1015,7 +1025,7 @@ BluVueSheet.AnnotationManager = function(tileView, scope){
             else {
               selectedAnnotations[0].areaMeasured=false;
               selectedAnnotations[0].perimeterMeasured=false;
-              selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+              m = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
               selectedAnnotations[0].updateMeasure();
             }
           }

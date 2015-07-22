@@ -1524,3 +1524,7 @@ select.bluvue-annotation-unit-edit {
     top: 14px;
     width: 12px;
 }
+
+.hide {
+  display: none;
+}
