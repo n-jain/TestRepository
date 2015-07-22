@@ -301,6 +301,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     };
 
 	this.optionChosenToolbar = function (option) {
+    var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
 		switch (option) {
 			case BluVueSheet.Constants.AnnotationMenuButtons.Delete.id:
 				this.annotationManager.deleteSelectedAnnotations();
@@ -324,6 +325,17 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
       case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
         this.annotationManager.updateCalibration();
         break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
+        alert('Will work after merge.');
+        if(selectedAnnotations[0].links.length) {
+          scope.showLinkPanel(false, true, null, null, true, true);
+        } else {
+          scope.showLinkPanel(true, true, null);
+        }
+        break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
+        this.sheet.optionsMenu.textSizeMenu.style.display = "block";
+        break;
 		}
 	};
 
@@ -339,6 +351,34 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
         if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
+          return false;
+        }
+        return true;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
+        if(selectedAnnotations.length == 1 && ((selectedAnnotations[0].userId == null && scope.isAdmin) || (selectedAnnotations[0].userId != null && selectedAnnotations[0].userId == scope.userId))) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Copy.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Fill.id:
+        if(this.isFillableAnnotation(selectedAnnotations[0].type)) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != TEXT_ANNOTATION ) {
           return false;
         }
         return true;

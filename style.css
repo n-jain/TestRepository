@@ -110,8 +110,8 @@ footer.bluvue-sheet-footer {
 }
 
 .bluvue-sheet-textsize-menu {
-    right: 5px;
-    bottom: 110px;
+    left: 42px;
+    bottom: 50px;
     position:fixed;
     background-color: #000000;
     padding: 4px;
@@ -1440,6 +1440,12 @@ select.bluvue-annotation-unit-edit {
     width: 170px;
 }
 
+.bluvue-annotation-tool-menu .bv-toolbar-calibrate-button {
+  background-image: url("images/update/annotationtoolbar/annotationtoolbar-calibrate-inactive.png");
+}
+.bluvue-annotation-tool-menu .bv-toolbar-text-button {
+  background-image: url("images/update/annotationtoolbar/annotationtoolbar-textsize-inactive.png");
+}
 .bluvue-annotation-tool-menu .bv-toolbar-ruler-button {
     background-image: url("images/update/annotationtoolbar/annotationtoolbar-ruler-inactive.png");
 }
