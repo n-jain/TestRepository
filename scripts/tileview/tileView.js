@@ -321,6 +321,9 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
       case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
         this.annotationManager.showUnitsPanel();
         break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
+        this.annotationManager.updateCalibration();
+        break;
 		}
 	};
 
@@ -328,11 +331,19 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
     var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
     switch (option) {
       case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
-          if(selectedAnnotations.length == 1 && !(selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION || selectedAnnotations[0].type == SCALE_ANNOTATION)) {
+          if(selectedAnnotations.length == 1 && !(selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION)) {
             return false;
         }
         return true;
         break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
+          return false;
+        }
+        return true;
+        break;
+
       default:
         return true;
     }

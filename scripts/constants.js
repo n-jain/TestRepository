@@ -127,16 +127,17 @@ BluVueSheet.Constants = {
        HideMenu: { id: 6, name: "hide-button" }
     },
 	AnnotationMenuButtons: {
-		Ruler: { id: 0, name: "ruler-button" },
-		Links: { id: 1, name: "links-button" },
-		Attachments: { id: 2, name: "attachments-button" },
-		Copy: { id: 3, name: "copy-button" },
-		Delete: { id: 4, name: "delete-button" },
-		Fill: { id: 5, name: "fill-button" },
+    Calibrate: { id: 0, name: "calibrate-button" },
+		Ruler: { id: 1, name: "ruler-button" },
+		Links: { id: 2, name: "links-button" },
+		Attachments: { id: 3, name: "attachments-button" },
+		Copy: { id: 4, name: "copy-button" },
+		Delete: { id: 5, name: "delete-button" },
+		Fill: { id: 6, name: "fill-button" },
 		TypeSwitcher: {
-			id: 6, name: "type-switcher-button", states: {
-				personal: {id: 7, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
-				master: {id: 8, name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
+			id: 7, name: "type-switcher-button", states: {
+				personal: {id: 8, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
+				master: {id: 9, name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
 			}
 		}
 	},
