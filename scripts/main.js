@@ -2004,6 +2004,25 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
           angular.element(document.querySelector('#history-list')).append(list);
         };
 
+        scope.annotationMenuButtonClicked = function(tool) {
+          var el = angular.element(document.getElementsByClassName('bv-toolbar-' + tool.name)[0]);
+
+          if(tool.states) {
+            if(el.hasClass('open-states')) {
+              el.removeClass('open-states');
+              angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'none'});
+            } else {
+              el.addClass('open-states');
+              angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'block'});
+            }
+            return;
+          } else {
+            scope.currentSheet.tileView.optionChosenToolbar(tool.id);
+          }
+
+
+        };
+
         scope.annotationIsShowing = function(tool) {
           return scope.currentSheet.tileView.optionVisibleToolbar(tool.id);
         }

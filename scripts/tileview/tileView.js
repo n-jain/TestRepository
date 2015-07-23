@@ -347,7 +347,6 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         this.annotationManager.updateCalibration();
         break;
       case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
-        alert('Will work after merge.');
         if(selectedAnnotations[0].links.length) {
           scope.showLinkPanel(false, true, null, null, true, true);
         } else {
