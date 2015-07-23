@@ -1540,4 +1540,30 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 		return false;
 	};
+
+  this.showAttachmentsPanel = function() {
+    scope.changeFilterAttachmentPanel('selected');
+    scope.showAttachmentsPanel(true);
+  };
+
+  this.changeAnnotationType = function() {
+    if(selectedAnnotations.length != 1) {
+      return;
+    }
+
+    var ann = selectedAnnotations[0];
+
+    if(ann.userId === null) {
+      ann.userId = scope.userId;
+    } else {
+      ann.userId = null;
+    }
+
+    this.deselectAnnotation(ann);
+    var self = this;
+    setTimeout(function() {
+      self.selectAnnotation(ann, true);
+    }, 5);
+  };
+
 };
