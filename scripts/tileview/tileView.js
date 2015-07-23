@@ -314,9 +314,199 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         case BluVueSheet.Constants.OptionButtons.Calibrate.id:
           	this.annotationManager.updateCalibration();
             break;
+        case BluVueSheet.Constants.OptionButtons.Attachments.id:
+	        this.annotationManager.showAttachmentsPanel();
+	        break;
         }
         this.annotationManager.updateOptionsMenu();
     };
+
+	this.optionChosenToolbar = function (option) {
+    var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
+		switch (option) {
+			case BluVueSheet.Constants.AnnotationMenuButtons.Delete.id:
+				this.annotationManager.deleteSelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Fill.id:
+				this.annotationManager.fillSelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Copy.id:
+				this.annotationManager.copySelectedAnnotations();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
+				this.annotationManager.showAttachmentsPanel();
+				break;
+			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.personal.id:
+			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.master.id:
+				this.annotationManager.changeAnnotationType();
+				break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
+        this.annotationManager.showUnitsPanel();
+        break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
+        this.annotationManager.updateCalibration();
+        break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
+        alert('Will work after merge.');
+        if(selectedAnnotations[0].links.length) {
+          scope.showLinkPanel(false, true, null, null, true, true);
+        } else {
+          scope.showLinkPanel(true, true, null);
+        }
+        break;
+      case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
+        this.sheet.optionsMenu.textSizeMenu.style.display = "block";
+        break;
+		}
+	};
+
+  this.optionVisibleToolbar = function (option) {
+    var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
+    switch (option) {
+      case BluVueSheet.Constants.AnnotationMenuButtons.Delete.id:
+        var allAnnotations = scope.currentSheet.tileView.annotationManager.getAnnotations(),
+          appendDeleteButton = true,
+          isCalibrationUsed = false,
+          existsCalibration = false,
+          selectedAllRulersAndScale = true,
+          selectedCalibration = false;
+
+        for(var i in allAnnotations) {
+          var cur = allAnnotations[i];
+          if( (cur.type == MEASURE_ANNOTATION) || (cur.hasArea && cur.areaMeasured) || (cur.hasPerimeter && cur.perimeterMeasured) ) {
+            isCalibrationUsed = true;
+
+            var selectedCurrentAnnotation = false;
+            for(var j in selectedAnnotations) {
+              if(selectedAnnotations[j].id == cur.id) {
+                selectedCurrentAnnotation = true;
+              }
+            }
+
+            if(!selectedCurrentAnnotation) {
+              selectedAllRulersAndScale = false;
+            }
+          }
+
+          if(cur.type == SCALE_ANNOTATION) {
+            existsCalibration = true;
+          }
+        }
+
+        for(var j in selectedAnnotations) {
+          if(selectedAnnotations[j].type == SCALE_ANNOTATION) {
+            selectedCalibration = true;
+          }
+        }
+
+        if(selectedAllRulersAndScale && !existsCalibration) {
+          selectedAllRulersAndScale = false;
+        }
+
+        // If selected only calibration annotation
+        if(isCalibrationUsed && existsCalibration && selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION) {
+          appendDeleteButton = false;
+        }
+
+        // If selected all rulers annotations and exists calibration annotation
+        if(existsCalibration && !selectedAllRulersAndScale && selectedAnnotations.length > 1) {
+          appendDeleteButton = false;
+        }
+
+        // If selected calibration annotation
+        if(!selectedCalibration) {
+          appendDeleteButton = true;
+        }
+
+        if( selectedAnnotations.length > 0 && appendDeleteButton) {
+          return true
+        }
+
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
+          if(selectedAnnotations.length == 1 && (selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION)) {
+            return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION ) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
+        if(selectedAnnotations.length == 1 && ((selectedAnnotations[0].userId == null && scope.isAdmin) || (selectedAnnotations[0].userId != null && selectedAnnotations[0].userId == scope.userId))) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Copy.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Fill.id:
+        if(this.isFillableAnnotation(selectedAnnotations[0].type)) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == TEXT_ANNOTATION ) {
+          return true;
+        }
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.id:
+        return selectedAnnotations.length == 1 ? true : false;
+        /*var allSelectedAnnotationsPersonal = true;
+        for(var i in selectedAnnotations) {
+          if(selectedAnnotations[i].userId == null) {
+            allSelectedAnnotationsPersonal = false;
+          }
+        }
+
+        var userIsAdmin = scope.isAdmin,
+        issetMasterMeasurement = false,
+        selectedCalibration = false;
+
+        for(var i in selectedAnnotations) {
+          if(selectedAnnotations[i].type == SCALE_ANNOTATION) {
+            selectedCalibration = true;
+          }
+        }
+
+        if(sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
+          issetMasterMeasurement = true;
+        }
+
+        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement ) {
+          return true;
+        }
+        return false;*/
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
+        if(selectedAnnotations.length == 1) {
+          return true;
+        }
+        return false;
+        break;
+
+      default:
+        return true;
+    }
+  };
 
     this.setSelectedOptionsForAnnotations = function(selectedAnnotations,tileView){
     	this.sheet.optionsMenu.setSelectedOptionsForAnnotations(selectedAnnotations,tileView);

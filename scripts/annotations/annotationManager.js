@@ -848,6 +848,214 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		});
 	};
 
+  /**
+   * Units Panel Annotation.
+   **/
+    this.showUnitsPanel = function() {
+      //var annotations = this.getSelectedAnnotation();
+      /*console.log(annotations[0].hasArea);
+      console.log(annotations[0].hasPerimeter);*/
+
+      var self = this,
+      dialog = new BluVueSheet.Dialog({showType: 'unit'}),
+      title = "Show Units",
+      m = selectedAnnotations[0].measurement;
+
+      var holder = angular.element( "<div class='bluvue-editor-units'/>" );
+
+      //Main Unit Screen
+      var firstUnitScreen = angular.element( "<div class='unit-screen-1 unit-screen'/>" );
+
+      //Length
+      var firstUnitScreenLength = angular.element( "<div class='unit-length'/>" );
+      firstUnitScreenLength.append(angular.element( "<div class='unit-screen-title'>Length</div>" ));
+      var bodyScreen = angular.element( "<div class='unit-screen-body'/>"),
+      bodyScreenShowLength = angular.element( "<div class='unit-screen-body-row'/>"),
+      bodyScreenShowLengthName = angular.element( "<span class='unit-screen-body-row-left'>Show length in</span>"),
+      bodyScreenShowLengthVal = angular.element( "<span class='unit-screen-body-row-right'></span>" );
+      //select length row
+      bodyScreenShowLength.on('click', function() {
+        angular.element( document.getElementsByClassName('dialog-top-button')[1]).addClass('hide');
+        secondUnitScreenTitle.text('Length');
+        secondUnitScreenBody.empty();
+        for( var i=0; i<units.length; i++ )
+        {
+          if( units[i] != 'FTIN' )
+          {
+            // unit id is i, unit name is displayNames[i]
+            var selected = (i == defaultUnit) ? " selected" : "";
+            secondUnitScreenBody.append( angular.element( "<div class='list-units" + selected + "' data-val='" + i + "'>"+ UnitDisplayFullNames[i] +"</div>").on('click', function(e) {
+              angular.element(document.querySelector('.list-units.selected')).removeClass('selected');
+              angular.element(e.target).addClass('selected');
+              bodyScreenShowLengthVal.text(angular.element(e.target).text());
+              bodyScreenShowLengthVal.attr('data-val', angular.element(e.target).attr('data-val'));
+              defaultUnit = angular.element(e.target).attr('data-val');
+            }) );
+          }
+        }
+        var label = document.getElementsByClassName('dialog-top-button')[0];
+        label.innerHTML = 'Back';
+        angular.element(firstUnitScreen).toggleClass('unit-hide');
+        angular.element(secondUnitScreen).toggleClass('unit-hide');
+      });
+
+      var unitType = BluVueSheet.Constants.Length;
+      var units = BluVueSheet.Constants.UnitNames[ unitType ];
+      var UnitDisplayFullNames = BluVueSheet.Constants.UnitDisplayFullNames[ unitType ];
+      var defaultUnit = m && m.type === unitType ? m.unit : 1;
+      bodyScreenShowLengthVal.append(UnitDisplayFullNames[defaultUnit]);
+      bodyScreenShowLength.append(bodyScreenShowLengthName).append(bodyScreenShowLengthVal);
+      bodyScreen.append(bodyScreenShowLength);
+
+
+      if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
+        var bodyScreenShowLengthDisplay = angular.element( "<div class='unit-screen-body-row'/>"),
+          bodyScreenShowLengthNameDisplay = angular.element( "<span class='unit-screen-body-row-left'>Display on Annotation</span>"),
+          bodyScreenShowLengthValDisplay = angular.element( "<span class='unit-screen-body-row-right switch'></span>" );
+
+        var bodyScreenShowLengthCheckbox = angular.element( '<input id="cmn-toggle-length" class="cmn-toggle cmn-toggle-round" type="checkbox">' ),
+        bodyScreenShowLengthLabel = angular.element( '<label for="cmn-toggle-length"></label>' );
+
+        if(m && m.type === unitType && (selectedAnnotations[0].areaMeasured || selectedAnnotations[0].perimeterMeasured)) {
+          bodyScreenShowLengthCheckbox.prop('checked', true);
+        }
+        bodyScreenShowLengthCheckbox.on( 'click', function(){
+          if(bodyScreenShowLengthCheckbox.attr('checked')) {
+            bodyScreenShowvAreaCheckbox.prop('checked', false);
+          }
+        });
+        bodyScreenShowLengthValDisplay.append(bodyScreenShowLengthCheckbox).append(bodyScreenShowLengthLabel);
+
+        bodyScreenShowLengthDisplay.append(bodyScreenShowLengthNameDisplay).append(bodyScreenShowLengthValDisplay);
+        bodyScreen.append(bodyScreenShowLengthDisplay);
+      }
+
+      firstUnitScreenLength.append(bodyScreen);
+      firstUnitScreen.append(firstUnitScreenLength)
+      //END LENGTH
+
+      //Area
+      if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
+        var firstUnitScreenArea = angular.element( "<div class='unit-area'/>" );
+        firstUnitScreenArea.append(angular.element( "<div class='unit-screen-title'>Area</div>" ));
+        var bodyScreenArea = angular.element( "<div class='unit-screen-body'/>"),
+          bodyScreenShowArea = angular.element( "<div class='unit-screen-body-row'/>"),
+          bodyScreenShowAreaName = angular.element( "<span class='unit-screen-body-row-left'>Show area in</span>"),
+          bodyScreenShowAreaVal = angular.element( "<span class='unit-screen-body-row-right'></span>" );
+
+        //select area row
+        bodyScreenShowArea.on('click', function() {
+          angular.element( document.getElementsByClassName('dialog-top-button')[1]).addClass('hide');
+          secondUnitScreenTitle.text('Area');
+          secondUnitScreenBody.empty();
+          for( var i=0; i<unitsArea.length; i++ )
+          {
+            var selected = (i == defaultUnitArea) ? " selected" : "";
+            secondUnitScreenBody.append( angular.element( "<div class='list-units" + selected + "' data-val='" + i + "'>"+ UnitDisplayFullNamesArea[i] +"</div>").on('click', function(e) {
+              angular.element(document.querySelector('.list-units.selected')).removeClass('selected');
+              angular.element(e.target).addClass('selected');
+              bodyScreenShowAreaVal.text(angular.element(e.target).text());
+              bodyScreenShowAreaVal.attr('data-val', angular.element(e.target).attr('data-val'));
+              defaultUnitArea = angular.element(e.target).attr('data-val');
+            }) );
+          }
+          var label = document.getElementsByClassName('dialog-top-button')[0];
+          label.innerHTML = 'Back';
+          angular.element(firstUnitScreen).toggleClass('unit-hide');
+          angular.element(secondUnitScreen).toggleClass('unit-hide');
+        });
+
+        var unitTypeArea = BluVueSheet.Constants.Area;
+        var unitsArea = BluVueSheet.Constants.UnitNames[ unitTypeArea ];
+        var UnitDisplayFullNamesArea = BluVueSheet.Constants.UnitDisplayFullNames[ unitTypeArea ];
+        var defaultUnitArea = m && m.type === unitTypeArea ? m.unit : 1;
+
+        bodyScreenShowAreaVal.append(UnitDisplayFullNamesArea[defaultUnitArea]);
+        bodyScreenShowArea.append(bodyScreenShowAreaName).append(bodyScreenShowAreaVal);
+        bodyScreenArea.append(bodyScreenShowArea);
+
+        var bodyScreenShowAreaDisplay = angular.element( "<div class='unit-screen-body-row'/>"),
+          bodyScreenShowAreaNameDisplay = angular.element( "<span class='unit-screen-body-row-left'>Display on Annotation</span>"),
+          bodyScreenShowAreaValDisplay = angular.element( "<span class='unit-screen-body-row-right switch'></span>" );
+
+        var bodyScreenShowvAreaCheckbox = angular.element( '<input id="cmn-toggle-area" class="cmn-toggle cmn-toggle-round" type="checkbox">' ),
+        bodyScreenShowAreaLabel = angular.element( '<label for="cmn-toggle-area"></label>' );
+
+        if(m && m.type === unitTypeArea && (selectedAnnotations[0].areaMeasured || selectedAnnotations[0].perimeterMeasured)) {
+          bodyScreenShowvAreaCheckbox.prop('checked', true);
+        }
+
+        bodyScreenShowvAreaCheckbox.on( 'click', function(){
+          if(bodyScreenShowvAreaCheckbox.attr('checked')) {
+            bodyScreenShowLengthCheckbox.prop('checked', false);
+          }
+        });
+
+        bodyScreenShowAreaValDisplay.append(bodyScreenShowvAreaCheckbox).append(bodyScreenShowAreaLabel);
+
+        bodyScreenShowAreaDisplay.append(bodyScreenShowAreaNameDisplay).append(bodyScreenShowAreaValDisplay);
+        bodyScreenArea.append(bodyScreenShowAreaDisplay);
+        firstUnitScreenArea.append(bodyScreenArea);
+        firstUnitScreen.append(firstUnitScreenArea);
+      }
+      //END Area
+      holder.append(firstUnitScreen);
+      //Second Unit Screen
+      var secondUnitScreen = angular.element( "<div class='unit-screen-2 unit-screen unit-hide'/>"),
+      secondUnitScreenTitle = angular.element( "<div class='unit-screen-title'></div>"),
+      secondUnitScreenBody = angular.element( "<div class='unit-screen-body'/>");
+      secondUnitScreen.append(secondUnitScreenTitle).append(secondUnitScreenBody);
+      holder.append(secondUnitScreen);
+
+      dialog.showConfirmDialog({
+        title: title,
+        bodyElement: holder,
+        hideOkButton: true,
+        hideCancelButton: true,
+        button1Action: function() {
+          //
+          var label = document.getElementsByClassName('dialog-top-button')[0];
+          if(label.innerHTML == 'Cancel') {
+            dialog.hide();
+          }
+          else {
+            var label = document.getElementsByClassName('dialog-top-button')[0];
+            label.innerHTML = 'Cancel';
+            angular.element(firstUnitScreen).toggleClass('unit-hide');
+            angular.element(secondUnitScreen).toggleClass('unit-hide');
+            angular.element( document.getElementsByClassName('dialog-top-button')[1]).removeClass('hide');
+          }
+        },
+        button2Action: function() {
+          if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
+            if (bodyScreenShowLengthCheckbox.attr('checked')) {
+              selectedAnnotations[0].areaMeasured=false;
+              selectedAnnotations[0].perimeterMeasured=true;
+              m.type = 0;
+              m.changeToUnit( defaultUnit );
+            }
+            else if(bodyScreenShowvAreaCheckbox.attr('checked')) {
+              selectedAnnotations[0].areaMeasured=true;
+              selectedAnnotations[0].perimeterMeasured=false;
+              m.type = 1;
+              m.changeToUnit( defaultUnitArea );
+            }
+            else {
+              selectedAnnotations[0].areaMeasured=false;
+              selectedAnnotations[0].perimeterMeasured=false;
+              m = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+            }
+          }
+          else {
+            m.changeToUnit( defaultUnit );
+          }
+          selectedAnnotations[0].updateMeasure();
+          self.saveSelectedAnnotations();
+          dialog.hide();
+        },
+        button2Label:'Save'
+      });
+    };
 	/**
 	 * Clones the given annotation, making sure that ID and user fields are
 	 * reset appropriately
@@ -1334,6 +1542,31 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		}
 
 		return false;
+	};
+
+	this.showAttachmentsPanel = function() {
+		scope.changeFilterAttachmentPanel('selected');
+		scope.showAttachmentsPanel(true);
+	};
+
+	this.changeAnnotationType = function() {
+		if(selectedAnnotations.length != 1) {
+			return;
+		}
+
+		var ann = selectedAnnotations[0];
+
+		if(ann.userId === null) {
+			ann.userId = scope.userId;
+		} else {
+			ann.userId = null;
+		}
+
+		this.deselectAnnotation(ann);
+		var self = this;
+		setTimeout(function() {
+			self.selectAnnotation(ann, true);
+		}, 5);
 	};
 
   this.hasSelectedMeasurment = function () {

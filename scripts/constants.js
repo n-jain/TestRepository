@@ -77,6 +77,10 @@ BluVueSheet.Constants = {
         ["IN", "FT", "FT,IN", "YD", "MI", "CM", "M", "KM"],
         ["IN&sup2;", "FT&sup2;", "YD&sup2;", "AC", "MI&sup2;", "CM&sup2;", "M&sup2;", "HA", "KM&sup2;"]
     ],
+    UnitDisplayFullNames: [
+      ["Inches", "Feet", "FTIN", "Yards", "Miles", "Centimeters", "Meters", "Kilometers"],
+      ["Inches&sup2;", "Feet&sup2;", "Yards&sup2;", "Acres", "Miles&sup2;", "Centimeters&sup2;", "Meters&sup2;", "Hectares", "Kilometers&sup2;"]
+    ],
     TextSizes: [32,64,128,256,512],
     Length: 0,
     Area: 1,
@@ -125,6 +129,22 @@ BluVueSheet.Constants = {
        TextAnnotations: { id: 5, name: "text-button" },
        HideMenu: { id: 6, name: "hide-button" }
     },
+	AnnotationMenuButtons: {
+    Calibrate: { id: 0, name: "calibrate-button" },
+		Ruler: { id: 1, name: "ruler-button" },
+		Links: { id: 2, name: "links-button" },
+		Attachments: { id: 3, name: "attachments-button" },
+		Copy: { id: 4, name: "copy-button" },
+		Delete: { id: 5, name: "delete-button" },
+		Fill: { id: 6, name: "fill-button" },
+    Text: { id: 7, name: "text-button" },
+		TypeSwitcher: {
+			id: 8, name: "type-switcher-button", states: {
+				personal: {id: 9, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
+				master: {id: 10, name: "type-switcher-button-master", text: "Show on Master", parentText: "Master"}
+			}
+		}
+	},
     Colors: [
         { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "images/update/color_pink.png"},
         { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1), imageURL: "images/update/color_blue.png"},
