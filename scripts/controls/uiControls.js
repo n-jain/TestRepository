@@ -363,7 +363,7 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
 	    var mgr = scope.currentSheet.tileView.annotationManager;
 
-	    if(mgr.getSelectedAnnotation().length == 1) {
+	    if(mgr.getSelectedAnnotation().length) {
 		    var ann = mgr.getSelectedAnnotation()[0],
 				isMaster = ann.userId === null,
 		        data = BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states[isMaster ? 'master' : 'personal'];
@@ -378,11 +378,11 @@ BluVueSheet.FloatingOptionsMenu = function (sheet, scope){
 
 		    angular.element(document.getElementsByClassName('bv-toolbar-type-switcher-button')[0]).append(html);
 
-		    if(ann.links && ann.links.length) {
+		    if(mgr.getSelectedAnnotation().length == 1 && ann.links && ann.links.length) {
 			    angular.element(document.getElementsByClassName('bv-toolbar-links-button')[0]).append('<span class="bv-toolbar-counter">' + ann.links.length + '</span>');
 		    }
 
-		    if(ann.attachments && ann.attachments.length) {
+		    if(mgr.getSelectedAnnotation().length == 1 && ann.attachments && ann.attachments.length) {
 			    angular.element(document.getElementsByClassName('bv-toolbar-attachments-button')[0]).append('<span class="bv-toolbar-counter">' + ann.attachments.length + '</span>');
 		    }
 	    }

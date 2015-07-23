@@ -405,17 +405,17 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
-          if(selectedAnnotations.length == 1 && !(selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION)) {
-            return false;
+          if(selectedAnnotations.length == 1 && (selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION)) {
+            return true;
         }
-        return true;
+        return false;
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
-        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
-          return false;
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == SCALE_ANNOTATION ) {
+          return true;
         }
-        return true;
+        return false;
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
@@ -440,10 +440,46 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
-        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != TEXT_ANNOTATION ) {
-          return false;
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type == TEXT_ANNOTATION ) {
+          return true;
         }
-        return true;
+        return false;
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.id:
+        return selectedAnnotations.length == 1 ? true : false;
+        /*var allSelectedAnnotationsPersonal = true;
+        for(var i in selectedAnnotations) {
+          if(selectedAnnotations[i].userId == null) {
+            allSelectedAnnotationsPersonal = false;
+          }
+        }
+
+        var userIsAdmin = scope.isAdmin,
+        issetMasterMeasurement = false,
+        selectedCalibration = false;
+
+        for(var i in selectedAnnotations) {
+          if(selectedAnnotations[i].type == SCALE_ANNOTATION) {
+            selectedCalibration = true;
+          }
+        }
+
+        if(sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
+          issetMasterMeasurement = true;
+        }
+
+        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement ) {
+          return true;
+        }
+        return false;*/
+        break;
+
+      case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
+        if(selectedAnnotations.length == 1) {
+          return true;
+        }
+        return false;
         break;
 
       default:
