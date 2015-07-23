@@ -55,7 +55,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                 var backPressed = false;
                 $window.history.pushState({}, "", $location.absUrl());
-                
+
                 $window.onpopstate = function () {
                     scope.scheduleAnnotationSync( null, null, function(){
                         backPressed = true;
@@ -262,7 +262,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                 scope.resetZoom = function () {
                     scope.currentSheet.resetZoom();
                 };
-                
+
                 scope.enterFullscreen = function() {
                     if (!document.fullscreenElement && !document.mozFullScreenElement &&
                         !document.webkitFullscreenElement && !document.msFullscreenElement &&
