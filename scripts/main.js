@@ -2004,6 +2004,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
           angular.element(document.querySelector('#history-list')).append(list);
         };
 
+        scope.annotationIsShowing = function(tool) {
+          return scope.currentSheet.tileView.optionVisibleToolbar(tool.id);
+        }
+
         scope.goToLinkFromSelectedAnnotation = function() {
           var selectedAnnotation = scope.currentSheet.tileView.annotationManager.getSelectedAnnotation(),
             uri = selectedAnnotation[0].links[0].uri;

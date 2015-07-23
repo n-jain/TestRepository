@@ -473,29 +473,48 @@ BluVueSheet.FloatingToolsMenu = function (sheet, scope){
 	      }
 
         var userIsAdmin = scope.isAdmin,
-	          issetMasterMeasurement = false,
-	          selectedCalibration = false;
+        issetMasterMeasurement = false,
+        selectedMasterCalibration = false,
+        selectedPersonalCalibration = false,
+        noMasterCalibration = false,
+        hasSelectedMeasurement = false,
+        canSwitchPersonalMeasurment = true;
 
-				for(var i in selectedAnnotations) {
-					if(selectedAnnotations[i].type == SCALE_ANNOTATION) {
-						selectedCalibration = true;
-					}
-				}
+        for (var i in selectedAnnotations) {
+          if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id == sheet.tileView.annotationManager.scaleAnnotationMaster) {
+            selectedMasterCalibration = true;
+          }
+          if (selectedAnnotations[i].type == SCALE_ANNOTATION && selectedAnnotations[i].id != sheet.tileView.annotationManager.scaleAnnotationMaster) {
+            selectedPersonalCalibration = true;
+          }
+        }
 
-	      if(sheet.tileView.annotationManager.issetMasterMeasurementAnnotation() && selectedCalibration) {
-		      issetMasterMeasurement = true;
-	      }
+        if(!sheet.tileView.annotationManager.scaleAnnotationMaster) {
+          noMasterCalibration = true;
+        }
 
-        if( (userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement )
-        {
-            menu.append( this.createMasterPersonalControl( selectedAnnotations, function( annotations, newState ) {
-                sheet.tileView.annotationManager.setAnnotationContextMaster( newState=='master' );
+        if (sheet.tileView.annotationManager.hasUnselectedMasterMeasurment() && selectedMasterCalibration && !unselectedMasterCalibration) {
+          issetMasterMeasurement = true;
+        }
 
-	              if(!scope.isAdmin && newState == 'master') {
-		              sheet.tileView.annotationManager.deselectAllAnnotations();
-	              }
+        if (sheet.tileView.annotationManager.hasSelectedMeasurment()) {
+          hasSelectedMeasurement = true;
+        }
 
-            }) );
+        if (hasSelectedMeasurement) {
+          if (!selectedPersonalCalibration && noMasterCalibration) {
+            canSwitchPersonalMeasurment = false;
+          }
+        }
+
+        if ((userIsAdmin || allSelectedAnnotationsPersonal) && selectedAnnotations.length >= 1 && !issetMasterMeasurement && canSwitchPersonalMeasurment && !(selectedPersonalCalibration && !noMasterCalibration)) {
+          menu.append(this.createMasterPersonalControl(selectedAnnotations, function (annotations, newState) {
+            sheet.tileView.annotationManager.setAnnotationContextMaster(newState == 'master');
+
+            if (!scope.isAdmin && newState == 'master') {
+              sheet.tileView.annotationManager.deselectAllAnnotations();
+            }
+          }));
         }
     }
 
