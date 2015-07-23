@@ -1180,7 +1180,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 				for (var j in annotations) {
 					if (annotations[j].type == SCALE_ANNOTATION) {
 						annotations[j].userId = null;
-						scope.scheduleAnnotationSync([annotations[j]], null, null, false);
+						scope.scheduleAnnotationSync( [annotations[j]], null, null, false );
 					}
 				}
 			}
@@ -1519,65 +1519,25 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
 	};
 
-	this.removeAttachment = function removeAttachment(annotation, attachment_id) {
-		for (var i in annotation.attachments) {
-			if (annotation.attachments[i].id == attachment_id) {
+	this.removeAttachment = function removeAttachment( annotation, attachment_id ) {
+		for(var i in annotation.attachments) {
+			if(annotation.attachments[i].id == attachment_id) {
 				annotation.attachments.splice(i, 1);
 			}
 		}
-		scope.scheduleAnnotationSync([annotation], null, null, false);
+    scope.scheduleAnnotationSync( [annotation], null, null, false );
 
 		this.selectSingleAnnotation(annotation);
 		angular.element(document.querySelector('.bv-options-attachments')).addClass('another-status');
 	};
 
-	this.hasUnselectedMasterMeasurment = function () {
-
-		for (var i in annotations) {
-      if(annotations[i]) {
-        if (annotations[i].userId === null && annotations[i].hasMeasurement() && !annotations[i].selected) {
-          return true;
-        }
-      }
+	this.issetMasterMeasurementAnnotation = function() {
+		for(var i in annotations) {
+			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
+				return true;
+			}
 		}
 
 		return false;
 	};
-
-	this.showAttachmentsPanel = function() {
-		scope.changeFilterAttachmentPanel('selected');
-		scope.showAttachmentsPanel(true);
-	};
-
-	this.changeAnnotationType = function() {
-		if(selectedAnnotations.length != 1) {
-			return;
-		}
-
-		var ann = selectedAnnotations[0];
-
-		if(ann.userId === null) {
-			ann.userId = scope.userId;
-		} else {
-			ann.userId = null;
-		}
-
-		this.deselectAnnotation(ann);
-		var self = this;
-		setTimeout(function() {
-			self.selectAnnotation(ann, true);
-		}, 5);
-	};
-
-  this.hasSelectedMeasurment = function () {
-    for (var i in annotations) {
-      if(annotations[i]) {
-        if (annotations[i].hasMeasurement() && annotations[i].selected) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
 };
