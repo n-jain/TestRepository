@@ -1541,6 +1541,31 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		return false;
 	};
 
+  this.hasUnselectedMasterMeasurment = function () {
+
+    for (var i in annotations) {
+      if(annotations[i]) {
+        if (annotations[i].userId === null && annotations[i].hasMeasurement() && !annotations[i].selected) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  this.hasSelectedMeasurment = function () {
+    for (var i in annotations) {
+      if(annotations[i]) {
+        if (annotations[i].hasMeasurement() && annotations[i].selected) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
   this.showAttachmentsPanel = function() {
     scope.changeFilterAttachmentPanel('selected');
     scope.showAttachmentsPanel(true);
