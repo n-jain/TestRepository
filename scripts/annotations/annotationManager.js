@@ -1195,7 +1195,6 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		}
     var data = BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states[isMaster ? 'master' : 'personal'];
     var typeSwitcher = isMaster ? 'personal' : 'master';
-    console.log(document.getElementsByClassName('type-switcher-button-' + typeSwitcher)[0]);
     angular.element(document.getElementsByClassName('type-switcher-button-' + typeSwitcher)[0]).text(data.parentText).removeClass('type-switcher-button-' + typeSwitcher).addClass(isMaster ? 'type-switcher-button-master' : 'type-switcher-button-personal');
 		this.saveSelectedAnnotations();
 	};
