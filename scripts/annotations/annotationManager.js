@@ -1193,6 +1193,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		for (i = 0; i < selectedAnnotations.length; i++) {
 			selectedAnnotations[i].userId = isMaster ? null : scope.userId;
 		}
+    var data = BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states[isMaster ? 'master' : 'personal'];
+    var typeSwitcher = isMaster ? 'personal' : 'master';
+    console.log(document.getElementsByClassName('type-switcher-button-' + typeSwitcher)[0]);
+    angular.element(document.getElementsByClassName('type-switcher-button-' + typeSwitcher)[0]).text(data.parentText).removeClass('type-switcher-button-' + typeSwitcher).addClass(isMaster ? 'type-switcher-button-master' : 'type-switcher-button-personal');
 		this.saveSelectedAnnotations();
 	};
 
@@ -1571,12 +1575,13 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
     scope.showAttachmentsPanel(true);
   };
 
-  this.changeAnnotationType = function() {
-    if(selectedAnnotations.length != 1) {
+  this.changeAnnotationType = function(newState) {
+    this.setAnnotationContextMaster(newState == 'master');
+    /*if(selectedAnnotations.length != 1) {
       return;
-    }
+    }*/
 
-    var ann = selectedAnnotations[0];
+    /*var ann = selectedAnnotations[0];
 
     if(ann.userId === null) {
       ann.userId = scope.userId;
@@ -1584,11 +1589,15 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
       ann.userId = null;
     }
 
+    if(selectedAnnotations[i].type == SCALE_ANNOTATION && !isMaster) {
+      this.scaleAnnotationMaster = null;
+    }
+
     this.deselectAnnotation(ann);
     var self = this;
     setTimeout(function() {
       self.selectAnnotation(ann, true);
-    }, 5);
+    }, 5);*/
   };
 
 };
