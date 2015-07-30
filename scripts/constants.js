@@ -146,26 +146,25 @@ BluVueSheet.Constants = {
 		}
 	},
     Colors: [
-        { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "images/update/color_pink.png"},
-        { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1), imageURL: "images/update/color_blue.png"},
-        { id: 2, className: "green", color: new Color(0.293, 0.648, 0, 1), imageURL: "images/update/color_green.png"},
-        { id: 3, className: "yellow", color: new Color(0.773, 0.797, 0, 1), imageURL: "images/update/color_yellow.png"},
-        { id: 4, className: "orange", color: new Color(0.840, 0.508, 0, 1), imageURL: "images/update/color_orange.png"},
-        { id: 5, className: "purple", color: new Color(0.781, 0, 0.875, 1), imageURL: "images/update/color_purple.png"},
-        { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1), imageURL: "images/update/color_dark_purple.png"},
-        { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1), imageURL: "images/update/color_aqua.png"},
-        { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "images/update/color_brown.png"}
+        { id: 0, className: "pink", color: new Color(0.898, 0, 0.273, 1), imageURL: "/images/update/color_pink.png"},
+        { id: 1, className: "blue", color: new Color(0.059, 0.391, 0.898, 1), imageURL: "/images/update/color_blue.png"},
+        { id: 2, className: "green", color: new Color(0.293, 0.648, 0, 1), imageURL: "/images/update/color_green.png"},
+        { id: 3, className: "yellow", color: new Color(0.773, 0.797, 0, 1), imageURL: "/images/update/color_yellow.png"},
+        { id: 4, className: "orange", color: new Color(0.840, 0.508, 0, 1), imageURL: "/images/update/color_orange.png"},
+        { id: 5, className: "purple", color: new Color(0.781, 0, 0.875, 1), imageURL: "/images/update/color_purple.png"},
+        { id: 6, className: "dark_purple", color: new Color(0.332, 0.117, 0.410, 1), imageURL: "/images/update/color_dark_purple.png"},
+        { id: 7, className: "aqua", color: new Color(0.086, 0.781, 0.809, 1), imageURL: "/images/update/color_aqua.png"},
+        { id: 8, className: "brown", color: new Color(0.469, 0.313, 0.156, 1), imageURL: "/images/update/color_brown.png"}
     ],
     MoreMenu: [
-        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "images/update/icon_edit_name.png", idAttr: "", isAdmin: true},
-        { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "images/update/icon_edit_revision.png", idAttr: ""},
-        { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "images/update/icon_edit_rotate.png", idAttr: ""},
-	    //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "images/update/icon_edit_share.png"},
-	    { id: 4, func: "showLinkPanel", text: "Links", imageURL: "images/update/icon_links.png", idAttr: ""},
-	    { id: 5, func: "showFavoritesPanel", text: "Favorites", imageURL: "images/update/icon_favorites.png", idAttr: ""},
-	    { id: 6, func: "showHistoryPanel", text: "History", imageURL: "images/update/icon_user_history.png", idAttr: ""},
-        { id: 7, func: "toggleToolHelp", text: localStorage.showToolHelp == "true" || localStorage.showToolHelp == undefined ? "Show Tool Help" : "Don't Show Tool Help", imageURL: "images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"},
-
+        { id: 0, func: "editSheetName", text: "Edit Sheet Name", imageURL: "/images/update/icon_edit_name.png", idAttr: "", isAdmin: true},
+        { id: 1, func: "selectRevision", text: "Change Revision", imageURL: "/images/update/icon_edit_revision.png", idAttr: ""},
+        { id: 2, func: "rotateSheet", text: "Rotate Sheet", imageURL: "/images/update/icon_edit_rotate.png", idAttr: ""},
+	    //{ id: 3, func: "share_sheet", text: "Share Sheet", imageURL: "/images/update/icon_edit_share.png"},
+	    { id: 4, func: "showLinkPanel", text: "Links", imageURL: "/images/update/icon_links.png", idAttr: ""},
+	    { id: 5, func: "showFavoritesPanel", text: "Favorites", imageURL: "/images/update/icon_favorites.png", idAttr: ""},
+	    { id: 6, func: "showHistoryPanel", text: "History", imageURL: "/images/update/icon_user_history.png", idAttr: ""},
+        { id: 7, func: "toggleToolHelp", text: localStorage.showToolHelp == "true" || localStorage.showToolHelp == undefined ? "Show Tool Help" : "Don't Show Tool Help", imageURL: "/images/update/icon_edit_help.png", idAttr: "toggle_tool_help_button"}
     ],
     ANNOTATION_SYNC_INTERVAL: 15000
 };
