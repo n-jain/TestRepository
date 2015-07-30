@@ -664,9 +664,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                scope.generateAttachmentFilesList(need_apply, true);
 
 	                var panel = angular.element(document.querySelector('.bluvue-attachments-panel')),
-		                  attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
-                  document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
-                  panel.addClass('bluvue-attachments-panel-open');
+		                attachment_icon = angular.element(document.querySelector('.bv-options-attachments'));
+
+	                document.getElementsByClassName('bluvue-attachments-panel-holder')[0].style.display = 'block';
+                    panel.addClass('bluvue-attachments-panel-open');
 	                attachment_icon.addClass('another-status');
 
 	                var onKeyUp = function(event) {
@@ -773,7 +774,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
                     scope.drawAttachmentFiles();
 
-	                if(need_apply) {
+	                if(need_apply && scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
 		                scope.$apply();
 	                }
                 };

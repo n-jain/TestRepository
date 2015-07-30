@@ -337,27 +337,27 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 				this.annotationManager.showAttachmentsPanel();
 				break;
 			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.personal.id:
-        this.annotationManager.changeAnnotationType('personal');
-        break;
+		        this.annotationManager.changeAnnotationType('personal');
+		        break;
 			case BluVueSheet.Constants.AnnotationMenuButtons.TypeSwitcher.states.master.id:
 				this.annotationManager.changeAnnotationType('master');
 				break;
-      case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
-        this.annotationManager.showUnitsPanel();
-        break;
-      case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
-        this.annotationManager.updateCalibration();
-        break;
-      case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
-        if(selectedAnnotations[0].links.length) {
-          scope.showLinkPanel(false, true, null, null, true, true);
-        } else {
-          scope.showLinkPanel(true, true, null);
-        }
-        break;
-      case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
-        this.sheet.optionsMenu.textSizeMenu.style.display = "block";
-        break;
+            case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
+                this.annotationManager.showUnitsPanel();
+                break;
+            case BluVueSheet.Constants.AnnotationMenuButtons.Calibrate.id:
+                this.annotationManager.updateCalibration();
+                break;
+            case BluVueSheet.Constants.AnnotationMenuButtons.Links.id:
+		        if(selectedAnnotations[0].links.length) {
+		          scope.showLinkPanel(false, true, null, null, true, true);
+		        } else {
+		          scope.showLinkPanel(true, true, null);
+		        }
+		        break;
+            case BluVueSheet.Constants.AnnotationMenuButtons.Text.id:
+		        this.sheet.optionsMenu.textSizeMenu.style.display = "block";
+		        break;
 		}
 	};
 

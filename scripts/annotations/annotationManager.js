@@ -1447,27 +1447,5 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
   this.changeAnnotationType = function(newState) {
     this.setAnnotationContextMaster(newState == 'master');
-    /*if(selectedAnnotations.length != 1) {
-      return;
-    }*/
-
-    /*var ann = selectedAnnotations[0];
-
-    if(ann.userId === null) {
-      ann.userId = scope.userId;
-    } else {
-      ann.userId = null;
-    }
-
-    if(selectedAnnotations[i].type == SCALE_ANNOTATION && !isMaster) {
-      this.scaleAnnotationMaster = null;
-    }
-
-    this.deselectAnnotation(ann);
-    var self = this;
-    setTimeout(function() {
-      self.selectAnnotation(ann, true);
-    }, 5);*/
   };
-
 };
