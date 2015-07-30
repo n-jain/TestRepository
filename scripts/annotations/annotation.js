@@ -135,7 +135,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		}
 	};
 
-	this.drawMe = function (context) {
+	this.drawMe = function (context, scope) {
 		this.drawables = [];
 
 		context.strokeStyle = this.color.toStyle();
@@ -160,8 +160,6 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		if (this.areaMeasured || this.perimeterMeasured) {
 			this.drawMeasurement(context);
 		}
-
-		var scope = angular.element(document.querySelector('[data-ng-app=test]')).scope().$$childHead;
 
 		var existsVisibleLinks = false;
 

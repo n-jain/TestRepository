@@ -1090,10 +1090,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 	this.drawAllAnnotations = function (context) {
 		for (var i = 0; i < annotations.length; i++) {
-			annotations[i].drawMe(context);
+			annotations[i].drawMe(context, scope);
 		}
 		if (currentAnnotation !== null) {
-			currentAnnotation.drawMe(context);
+			currentAnnotation.drawMe(context, scope);
 		}
 	};
 
