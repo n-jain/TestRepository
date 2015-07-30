@@ -119,6 +119,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     scope.moreMenuToggle(true);
                 };
 
+				scope.deselectAllAnnotations = function() {
+					var mgr = scope.currentSheet.tileView.annotationManager;
+					mgr.deselectAllAnnotations();
+				};
+
                 scope.selectTool = function(tool) {
                     if( !tool || (scope.selectedTool && tool.id === scope.selectedTool.id) ) {
                         scope.selectedTool = null;

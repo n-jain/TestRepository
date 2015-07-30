@@ -1,18 +1,22 @@
 ﻿<div class='bluvue-sheet'>
     <header class="bluvue-sheet-header">
-        <div class="back-block">
+        <div class="back-block" ng-if="!selectedSingleAnnotation">
             <button ng-click="close()">Back</button>
         </div>
-        <div class="sheet-name">
+        <div class="sheet-name" ng-if="!selectedSingleAnnotation">
             <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite"></span>
             <span>{{sheet.name}}</span>
         </div>
-        <nav>
+        <nav ng-if="!selectedSingleAnnotation">
             <button ng-click="resetZoom()" style="display: none;">Fit to Screen</button>
 
             <button id="more_menu" ng-click="moreMenuToggle()">...</button>
             <button id="fullscreen_button" ng-click="enterFullscreen(this)">Full Screen</button>
         </nav>
+
+        <div id="close-annotation-view" ng-if="selectedSingleAnnotation">
+            <a href="#" ng-click="deselectAllAnnotations()">Close Annotation View</a>
+        </div>
     </header>
 
     <button ng-click="selectPreviousSheet()" id="previous-sheet-arrow">< Previous</button>

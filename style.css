@@ -1946,3 +1946,15 @@ select.bluvue-annotation-unit-edit {
     height: calc(100% - 68px)!important;
     overflow-y: auto;
 }
+
+#close-annotation-view {
+    padding-left: 20px;
+}
+
+#close-annotation-view a {
+    background: transparent url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wceCwIHjV3gJgAAARdJREFUWMPN2c0BgyAMBeDHG6VLdBKX6UqdhJMT6Cr22h9USF5iOSt8IISApc4L7s/bhrdSp7XggvLtAICCx7a1Hs5GtnAAwNEXMnGHwCzkWRv0VhCJAwD2zLUIZE+ddVoLexeEEtmL+/jEWcgR3M8cjEaO4pqLJAppwe2uYjXSijsMMyqkB3caB71IL64rUFuRClwX0IJU4QCg1HmRrkRVh4dGUJmCjdbB6Aa87zKrIWvHmDEanlEn/ryYgeqtTgqMShYkwOh0ywXMSlhNwN7tS52qUYmLyCepxqmRjMApkYzCqZCMxCmQjMZ5kczAeZDMwlmRzMRZkLs3rFE4aRyMxEmOnRn31OaDe+Yl+vDVxxW/Ifb28xeWlfohp6+CygAAAABJRU5ErkJggg==") no-repeat 0 0 /contain;
+    color: #007AFF;
+    text-decoration: none;
+    font-size: 20px;
+    padding-left: 35px;
+}
