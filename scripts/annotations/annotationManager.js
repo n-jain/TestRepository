@@ -167,14 +167,12 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 				tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
 				tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-				tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 			}
 			else if (touchedHandle == -1) {
 				for (i = 0; i < selectedAnnotations.length; i++) {
 					//move text box if it is present
 					tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[i]));
 					tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-					tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 					selectedAnnotations[i].offsetTo(x, y);
 				}
 			}
@@ -455,7 +453,6 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		if (currentAnnotation === null && touchedHandle == -1 && selectedAnnotations.length == 1) {
 			tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
 			tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-			tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 		}
 	};
 	function calcTextEditorLocation(annotation) {
@@ -565,63 +562,6 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		}
 	}
 
-	function calcFloatingOptionsMenuLocation(annotations) {
-		var w = tileView.sheet.floatingOptionsMenu.getWidth() / tileView.scale;
-		var minX = -1;
-		var maxX = -1;
-		var minY = -1;
-		var maxY = -1;
-		for (var i = 0; i < annotations.length; i++) {
-			var pmix = 0, pmax = 0, pmay = 0, pmiy = 0;
-
-			switch (scope.sheet.rotation) {
-				case 90:
-					pmax = annotations[i].getPoint(4, true).x;
-					pmiy = annotations[i].getPoint(0, true).y;
-					pmay = annotations[i].getPoint(4, true).y;
-					break;
-				case 180:
-					pmax = annotations[i].getPoint(0, true).x;
-					pmix = annotations[i].getPoint(2, true).x;
-					pmay = annotations[i].getPoint(0, true).y;
-					break;
-				case 270:
-					pmax = annotations[i].getPoint(0, true).x;
-					pmiy = annotations[i].getPoint(0, true).y;
-					pmay = annotations[i].getPoint(6, true).y;
-					break;
-				default:
-					pmix = annotations[i].getPoint(0, true).x;
-					pmax = annotations[i].getPoint(2, true).x;
-					pmay = annotations[i].getPoint(4, true).y;
-					break;
-			}
-
-			var offsetX = annotations[i].offset_x;
-			var offsetY = annotations[i].offset_y;
-			var amix = pmix + offsetX;
-			var amax = pmax + offsetX;
-			var amiy = pmiy + offsetY;
-			var amay = pmay + offsetY;
-
-			if (amix < minX || minX == -1) minX = amix;
-			if (amax > maxX || maxX == -1) maxX = amax;
-			if (amay > maxY || maxY == -1) maxY = amay;
-			if (amiy < minY || minY == -1) minY = amiy;
-		}
-
-		switch (scope.sheet.rotation) {
-			case 90:
-				return tileView.screenCoordinatesFromSheetCoordinates(maxX + BOUND_DIST / tileView.scale, (minY + maxY + w) / 2);
-			case 180:
-				return tileView.screenCoordinatesFromSheetCoordinates((minX + maxX + w) / 2, maxY - BOUND_DIST / tileView.scale);
-			case 270:
-				return tileView.screenCoordinatesFromSheetCoordinates(maxX - BOUND_DIST / tileView.scale, (minY + maxY - w) / 2);
-			default:
-				return tileView.screenCoordinatesFromSheetCoordinates((minX + maxX - w) / 2, maxY + BOUND_DIST / tileView.scale);
-		}
-	}
-
 	this.setTextSize = function (textSize) {
 		if (selectedAnnotations.length == 1)
 			if (selectedAnnotations[0].type == TEXT_ANNOTATION) {
@@ -645,7 +585,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			annotation.added = true;
 		}
 		tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
-		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
+		tileView.sheet.floatingOptionsMenu.show();
 	};
 
 	/**
@@ -658,7 +598,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			this.selectAnnotation(annotations[i]);
 		}
 		tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
-		tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
+		tileView.sheet.floatingOptionsMenu.show();
 	};
 
 	// Returns true if the annotation is personal or if the user is an admin.
@@ -682,7 +622,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 		if (updateUI) {
 			tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
-			tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
+			tileView.sheet.floatingOptionsMenu.show();
 		}
 
 		return true;
@@ -769,7 +709,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		tileView.setSelectedOptionsForAnnotations(selectedAnnotations, tileView);
 		if (selectedAnnotations.length > 0) {
 			tileView.sheet.floatingToolsMenu.show(calcFloatingToolsMenuLocation(selectedAnnotations));
-			tileView.sheet.floatingOptionsMenu.show(calcFloatingOptionsMenuLocation(selectedAnnotations));
+			tileView.sheet.floatingOptionsMenu.show();
 		}
 	};
 
@@ -1367,7 +1307,6 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	this.updateOptionsMenuUI = function (selectedAnnotations) {
 		tileView.sheet.textEditor.setLoc(calcTextEditorLocation(selectedAnnotations[0]));
 		tileView.sheet.floatingToolsMenu.setLoc(calcFloatingToolsMenuLocation(selectedAnnotations));
-		tileView.sheet.floatingOptionsMenu.setLoc(calcFloatingOptionsMenuLocation(selectedAnnotations));
 	};
 
 	this.loadAnnotation = function (jsonString) {

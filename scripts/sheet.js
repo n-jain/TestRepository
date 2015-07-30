@@ -45,7 +45,6 @@ BluVueSheet.Sheet = function() {
 
         this.optionsMenu.appendTo(this.userInterface);
         this.floatingToolsMenu.appendTo(this.userInterface);
-        this.floatingOptionsMenu.appendTo(this.userInterface);
         this.userInterface.appendChild(this.textEditor.textEditorElement);
         elem.append(this.userInterface);
         
