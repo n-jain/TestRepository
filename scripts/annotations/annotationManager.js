@@ -906,6 +906,11 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
         },
         button2Action: function() {
           if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
+	        if(m === null) {
+		        selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+		        m = selectedAnnotations[0].measurement;
+	        }
+
             if (bodyScreenShowLengthCheckbox.attr('checked')) {
               selectedAnnotations[0].areaMeasured=false;
               selectedAnnotations[0].perimeterMeasured=true;

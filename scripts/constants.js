@@ -140,7 +140,7 @@ BluVueSheet.Constants = {
 		Copy: { id: 4, name: "copy-button" },
 		Delete: { id: 5, name: "delete-button" },
 		Fill: { id: 6, name: "fill-button" },
-    Text: { id: 7, name: "text-button" },
+        Text: { id: 7, name: "text-button" },
 		TypeSwitcher: {
 			id: 8, name: "type-switcher-button", states: {
 				personal: {id: 9, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
