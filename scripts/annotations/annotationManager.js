@@ -569,6 +569,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			if (selectedAnnotations[0].type == TEXT_ANNOTATION) {
 				this.saveSelectedAnnotations();
 			}
+
+			if (selectedAnnotations[0].type == CALLOUT_ANNOTATION && !selectedAnnotations[0].links.length) {
+				this.deleteAnnotation(selectedAnnotations[0]);
+			}
 		}
 		var toKill = [];
 		selectedAnnotations = [];
@@ -733,6 +737,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
       dialog = new BluVueSheet.Dialog({showType: 'unit'}),
       title = "Show Units",
       m = selectedAnnotations[0].measurement;
+	    console.log(selectedAnnotations[0])
 
       var holder = angular.element( "<div class='bluvue-editor-units'/>" );
 
@@ -1229,6 +1234,12 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			if (currentAnnotation.type == TEXT_ANNOTATION)
 				this.selectSingleAnnotation(currentAnnotation);
 
+			if (currentAnnotation.type == CALLOUT_ANNOTATION) {
+				tileView.annotationManager.selectAnnotation(currentAnnotation);
+				tileView.sheet.floatingOptionsMenu.show();
+				scope.showLinkPanel(true, true, null);
+			}
+
 			cancelClick = true;
 		}
 		currentAnnotation = null;
@@ -1351,6 +1362,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		switch (currentAnnotation.type) {
 			case SQUARE_ANNOTATION:
 			case CIRCLE_ANNOTATION:
+			case CALLOUT_ANNOTATION:
 			case CLOUD_ANNOTATION:
 			case X_ANNOTATION:
 			case ARROW_ANNOTATION:
@@ -1407,7 +1419,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 	this.issetMasterMeasurementAnnotation = function() {
 		for(var i in annotations) {
-			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
+			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION || annotations[i].type == CALLOUT_ANNOTATION)) {
 				return true;
 			}
 		}

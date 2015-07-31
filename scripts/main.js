@@ -1,7 +1,7 @@
 angular.module("bluvueSheet", []);
 
-angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter',
-    function sheetDirective($window, $location, $interval, $filter) {
+angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$interval', '$filter', '$compile',
+    function sheetDirective($window, $location, $interval, $filter, $compile) {
         'use strict';
 
 		return {
@@ -760,6 +760,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                case SQUARE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Square'; break;
 			                case X_ANNOTATION: scope.attachmentFiles[i].type_label = 'X'; break;
 			                case CIRCLE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Circle'; break;
+			                case CALLOUT_ANNOTATION: scope.attachmentFiles[i].type_label = 'Callout'; break;
 			                case ARROW_ANNOTATION: scope.attachmentFiles[i].type_label = 'Arrow'; break;
 			                case CLOUD_ANNOTATION: scope.attachmentFiles[i].type_label = 'Cloud'; break;
 			                case TEXT_ANNOTATION: scope.attachmentFiles[i].type_label = 'Text'; break;
@@ -1693,8 +1694,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
                     confirmAction: (function(scope, id, openLinkFromSelectedAnnotation) {
                       return function() {
                         BluVueSheet.Link.removeByID(scope, id);
-
-                        console.log(openLinkFromSelectedAnnotation);
 
                         if(openLinkFromSelectedAnnotation) {
                           scope.showLinkPanel(true, false);
