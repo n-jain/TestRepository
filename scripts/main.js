@@ -2013,6 +2013,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
           var el = angular.element(document.getElementsByClassName('bv-toolbar-' + tool.name)[0]);
 
           if(tool.states) {
+
             if(el.hasClass('open-states')) {
               el.removeClass('open-states');
               angular.element(document.getElementsByClassName('bluvue-annotation-tool-menu-items-wrapper')[0]).css({display: 'none'});
@@ -2022,7 +2023,12 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             }
             return;
           } else {
-            scope.currentSheet.tileView.optionChosenToolbar(tool.id);
+	          scope.currentSheet.tileView.optionChosenToolbar(tool.id);
+
+	          if(10 === tool.id && !scope.isAdmin) {
+		          scope.selectedSingleAnnotation = false;
+		          scope.deselectAllAnnotations();
+	          }
           }
 
 
