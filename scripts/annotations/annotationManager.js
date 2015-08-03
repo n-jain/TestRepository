@@ -12,9 +12,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	this.captureMouse = false;
 	this.captureKeyboard = false;
 	this.scaleAnnotation = null;
-  this.scaleAnnotationMaster = null;
-
-	var me = this;
+    this.scaleAnnotationMaster = null;
 
 	var removeFromArray = function (array, element) {
 		array.splice(array.indexOf(element), 1);
