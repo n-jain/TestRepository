@@ -20,6 +20,7 @@ var HIGHLIGHTER_ANNOTATION=9;
 var SCALE_ANNOTATION=10;
 var MEASURE_ANNOTATION=11;
 var FREE_FORM_ANNOTATION=15;
+var CALLOUT_ANNOTATION=16;
 
 function toolToAnnotation(tool){
 	switch(tool){
@@ -37,6 +38,7 @@ function toolToAnnotation(tool){
 	    case BluVueSheet.Constants.Tools.Ruler:       return MEASURE_ANNOTATION;
 	    case BluVueSheet.Constants.Tools.Calibration: return SCALE_ANNOTATION;
 	    case BluVueSheet.Constants.Tools.Freeform:    return FREE_FORM_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Callout:     return CALLOUT_ANNOTATION;
 	}
 	return NO_ANNOTATION;
 }
@@ -118,7 +120,8 @@ BluVueSheet.Constants = {
         Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1, description:"Click and drag to highlight part of the drawing.", heroImage:"images/update/icon_toolbars_highlighter_white.png" },
         Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" },
         Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" },
-        Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
+        Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" },
+	    Callout: { id: 16, name: "callout", menuId: 1, menuIndex: 5, description:"", heroImage:"images/update/icon_toolbars_callout.png" }
     },
     ToolMenuButtons: {
        Lasso: { id: 0, name: "lasso-button" },
@@ -137,7 +140,7 @@ BluVueSheet.Constants = {
 		Copy: { id: 4, name: "copy-button" },
 		Delete: { id: 5, name: "delete-button" },
 		Fill: { id: 6, name: "fill-button" },
-    Text: { id: 7, name: "text-button" },
+        Text: { id: 7, name: "text-button" },
 		TypeSwitcher: {
 			id: 8, name: "type-switcher-button", states: {
 				personal: {id: 9, name: "type-switcher-button-personal", text: "Show on Personal", parentText: "Personal"},
@@ -175,7 +178,8 @@ BluVueSheet.Constants.ToolMenuButtons.ClosedAnnotations.buttons = [BluVueSheet.C
                                                                 BluVueSheet.Constants.Tools.Square,
                                                                 BluVueSheet.Constants.Tools.Cloud,
                                                                 BluVueSheet.Constants.Tools.Polygon,
-                                                                BluVueSheet.Constants.Tools.Freeform];
+                                                                BluVueSheet.Constants.Tools.Freeform,
+																BluVueSheet.Constants.Tools.Callout];
 BluVueSheet.Constants.ToolMenuButtons.LineAnnotations.buttons = [BluVueSheet.Constants.Tools.Line,
                                                                 BluVueSheet.Constants.Tools.Arrow,
                                                                 BluVueSheet.Constants.Tools.X];

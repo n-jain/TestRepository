@@ -92,6 +92,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 			initMeasurement(this, updateMeasurePolygonPerimeter, updateMeasurePolygonArea);
 			break;
 		case CIRCLE_ANNOTATION:
+		case CALLOUT_ANNOTATION:
 			initMeasurement(this, updateMeasureEllipsePerimeter, updateMeasureEllipseArea);
 			break;
 
@@ -238,6 +239,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				break;
 
 			case CIRCLE_ANNOTATION:
+			case CALLOUT_ANNOTATION:
 				relativeBounds.x = (0.25 * width );
 				relativeBounds.y = -(0.433 * height );
 				break;
@@ -377,6 +379,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				break;
 
 			case CIRCLE_ANNOTATION:
+			case CALLOUT_ANNOTATION:
 				relativeBounds.x = (0.25 * width );
 				relativeBounds.y = -(0.433 * height );
 				break;
@@ -510,6 +513,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				break;
 
 			case CIRCLE_ANNOTATION:
+			case CALLOUT_ANNOTATION:
 				relativeBounds.x = (0.25 * width );
 				relativeBounds.y = -(0.433 * height );
 				break;
@@ -870,6 +874,7 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	drawFunctions[SQUARE_ANNOTATION] = drawRectangle;
 	drawFunctions[X_ANNOTATION] = drawX;
 	drawFunctions[CIRCLE_ANNOTATION] = drawCircle;
+	drawFunctions[CALLOUT_ANNOTATION] = drawCircle;
 	drawFunctions[CLOUD_ANNOTATION] = drawCloud;
 	drawFunctions[POLYGON_ANNOTATION] = drawPoints;
 	drawFunctions[TEXT_ANNOTATION] = drawText;
