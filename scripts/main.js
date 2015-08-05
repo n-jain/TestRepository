@@ -177,7 +177,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	                              return;
                             }
                         }
-
+                            //Added by Neha: To open the attachment panel on click of submenu items
+                        //else if (tool.id == BluVueSheet.Constants.Tools.Audio.id || tool.id == BluVueSheet.Constants.Tools.Video.id || tool.id == BluVueSheet.Constants.Tools.Photo.id) {
+                        //    //scope.deselectTool();
+                        //   // if (!mgr.scaleAnnotation) {
+                        //       // scope.isShowAttachmentsButton = true;
+                        //      //  scope.showAttachmentsPanel();
+                        //  //  }
+                        //}
 	                      var toolsStorage = JSON.parse(localStorage['tools'] || "{}");
 
 	                      if(toolsStorage[tool.id] == undefined) {
@@ -769,7 +776,11 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                case SCALE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Calibration'; break;
 			                case MEASURE_ANNOTATION: scope.attachmentFiles[i].type_label = 'Distance'; break;
 			                case POLYGON_ANNOTATION: scope.attachmentFiles[i].type_label = 'Polygon'; break;
-			                case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
+		                    case FREE_FORM_ANNOTATION: scope.attachmentFiles[i].type_label = 'Free-form'; break;
+		                    //Added by Neha [DEV Flair-Solutions] : To provide attachment labels to newly added annotations
+		                    case AUDIO_ANNOTATION: scope.attachmentFiles[i].type_label = 'Audio'; break;
+		                    case VIDEO_ANNOTATION: scope.attachmentFiles[i].type_label = 'Video'; break;
+		                    case PHOTO_ANNOTATION: scope.attachmentFiles[i].type_label = 'Photo'; break;
 		                }
 
 		                var filename = scope.attachmentFiles[i].name;
@@ -873,6 +884,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 	              scope.addAttachmentAction = function(filetype) {
                   var mgr = scope.currentSheet.tileView.annotationManager;
                   var annotation = mgr.getSelectedAnnotation()[0];
+              
 
 		              var appendFile = function(lat, lon) {
 			              scope.fileChooser.chooseAttachment( function attachmentAdded( fileInfo ) {

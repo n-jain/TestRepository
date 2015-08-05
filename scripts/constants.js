@@ -19,7 +19,11 @@ var PEN_ANNOTATION=8;
 var HIGHLIGHTER_ANNOTATION=9;
 var SCALE_ANNOTATION=10;
 var MEASURE_ANNOTATION=11;
-var FREE_FORM_ANNOTATION=15;
+var FREE_FORM_ANNOTATION = 15;
+//Added by Neha [DEV Flair-Solutions]: to set annotation ids
+var AUDIO_ANNOTATION = 16;
+var VIDEO_ANNOTATION = 17;
+var PHOTO_ANNOTATION = 18;
 
 function toolToAnnotation(tool){
 	switch(tool){
@@ -36,7 +40,12 @@ function toolToAnnotation(tool){
 	    case BluVueSheet.Constants.Tools.Highlighter: return HIGHLIGHTER_ANNOTATION;
 	    case BluVueSheet.Constants.Tools.Ruler:       return MEASURE_ANNOTATION;
 	    case BluVueSheet.Constants.Tools.Calibration: return SCALE_ANNOTATION;
-	    case BluVueSheet.Constants.Tools.Freeform:    return FREE_FORM_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Freeform: return FREE_FORM_ANNOTATION;
+
+	        //Added by Neha [DEV Flair-Solutions]
+	    case BluVueSheet.Constants.Tools.Audio: return AUDIO_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Video: return VIDEO_ANNOTATION;
+	    case BluVueSheet.Constants.Tools.Photo: return PHOTO_ANNOTATION;
 	}
 	return NO_ANNOTATION;
 }
@@ -118,7 +127,12 @@ BluVueSheet.Constants = {
         Highlighter: { id: 10, name: "highlighter", menuId: 3, menuIndex: 1, description:"Click and drag to highlight part of the drawing.", heroImage:"images/update/icon_toolbars_highlighter_white.png" },
         Ruler: { id: 11, name: "ruler", menuId: 4, menuIndex:0, description:"Click and drag to place a measured line on the drawing.", heroImage:"images/update/icon_toolbars_ruler_white.png" },
         Freeform: { id: 12, name: "freeform", menuId: 1, menuIndex: 4, description:"Click and drag to draw a freeform shape on the drawing.", heroImage:"images/update/icon_toolbars_freeform_white.png" },
-        Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description:"Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage:"images/update/icon_toolbars_calibrate_white.png" }
+        Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description: "Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage: "images/update/icon_toolbars_calibrate_white.png" },
+        //Added by Neha [DEV Flair-Solutions]: To open tooltips and slide up menu
+        Audio: { id: 14, name: "audio", menuId: 7, menuIndex: 0, description: "Click and drag to attach an audio on the drawing.", heroImage: "images/update/icon-toolbars-audio-white.png" },
+        Video: { id: 15, name: "video", menuId: 7, menuIndex: 1, description: "Click and drag to attach a video on the drawing.", heroImage: "images/update/icon-toolbars-video-white.png" },
+        Photo: { id: 16, name: "photo", menuId: 7, menuIndex: 2, description: "Click and drag to attach a photo on the drawing.", heroImage: "images/update/icon-toolbars-photo-white.png" },
+      
     },
     ToolMenuButtons: {
        Lasso: { id: 0, name: "lasso-button" },
@@ -127,7 +141,9 @@ BluVueSheet.Constants = {
        FreeAnnotations: { id: 3, name: "free-annotations-button" },
        MeasurementAnnotations: { id: 4, name: "measurement-annotations-button" },
        TextAnnotations: { id: 5, name: "text-button" },
-       HideMenu: { id: 6, name: "hide-button" }
+       HideMenu: { id: 6, name: "hide-button" },
+        //Added by Neha [DEV Flair-Solutions]
+       Annotations: { id: 7, name: "annotations" }
     },
 	AnnotationMenuButtons: {
     Calibrate: { id: 0, name: "calibrate-button" },
@@ -185,6 +201,12 @@ BluVueSheet.Constants.ToolMenuButtons.MeasurementAnnotations.buttons = [BluVueSh
                                                                         BluVueSheet.Constants.Tools.Calibration];
 BluVueSheet.Constants.ToolMenuButtons.TextAnnotations.buttons = [BluVueSheet.Constants.Tools.Text];
 BluVueSheet.Constants.ToolMenuButtons.HideMenu.buttons = [BluVueSheet.Constants.HideButton];
+//Added by Neha [DEV Flair-Solutions]
+BluVueSheet.Constants.ToolMenuButtons.Annotations.buttons = [
+                                                                BluVueSheet.Constants.Tools.Audio,
+                                                                BluVueSheet.Constants.Tools.Video,
+                                                                BluVueSheet.Constants.Tools.Photo,
+                                                                ];
 
 var HANDLE_TOUCH_RADIUS = 30;
 var BOUND_DIST = 20;

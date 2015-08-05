@@ -105,7 +105,11 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		case CLOUD_ANNOTATION:
 		case TEXT_ANNOTATION:
 		case NO_ANNOTATION:
-		case LASSO_ANNOTATION:
+	    case LASSO_ANNOTATION:
+	        //Added by Neha [DEV Flair-Solutions]
+	    case AUDIO_ANNOTATION:
+	    case VIDEO_ANNOTATION:
+	    case PHOTO_ANNOTATION:
 			initMeasurement(this, undefined, undefined);
 	}
 
@@ -164,9 +168,9 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		var existsVisibleLinks = false;
 
 		this.links.forEach(function(link) {
-			if(!link.hidden) {
-				existsVisibleLinks = true;
-			}
+		    if (!link.hidden) {
+		        existsVisibleLinks = true;
+		    }
 		});
 
 		if (!this.selected && this.attachments.length && existsVisibleLinks && ((this.userId == null && scope.isAdmin) || (this.userId != null && this.userId == scope.userId))) {
@@ -236,7 +240,11 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 				relativeBounds.x = width / 2;
 				relativeBounds.y = -height / 2;
 				break;
-
+		//**
+		    case SCALE_ANNOTATION:
+		        relativeBounds.x = width / 2;
+		        relativeBounds.y = -height / 2;
+		        break;
 			case CIRCLE_ANNOTATION:
 				relativeBounds.x = (0.25 * width );
 				relativeBounds.y = -(0.433 * height );
@@ -294,6 +302,15 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		context.fillText(this.attachments.length, 18, 16);
 
 		var attach_icon = new Image();
+
+	    //Updated by Neha [DEV Flair-Solutions] : To place the camera icon on sheet
+
+		if (this.type == AUDIO_ANNOTATION ||
+		    this.type == VIDEO_ANNOTATION ||
+		    this.type == PHOTO_ANNOTATION) {
+		    attach_icon.src = "images/update/icon-toolbars-camera-white.png";
+		}
+        else
 		attach_icon.src = "images/update/icon-paperclip-dark.png";
 		context.drawImage(attach_icon, 2, 2, 16, 16);
 
@@ -880,6 +897,11 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 	drawFunctions[HIGHLIGHTER_ANNOTATION] = drawPoints;
 	drawFunctions[SCALE_ANNOTATION] = drawScale;
 	drawFunctions[MEASURE_ANNOTATION] = drawMeasure;
+    //Added by Neha [DEV Flair-Solutions]
+	drawFunctions[AUDIO_ANNOTATION] = drawCamera;
+	drawFunctions[VIDEO_ANNOTATION] = drawCamera;
+	drawFunctions[PHOTO_ANNOTATION] = drawCamera;
+
 
 	function setMeasurement(annotation, value, isArea) {
 		if (annotation.measurement && annotation.tileView.annotationManager.scaleAnnotation) {
@@ -1258,6 +1280,22 @@ BluVueSheet.Annotation = function Annotation(type, tileView, userId, projectId, 
 		}
 	}
 
+    //Added by Neha
+	function drawCamera(context) {
+	    context.save();
+	    var x1 = this.points[0].x;
+	    var y1 = this.points[0].y;
+	    var imageObj = new Image();
+
+	    imageObj.onload = function () {
+	        context.drawImage(imageObj, x1, y1);
+	    };
+	    imageObj.src = 'images/update/icon-toolbars-camera-white.png';
+
+	    context.restore();
+	    //context.stroke();
+	}
+
 	function drawArrow(context) {
 		if (this.points.length == 2) {
 			context.save();
@@ -1490,9 +1528,11 @@ function createUUID() {
 	});
 }
 function AnnotationJSON(annotation) {
+    //Updated by Neha [DEV Flair-Solutions] : To include newly added annotation for BWA-2633
 	var rectType = !(annotation.type == POLYGON_ANNOTATION || annotation.type == LINE_ANNOTATION || annotation.type == ARROW_ANNOTATION ||
 	annotation.type == SCALE_ANNOTATION || annotation.type == MEASURE_ANNOTATION || annotation.type == PEN_ANNOTATION ||
-	annotation.type == FREE_FORM_ANNOTATION || annotation.type == HIGHLIGHTER_ANNOTATION);
+	annotation.type == FREE_FORM_ANNOTATION || annotation.type == HIGHLIGHTER_ANNOTATION || annotation.type == AUDIO_ANNOTATION ||
+	annotation.type == VIDEO_ANNOTATION || annotation.type == PHOTO_ANNOTATION);
 	this.points = undefined;
 	this.x = undefined;
 	this.y = undefined;
@@ -1602,7 +1642,8 @@ function loadAnnotationJSON(json, tileView) {
 		}
 	}
 	var rectType = !(annotation.type == POLYGON_ANNOTATION || annotation.type == LINE_ANNOTATION || annotation.type == ARROW_ANNOTATION ||
-	annotation.type == SCALE_ANNOTATION || annotation.type == MEASURE_ANNOTATION || annotation.type == PEN_ANNOTATION || annotation.type == FREE_FORM_ANNOTATION || annotation.type == HIGHLIGHTER_ANNOTATION);
+	annotation.type == SCALE_ANNOTATION || annotation.type == MEASURE_ANNOTATION || annotation.type == PEN_ANNOTATION || annotation.type == FREE_FORM_ANNOTATION || annotation.type == HIGHLIGHTER_ANNOTATION
+    || annotation.type == AUDIO_ANNOTATION || annotation.type == VIDEO_ANNOTATION || annotation.type == PHOTO_ANNOTATION);
 	if (rectType) {
 		annotation.points = [new BluVueSheet.Point(json.x, json.y), new BluVueSheet.Point(json.x + json.width, json.y + json.height)];
 	} else {

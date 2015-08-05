@@ -42,6 +42,20 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			if (currentAnnotation.type == FREE_FORM_ANNOTATION)
 				currentAnnotation.closed = true;
 
+		    //Added by Neha [DEV Flair-Solutions] : To handle the newly added annotations
+			if (currentAnnotation.type == AUDIO_ANNOTATION || currentAnnotation.type == VIDEO_ANNOTATION || currentAnnotation.type == PHOTO_ANNOTATION) {
+			     currentAnnotation.calcBounds();
+			     this.selectSingleAnnotation(currentAnnotation);
+			     annotations.push(currentAnnotation);
+			    
+			    scope.isShowAttachmentsButton = true;
+			    scope.showAttachmentsPanel();
+			 
+			    this.saveSelectedAnnotations();
+			    
+			}
+			 
+
 			this.captureMouse = true;
 			return;
 		}
