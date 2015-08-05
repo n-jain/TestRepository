@@ -38,7 +38,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				scope.selectedTool = null;
 				scope.tools = BluVueSheet.Constants.Tools;
 				scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
-        scope.annotationMenuButtons = BluVueSheet.Constants.AnnotationMenuButtons;
+                scope.annotationMenuButtons = BluVueSheet.Constants.AnnotationMenuButtons;
                 scope.toolMoreMenu = [];
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
 				scope.selectedToolMenu = null;
@@ -52,22 +52,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					}
 				}
 
-				scope.projects.forEach(function(item, i) {
-					item.sheets.forEach(function(sheet) {});
-				});
-
                 var toolipDialog = new BluVueSheet.Dialog();
         
-                var backPressed = false;
-                $window.history.pushState({}, "", $location.absUrl());
-                
-                $window.onpopstate = function () {
-                    scope.scheduleAnnotationSync( null, null, function(){
-                        backPressed = true;
-                        scope.close();
-                    }, true );
-                };
-
 				var windowResizeObserver = function windowResizeObserver() {
 					var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
 
@@ -91,8 +77,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					currentSheetPinned: false
 				};
 
-				var backHistoryDepth = $window.history.length-1;
-
 				// There's a bug in the container for this webapp that causes
 				// the html element to have a scrollbar when we're displayed.
 				// This class, 'html.noScroll', disables that scroll bar.
@@ -100,15 +84,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				document.querySelector('html').classList.toggle( 'noScroll', true );
 				scope.close = function () {
 					document.querySelector('html').classList.toggle( 'noScroll', false );
-					if (!backPressed) {
-						setTimeout(function() {
-							scope.currentSheet.dispose();
-							scope.closeSheet();
-							$window.history.go( backHistoryDepth - $window.history.length );
-						}, 0);
-						return;
-					}
-
 					scope.currentSheet.dispose();
 					scope.closeSheet();
 				};
@@ -420,7 +395,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				});
 
 				scope.$on('$destroy', function () {
-					$window.onpopstate = null;
 					angular.element($window).off( 'resize', scope.windowResizeObserver );
 					angular.element($window).off( 'unload', windowCloseObserver );
 
@@ -1869,14 +1843,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             openAnimate: false
           });
 
-          var sheetsHtml = angular.element('<ul></ul>'), project_pos = 0;
+          var sheetsHtml = angular.element('<ul></ul>');
 
           scope.projects.forEach(function(item, i) {
             if(item.id == id) {
               scope.showSheetsOnPanel = item.sheets;
               scope.showSheetsProjectID = id;
               scope.showSheetsBackLink = backLink._link.uri;
-              project_pos = i;
 
               sheetsHtml = angular.element('<ul ng-repeat="sheet in showSheetsOnPanel"><li data-id="bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}" ng-class="{selected: showSheetsBackLink && \'bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}\' == showSheetsBackLink}">{{ sheet.name }}</li></ul>');
             }
