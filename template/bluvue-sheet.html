@@ -4,7 +4,7 @@
             <button ng-click="close()">Back</button>
         </div>
         <div class="sheet-name" ng-if="!selectedSingleAnnotation">
-            <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite"></span>
+            <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite; saveSheet(sheet);"></span>
             <span>{{sheet.name}}</span>
         </div>
         <nav ng-if="!selectedSingleAnnotation">

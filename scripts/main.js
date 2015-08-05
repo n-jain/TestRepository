@@ -24,8 +24,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				attachmentsBucketName: "=",
 				canEditNotes: "=",
 				fullName: "=",
-        favorites: "=",
-        projects: "=",
+                favorites: "=",
+                projects: "=",
 				userHistory: "="
 			},
 			restrict: "E",
@@ -1554,14 +1554,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
               '<div class="row">' +
               '<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="uri"> URL</label></span>' +
               '<div class="link-sheet-block" id="link-sheet-block">Select a sheet to link to</div>' +
-              '<div class="link-url-block" style="display: none;"><input type="text" name="uri" placeholder="Enter your link"></div>'
+              '<div class="link-url-block" style="display: none;"><input type="text" name="uri" placeholder="Enter your link"></div>' +
             '</div>' +
             '</form>';
 
             var isAddLink = backLink.length;
 
             if(selectedAnnotation[0] != undefined) {
-              isAddLink = !selectedAnnotation[0].links.length
+                isAddLink = !selectedAnnotation[0].links.length;
             }
 
             var title = isAddLink ? 'Add Link' : 'Edit Link';
@@ -1980,7 +1980,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             sheets = $filter('orderBy')(sheets, ['projectName', 'name', 'CreatedDate']);
 
             sheets.forEach(function(sheet) {
-              html += '<li data-id="' + sheet.id +'">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type +'"></a></li>'
+                html += '<li data-id="' + sheet.id + '">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type + '"></a></li>';
             });
 
             angular.element(document.getElementById('favorites-list')).empty().append(html);
