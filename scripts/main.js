@@ -24,8 +24,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				attachmentsBucketName: "=",
 				canEditNotes: "=",
 				fullName: "=",
-        favorites: "=",
-        projects: "=",
+                favorites: "=",
+                projects: "=",
 				userHistory: "="
 			},
 			restrict: "E",
@@ -38,7 +38,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				scope.selectedTool = null;
 				scope.tools = BluVueSheet.Constants.Tools;
 				scope.toolMenuButtons = BluVueSheet.Constants.ToolMenuButtons;
-        scope.annotationMenuButtons = BluVueSheet.Constants.AnnotationMenuButtons;
+                scope.annotationMenuButtons = BluVueSheet.Constants.AnnotationMenuButtons;
                 scope.toolMoreMenu = [];
                 scope.toolMenuButtonTools = [0,0,0,0,0,0,0];
 				scope.selectedToolMenu = null;
@@ -52,22 +52,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					}
 				}
 
-				scope.projects.forEach(function(item, i) {
-					item.sheets.forEach(function(sheet) {});
-				});
-
                 var toolipDialog = new BluVueSheet.Dialog();
         
-                var backPressed = false;
-                $window.history.pushState({}, "", $location.absUrl());
-                
-                $window.onpopstate = function () {
-                    scope.scheduleAnnotationSync( null, null, function(){
-                        backPressed = true;
-                        scope.close();
-                    }, true );
-                };
-
 				var windowResizeObserver = function windowResizeObserver() {
 					var checkFullscreen = ((typeof document.webkitIsFullScreen) !== 'undefined') ? document.webkitIsFullScreen : document.mozFullScreen;
 
@@ -91,8 +77,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 					currentSheetPinned: false
 				};
 
-				var backHistoryDepth = $window.history.length-1;
-
 				// There's a bug in the container for this webapp that causes
 				// the html element to have a scrollbar when we're displayed.
 				// This class, 'html.noScroll', disables that scroll bar.
@@ -100,15 +84,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				document.querySelector('html').classList.toggle( 'noScroll', true );
 				scope.close = function () {
 					document.querySelector('html').classList.toggle( 'noScroll', false );
-					if (!backPressed) {
-						setTimeout(function() {
-							scope.currentSheet.dispose();
-							scope.closeSheet();
-							$window.history.go( backHistoryDepth - $window.history.length );
-						}, 0);
-						return;
-					}
-
 					scope.currentSheet.dispose();
 					scope.closeSheet();
 				};
@@ -479,7 +454,6 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				});
 
 				scope.$on('$destroy', function () {
-					$window.onpopstate = null;
 					angular.element($window).off( 'resize', scope.windowResizeObserver );
 					angular.element($window).off( 'unload', windowCloseObserver );
 
@@ -1811,14 +1785,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
               '<div class="row">' +
               '<span>Source</span><span class="source-params" id="source-params"><label><input type="radio" name="link-type" value="sheet" checked> Sheet</label><label><input type="radio" name="link-type" value="uri"> URL</label></span>' +
               '<div class="link-sheet-block" id="link-sheet-block">Select a sheet to link to</div>' +
-              '<div class="link-url-block" style="display: none;"><input type="text" name="uri" placeholder="Enter your link"></div>'
+              '<div class="link-url-block" style="display: none;"><input type="text" name="uri" placeholder="Enter your link"></div>' +
             '</div>' +
             '</form>';
 
             var isAddLink = backLink.length;
 
             if(selectedAnnotation[0] != undefined) {
-              isAddLink = !selectedAnnotation[0].links.length
+                isAddLink = !selectedAnnotation[0].links.length;
             }
 
             var title = isAddLink ? 'Add Link' : 'Edit Link';
@@ -2100,14 +2074,13 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             openAnimate: false
           });
 
-          var sheetsHtml = angular.element('<ul></ul>'), project_pos = 0;
+          var sheetsHtml = angular.element('<ul></ul>');
 
           scope.projects.forEach(function(item, i) {
             if(item.id == id) {
               scope.showSheetsOnPanel = item.sheets;
               scope.showSheetsProjectID = id;
               scope.showSheetsBackLink = backLink._link.uri;
-              project_pos = i;
 
               sheetsHtml = angular.element('<ul ng-repeat="sheet in showSheetsOnPanel"><li data-id="bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}" ng-class="{selected: showSheetsBackLink && \'bluvueplans://projects/{{ showSheetsProjectID }}/sheets/{{ sheet.id }}\' == showSheetsBackLink}">{{ sheet.name }}</li></ul>');
             }
@@ -2238,7 +2211,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
             sheets = $filter('orderBy')(sheets, ['projectName', 'name', 'CreatedDate']);
 
             sheets.forEach(function(sheet) {
-              html += '<li data-id="' + sheet.id +'">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type +'"></a></li>'
+                html += '<li data-id="' + sheet.id + '">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type + '"></a></li>';
             });
 
             angular.element(document.getElementById('favorites-list')).empty().append(html);
