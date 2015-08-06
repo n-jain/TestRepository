@@ -131,10 +131,11 @@ BluVueSheet.Constants = {
         Calibration: { id: 13, name: "calibration", menuId: 4, menuIndex: 1, description: "Click and drag a scale that will be used for calculating area and perimeter for other annotations.", heroImage: "images/update/icon_toolbars_calibrate_white.png" },
         Callout: { id: 17, name: "callout", menuId: 1, menuIndex: 5, description:"", heroImage:"images/update/icon_toolbars_callout.png" },
         //Added by Neha [DEV Flair-Solutions]: To open tooltips and slide up menu
-        Audio: { id: 14, name: "audio", menuId: 7, menuIndex: 0, description: "Click and drag to attach an audio on the drawing.", heroImage: "images/update/icon-toolbars-audio-white.png" },
-        Video: { id: 15, name: "video", menuId: 7, menuIndex: 1, description: "Click and drag to attach a video on the drawing.", heroImage: "images/update/icon-toolbars-video-white.png" },
-        Photo: { id: 16, name: "photo", menuId: 7, menuIndex: 2, description: "Click and drag to attach a photo on the drawing.", heroImage: "images/update/icon-toolbars-photo-white.png" },
-      
+        Audio: { id: 14, name: "audio", menuId: 6, menuIndex: 1, description: "Click and drag to attach an audio on the drawing.", heroImage: "images/update/icon-toolbars-audio-white.png" },
+        Video: { id: 15, name: "video", menuId: 6, menuIndex: 2, description: "Click and drag to attach a video on the drawing.", heroImage: "images/update/icon-toolbars-video-white.png" },
+        Photo: { id: 16, name: "photo", menuId: 6, menuIndex: 3, description: "Click and drag to attach a photo on the drawing.", heroImage: "images/update/icon-toolbars-photo-white.png" },
+     //   Annotations: { id: 17, name: "annotations", menuId: 6, menuIndex: 0, description: "Click and drag to attach a photo on the drawing.", heroImage: "images/update/icon-toolbars-camera-grey.png" },
+
     },
     ToolMenuButtons: {
        Lasso: { id: 0, name: "lasso-button" },
@@ -145,7 +146,7 @@ BluVueSheet.Constants = {
        TextAnnotations: { id: 5, name: "text-button" },
        HideMenu: { id: 6, name: "hide-button" },
         //Added by Neha [DEV Flair-Solutions]
-       Annotations: { id: 7, name: "annotations" }
+       Annotations: { id: 6, name: "annotations" }
     },
 	AnnotationMenuButtons: {
     Calibrate: { id: 0, name: "calibrate-button" },

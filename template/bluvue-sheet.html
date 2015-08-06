@@ -4,7 +4,7 @@
             <button ng-click="close()">Back</button>
         </div>
         <div class="sheet-name" ng-if="!selectedSingleAnnotation">
-            <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite; saveSheet(sheet);"></span>
+            <span class="{{ sheet.favorite ? 'favorite-sheet' : 'non-favorite-sheet' }}" ng-click="sheet.favorite=!sheet.favorite"></span>
             <span>{{sheet.name}}</span>
         </div>
         <nav ng-if="!selectedSingleAnnotation">
@@ -15,14 +15,14 @@
         </nav>
 
         <div id="close-annotation-view" ng-if="selectedSingleAnnotation">
-            <a href="javascript:;" ng-click="deselectAllAnnotations()">Close Annotation View</a>
+            <a href="#" ng-click="deselectAllAnnotations()">Close Annotation View</a>
         </div>
     </header>
 
     <button ng-click="selectPreviousSheet()" id="previous-sheet-arrow">< Previous</button>
     <button ng-click="selectNextSheet()" id="next-sheet-arrow">Next ></button>
     <button ng-click="showToolbar()" id="show-toolbar">Show Toolbar</button>
-	<button ng-click="showAttachmentsPanel(); setOriginalScale();" id="attachments-button" class="ng-show"  ng-show="isShowAttachmentsButton">Attachments</button>
+	<button ng-click="showAttachmentsPanel()" id="attachments-button" class="ng-show"  ng-show="isShowAttachmentsButton">Attachments</button>
 
 	<button ng-click="selectPreviousAttachment()" ng-show="isShowAttachmentPreviousButton" id="previous-attachment-arrow">< Previous</button>
 	<button ng-click="selectNextAttachment()" ng-show="isShowAttachmentNextButton" id="next-attachment-arrow">Next ></button>
@@ -89,7 +89,7 @@
 		<ul id="attachments-panel-files" class="{{ isHideAttachmentsPanelControls && !isHideAttachmentsPanelFilterControls ? 'large-attachment-panel' : '' }} {{ isHideAttachmentsPanelControls && isHideAttachmentsPanelFilterControls ? 'full-large-attachment-panel' : '' }}">
 		</ul>
 	</div>
-	<div class="bluvue-attachments-panel-holder" sglclick="hideAttachmentsPanel()" ng-dblclick="resetAttachmentPanelZoom()"></div>
+	<div class="bluvue-attachments-panel-holder" ng-click="hideAttachmentsPanel()"></div>
 
 	<div class="bluvue-viewer-panel-title ng-show" ng-show="isShowViewerPlaceholder">
 		<div class="attachment-icon attachment-icon-{{ viewerData.icon }}"></div>
@@ -107,17 +107,14 @@
 			</div>
 		</div>
 	</div>
-    <div class="bluvue-viewer-panel-metadata" ng-show="isShowViewerPlaceholder && isShowAttachmentMetadata"></div>
 	<div class="bluvue-viewer-panel-holder ng-show" ng-click="hideViewer()" ng-show="isShowViewerPlaceholder"></div>
-	<div class="attachment-nav attachment-nav-fixed ng-show" ng-click="" ng-show="isShowViewerPlaceholder"></div>
-	<div class="icon-info show-attachment-metadata" ng-click="isShowAttachmentMetadata = !isShowAttachmentMetadata;" ng-show="isShowViewerPlaceholder"></div>
-	<div class="bluvue-confirm-popup-holder"></div>
+    <div class="bluvue-confirm-popup-holder"></div>
 
 
 	<div id="bluvue-sheet-tool-menu-disabled"></div>
 
     <div class="bluvue-sheet-tool-menu">
-        <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
+        <div ng-repeat="(toolName, toolMenuButton) in toolMenuButtons | orderObjectBy:'id'" class="bv-toolbar-image bv-toolbar-{{toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name == 'audio'? '' : toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]].name}} bv-toolbar-{{toolMenuButton.name}}" ng-class="{selected: selectedTool === toolMenuButton.buttons[toolMenuButtonTools[toolMenuButton.id]]}" ng-click="toolMenuButtonClicked(toolMenuButton)"></div>
     </div>
 
     <div class="bluvue-sheet-tool-menu-extension">
