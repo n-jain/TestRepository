@@ -1935,7 +1935,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
         };
 
 			    scope.showFavoritesPanel = function() {
-			        var body = '<div class="favorites-content"><ul class="favorites-toggle" id="favorites-toggle"><li id="favorites-local" data-type="local" class="active">Local</li><li id="favorites-global" data-type="global">Global</li></ul><ul id="block-favorites"></ul><ul id="favorites-list"></ul> </div>';
+			        var body = '<div class="favorites-content"><ul class="favorites-toggle" id="favorites-toggle"><li id="favorites-local" data-type="local" class="active">Project</li><li id="favorites-global" data-type="global">Other</li></ul><ul id="block-favorites"></ul><ul id="favorites-list"></ul> </div>';
 
 			        var changeVisibleActions = function() {
 			            var label = document.getElementsByClassName('dialog-top-button')[1];
@@ -1978,9 +1978,14 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 			            favorites = $filter('orderBy')(favorites, ['projectName', 'name', 'CreatedDate']);
 
+                        if (favorites.length == 0) {
+                            html = type == 'local' ? '<li class="favorites-description">Add sheets to Project Favorites by tapping the star at the top of the screen when viewing a sheet.</li>':
+                                '<li class="favorites-description">This section displays your Favorites from other projects.</li>';
+                        }
+
 			            favorites.forEach(function (fav) {
 			                var sheetName = fav.sheetName ? fav.sheetName : "loading name...";
-			                html += '<li data-id="' + fav.id + '"><a class="favorites-link" id="fav-' + fav.id + '" data-sheet-id="' + fav.sheetId + '" href="/#/projects/' + fav.projectId + '/sheets/' + fav.sheetId + '">' + sheetName + '<br /><small>' + fav.projectName + '</small></a><a href="#" class="remove-favorite" data-id="' + fav.id + '" data-sheet-id="' + fav.sheetId + '" data-type="' + type + '"></a></li>';
+			                html += '<li class="favorite" data-id="' + fav.id + '"><a class="favorites-link" id="fav-' + fav.id + '" data-sheet-id="' + fav.sheetId + '" href="/#/projects/' + fav.projectId + '/sheets/' + fav.sheetId + '">' + sheetName + '<br /><small>' + fav.projectName + '</small></a><a href="#" class="remove-favorite" data-id="' + fav.id + '" data-sheet-id="' + fav.sheetId + '" data-type="' + type + '"></a></li>';
 			            });
 
 			            angular.element(document.getElementById('favorites-list')).empty().append(html);
