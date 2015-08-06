@@ -12,9 +12,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	this.captureMouse = false;
 	this.captureKeyboard = false;
 	this.scaleAnnotation = null;
-  this.scaleAnnotationMaster = null;
-
-	var me = this;
+    this.scaleAnnotationMaster = null;
 
 	var removeFromArray = function (array, element) {
 		array.splice(array.indexOf(element), 1);
@@ -267,7 +265,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		var touchedAnnotations = [];
 		var i;
 		for (i = 0; i < annotations.length; i++) {
-			if (!scope.isAdmin && (annotations[i].userId === null || annotations[i].userId != scope.userId)) {
+			if (!scope.isAdmin && (annotations[i].userId === null || annotations[i].userId != scope.userId) && CALLOUT_ANNOTATION !== annotations[i].type) {
 				continue;
 			}
 
@@ -554,7 +552,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 	// Returns true if the annotation is personal or if the user is an admin.
 	this.isSelectable = function (annotation) {
-		return annotation != undefined && ( annotation.userId || scope.isAdmin );
+		return (annotation != undefined && ( annotation.userId || scope.isAdmin )) || CALLOUT_ANNOTATION === annotation.type;
 	};
 
 	/**
@@ -565,7 +563,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 	 * setSelectedAnnotations() or selectSingleAnnotation(), as appropriate.
 	 **/
 	this.selectAnnotation = function (annotation, updateUI) {
-		if (!this.isSelectable(annotation)) return false;
+		if (!this.isSelectable(annotation)) {
+			return false;
+		}
+
 		selectedAnnotations.push(annotation);
 		annotation.selected = true;
 		annotation.showHandles = (selectedAnnotations.length == 1);
@@ -575,6 +576,18 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			tileView.sheet.floatingOptionsMenu.show();
 		}
 
+		// Master Callout Annotation
+		if(CALLOUT_ANNOTATION === annotation.type && null === annotation.userId) {
+			scope.goToLinkFromSelectedAnnotation();
+
+			if(scope.isAdmin) {
+
+			} else {
+				this.deselectAllAnnotations();
+			}
+
+		}
+
 		return true;
 	};
 
@@ -582,6 +595,10 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		if (selectedAnnotations.length == 1) {
 			if (selectedAnnotations[0].type == TEXT_ANNOTATION) {
 				this.saveSelectedAnnotations();
+			}
+
+			if (selectedAnnotations[0].type == CALLOUT_ANNOTATION && !selectedAnnotations[0].links.length) {
+				this.deleteAnnotation(selectedAnnotations[0]);
 			}
 		}
 		var toKill = [];
@@ -747,6 +764,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
       dialog = new BluVueSheet.Dialog({showType: 'unit'}),
       title = "Show Units",
       m = selectedAnnotations[0].measurement;
+	    console.log(selectedAnnotations[0])
 
       var holder = angular.element( "<div class='bluvue-editor-units'/>" );
 
@@ -915,6 +933,11 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
         },
         button2Action: function() {
           if(selectedAnnotations[0].hasPerimeter && selectedAnnotations[0].hasArea) {
+	        if(m === null) {
+		        selectedAnnotations[0].measurement = new BluVueSheet.Measurement(0, self.scaleAnnotation.measurement.unit, BluVueSheet.Constants.Length);
+		        m = selectedAnnotations[0].measurement;
+	        }
+
             if (bodyScreenShowLengthCheckbox.attr('checked')) {
               selectedAnnotations[0].areaMeasured=false;
               selectedAnnotations[0].perimeterMeasured=true;
@@ -1243,6 +1266,12 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 			if (currentAnnotation.type == TEXT_ANNOTATION)
 				this.selectSingleAnnotation(currentAnnotation);
 
+			if (currentAnnotation.type == CALLOUT_ANNOTATION) {
+				tileView.annotationManager.selectAnnotation(currentAnnotation);
+				tileView.sheet.floatingOptionsMenu.show();
+				scope.showLinkPanel(true, true, null);
+			}
+
 			cancelClick = true;
 		}
 		currentAnnotation = null;
@@ -1365,6 +1394,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 		switch (currentAnnotation.type) {
 			case SQUARE_ANNOTATION:
 			case CIRCLE_ANNOTATION:
+			case CALLOUT_ANNOTATION:
 			case CLOUD_ANNOTATION:
 			case X_ANNOTATION:
 			case ARROW_ANNOTATION:
@@ -1421,7 +1451,7 @@ BluVueSheet.AnnotationManager = function (tileView, scope) {
 
 	this.issetMasterMeasurementAnnotation = function() {
 		for(var i in annotations) {
-			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION)) {
+			if(annotations[i].userId === null && (annotations[i].type == MEASURE_ANNOTATION || annotations[i].type == FREE_FORM_ANNOTATION || annotations[i].type == POLYGON_ANNOTATION || annotations[i].type == SQUARE_ANNOTATION || annotations[i].type == CIRCLE_ANNOTATION || annotations[i].type == CALLOUT_ANNOTATION)) {
 				return true;
 			}
 		}

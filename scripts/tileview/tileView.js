@@ -362,6 +362,11 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
 	};
 
   this.optionVisibleToolbar = function (option) {
+
+	function isMasterCallout(annotation) {
+		return CALLOUT_ANNOTATION === annotation.type && annotation.userId === null;
+	}
+
     var selectedAnnotations = this.annotationManager.getSelectedAnnotation();
     switch (option) {
       case BluVueSheet.Constants.AnnotationMenuButtons.Delete.id:
@@ -419,7 +424,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
           appendDeleteButton = true;
         }
 
-        if( selectedAnnotations.length > 0 && appendDeleteButton) {
+        if( selectedAnnotations.length > 0 && appendDeleteButton && !isMasterCallout(selectedAnnotations[0])) {
           return true
         }
 
@@ -427,7 +432,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Ruler.id:
-          if(selectedAnnotations.length == 1 && (selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION)) {
+          if(selectedAnnotations.length == 1 && (selectedAnnotations[0].type == MEASURE_ANNOTATION || selectedAnnotations[0].type == FREE_FORM_ANNOTATION || selectedAnnotations[0].type == POLYGON_ANNOTATION || selectedAnnotations[0].type == SQUARE_ANNOTATION || selectedAnnotations[0].type == CIRCLE_ANNOTATION || selectedAnnotations[0].type == CALLOUT_ANNOTATION) && !isMasterCallout(selectedAnnotations[0])) {
             return true;
         }
         return false;
@@ -448,14 +453,14 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Copy.id:
-        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION ) {
+        if(selectedAnnotations.length == 1 && selectedAnnotations[0].type != SCALE_ANNOTATION && !isMasterCallout(selectedAnnotations[0]) ) {
           return true;
         }
         return false;
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Fill.id:
-        if(this.isFillableAnnotation(selectedAnnotations[0].type)) {
+        if(this.isFillableAnnotation(selectedAnnotations[0].type) && !isMasterCallout(selectedAnnotations[0])) {
           return true;
         }
         return false;
@@ -518,7 +523,7 @@ BluVueSheet.TileView = function (sheet, canvas, scope, setLoading, setLoaded, de
         break;
 
       case BluVueSheet.Constants.AnnotationMenuButtons.Attachments.id:
-        if(selectedAnnotations.length == 1) {
+        if(selectedAnnotations.length == 1 && !isMasterCallout(selectedAnnotations[0])) {
           return true;
         }
         return false;
