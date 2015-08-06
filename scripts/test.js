@@ -284,6 +284,10 @@ angular.module('test', ['bluvueSheet'])
                 return sheets.length;
             };
 
+            $scope.removeFavorite = function (sheetId) {
+                $scope.favorites.length = 0;
+            }
+
             var pendingUpdateAnnotations = [];
             var pendingDeleteAnnotationIds = [];
             $scope.syncAnnotations = function (version, modifiedAnnotations, deletedAnnotationIds) {

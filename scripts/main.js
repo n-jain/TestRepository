@@ -26,7 +26,8 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 				fullName: "=",
                 favorites: "=",
                 projects: "=",
-				userHistory: "="
+                userHistory: "=",
+			    removeFavorite: "="
 			},
 			restrict: "E",
 			replace: true,
@@ -1979,7 +1980,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 			            favorites.forEach(function (fav) {
 			                var sheetName = fav.sheetName ? fav.sheetName : "loading name...";
-			                html += '<li data-id="' + fav.id + '"><a class="favorites-link" id="fav-' + fav.id + '" data-sheet-id="' + fav.sheetId + '" href="/#/projects/' + fav.projectId + '/sheets/' + fav.sheetId + '">' + sheetName + '<br /><small>' + fav.projectName + '</small></a><a href="#" class="remove-favorite" data-id="' + fav.id + '" data-type="' + type + '"></a></li>';
+			                html += '<li data-id="' + fav.id + '"><a class="favorites-link" id="fav-' + fav.id + '" data-sheet-id="' + fav.sheetId + '" href="/#/projects/' + fav.projectId + '/sheets/' + fav.sheetId + '">' + sheetName + '<br /><small>' + fav.projectName + '</small></a><a href="#" class="remove-favorite" data-id="' + fav.id + '" data-sheet-id="' + fav.sheetId + '" data-type="' + type + '"></a></li>';
 			            });
 
 			            angular.element(document.getElementById('favorites-list')).empty().append(html);
@@ -2018,22 +2019,21 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			        generateFavoritesList('local');
 
 			        document.getElementById('favorites-list').addEventListener('click', function(e) {
-			            console.log("click", e);
-			            var id = e.target.getAttribute('data-id'),
-			                type = e.target.getAttribute('data-type');
+			            if (e.target.className !== 'remove-favorite') return;
 
-			            if (e.target.className == 'remove-favorite') {
-			                scope.projects.forEach(function(project, i) {
-			                    project.sheets.forEach(function(sheet) {
-			                        if (sheet.id == id) {
-			                            sheet.favorite = false;
-			                            generateFavoritesList(type);
-			                            scope.$apply();
-			                            return;
-			                        }
-			                    });
-			                });
-			            }
+			            var type = e.target.getAttribute('data-type'),
+			            sheetId = e.target.getAttribute('data-sheet-id');
+
+			            scope.$apply(function () {
+			                if (scope.sheet.id.replace(/-/g, '') == sheetId.replace(/-/g, '')) {
+			                    scope.sheet.favorite = false;
+			                }
+
+			                scope.removeFavorite(sheetId);
+			                angular.element(e.target).parent().remove();
+			            });
+
+
 			        });
 			    };
 
