@@ -2035,6 +2035,10 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 			                }
 
 			                scope.removeFavorite(sheetId);
+                            if (angular.element(e.target).parent().parent().children().length <= 1) {
+                                changeVisibleActions();
+                            }
+
 			                angular.element(e.target).parent().remove();
 			            });
 
