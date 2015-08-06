@@ -34,6 +34,18 @@ angular.module('test', ['bluvueSheet'])
                 new project("project_2", "Project 2")
             ];
 
+            var favorites = [
+                {
+                    id: "fav1-id",
+                    uri: "bluvueplans://projects/project_1/sheets/sheet002-r0",
+                    createdDate: new Date(),
+                    projectId: "project_1",
+                    projectName: "Project 1",
+                    sheetId: "sheet002-r0",
+                    sheetName: "Sheet 2!"
+                }
+            ];
+
             var sheets = [
                 {
                     name: 'Sheet 1!',
@@ -339,6 +351,8 @@ angular.module('test', ['bluvueSheet'])
             $scope.attachmentsBucketName = 'attachments.test.bluvueplans.com';
 
             $scope.projects = projects;
+
+            $scope.favorites = favorites;
         }
     ]);
 

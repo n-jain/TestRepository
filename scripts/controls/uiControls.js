@@ -345,6 +345,7 @@ BluVueSheet.Dialog = function(params) {
 	params = params || {};
 	params.openAnimate = params.openAnimate != undefined ? params.openAnimate : true;
 	params.hideAnimate = params.hideAnimate != undefined ? params.hideAnimate : true;
+    this.isDestroyed = false;
 
 	var typeClass = '';
 	switch(params.showType) {
@@ -586,6 +587,7 @@ BluVueSheet.Dialog = function(params) {
   this.destroy = function() {
     holder.remove();
     wrapper.remove();
+      this.isDestroyed = true;
   }
 
 	// Remove old holders

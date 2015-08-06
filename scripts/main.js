@@ -937,7 +937,7 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
 				scope.openInViewer = function(url, type, name, index) {
 					angular.element(document.getElementsByClassName('attachment-nav-fixed')[0])
-						.bind('click', function(event) {
+						.bind('click', function (event) {
 							event.stopPropagation();
 							event.preventDefault();
 
@@ -1933,93 +1933,109 @@ angular.module("bluvueSheet").directive("bvSheet", ['$window', '$location', '$in
 
         };
 
-        scope.showFavoritesPanel = function() {
-          var body = '<div class="favorites-content"><ul class="favorites-toggle" id="favorites-toggle"><li id="favorites-local" data-type="local" class="active">Local</li><li id="favorites-global" data-type="global">Global</li></ul><ul id="block-favorites"></ul><ul id="favorites-list"></ul> </div>';
+			    scope.showFavoritesPanel = function() {
+			        var body = '<div class="favorites-content"><ul class="favorites-toggle" id="favorites-toggle"><li id="favorites-local" data-type="local" class="active">Local</li><li id="favorites-global" data-type="global">Global</li></ul><ul id="block-favorites"></ul><ul id="favorites-list"></ul> </div>';
 
+			        var changeVisibleActions = function() {
+			            var label = document.getElementsByClassName('dialog-top-button')[1];
+			            if (label.innerHTML == 'Edit') {
+			                angular.element(document.querySelector('#favorites-list')).addClass('show-actions');
+			                label.innerHTML = '<span style="color:#fc3d38;">Cancel</span>';
+			            } else {
+			                angular.element(document.querySelector('#favorites-list')).removeClass('show-actions');
+			                label.innerHTML = 'Edit';
+			            }
+			        };
 
-          var changeVisibleActions = function() {
-            var label = document.getElementsByClassName('dialog-top-button')[1];
-            if(label.innerHTML == 'Edit') {
-              angular.element(document.querySelector('#favorites-list')).addClass('show-actions');
-              label.innerHTML = '<span style="color:#fc3d38;">Cancel</span>';
-            } else {
-              angular.element(document.querySelector('#favorites-list')).removeClass('show-actions');
-              label.innerHTML = 'Edit';
-            }
+			        var dialog = new BluVueSheet.Dialog({
+			            showType: 'panel',
+			            openAnimate: true
+			        });
 
-          };
+			        dialog.showConfirmDialog({
+			            title: 'Favorites',
+			            message: '',
+			            bodyElement: body,
+			            hideCancelButton: true,
+			            hideOkButton: true,
+			            button2Label: 'Edit',
+			            button2Action: changeVisibleActions
+			        });
 
-          var dialog = new BluVueSheet.Dialog({
-            showType: 'panel',
-            openAnimate: true
-          });
+			        function generateFavoritesList(type) {
+			            var favorites = [], html = '';
+			            scope.favorites.forEach(function(fav) {
+			                var favSplit = fav.uri.split("/");
+			                if (favSplit.length != 6) return false;
+			                var currentProjectId = scope.sheet.projectId.replace(/-/g, "");
+			                if (currentProjectId === fav.projectId && type == 'local') {
+			                    favorites.push(fav);
+			                } else if (currentProjectId !== fav.projectId && type == 'global') {
+			                    favorites.push(fav);
+			                }
+			            });
 
-          dialog.showConfirmDialog({
-            title: 'Favorites',
-            message: '',
-            bodyElement: body,
-            hideCancelButton: true,
-            hideOkButton: true,
-            button2Label: 'Edit',
-            button2Action: changeVisibleActions
-          });
+			            favorites = $filter('orderBy')(favorites, ['projectName', 'name', 'CreatedDate']);
 
-          function generateFavoritesList(type) {
-            var sheets = [], html = '';
+			            favorites.forEach(function (fav) {
+			                var sheetName = fav.sheetName ? fav.sheetName : "loading name...";
+			                html += '<li data-id="' + fav.id + '"><a class="favorites-link" id="fav-' + fav.id + '" data-sheet-id="' + fav.sheetId + '" href="/#/projects/' + fav.projectId + '/sheets/' + fav.sheetId + '">' + sheetName + '<br /><small>' + fav.projectName + '</small></a><a href="#" class="remove-favorite" data-id="' + fav.id + '" data-type="' + type + '"></a></li>';
+			            });
 
-            scope.projects.forEach(function(project, i) {
-              if(scope.sheet.projectId == project.id && type == 'local' || type == 'global') {
-                project.sheets.forEach(function(sheet) {
-                  if(sheet.favorite) {
-                    sheets.push({id: sheet.id, name: sheet.name, CreatedDate: sheet.CreatedDate, projectName: project.name});
-                  }
-                });
-              }
-            });
+			            angular.element(document.getElementById('favorites-list')).empty().append(html);
 
-            sheets = $filter('orderBy')(sheets, ['projectName', 'name', 'CreatedDate']);
+			            angular.element(document.getElementsByClassName("favorites-link")).bind("click", function () {
+			                var lnk = angular.element(this);
+			                scope.openSheetById(lnk.attr("data-sheet-id"));
+			                dialog.hide();
+			            });   
+			        }
 
-            sheets.forEach(function(sheet) {
-                html += '<li data-id="' + sheet.id + '">' + sheet.name + '<a href="#" class="remove-favorite" data-id="' + sheet.id + '" data-type="' + type + '"></a></li>';
-            });
+			        var refreshFavoritesList = function () {
+			            $timeout(function () {
+			                var currentType = angular.element(document.getElementById('favorites-local')).hasClass('active') ? 'local' : 'global';
+			                if (dialog.isDestroyed || !currentType) return;
+			                generateFavoritesList(currentType);
+			                refreshFavoritesList();
+			            }, 1000);
+			        }
+			        refreshFavoritesList();
 
-            angular.element(document.getElementById('favorites-list')).empty().append(html);
-          }
+			        document.getElementById('favorites-toggle').addEventListener('click', function(e) {
+			            var type = e.target.getAttribute('data-type') || 'local';
 
-          document.getElementById('favorites-toggle').addEventListener('click', function(e) {
-            var type = e.target.getAttribute('data-type');
+			            if (type == 'local') {
+			                angular.element(document.getElementById('favorites-global')).removeClass('active');
+			                angular.element(document.getElementById('favorites-local')).addClass('active');
+			            } else {
+			                angular.element(document.getElementById('favorites-local')).removeClass('active');
+			                angular.element(document.getElementById('favorites-global')).addClass('active');
+			            }
 
-            if(type == 'local') {
-              angular.element(document.getElementById('favorites-global')).removeClass('active');
-              angular.element(document.getElementById('favorites-local')).addClass('active');
-            } else {
-              angular.element(document.getElementById('favorites-local')).removeClass('active');
-              angular.element(document.getElementById('favorites-global')).addClass('active');
-            }
+			            generateFavoritesList(type);
+			        });
 
-            generateFavoritesList(type);
-          });
+			        generateFavoritesList('local');
 
-          generateFavoritesList('global');
+			        document.getElementById('favorites-list').addEventListener('click', function(e) {
+			            console.log("click", e);
+			            var id = e.target.getAttribute('data-id'),
+			                type = e.target.getAttribute('data-type');
 
-          document.getElementById('favorites-list').addEventListener('click', function(e) {
-            var id = e.target.getAttribute('data-id'),
-              type = e.target.getAttribute('data-type');
-
-            if(e.target.className == 'remove-favorite') {
-              scope.projects.forEach(function(project, i) {
-                project.sheets.forEach(function(sheet) {
-                  if(sheet.id == id) {
-                    sheet.favorite = false;
-                    generateFavoritesList(type);
-                    scope.$apply();
-                    return;
-                  }
-                });
-              });
-            }
-          });
-        };
+			            if (e.target.className == 'remove-favorite') {
+			                scope.projects.forEach(function(project, i) {
+			                    project.sheets.forEach(function(sheet) {
+			                        if (sheet.id == id) {
+			                            sheet.favorite = false;
+			                            generateFavoritesList(type);
+			                            scope.$apply();
+			                            return;
+			                        }
+			                    });
+			                });
+			            }
+			        });
+			    };
 
         scope.showHistoryPanel = function() {
           var dialog = new BluVueSheet.Dialog({
